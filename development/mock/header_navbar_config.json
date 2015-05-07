@@ -1,0 +1,29 @@
+[
+  {
+    "element": "button",
+    "icon": "setting_icon",
+    "text": "Setting",
+    "class": "btnEdit",
+    "title": "Header_btn",
+    "data_role": "btnHeader",
+    "name": "Setting"
+  },
+  {
+    "element": "button",
+    "icon": "contact_list_icon",
+    "text": "ContactList",
+    "class": "btnEdit",
+    "title": "Header_btn",
+    "data_role": "btnHeader",
+    "name": "ContactList"
+  },
+  {
+    "element": "button",
+    "icon": "filter_icon",
+    "text": "Filter",
+    "class": "btnEdit",
+    "title": "Header_btn",
+    "data_role": "btnHeader",
+    "name": "Filter"
+  }
+]

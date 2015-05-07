@@ -1,0 +1,67 @@
+[
+  {
+    "element": "button",
+    "icon": "aling_left_icon",
+    "text": "",
+    "class": "btnEdit",
+    "title": "Edit_btn",
+    "data_role": "btnEdit",
+    "name": "JustifyLeft"
+  },
+  {
+    "element": "button",
+    "icon": "aling_center_icon",
+    "text": "",
+    "class": "btnEdit",
+    "title": "Edit_btn",
+    "data_role": "btnEdit",
+    "name": "JustifyCenter"
+  },
+
+  {
+    "element": "button",
+    "icon": "aling_right_icon",
+    "text": "",
+    "class": "btnEdit",
+    "title": "Edit_btn",
+    "data_role": "btnEdit",
+    "name": "JustifyRight"
+  },
+  {
+    "element": "button",
+    "icon": "bold_icon",
+    "text": "",
+    "class": "btnEdit",
+    "title": "Edit_btn",
+    "data_role": "btnEdit",
+    "name": "Bold"
+  },
+  {
+    "element": "button",
+    "icon": "italic_icon",
+    "text": "",
+    "class": "btnEdit",
+    "title": "Edit_btn",
+    "data_role": "btnEdit",
+    "name": "Italic"
+  },
+  {
+    "element": "button",
+    "icon": "color_text_icon",
+    "text": "",
+    "class": "btnEdit",
+    "title": "Edit_btn",
+    "data_role": "btnEdit",
+    "name": "ForeColor",
+    "param": true
+  },
+  {
+    "element": "input",
+    "type": "checkbox",
+    "text": "Off Scroll",
+    "class": "btnEdit",
+    "title": "Edit_btn",
+    "data_role": "btnEdit",
+    "name": "ControlScrollMessage"
+  }
+]
