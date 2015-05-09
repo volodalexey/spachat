@@ -1,7 +1,7 @@
 define('pagination', [
-        'editor'
+        'chat'
     ],
-    function(editor) {
+    function(chat) {
 
         var pagination = function() {
         };

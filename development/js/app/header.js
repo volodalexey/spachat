@@ -1,16 +1,18 @@
 define ('header',[
-        'editor',
+        'event',
         "pagination",
         'text!../html/contact_list_template.html',
         'text!../html/setting_template.html',
-        'text!../html/filter_template.html'
+        'text!../html/filter_template.html',
+        'text!../html/header_template.html',
     ],
     function(
-        editor,
+        event,
         pagination,
         contact_list_template,
         setting_template,
-        filter_template
+        filter_template,
+        header_template
     ) {
 
         var header = function() {
@@ -18,7 +20,24 @@ define ('header',[
 
         header.prototype = {
 
-            initialize: function(newChat, chat_template){
+            initialize: function (newChat){
+                var _this = this;
+                _this.newChat = newChat;
+                _this.header_template = _.template(header_template);
+                _this.trigger('sendRequestHeader_navbar_config', {"name": "/mock/header_navbar_config.json"});
+            },
+
+            render: function(res){
+                var _this = this;
+                _this.header_navbar_config = res;
+                _this.header_container = _this.newChat.querySelector('[data-role="header_container"]');
+                _this.header_container.innerHTML += _this.header_template({
+                    header_btn: _this.header_navbar_config
+                });
+            },
+
+
+            initialize2: function(newChat, chat_template){
                 var _this = this;
                 _this.newChat = newChat;
                 _this.chat_template = chat_template;
@@ -43,6 +62,8 @@ define ('header',[
                 _this.filter_container = _this.newChat.querySelector('[data-role="filter_container"]');
 
                 _this.valueEnablePagination = false;
+
+
                 return _this;
             },
 
@@ -85,8 +106,8 @@ define ('header',[
 
                     _this.fromEditorMes();
                     _this.fromEditorResize();
-                    var newEditor = new editor();
-                    newEditor.initialize(_this.newChat);
+                    var newChat = new chat();
+                    newChat.initialize(_this.newChat);
 
                     _this.outer_container.setAttribute("param-content", "message");
                 } else {
@@ -174,5 +195,8 @@ define ('header',[
             }
 
         }
+
+        extend(header, event);
+
         return header;
     });

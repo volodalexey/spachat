@@ -1,26 +1,35 @@
 define ('navigate', [
-        'editor',
+        'chat',
         'panel',
         'overlay',
-        'header',
-        'text!../html/chat_template.html',
-        'text!../html/header_template.html'
+        'header'
     ],
     function(
-        editor,
+        chat,
         panel,
         overlay,
-        header,
-        chat_template,
-        header_template
+        header
     ){
 
     var navigate = function() {};
 
     navigate.prototype = {
 
+
         initialize: function(){
             var _this = this;
+            _this.renderWaiter();
+
+
+            panel.initialize();
+            _this.toggleWaiter(true);
+            window.onresize = function(){
+                panel.resizePanel();
+                //chat.resizeChat();
+            };
+            panel.on('clearStory', _this.clearStory.bind(_this), _this);
+            _this.messages_container_Array = document.querySelectorAll('[data-role="messages_container"]');
+            /*
             overlay.initialize();
             var addChat = document.querySelector('button[data-action="addChat"]');
             if(addChat){
@@ -32,8 +41,6 @@ define ('navigate', [
                 clearStory.addEventListener('click', _this.clearStory.bind(_this), false);
             }
             _this.waiter_outer_container = document.querySelector('[data-role="waiter_outer_container"]');
-
-
             _this.chat_template = _.template(chat_template);
             _this.header_template = _.template(header_template);
             _this.arrayChats = [];
@@ -42,53 +49,47 @@ define ('navigate', [
                 panel.resizePanel();
             };
             _this.addNewChat();
-            panel.initialize();
 
-
-            overlay.toggleWaiter(true);
+            overlay.toggleWaiter(true);*/
             return _this;
         },
 
         addNewChat: function(){
-            var _this = this, newEditor = new editor(), newHeader = new header();
+            var _this = this, newChat = new chat(), newHeader = new header();
 
             _this.mainConteiner = document.querySelector('[data-role="main_container"]');
             if(! _this.mainConteiner){
                return;
             }
-            newEditor.sendRequest('/mock/header_navbar_config.json', function(err, res) {
+            newChat.sendRequest('/mock/header_navbar_config.json', function(err, res) {
                 if (err) {
+
                     console.log("Error");
                 } else {
                     _this.header_navbar_config = JSON.parse(res);
 
-                    var newChat = document.createElement('div');
-                    newChat.className = "modal";
-                    newChat.innerHTML = _this.header_template({
+                    var newChatElem = document.createElement('div');
+                    newChatElem.className = "modal";
+                    newChatElem.innerHTML = _this.header_template({
                         header_btn: _this.header_navbar_config
                     });
-                    newChat.innerHTML += _this.chat_template({
+                    newChatElem.innerHTML += _this.chat_template({
 
                     });
-                    _this.mainConteiner.appendChild(newChat);
+                    _this.mainConteiner.appendChild(newChatElem);
 
-                    _this.messages_container_Array = document.querySelectorAll('[data-role="messages_container"]');
+
 
                     _this.fillListMessage();
-                    newEditor.initialize(newChat);
-                    newHeader.initialize(newChat,  _this.chat_template);
+                    newChat.initialize(newChatElem);
+                    newHeader.initialize(newChatElem,  _this.chat_template);
 
-                    _this.arrayChats.push(newEditor);
+                    _this.arrayChats.push(newChatElem);
                 }
             });
         },
 
-        resizeChat:function(){
-            var _this = this;
-            _.each(_this.arrayChats, function(chat){
-                chat.calcMessagesContainerHeight();
-            })
-        },
+
 
         clearStory: function(){
             var _this = this;
@@ -96,22 +97,12 @@ define ('navigate', [
             _.each(_this.messages_container_Array , function(messages_container){
                 messages_container.innerHTML = "";
             })
-        },
-
-        fillListMessage: function(){
-            var _this = this;
-            if(_this.messages_container_Array){
-                for (var i = 0; i < localStorage.length; i++) {
-                    var newMessage = document.createElement('div');
-                    var key = localStorage.key(i);
-                    newMessage.innerHTML = localStorage.getItem(key);
-                    _.each(_this.messages_container_Array , function(messages_container){
-                        messages_container.appendChild(newMessage);
-                    })
-                }
-            }
         }
 
+
+
     }
+        extend(navigate, overlay);
+
     return new navigate().initialize();
 });

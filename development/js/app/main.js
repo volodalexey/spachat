@@ -4,19 +4,34 @@ require.config({
     "paths": {
         "Underscore": "lib/underscore",
         "text": "lib/text",
-        "editor": "app/editor",
+        "chat": "app/chat",
         "navigate": "app/navigate",
-        "async_core": "app/async_core",
+        "async_core": "app/extentions/async_core",
         "panel": "app/panel",
-        "overlay": "app/overlay",
+        "overlay": "app/extentions/overlay",
+        "event": "app/extentions/event",
         "header": "app/header",
-        "pagination": "app/pagination"
+        "pagination": "app/pagination",
+        "messages": "app/messages",
+        "editor": "app/editor"
     },
     "shim": {
         "navigate": ["Underscore"],
-        "editor": ["Underscore"]
+        "chat": ["Underscore"]
     }
 });
+
+function extend(Child, Parent) {
+    var F = function () { };
+    F.prototype = Parent.prototype;
+    var f = new F();
+
+    for (var prop in Child.prototype) {
+        f[prop] = Child.prototype[prop]
+    }
+    Child.prototype = f;
+    Child.prototype[Parent.prototype.__class_name] = Parent.prototype;
+}
 
 require(['navigate'], function() {
     //OK
