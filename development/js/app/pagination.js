@@ -1,27 +1,37 @@
 define('pagination', [
-        'chat'
+        'event_core',
+        'text!../html/pagination_template.html'
     ],
-    function(chat) {
+    function(
+        event_core,
+        pagination_template
+    ) {
 
         var pagination = function() {
+
         };
 
         pagination.prototype = {
 
+
             initialize: function(newChat, valPagination) {
                 var _this = this;
                 _this.newChat = newChat;
-                _this.pagination = _this.newChat.querySelector('[data-role="pagination"]');
+                _this.pagination_template = _.template(pagination_template);
+                _this.paginationContainer = _this.newChat.querySelector('[data-role="pagination_container"]');
 
-                _this.btnBack = _this.pagination.querySelector('[data-role="back"]');
+                _this.paginationContainer.innerHTML = _this.pagination_template();
+
+
+                _this.btnBack = _this.paginationContainer.querySelector('[data-role="back"]');
                 _this.btnBack.addEventListener('click', _this.selectBack.bind(_this), false);
-                _this.btnfirst = _this.pagination.querySelector('[data-role="first"]');
+                _this.btnfirst = _this.paginationContainer.querySelector('[data-role="first"]');
                 _this.btnfirst.addEventListener('click', _this.selectFirst.bind(_this), false);
-                _this.btnLast = _this.pagination.querySelector('[data-role="last"]');
+                _this.btnLast = _this.paginationContainer.querySelector('[data-role="last"]');
                 _this.btnLast.addEventListener('click', _this.selectLast.bind(_this), false);
-                _this.btnForward = _this.pagination.querySelector('[data-role="forward"]');
+                _this.btnForward = _this.paginationContainer.querySelector('[data-role="forward"]');
                 _this.btnForward.addEventListener('click', _this.selectForward.bind(_this), false);
-                _this.inpCurrent = _this.pagination.querySelector('[data-role="current"]');
+                _this.inpCurrent = _this.paginationContainer.querySelector('[data-role="current"]');
                 _this.inpCurrent.addEventListener('click', _this.selectCurrent.bind(_this), false);
 
                 _this.per_page = _this.newChat.querySelector('[data-role="per_page"]');
@@ -32,6 +42,11 @@ define('pagination', [
                 _this.messages_container = _this.newChat.querySelector('[data-role="messages_container"]');
 
                 return _this;
+            },
+
+            renderPagination: function(){
+                var _this = this;
+                _this.paginationContainer.innerHTML = _this.pagination_template();
             },
 
             countQuantityPages: function() {
@@ -51,9 +66,6 @@ define('pagination', [
 
             fillingMes: function(start, final) {
                 var _this = this;
-
-
-
                 _this.messages_container.innerHTML = "";
                 if(final > localStorage.length){
                     final = localStorage.length;
@@ -68,18 +80,21 @@ define('pagination', [
 
             showPagination: function() {
                 var _this = this;
+
                 var valueEnablePagination;
 
                 if (_this.enable_pagination.checked) {
                     valueEnablePagination = _this.enable_pagination.checked;
-                    _this.pagination.classList.remove("hide");
+                    _this.paginationContainer.classList.remove("hide");
                     _this.countQuantityPages();
                 } else {
                     valueEnablePagination = _this.enable_pagination.checked;
-                    _this.pagination.classList.add("hide");
+                    _this.paginationContainer.classList.add("hide");
                     //_this.messages_container.innerHTML = "";
                     _this.fillingMes(0, localStorage.length);
                 }
+                _this.trigger('resizeMessagesContainer');
+
                 return valueEnablePagination;
             },
 
@@ -107,5 +122,7 @@ define('pagination', [
             }
 
         }
+        extend(pagination, event_core);
+
         return new pagination();
     });

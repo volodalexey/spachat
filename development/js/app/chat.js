@@ -1,123 +1,78 @@
 define('chat', [
         'header',
         'editor',
+        'pagination',
         'async_core',
-        'text!../html/edit_btn_template.html',
-        'text!../html/header_template.html',
-        'text!../html/chat_template.html'
+        'ajax_core',
+        'text!../html/chat_template.html',
+        'text!../html/outer_container_template.html'
     ],
     function(header,
              editor,
+             pagination,
              async_core,
-             edit_btn_template,
-             header_template,
-             chat_template) {
+             ajax_core,
+             chat_template,
+             outer_container_template) {
         var chat = function() {
         };
 
         chat.prototype = {
 
-            initialize: function(newChat, mainConteiner) {
-                var _this = this, newHeader = new header(), newEditor = new editor();
+            initialize: function(newChat, mainContainer) {
+                var _this = this;
+                _this.newHeader = new header();
+                _this.newEditor = new editor();
+                _this.addEventListeners();
                 _this.chat_template = _.template(chat_template);
+                _this.outer_container_template = _.template(outer_container_template);
                 _this.newChat = newChat;
                 _this.newChat.className = "modal";
-                newHeader.off('sendRequestHeader_navbar_config');
-                newHeader.off('sendMessage');
-                newHeader.off('sendRequestEditNavbarConfig');
-                newHeader.off('sendRequestEditNavbarIcon');
-
-                newHeader.on('sendRequestHeader_navbar_config', function(obj) {
-                    _this.sendRequest(obj.name, function(err, res) {
-                        if (err) {
-                            console.log("Error");
-                        } else {
-                            newHeader.render(JSON.parse(res));
-                        }
-                    })
-                });
-                newEditor.on('sendMessage', _this.sendMessage.bind(_this), _this);
-                newEditor.on('sendRequestEditNavbarConfig', function(obj) {
-                    _this.sendRequest(obj.name, function(err, res) {
-                        if (err) {
-                            console.log("Error");
-                        } else {
-                            newEditor.loadEditNavbarIcon (JSON.parse(res), function(err) {
-                                if (err) {
-                                    console.log(err);
-                                    return;
-                                }
-                            });
-                            ;
-                        }
-                    })
-                });
-                newEditor.on('sendRequestEditNavbarIcon', function(obj){
-                    _this.sendRequest(obj.name, function(err, res) {
-                        if (err) {
-                            console.log("Error");
-                        } else {
-                            obj.svg = res;
-                            //console.log("obj.svg", obj);
-                        }
-                    })
-                }) ;
-
-                _this.newChat.innerHTML = _this.chat_template({});
-                mainConteiner.appendChild(_this.newChat);
-                newHeader.initialize(_this.newChat);
-                newEditor.initialize(_this.newChat);
+                mainContainer.appendChild(_this.newChat);
+                _this.newChat.innerHTML = _this.chat_template();
+                _this.newHeader.initialize(_this.newChat)
+                _this.body_outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
+                _this.body_outer_container.innerHTML = _this.outer_container_template();
+                _this.newEditor.initialize(_this.newChat);
                 _this.messages_container = _this.newChat.querySelector('[data-role="messages_container"]');
                 _this.messageElem = _this.newChat.querySelector('[data-role="message_container"]');
                 _this.fillListMessage();
-                /*
-
-                 _this.edit_btn_template = _.template(edit_btn_template);
-
-
-                 var submit = newChat.querySelector('[data-role="submit"]');
-                 _this.messageElem = newChat.querySelector('[data-role="message_container"]');
-                 _this.container = _this.messageElem.querySelector(".container");
-                 if (submit) {
-
-                 _this.messages_container = newChat.querySelector('[data-role="messages_container"]');
-                 submit.addEventListener('click', _this.sendMessage.bind(_this), false);
-                 }
-                 var format = _this.newChat.querySelector('[data-role="format"]');
-                 if (format) {
-                 _this.btnEditPanel = _this.newChat.querySelector('[data-action="btnEditPanel"]');
-                 format.addEventListener('click', _this.renderEditPanel.bind(_this), false);
-                 }
-                 _this.header_container = _this.newChat.querySelector('[data-role="header_container"]');
-                 _this.controls_container = newChat.querySelector('[data-role="controls_container"]');
-                 _this.calcMessagesContainerHeight();
-
-                 _this.messages_container.scrollTop = 9999;
-
-                 _this.loadEditNavbarConfig(function(err) {
-                 if (err) {
-                 console.log(err);
-                 return;
-                 }
-                 _this.edit_navbar_config_Filter = _.filter(_this.edit_navbar_config, function(btn) {
-                 return btn.icon
-                 })
-                 _this.edit_btn_icon = _this.edit_navbar_config_Filter.map(function(btn) {
-                 return btn.icon;
-                 });
-                 _this.edit_btn_icon_config = _this.loadEditNavbarIcon(function(err) {
-                 if (err) {
-                 console.log(err);
-                 return;
-                 }
-                 });
-                 });*/
                 return _this;
             },
 
-            fillListMessage: function(){
+            addEventListeners: function() {
                 var _this = this;
-                if(_this.messages_container){
+                _this.removeEventListeners();
+                _this.newEditor.on('sendMessage', _this.sendMessage.bind(_this), _this);
+                _this.newEditor.on('calcMessagesContainerHeight', _this.calcMessagesContainerHeight.bind(_this), _this);
+                _this.newHeader.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
+                _this.newHeader.on('renderMassagesEditor', _this.renderMassagesEditor.bind(_this), _this);
+                pagination.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
+            },
+
+            removeEventListeners: function() {
+                var _this = this;
+                _this.newEditor.off('sendMessage');
+                _this.newEditor.off('calcMessagesContainerHeight');
+                _this.newHeader.off('resizeMessagesContainer');
+                _this.newHeader.off('renderMassagesEditor');
+                pagination.off('resizeMessagesContainer');
+            },
+
+            renderMassagesEditor: function(){
+                var _this = this;
+                _this.body_outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
+                _this.body_outer_container.innerHTML = _this.outer_container_template();
+                _this.newEditor.initialize(_this.newChat);
+                _this.messages_container = _this.newChat.querySelector('[data-role="messages_container"]');
+                _this.messageElem = _this.newChat.querySelector('[data-role="message_container"]');
+                _this.fillListMessage();
+                _this.resizeMessagesContainer();
+            },
+
+            fillListMessage: function() {
+                var _this = this;
+                if (_this.messages_container) {
                     for (var i = 0; i < localStorage.length; i++) {
                         var newMessage = document.createElement('div');
                         var key = localStorage.key(i);
@@ -127,28 +82,23 @@ define('chat', [
                 }
             },
 
-            resizeChat:function(){
+            resizeMessagesContainer: function() {
                 var _this = this;
-                _this.newChat.calcMessagesContainerHeight();
-            },
-
-            addRemoveClassElements: function(arElem, className) {
-                _.each(arElem, function(elem) {
-                    if (elem.classList.contains(className)) {
-                        elem.classList.remove(className);
-                    } else {
-                        elem.classList.add(className);
-                    }
-                })
+                _this.calcMessagesContainerHeight();
+                _this.messages_container.scrollTop = 9999;
             },
 
             calcMessagesContainerHeight: function() {
                 var _this = this;
+                _this.btnEditPanel = _this.newChat.querySelector('[data-action="btnEditPanel"]');
+                _this.header_container = _this.newChat.querySelector('[data-role="header_container"]');
+                _this.controls_container = _this.newChat.querySelector('[data-role="controls_container"]');
+                _this.paginationContainer = _this.newChat.querySelector('[data-role="pagination_container"]');
                 var turnScrol = _this.btnEditPanel.querySelector('input[name="ControlScrollMessage"]');
                 if (!turnScrol || turnScrol && !turnScrol.checked) {
-                    var height = window.innerHeight - _this.header_container.clientHeight - _this.controls_container.clientHeight - _this.messageElem.clientHeight;
+                    var height = window.innerHeight - _this.header_container.clientHeight - _this.paginationContainer.clientHeight - _this.controls_container.clientHeight - _this.messageElem.clientHeight;
                     var paddingMessages = parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-top')) + parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-bottom'));
-                    var marginControls = parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-top'))
+                    var marginControls = parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-top'));
                     var marginEditPanel = parseInt(window.getComputedStyle(_this.btnEditPanel, null).getPropertyValue('margin-bottom'));
                     _this.messages_container.style.maxHeight = height - paddingMessages - marginControls - marginEditPanel + "px";
                 }
@@ -172,48 +122,10 @@ define('chat', [
                         _this.messages_container.scrollTop = 9999;
                     }
                 }
-            },
-
-          /*  addEdit: function(btn) {
-                var _this = this;
-                return function() {
-                    var command = btn.getAttribute("name");
-                    var param = btn.hasAttribute("param");
-                    _this.container.focus();
-                    if (param) {
-                        document.execCommand(command, null, "red");
-                    } else {
-                        document.execCommand(command, null, null);
-                    }
-                }
-            },
-
-            changeEdit: function() {
-                var _this = this;
-                return function() {
-                    _this.addRemoveClassElements([_this.container], "onScroll");
-                }
-            },*/
-
-
-
-            sendRequest: function(name, callback) {
-                //console.log(name);
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', name, true);
-
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == 4) {
-                        if (xhr.status != 200) {
-                            callback('Error ' + xhr.status + ': ' + xhr.statusText);
-                        } else {
-                            callback(null, xhr.responseText);
-                        }
-                    }
-                };
-                xhr.send();
             }
+
         };
+        extend(chat, ajax_core);
 
         return chat;
     });

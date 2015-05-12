@@ -1,108 +1,72 @@
 define ('navigate', [
         'chat',
         'panel',
-        'overlay',
-        'header'
+        'overlay_core'
     ],
     function(
         chat,
         panel,
-        overlay,
-        header
+        overlay_core
     ){
 
     var navigate = function() {};
 
     navigate.prototype = {
 
-
         initialize: function(){
             var _this = this;
-            _this.renderWaiter();
-
-
+            _this.addEventListeners();
             panel.initialize();
             _this.toggleWaiter(true);
-            window.onresize = function(){
-                panel.resizePanel();
-                //chat.resizeChat();
-            };
-            panel.on('clearStory', _this.clearStory.bind(_this), _this);
+            _this.chatsArray =[];
             _this.messages_container_Array = document.querySelectorAll('[data-role="messages_container"]');
-            /*
-            overlay.initialize();
-            var addChat = document.querySelector('button[data-action="addChat"]');
-            if(addChat){
-                addChat.addEventListener('click', _this.addNewChat.bind(_this), false);
-            }
-
-            var clearStory = document.querySelector('[data-action="btnClearListMessage"]');
-            if(clearStory){
-                clearStory.addEventListener('click', _this.clearStory.bind(_this), false);
-            }
-            _this.waiter_outer_container = document.querySelector('[data-role="waiter_outer_container"]');
-            _this.chat_template = _.template(chat_template);
-            _this.header_template = _.template(header_template);
-            _this.arrayChats = [];
-            window.onresize = function(){
-                _this.resizeChat();
-                panel.resizePanel();
-            };
-            _this.addNewChat();
-
-            overlay.toggleWaiter(true);*/
             return _this;
         },
 
-        addNewChat: function(){
-            var _this = this, newChat = new chat(), newHeader = new header();
+        addEventListeners: function(){
+            var _this = this;
+            _this.removeEventListeners();
+            window.addEventListener('resize',  _this.onresizeWindow.bind(_this), false);
+            panel.on('clearStory', _this.clearStory.bind(_this), _this);
+            panel.on('addNewChat', _this.addNewChat.bind(_this), _this);
+        },
 
-            _this.mainConteiner = document.querySelector('[data-role="main_container"]');
-            if(! _this.mainConteiner){
-               return;
-            }
-            newChat.sendRequest('/mock/header_navbar_config.json', function(err, res) {
-                if (err) {
+        removeEventListeners: function(){
+            var _this = this;
+            window.removeEventListener('resize',  _this.onresizeWindow.bind(_this), false);
+            panel.off('clearStory');
+            panel.off('addNewChat');
+        },
 
-                    console.log("Error");
-                } else {
-                    _this.header_navbar_config = JSON.parse(res);
-
-                    var newChatElem = document.createElement('div');
-                    newChatElem.className = "modal";
-                    newChatElem.innerHTML = _this.header_template({
-                        header_btn: _this.header_navbar_config
-                    });
-                    newChatElem.innerHTML += _this.chat_template({
-
-                    });
-                    _this.mainConteiner.appendChild(newChatElem);
-
-
-
-                    _this.fillListMessage();
-                    newChat.initialize(newChatElem);
-                    newHeader.initialize(newChatElem,  _this.chat_template);
-
-                    _this.arrayChats.push(newChatElem);
-                }
+        onresizeWindow: function(){
+            var _this = this;
+            panel.resizePanel();
+            _this.chatsArray.forEach(function(chat){
+                //chat.calcMessagesContainerHeight();
             });
         },
 
-
+        addNewChat: function(){
+            var _this = this, newChat = new chat();
+            _this.mainConteiner = document.querySelector('[data-role="main_container"]');
+            if(! _this.mainConteiner){
+                return;
+            }
+            var newChatElem = document.createElement('div');
+            newChat.initialize(newChatElem, _this.mainConteiner);
+            _this.chatsArray.push(newChatElem);
+        },
 
         clearStory: function(){
             var _this = this;
             localStorage.clear();
-            _.each(_this.messages_container_Array , function(messages_container){
-                messages_container.innerHTML = "";
+            _.each(_this.chatsArray , function(chat){
+               chat.querySelector('[data-role="messages_container"]').innerHTML = "";
             })
         }
 
-
-
     }
-        extend(navigate, overlay);
+        extend(navigate, overlay_core);
 
     return new navigate().initialize();
 });

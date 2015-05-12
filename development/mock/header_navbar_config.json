@@ -5,6 +5,7 @@
     "text": "Setting",
     "class": "btnEdit",
     "title": "Header_btn",
+    "data_action": "renderSettings",
     "data_role": "btnHeader",
     "name": "Setting"
   },
@@ -14,6 +15,7 @@
     "text": "ContactList",
     "class": "btnEdit",
     "title": "Header_btn",
+    "data_action": "renderContactList",
     "data_role": "btnHeader",
     "name": "ContactList"
   },
@@ -23,6 +25,7 @@
     "text": "Filter",
     "class": "btnEdit",
     "title": "Header_btn",
+    "data_action": "renderFilter",
     "data_role": "btnHeader",
     "name": "Filter"
   }

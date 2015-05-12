@@ -1,11 +1,11 @@
-define('event', ['Underscore'],
+define('event_core', ['Underscore'],
     function () {
 
-        var event = function() {};
+        var event_core = function() {};
 
-        event.prototype = {
+        event_core.prototype = {
 
-            __class_name: "event",
+            __class_name: "event_core",
 
             initializeListeners: function() {
                 if (!this.listeners) {
@@ -59,6 +59,6 @@ define('event', ['Underscore'],
             }
         };
 
-        return event;
+        return event_core;
     }
 );

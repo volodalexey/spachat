@@ -4,16 +4,21 @@ require.config({
     "paths": {
         "Underscore": "lib/underscore",
         "text": "lib/text",
+
+        "async_core": "app/extentions/async_core",
+        "ajax_core": "app/extentions/ajax_core",
+        "overlay_core": "app/extentions/overlay_core",
+        "event_core": "app/extentions/event_core",
+
         "chat": "app/chat",
         "navigate": "app/navigate",
-        "async_core": "app/extentions/async_core",
         "panel": "app/panel",
-        "overlay": "app/extentions/overlay",
-        "event": "app/extentions/event",
         "header": "app/header",
         "pagination": "app/pagination",
         "messages": "app/messages",
-        "editor": "app/editor"
+        "editor": "app/editor",
+        "settings": "app/settings",
+        "contact_list": "app/contact_list"
     },
     "shim": {
         "navigate": ["Underscore"],
