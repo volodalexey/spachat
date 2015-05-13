@@ -20,29 +20,36 @@ define('header', [
 
         header.prototype = {
 
+            toolbarElement: 'button',
+
             initialize: function(newChat) {
                 var _this = this;
-                _this.addEventListeners();
-                _this.newChat = newChat;
                 _this.header_template = _.template(header_template);
-                _this.outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
                 _this.filter_template = _.template(filter_template);
-                _this.sendRequest("/mock/header_navbar_config.json", function(err, res) {
+                _this.newChat = newChat;
+
+                _this.addEventListeners();
+
+
+                _this.outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
+
+                _this.sendRequest("/mock/header_navbar_config.json", function(err, config) {
                     if (err) {
                         console.log(err);
                     } else {
-                        _this.header_navbar_config = JSON.parse(res);
+                        _this.header_navbar_config = JSON.parse(config);
                         _this.header_container = _this.newChat.querySelector('[data-role="header_outer_container"]');
                         _this.body_outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
                         _this.header_container.innerHTML = _this.header_template({
                             header_btn: _this.header_navbar_config
                         });
                         _this.trigger('resizeMessagesContainer');
-                        var btnsHeader = _this.header_container.querySelectorAll('[data-role="btnHeader"]');
-                        for (var i = 0, l = btnsHeader.length; i < l; i++) {
-                            var name = btnsHeader[i].getAttribute('data-action');
-                            btnsHeader[i].addEventListener('click', _this[name].bind(_this), false);
-                        }
+                        //var btnsHeader = _this.header_container.querySelectorAll('[data-role="btnHeader"]');
+                        //for (var i = 0, l = btnsHeader.length; i < l; i++) {
+                        //    var name = btnsHeader[i].getAttribute('data-action');
+                        //    btnsHeader[i].addEventListener('click', _this[name].bind(_this), false);
+                        //}
+                        _this.addToolbarListeners();
                     }
                 });
                 _this.filter_container = _this.newChat.querySelector('[data-role="filter_container"]');
@@ -65,6 +72,37 @@ define('header', [
                 settings.off('renderMassagesEditor');
                 contact_list.off('calcOuterContainerHeight');
                 contact_list.off('renderMassagesEditor');
+            },
+
+            addToolbarListeners: function() {
+                var _this = this;
+                _this.removeToolbarListeners();
+                if (!_this.header_container || !_this.header_navbar_config) {
+                    return;
+                }
+                _.each(_this.header_navbar_config, function(_configItem) {
+                    if (_configItem.element === _this.toolbarElement) {
+                        _this.header_container.addEventListener('click', _this.toolbarEventRouter.bind(_this), false);
+                    }
+                });
+            },
+
+            removeToolbarListeners: function() {
+                var _this = this;
+                if (!_this.header_container || !_this.header_navbar_config) {
+                    return;
+                }
+                _.each(_this.header_navbar_config, function(_configItem) {
+                    if (_configItem.element === _this.toolbarElement) {
+                        _this.header_container.removeEventListener('click', _this.toolbarEventRouter.bind(_this), false);
+                    }
+                });
+            },
+
+            toolbarEventRouter: function(event) {
+                var _this = this;
+                var action = event.target.getAttribute('data-action');
+                _this[action](event);
             },
 
             throwEvent: function(name) {
