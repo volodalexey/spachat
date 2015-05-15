@@ -20,6 +20,7 @@ define ('navigate', [
             _this.toggleWaiter(true);
             _this.chatsArray =[];
             _this.messages_container_Array = document.querySelectorAll('[data-role="messages_container"]');
+            //_this.addNewChat();
             return _this;
         },
 

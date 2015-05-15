@@ -1,16 +1,12 @@
 define('header', [
         'event_core',
         'ajax_core',
-        'settings',
-        'contact_list',
         'pagination',
         'text!../html/filter_template.html',
         'text!../html/header_template.html'
     ],
     function(event_core,
              ajax_core,
-             settings,
-             contact_list,
              pagination,
              filter_template,
              header_template) {
@@ -20,16 +16,16 @@ define('header', [
 
         header.prototype = {
 
-            toolbarElement: 'button',
+            //toolbarElement: 'button',
 
-            initialize: function(newChat) {
+            initialize: function(newChat, data) {
                 var _this = this;
                 _this.header_template = _.template(header_template);
                 _this.filter_template = _.template(filter_template);
                 _this.newChat = newChat;
+                _this.data = data;
 
-                _this.addEventListeners();
-
+                //_this.addEventListeners();
 
                 _this.outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
 
@@ -44,107 +40,129 @@ define('header', [
                             header_btn: _this.header_navbar_config
                         });
                         _this.trigger('resizeMessagesContainer');
-                        //var btnsHeader = _this.header_container.querySelectorAll('[data-role="btnHeader"]');
-                        //for (var i = 0, l = btnsHeader.length; i < l; i++) {
-                        //    var name = btnsHeader[i].getAttribute('data-action');
-                        //    btnsHeader[i].addEventListener('click', _this[name].bind(_this), false);
-                        //}
-                        _this.addToolbarListeners();
+                        var btnsHeader = _this.header_container.querySelectorAll('[data-role="btnHeader"]');
+                        for (var i = 0, l = btnsHeader.length; i < l; i++) {
+                            var name = btnsHeader[i].getAttribute('data-action');
+                            btnsHeader[i].addEventListener('click', _this[name].bind(_this), false);
+                        }
+                        //_this.addToolbarListeners();
                     }
                 });
                 _this.filter_container = _this.newChat.querySelector('[data-role="filter_container"]');
-                _this.valueEnablePagination = false;
+
             },
 
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                settings.on('resizeMessagesContainer', _this.throwEvent.bind(_this, 'resizeMessagesContainer'), _this);
-                settings.on('calcOuterContainerHeight', _this.calcOuterContainerHeight.bind(_this), _this);
-                settings.on('renderMassagesEditor', _this.throwEvent.bind(_this, 'renderMassagesEditor'), _this);
-                contact_list.on('calcOuterContainerHeight', _this.calcOuterContainerHeight.bind(_this), _this);
-                contact_list.on('renderMassagesEditor', _this.throwEvent.bind(_this, 'renderMassagesEditor'), _this);
+
             },
 
             removeEventListeners: function() {
-                settings.off('resizeMessagesContainer');
-                settings.off('calcOuterContainerHeight');
-                settings.off('renderMassagesEditor');
-                contact_list.off('calcOuterContainerHeight');
-                contact_list.off('renderMassagesEditor');
-            },
-
-            addToolbarListeners: function() {
                 var _this = this;
-                _this.removeToolbarListeners();
-                if (!_this.header_container || !_this.header_navbar_config) {
-                    return;
-                }
-                _.each(_this.header_navbar_config, function(_configItem) {
-                    if (_configItem.element === _this.toolbarElement) {
-                        _this.header_container.addEventListener('click', _this.toolbarEventRouter.bind(_this), false);
-                    }
-                });
-            },
+                _this.perPage.removeEventListener('input', _this.changePerPage.bind(_this), false);
 
-            removeToolbarListeners: function() {
-                var _this = this;
-                if (!_this.header_container || !_this.header_navbar_config) {
-                    return;
-                }
-                _.each(_this.header_navbar_config, function(_configItem) {
-                    if (_configItem.element === _this.toolbarElement) {
-                        _this.header_container.removeEventListener('click', _this.toolbarEventRouter.bind(_this), false);
-                    }
-                });
-            },
-
-            toolbarEventRouter: function(event) {
-                var _this = this;
-                var action = event.target.getAttribute('data-action');
-                _this[action](event);
-            },
-
-            throwEvent: function(name) {
-                var _this = this;
-                _this.trigger(name);
-            },
-
-            renderContactList: function() {
-                var _this = this;
-                contact_list.initialize(_this.newChat);
-            },
-
-            renderSettings: function() {
-                var _this = this;
-                settings.initialize(_this.newChat);
             },
 
             renderFilter: function() {
                 var _this = this;
                 _this.filter_container = _this.newChat.querySelector('[data-role="filter_container"]');
+                var param = _this.body_outer_container.getAttribute('param-content');
+                if (param !== "message") {
+                    _this.trigger('renderMassagesEditor');
+                    _this.trigger('renderPagination');
+                    _this.body_outer_container.setAttribute("param-content", "message");
+                    _this.body_outer_container.classList.remove('background');
+                }
                 if (_this.filter_container.classList.contains('hide')) {
                     _this.filter_container.innerHTML = _this.filter_template();
                     _this.filter_container.classList.remove('hide');
-                    pagination.initialize(_this.newChat, _this.valueEnablePagination);
-                    _this.enable_pagination = _this.newChat.querySelector('[data-role="enable_pagination"]');
-                    _this.valueEnablePagination = _this.enable_pagination.checked;
-                    _this.valueEnablePagination = pagination.showPagination();
+
+                    _this.enablePagination = _this.filter_container.querySelector('input[data-role="enable_pagination"]');
+                    if (_this.enablePagination) {
+                        _this.enablePagination.checked = _this.data.valueEnablePagination;
+                        //_this.enablePagination.removeEventListener('change', _this.renderPagination.bind(_this), false);
+
+                        _this.enablePagination.addEventListener('change', _this.renderPagination.bind(_this), false);
+                    }
+                    _this.perPage = _this.filter_container.querySelector('input[data-role="per_page"]');
+                    if (_this.perPage) {
+                        //_this.perPage.removeEventListener('input', _this.changePerPage.bind(_this), false);
+
+                        _this.perPage.addEventListener('input', _this.changePerPage.bind(_this), false);
+                        _this.perPage.value = _this.data.per_page_value;
+                    }
                     _this.trigger('resizeMessagesContainer');
                 } else {
                     _this.valueEnablePagination = _this.newChat.querySelector('[data-role="enable_pagination"]').checked;
+                    _this.per_page = _this.newChat.querySelector('[data-role="per_page"]');
+                    _this.per_page_value = parseInt(_this.per_page.value);
                     _this.filter_container.innerHTML = "";
                     _this.filter_container.classList.add('hide');
                     _this.trigger('resizeMessagesContainer');
                 }
+                _this.trigger('calcOuterContainerHeight');
             },
 
-            calcOuterContainerHeight: function() {
+            renderContactList: function() {
                 var _this = this;
-                var height = window.innerHeight - _this.header_container.clientHeight;
-                var marginHeader = parseInt(window.getComputedStyle(_this.header_container, null).getPropertyValue('margin-top'));
-                _this.body_outer_container.style.height = height - marginHeader + "px";
+                _this.trigger("renderContactList");
+            },
+
+            renderSettings: function() {
+                var _this = this;
+                _this.trigger("renderSettings");
+            },
+
+            renderPagination: function() {
+                var _this = this;
+
+                _this.trigger("renderPagination");
+            },
+
+            changePerPage: function() {
+                var _this = this;
+                _this.data.per_page_value = _this.perPage.value;
+                if (_this.data.valueEnablePagination) {
+                    if (_this.perPage.value !== "") {
+                        _this.trigger("changePerPage");
+
+                    }
+                }
+
             }
+
+            /* addToolbarListeners: function() {
+             var _this = this;
+             _this.removeToolbarListeners();
+             if (!_this.header_container || !_this.header_navbar_config) {
+             return;
+             }
+             _.each(_this.header_navbar_config, function(_configItem) {
+             if (_configItem.element === _this.toolbarElement) {
+             _this.header_container.addEventListener('click', _this.toolbarEventRouter.bind(_this), false);
+             }
+             });
+             },
+
+             removeToolbarListeners: function() {
+             var _this = this;
+             if (!_this.header_container || !_this.header_navbar_config) {
+             return;
+             }
+             _.each(_this.header_navbar_config, function(_configItem) {
+             if (_configItem.element === _this.toolbarElement) {
+             _this.header_container.removeEventListener('click', _this.toolbarEventRouter.bind(_this), false);
+             }
+             });
+             },
+
+             toolbarEventRouter: function(event) {
+             var _this = this;
+             var action = event.target.getAttribute('data-action');
+             _this[action](event);
+             },*/
+
         }
 
         extend(header, event_core);

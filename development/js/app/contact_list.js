@@ -33,14 +33,21 @@ define('contact_list', [
 
             renderContactList: function() {
                 var _this = this;
-                _this.trigger('calcOuterContainerHeight');
                 var param = _this.body_outer_container.getAttribute('param-content');
+                _this.filter_container = _this.newChat.querySelector('[data-role="filter_container"]');
+                if (!_this.filter_container.classList.contains('hide')) {
+                    _this.filter_container.classList.add('hide');
+                }
+                _this.trigger('calcOuterContainerHeight');
                 if (param === "contact_list") {
                     _this.trigger('renderMassagesEditor');
+                    _this.trigger('renderPagination');
                     _this.body_outer_container.setAttribute("param-content", "message");
+                    _this.body_outer_container.classList.remove('background');
                 } else {
                     _this.body_outer_container.innerHTML = _this.contact_list_template();
                     _this.body_outer_container.setAttribute("param-content", "contact_list");
+                    _this.body_outer_container.classList.add('background');
                     this.sendRequest('/mock/contact_list_config.json', function(err, res) {
                         if (err) {
                             console.log("Error");
@@ -56,5 +63,5 @@ define('contact_list', [
         extend(contact_list, event_core);
         extend(contact_list, ajax_core);
 
-        return new contact_list();
+        return contact_list;
     });
