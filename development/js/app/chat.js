@@ -7,6 +7,7 @@ define('chat', [
         'messages',
         'ajax_core',
         'indexeddb',
+        'webrtc',
 
         'text!../html/chat_template.html',
         'text!../html/outer_container_template.html'
@@ -19,6 +20,7 @@ define('chat', [
              messages,
              ajax_core,
              indexeddb,
+             webrtc,
 
              chat_template,
              outer_container_template) {
@@ -27,10 +29,31 @@ define('chat', [
 
         chat.prototype = {
 
+            chat_template: _.template(chat_template),
+            outer_container_template: _.template(outer_container_template),
+
             chatsArray: [],
 
             initialize: function(chatElem, mainContainer) {
                 var _this = this;
+                _this.data = {
+                    mode: "webrtc",
+                    curPage: null,
+                    firstPage: null,
+                    lastPage: null,
+                    padding: {
+                        bottom: 5
+                    },
+                    per_page_value: 10,
+                    valueEnablePagination: false
+                };
+                // TODO replcae with template
+                _this.chatElem = chatElem;
+                _this.chatElem.className = "modal";
+                mainContainer.appendChild(_this.chatElem);
+                _this.chatElem.innerHTML = _this.chat_template();
+                _this.body_outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
+
                 _this.newHeader = new header();
                 _this.newEditor = new editor();
                 _this.newPagination = new pagination();
@@ -38,33 +61,29 @@ define('chat', [
                 _this.newContact_list = new contact_list();
                 _this.newMessages = new messages();
                 _this.indexeddb = new indexeddb().initialize();
+                _this.webrtc = new webrtc().initialize({ chat: _this });
                 _this.addEventListeners();
-                _this.chat_template = _.template(chat_template);
-                _this.outer_container_template = _.template(outer_container_template);
-                _this.data = {
-                    curPage: null,
-                    firstPage: null,
-                    lastPage: null,
-                    padding: {
-                        bottom: 5
-                    }
-                };
-                _this.chatElem = chatElem;
-                _this.chatElem.className = "modal";
-                mainContainer.appendChild(_this.chatElem);
-                _this.chatElem.innerHTML = _this.chat_template();
-                _this.newHeader.initialize(_this.chatElem, _this.data);
-                _this.body_outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
-                _this.body_outer_container.innerHTML = _this.outer_container_template();
-                _this.newEditor.initialize(_this.chatElem);
-                _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
-                _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
-                //_this.fillListMessage();
-                _this.newMessages.initialize({start: 0, chat: _this});
 
-                _this.data.valueEnablePagination = false;
-                _this.data.per_page_value = 10;
+                _this.renderByMode();
                 return _this;
+            },
+
+            renderByMode: function() {
+                var _this = this;
+                switch (_this.data.mode) {
+                    case "webrtc":
+                        _this.newHeader.initialize({ chat: _this });
+                        _this.webrtc.renderHanshake();
+                        break;
+                    case "messages":
+                        _this.newHeader.initialize({ chat: _this });
+                        _this.body_outer_container.innerHTML = _this.outer_container_template();
+                        _this.newEditor.initialize(_this.chatElem);
+                        _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
+                        _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
+                        _this.newMessages.initialize({start: 0, chat: _this});
+                        break;
+                }
             },
 
             addEventListeners: function() {

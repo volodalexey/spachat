@@ -16,20 +16,20 @@ define('messages', [
 
             initialize: function(options) {
                 var _this = this;
+                _this.chat = options.chat;
                 _this.data = {
                     options: options,
-                    chat: options.chat,
                     collection: {
-                        "id": options.chat.chatsArray.length,
-                        "db_name": options.chat.chatsArray.length + '_chat_messages',
-                        "table_name": options.chat.chatsArray.length + '_chat_messages',
+                        "id": _this.chat.chatsArray.length,
+                        "db_name": _this.chat.chatsArray.length + '_chat_messages',
+                        "table_name": _this.chat.chatsArray.length + '_chat_messages',
                         "db_version": 1,
                         "keyPath": "id"
                     }
                 };
 
                 _this.addEventListeners();
-                _this.messages_container = _this.data.chat.chatElem.querySelector('[data-role="messages_container"]');
+                _this.messages_container = _this.chat.chatElem.querySelector('[data-role="messages_container"]');
                 _this.fillListMessage(options);
                 return _this;
             },
@@ -62,7 +62,7 @@ define('messages', [
 
                 _this.messages_container.innerHTML = "";
                 // TODO use trigger to chat ?
-                _this.data.chat.indexeddb.getAll(_this.data.collection, function(getAllErr, messages) {
+                _this.chat.indexeddb.getAll(_this.data.collection, function(getAllErr, messages) {
                     if (getAllErr) {
                         _this.messages_container.innerHTML = getAllErr.message || getAllErr;
                         return;
@@ -86,7 +86,7 @@ define('messages', [
             addMessage: function(options, newMessage) {
                 var _this = this;
                 // TODO check which page is current
-                _this.data.chat.indexeddb.addOrUpdateAll(
+                _this.chat.indexeddb.addOrUpdateAll(
                     _this.data.collection,
                     [
                         {

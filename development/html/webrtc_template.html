@@ -1,0 +1,21 @@
+<% var _in = arguments[0]; %>
+<% if (_in.data.mode === 'start') { %>
+    <h3>Choose your action</h3>
+    <button data-action="clickCreateLocalOffer">Create offer</button>
+    <button data-action="clickAnswerRemoteOffer">Join offer</button>
+<% } else if (_in.data.mode === 'localOffer') { %>
+    <h3>Copy local offer here</h3>
+    <textarea readonly class="w100p" data-role="localOfferDescription" rows="10" ><%= JSON.stringify(_in.data.peerConnection.localDescription) %></textarea>
+    <h3>Past remote answer here</h3>
+    <textarea class="w100p" data-role="remoteAnswerDescription" rows="10" ></textarea>
+    <button data-action="clickSubmitRemoteAnswer">Submit remote answer</button>
+<% } else if (_in.data.mode === 'remoteOffer') { %>
+    <h3>Past remote offer here</h3>
+    <textarea class="w100p" data-role="remoteOfferDescription" rows="10" ></textarea>
+    <button data-action="clickSubmitRemoteOffer">Submit join offer</button>
+<% } else if (_in.data.mode === 'localAnswer') { %>
+    <h3>Remote offer</h3>
+    <textarea readonly class="w100p" data-role="remoteOfferDescription" rows="10" ><%= JSON.stringify(_in.data.peerConnection.remoteDescription) %></textarea>
+    <h3>Copy answer here</h3>
+    <textarea readonly class="w100p" data-role="localAnswerDescription" rows="10" ><%= JSON.stringify(_in.data.peerConnection.localDescription) %></textarea>
+<% } %>

@@ -20,7 +20,8 @@ require.config({
         "settings": "app/settings",
         "contact_list": "app/contact_list",
         "indexeddb": "app/indexeddb",
-        "tab": "app/tab"
+        "tab": "app/tab",
+        "webrtc": "app/webrtc"
     },
     "shim": {
         "navigate": ["Underscore"],

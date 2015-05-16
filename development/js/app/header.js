@@ -16,40 +16,49 @@ define('header', [
 
         header.prototype = {
 
-            //toolbarElement: 'button',
+            header_template: _.template(header_template),
+            filter_template: _.template(filter_template),
 
-            initialize: function(newChat, data) {
+            initialize: function(options) {
                 var _this = this;
-                _this.header_template = _.template(header_template);
-                _this.filter_template = _.template(filter_template);
-                _this.newChat = newChat;
-                _this.data = data;
 
-                //_this.addEventListeners();
+                _this.chat = options.chat;
 
-                _this.outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
+                _this.header_container = _this.chat.chatElem.querySelector('[data-role="header_outer_container"]');
+                _this.body_outer_container = _this.chat.chatElem.querySelector('[data-role="body_outer_container"]');
+                _this.renderByMode();
+            },
 
-                _this.sendRequest("/mock/header_navbar_config.json", function(err, config) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        _this.header_navbar_config = JSON.parse(config);
-                        _this.header_container = _this.newChat.querySelector('[data-role="header_outer_container"]');
-                        _this.body_outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
+            renderByMode: function() {
+                var _this = this;
+                switch (_this.chat.data.mode) {
+                    case "webrtc":
                         _this.header_container.innerHTML = _this.header_template({
-                            header_btn: _this.header_navbar_config
+                            description: 'Web RTC Initialization'
                         });
-                        _this.trigger('resizeMessagesContainer');
-                        var btnsHeader = _this.header_container.querySelectorAll('[data-role="btnHeader"]');
-                        for (var i = 0, l = btnsHeader.length; i < l; i++) {
-                            var name = btnsHeader[i].getAttribute('data-action');
-                            btnsHeader[i].addEventListener('click', _this[name].bind(_this), false);
-                        }
-                        //_this.addToolbarListeners();
-                    }
-                });
-                _this.filter_container = _this.newChat.querySelector('[data-role="filter_container"]');
-
+                        break;
+                    case "messages":
+                        _this.sendRequest("/mock/header_navbar_config.json", function(err, config) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                _this.header_navbar_config = JSON.parse(config);
+                                _this.header_container.innerHTML = _this.header_template({
+                                    header_btn: _this.header_navbar_config,
+                                    description: 'Chat Messages'
+                                });
+                                _this.trigger('resizeMessagesContainer');
+                                var btnsHeader = _this.header_container.querySelectorAll('[data-role="btnHeader"]');
+                                for (var i = 0, l = btnsHeader.length; i < l; i++) {
+                                    var name = btnsHeader[i].getAttribute('data-action');
+                                    btnsHeader[i].addEventListener('click', _this[name].bind(_this), false);
+                                }
+                                //_this.addToolbarListeners();
+                            }
+                        });
+                        _this.filter_container = _this.chat.chatElem.querySelector('[data-role="filter_container"]');
+                        break;
+                }
             },
 
             addEventListeners: function() {
@@ -66,7 +75,7 @@ define('header', [
 
             renderFilter: function() {
                 var _this = this;
-                _this.filter_container = _this.newChat.querySelector('[data-role="filter_container"]');
+                _this.filter_container = _this.chat.chatElem.querySelector('[data-role="filter_container"]');
                 var param = _this.body_outer_container.getAttribute('param-content');
                 if (param !== "message") {
                     _this.trigger('renderMassagesEditor');
@@ -80,7 +89,7 @@ define('header', [
 
                     _this.enablePagination = _this.filter_container.querySelector('input[data-role="enable_pagination"]');
                     if (_this.enablePagination) {
-                        _this.enablePagination.checked = _this.data.valueEnablePagination;
+                        _this.enablePagination.checked = _this.chat.data.valueEnablePagination;
                         //_this.enablePagination.removeEventListener('change', _this.renderPagination.bind(_this), false);
 
                         _this.enablePagination.addEventListener('change', _this.renderPagination.bind(_this), false);
@@ -90,12 +99,12 @@ define('header', [
                         //_this.perPage.removeEventListener('input', _this.changePerPage.bind(_this), false);
 
                         _this.perPage.addEventListener('input', _this.changePerPage.bind(_this), false);
-                        _this.perPage.value = _this.data.per_page_value;
+                        _this.perPage.value = _this.chat.data.per_page_value;
                     }
                     _this.trigger('resizeMessagesContainer');
                 } else {
-                    _this.valueEnablePagination = _this.newChat.querySelector('[data-role="enable_pagination"]').checked;
-                    _this.per_page = _this.newChat.querySelector('[data-role="per_page"]');
+                    _this.valueEnablePagination = _this.chat.chatElem.querySelector('[data-role="enable_pagination"]').checked;
+                    _this.per_page = _this.chat.chatElem.querySelector('[data-role="per_page"]');
                     _this.per_page_value = parseInt(_this.per_page.value);
                     _this.filter_container.innerHTML = "";
                     _this.filter_container.classList.add('hide');
@@ -122,14 +131,13 @@ define('header', [
 
             changePerPage: function() {
                 var _this = this;
-                _this.data.per_page_value = parseInt(_this.perPage.value);
-                if (_this.data.valueEnablePagination) {
+                _this.chat.data.per_page_value = parseInt(_this.perPage.value);
+                if (_this.chat.data.valueEnablePagination) {
                     if (_this.perPage.value !== "") {
                         _this.trigger("changePerPage");
 
                     }
                 }
-
             }
 
             /* addToolbarListeners: function() {
