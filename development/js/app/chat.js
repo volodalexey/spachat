@@ -5,8 +5,9 @@ define('chat', [
         'settings',
         'contact_list',
         'messages',
-        'async_core',
         'ajax_core',
+        'indexeddb',
+
         'text!../html/chat_template.html',
         'text!../html/outer_container_template.html'
     ],
@@ -16,8 +17,9 @@ define('chat', [
              settings,
              contact_list,
              messages,
-             async_core,
              ajax_core,
+             indexeddb,
+
              chat_template,
              outer_container_template) {
         var chat = function() {
@@ -25,7 +27,9 @@ define('chat', [
 
         chat.prototype = {
 
-            initialize: function(newChat, mainContainer) {
+            chatsArray: [],
+
+            initialize: function(chatElem, mainContainer) {
                 var _this = this;
                 _this.newHeader = new header();
                 _this.newEditor = new editor();
@@ -33,6 +37,7 @@ define('chat', [
                 _this.newSettings = new settings();
                 _this.newContact_list = new contact_list();
                 _this.newMessages = new messages();
+                _this.indexeddb = new indexeddb().initialize();
                 _this.addEventListeners();
                 _this.chat_template = _.template(chat_template);
                 _this.outer_container_template = _.template(outer_container_template);
@@ -44,18 +49,18 @@ define('chat', [
                         bottom: 5
                     }
                 };
-                _this.newChat = newChat;
-                _this.newChat.className = "modal";
-                mainContainer.appendChild(_this.newChat);
-                _this.newChat.innerHTML = _this.chat_template();
-                _this.newHeader.initialize(_this.newChat, _this.data);
-                _this.body_outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
+                _this.chatElem = chatElem;
+                _this.chatElem.className = "modal";
+                mainContainer.appendChild(_this.chatElem);
+                _this.chatElem.innerHTML = _this.chat_template();
+                _this.newHeader.initialize(_this.chatElem, _this.data);
+                _this.body_outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
                 _this.body_outer_container.innerHTML = _this.outer_container_template();
-                _this.newEditor.initialize(_this.newChat);
-                _this.messages_container = _this.newChat.querySelector('[data-role="messages_container"]');
-                _this.messageElem = _this.newChat.querySelector('[data-role="message_container"]');
+                _this.newEditor.initialize(_this.chatElem);
+                _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
+                _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
                 //_this.fillListMessage();
-                _this.newMessages.initialize(_this.newChat, {start: 0, final: localStorage.length});
+                _this.newMessages.initialize({start: 0, chat: _this});
 
                 _this.data.valueEnablePagination = false;
                 _this.data.per_page_value = 10;
@@ -86,7 +91,7 @@ define('chat', [
 
                 _this.newPagination.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
                 _this.newPagination.on('fillListMessage', function(obj) {
-                    _this.fillMessages(obj)
+                    _this.fillMessages(obj);
                 }, _this);
                 _this.newPagination.on('calcMessagesContainerHeight', _this.calcMessagesContainerHeight.bind(_this), _this);
 
@@ -119,32 +124,32 @@ define('chat', [
 
             renderPagination: function() {
                 var _this = this;
-                _this.newPagination.initialize(_this.newChat, _this.data);
+                _this.newPagination.initialize(_this.chatElem, _this.data);
 
             },
 
             fillMessages: function(obj) {
                 var _this = this;
-                _this.newMessages.initialize(_this.newChat, obj);
+                _this.newMessages.fillListMessage(obj);
             },
 
             renderMassagesEditor: function() {
                 var _this = this;
-                _this.body_outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
+                _this.body_outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
                 _this.body_outer_container.innerHTML = _this.outer_container_template();
-                _this.newEditor.initialize(_this.newChat);
-                _this.messages_container = _this.newChat.querySelector('[data-role="messages_container"]');
-                _this.messageElem = _this.newChat.querySelector('[data-role="message_container"]');
-                //_this.newMessages.initialize(_this.newChat, {start: 0 , final: localStorage.length});
+                _this.newEditor.initialize(_this.chatElem);
+                _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
+                _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
+                //_this.newMessages.initialize(_this.chatElem, {start: 0 , final: localStorage.length});
                 //_this.newPagination.countQuantityPages();
-                _this.newPagination.initialize(_this.newChat, _this.data);
+                _this.newPagination.initialize(_this.chatElem, _this.data);
                 _this.resizeMessagesContainer();
 
             },
 
             renderPerPageMessages: function() {
                 var _this = this;
-                _this.newPagination.initialize(_this.newChat, _this.data);
+                _this.newPagination.initialize(_this.chatElem, _this.data);
                 //if (_this.data.per_page_value !== NaN) {
                 _this.data.curPage = Math.ceil(localStorage.length / _this.data.per_page_value);
                 _this.newPagination.countQuantityPages();
@@ -155,12 +160,12 @@ define('chat', [
 
             renderSettings: function() {
                 var _this = this;
-                _this.newSettings.initialize(_this.newChat, _this.data);
+                _this.newSettings.initialize(_this.chatElem, _this.data);
             },
 
             renderContactList: function() {
                 var _this = this;
-                _this.newContact_list.initialize(_this.newChat);
+                _this.newContact_list.initialize(_this.chatElem);
             },
 
             resizeMessagesContainer: function() {
@@ -171,11 +176,11 @@ define('chat', [
 
             calcMessagesContainerHeight: function() {
                 var _this = this;
-                _this.btnEditPanel = _this.newChat.querySelector('[data-action="btnEditPanel"]');
-                _this.header_container = _this.newChat.querySelector('[data-role="header_container"]');
-                _this.controls_container = _this.newChat.querySelector('[data-role="controls_container"]');
-                _this.paginationContainer = _this.newChat.querySelector('[data-role="pagination_container"]');
-                _this.choice_per_page_container = _this.newChat.querySelector('[data-role="per_page_container"]');
+                _this.btnEditPanel = _this.chatElem.querySelector('[data-action="btnEditPanel"]');
+                _this.header_container = _this.chatElem.querySelector('[data-role="header_container"]');
+                _this.controls_container = _this.chatElem.querySelector('[data-role="controls_container"]');
+                _this.paginationContainer = _this.chatElem.querySelector('[data-role="pagination_container"]');
+                _this.choice_per_page_container = _this.chatElem.querySelector('[data-role="per_page_container"]');
                 _this.message = _this.messageElem.firstElementChild;
                 var turnScrol = _this.btnEditPanel.querySelector('input[name="ControlScrollMessage"]');
                 if (!turnScrol || turnScrol && !turnScrol.checked) {
@@ -207,26 +212,19 @@ define('chat', [
                 _this.body_outer_container.style.height = height - marginHeader + "px";
             },
 
+            // TODO move to editor ?
             sendMessage: function() {
                 var _this = this;
-                if (_this.messages_container) {
-                    if (_this.messageElem) {
-                        _this.message = _this.messageElem.firstElementChild;
-                        var pattern = /[^\s]/;
-                        var res = pattern.test(_this.message.innerText);
-                        if (_this.message.innerText !== "" && res) {
-                            var message = _this.message.cloneNode(true);
+                if (!_this.messageElem) {
+                    return;
+                }
 
-                            if (_this.data.curPage === _this.data.lastPage) {
-                                var newMessage = document.createElement('div');
-                                newMessage.innerHTML = message.innerHTML;
-                                _this.messages_container.appendChild(newMessage);
-                            }
-                            localStorage.setItem((new Date()).getTime(), message.innerHTML);
-                        }
-                        _this.message.innerText = "";
-                        _this.messages_container.scrollTop = 9999;
-                    }
+                // TODO replace with data-role
+                var newMessage = _this.messageElem.firstElementChild;
+                var pattern = /[^\s{0,}$|^$]/;
+                if (pattern.test(newMessage.innerText)) {
+                    _this.newMessages.addMessage({}, newMessage.innerHTML);
+                    newMessage.innerText = "";
                 }
             }
 

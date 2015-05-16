@@ -1,18 +1,22 @@
 define('async_core', ['Underscore'],
     function () {
 
-        function only_once(root, fn) {
-            var called = false;
-            return function() {
-                if (called) throw new Error("Callback was already called.");
-                called = true;
-                fn.apply(root, arguments);
-            }
-        }
+        var async_core = function() {};
 
-        var core = _.extend({
+        async_core.prototype = {
 
-            ceach: function (arr, iterator, callback) {
+            __class_name: "async_core",
+
+            only_once: function(root, fn) {
+                var called = false;
+                return function() {
+                    if (called) throw new Error("Callback was already called.");
+                    called = true;
+                    fn.apply(root, arguments);
+                }
+            },
+
+            async_each: function (arr, iterator, callback) {
                 var _this = this;
                 callback = callback || function () {};
                 if (!arr.length) {
@@ -20,7 +24,7 @@ define('async_core', ['Underscore'],
                 }
                 var completed = 0;
                 _.each(arr, function (x) {
-                    iterator(x, only_once(_this, done) );
+                    iterator(x, _this.only_once(_this, done) );
                 });
                 function done(err) {
                     if (err) {
@@ -35,7 +39,7 @@ define('async_core', ['Underscore'],
                 }
             },
 
-            ceachSeries: function (arr, iterator, callback) {
+            async_eachSeries: function (arr, iterator, callback) {
                 callback = callback || function () {};
                 if (!arr.length) {
                     return callback();
@@ -63,9 +67,8 @@ define('async_core', ['Underscore'],
                 };
                 iterate();
             }
+        };
 
-        });
-
-        return core;
+        return async_core;
     }
 );

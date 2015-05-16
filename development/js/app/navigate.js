@@ -18,9 +18,7 @@ define ('navigate', [
             _this.addEventListeners();
             panel.initialize();
             _this.toggleWaiter(true);
-            _this.chatsArray =[];
             _this.messages_container_Array = document.querySelectorAll('[data-role="messages_container"]');
-            //_this.addNewChat();
             return _this;
         },
 
@@ -42,7 +40,7 @@ define ('navigate', [
         onresizeWindow: function(){
             var _this = this;
             panel.resizePanel();
-            _this.chatsArray.forEach(function(chat){
+            chat.prototype.chatsArray.forEach(function(chat){
                 //chat.calcMessagesContainerHeight();
             });
         },
@@ -54,20 +52,20 @@ define ('navigate', [
                 return;
             }
             var newChatElem = document.createElement('div');
+            chat.prototype.chatsArray.push(newChatElem);
             newChat.initialize(newChatElem, _this.mainConteiner);
-            _this.chatsArray.push(newChatElem);
         },
 
         clearStory: function(){
             var _this = this;
             localStorage.clear();
-            _.each(_this.chatsArray , function(chat){
+            _.each(chat.prototype.chatsArray , function(chat){
                chat.querySelector('[data-role="messages_container"]').innerHTML = "";
             })
         }
 
-    }
-        extend(navigate, overlay_core);
+    };
+    extend(navigate, overlay_core);
 
     return new navigate().initialize();
 });

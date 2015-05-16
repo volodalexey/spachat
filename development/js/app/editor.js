@@ -43,7 +43,7 @@ define('editor', [
                     }
                     _this.edit_navbar_config_Filter = _.filter(_this.edit_navbar_config, function(btn) {
                         return btn.icon
-                    })
+                    });
                     _this.edit_btn_icon = _this.edit_navbar_config_Filter.map(function(btn) {
                         return btn.icon;
                     });
@@ -153,7 +153,7 @@ define('editor', [
                     var name = '/html/icon/' + _this.edit_btn_icon[index] + '.html';
                     arrIcon.push({"icon": _this.edit_btn_icon[index], "name": name});
                 }
-                async_core.ceach(arrIcon,
+                _this.async_eachSeries(arrIcon,
                     function(obj, _callback) {
                         _this.sendRequest(obj.name, function(err, res) {
                             if (err) {
@@ -174,9 +174,10 @@ define('editor', [
                     }
                 );
             }
-        }
+        };
 
         extend(editor, event_core);
+        extend(editor, async_core);
         extend(editor, ajax_core);
 
         return editor;

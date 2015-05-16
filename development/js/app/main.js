@@ -18,7 +18,9 @@ require.config({
         "messages": "app/messages",
         "editor": "app/editor",
         "settings": "app/settings",
-        "contact_list": "app/contact_list"
+        "contact_list": "app/contact_list",
+        "indexeddb": "app/indexeddb",
+        "tab": "app/tab"
     },
     "shim": {
         "navigate": ["Underscore"],

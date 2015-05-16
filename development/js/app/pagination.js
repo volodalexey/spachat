@@ -72,7 +72,7 @@ define('pagination', [
                         _this.data.valueEnablePagination = _this.enable_pagination.checked;
                         _this.paginationContainer.classList.add("hide");
                         _this.data.per_page_value = parseInt(_this.per_page.value);
-                        _this.trigger('fillListMessage', {start: 0, final: localStorage.length});
+                        _this.trigger('fillListMessage', {start: 0});
                     }
                     _this.trigger('resizeMessagesContainer');
                 } else {
@@ -83,7 +83,7 @@ define('pagination', [
                     } else {
                         _this.data.valueEnablePagination = _this.valueChecked;
                         _this.paginationContainer.classList.add("hide");
-                        _this.trigger('fillListMessage', {start: 0, final: localStorage.length});
+                        _this.trigger('fillListMessage', {start: 0});
                     }
                 }
                 _this.fillFirstPage();
