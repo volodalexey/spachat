@@ -1,10 +1,8 @@
 define('messages', [
-        'indexeddb',
 
         'text!../html/message_template.html'
     ],
     function(
-        indexeddb,
 
         message_template
     ) {

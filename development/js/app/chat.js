@@ -42,9 +42,9 @@ define('chat', [
                 _this.chat_template = _.template(chat_template);
                 _this.outer_container_template = _.template(outer_container_template);
                 _this.data = {
-                    curPage: "",
-                    firstPage: "",
-                    lastPage: "",
+                    curPage: null,
+                    firstPage: null,
+                    lastPage: null,
                     padding: {
                         bottom: 5
                     }
@@ -124,7 +124,7 @@ define('chat', [
 
             renderPagination: function() {
                 var _this = this;
-                _this.newPagination.initialize(_this.chatElem, _this.data);
+                _this.newPagination.initialize({chat: _this});
 
             },
 
@@ -142,14 +142,14 @@ define('chat', [
                 _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
                 //_this.newMessages.initialize(_this.chatElem, {start: 0 , final: localStorage.length});
                 //_this.newPagination.countQuantityPages();
-                _this.newPagination.initialize(_this.chatElem, _this.data);
+                _this.newPagination.initialize({chat: _this});
                 _this.resizeMessagesContainer();
 
             },
 
             renderPerPageMessages: function() {
                 var _this = this;
-                _this.newPagination.initialize(_this.chatElem, _this.data);
+                _this.newPagination.initialize({chat: _this});
                 //if (_this.data.per_page_value !== NaN) {
                 _this.data.curPage = Math.ceil(localStorage.length / _this.data.per_page_value);
                 _this.newPagination.countQuantityPages();

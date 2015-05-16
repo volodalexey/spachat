@@ -122,7 +122,7 @@ define('header', [
 
             changePerPage: function() {
                 var _this = this;
-                _this.data.per_page_value = _this.perPage.value;
+                _this.data.per_page_value = parseInt(_this.perPage.value);
                 if (_this.data.valueEnablePagination) {
                     if (_this.perPage.value !== "") {
                         _this.trigger("changePerPage");
