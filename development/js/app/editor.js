@@ -2,12 +2,14 @@ define('editor', [
         'event_core',
         'async_core',
         'ajax_core',
+
         'text!../html/editor_template.html',
         'text!../html/edit_btn_template.html'
     ],
     function(event_core,
              async_core,
              ajax_core,
+
              editor_template,
              edit_btn_template) {
 
@@ -16,31 +18,38 @@ define('editor', [
 
         editor.prototype = {
 
-            initialize: function(newChat) {
+            editor_template: _.template(editor_template),
+            edit_btn_template: _.template(edit_btn_template),
+
+            initialize: function(options) {
                 var _this = this;
-                _this.addEventListeners();
-                _this.newChat = newChat;
-                _this.editor_template = _.template(editor_template);
-                _this.edit_btn_template = _.template(edit_btn_template);
-                _this.editor_container = _this.newChat.querySelector('[data-role="editor_container"]');
+
+                _this.chat = options.chat;
+
+                return _this;
+            },
+
+            renderEditorPanel: function() {
+                var _this = this;
+
+                _this.editor_container = _this.chat.chatElem.querySelector('[data-role="editor_container"]');
                 _this.editor_container.innerHTML += _this.editor_template();
 
-                var submit = _this.newChat.querySelector('[data-role="submit"]');
-                if (submit) {
-                    submit.addEventListener('click', _this.throwEvent.bind(_this, 'sendMessage'), false);
+                _this.submit = _this.chat.chatElem.querySelector('[data-role="submit"]');
+                _this.format = _this.chat.chatElem.querySelector('[data-role="format"]');
+                if (_this.format) {
+                    _this.btnEditPanel = _this.chat.chatElem.querySelector('[data-action="btnEditPanel"]');
                 }
-                var format = _this.newChat.querySelector('[data-role="format"]');
-                if (format) {
-                    _this.btnEditPanel = _this.newChat.querySelector('[data-action="btnEditPanel"]');
-                    format.addEventListener('click', _this.renderEditPanel.bind(_this), false);
-                }
-                _this.messageElem = _this.newChat.querySelector('[data-role="message_container"]');
+                _this.messageElem = _this.chat.chatElem.querySelector('[data-role="message_container"]');
 
                 _this.loadEditNavbarConfig(function(err) {
                     if (err) {
                         console.log(err);
                         return;
                     }
+                    _this.bindContexts();
+                    _this.addEventListeners();
+
                     _this.edit_navbar_config_Filter = _.filter(_this.edit_navbar_config, function(btn) {
                         return btn.icon
                     });
@@ -54,16 +63,27 @@ define('editor', [
                         }
                     });
                 });
-                return _this;
+            },
+
+            bindContexts: function() {
+                var _this = this;
+                _this.bindedSendMessage = _this.sendMessage.bind(_this, 'sendMessage');
+                _this.bindedRenderEditPanel = _this.renderEditPanel.bind(_this);
             },
 
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
+
+                _this.submit.addEventListener('click', _this.bindedSendMessage, false);
+                _this.format.addEventListener('click', _this.bindedRenderEditPanel, false);
             },
 
             removeEventListeners: function() {
                 var _this = this;
+
+                _this.submit.removeEventListener('click', _this.bindedSendMessage, false);
+                _this.format.removeEventListener('click', _this.bindedRenderEditPanel, false);
             },
 
             throwEvent: function(name) {
@@ -81,7 +101,7 @@ define('editor', [
                             config: _this.edit_navbar_config,
                             icons: _this.edit_btn_icon_config
                         });
-                        var btnPanel = _this.newChat.querySelectorAll('[data-role="btnEdit"]');
+                        var btnPanel = _this.chat.chatElem.querySelectorAll('[data-role="btnEdit"]');
                         for (var i = 0, l = btnPanel.length; i < l; i++) {
                             if (btnPanel[i].localName === "button") {
                                 btnPanel[i].addEventListener('click', _this.addEdit(btnPanel[i]), false);
@@ -91,7 +111,7 @@ define('editor', [
                             }
                         }
                     }
-                    _this.messages_container = _this.newChat.querySelector('[data-role="messages_container"]');
+                    _this.messages_container = _this.chat.chatElem.querySelector('[data-role="messages_container"]');
                     _this.container = _this.messageElem.querySelector(".container");
                     _this.trigger('calcMessagesContainerHeight');
                     if (_this.messages_container) {
@@ -173,6 +193,22 @@ define('editor', [
                         }
                     }
                 );
+            },
+
+            // TODO move to editor ?
+            sendMessage: function() {
+                var _this = this;
+                if (!_this.messageElem) {
+                    return;
+                }
+
+                // TODO replace with data-role
+                var newMessage = _this.messageElem.firstElementChild;
+                var pattern = /[^\s{0,}$|^$]/;
+                if (pattern.test(newMessage.innerText)) {
+                    _this.chat.newMessages.addMessage({ scrollTop: true }, newMessage.innerHTML);
+                    newMessage.innerText = "";
+                }
             }
         };
 

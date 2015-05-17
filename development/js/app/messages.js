@@ -75,7 +75,7 @@ define('messages', [
                     var generatedMessages = [];
                     for (var i = options.start; i < options.final; i++) {
                         generatedMessages.push(_this.message_template({
-                            message: messages[i].innerHTML
+                            innerHTML: messages[i].innerHTML
                         }));
                     }
                     _this.messages_container.innerHTML = generatedMessages.join('');
@@ -84,22 +84,31 @@ define('messages', [
             },
 
             addMessage: function(options, newMessage) {
-                var _this = this;
+                var _this = this, message;
+                if (options.remote) {
+                    message = newMessage;
+                } else {
+                    message = {
+                        id: new Date().getTime(),
+                        innerHTML: newMessage
+                    };
+                    if (_this.chat.webrtc && _this.chat.webrtc.data.dataChannel) {
+                        _this.chat.webrtc.data.dataChannel.send(JSON.stringify(message));
+                    }
+                }
+
                 // TODO check which page is current
                 _this.chat.indexeddb.addOrUpdateAll(
                     _this.data.collection,
                     [
-                        {
-                            id: new Date().getTime(),
-                            innerHTML: newMessage
-                        }
+                        message
                     ],
                     function(error) {
                         if (error) {
                             return;
                         }
                         _this.messages_container.innerHTML = _this.messages_container.innerHTML + _this.message_template({
-                                message: newMessage
+                                innerHTML: message.innerHTML
                             });
                         _this.scrollTo(options);
                     }

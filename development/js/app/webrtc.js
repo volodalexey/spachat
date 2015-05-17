@@ -96,12 +96,37 @@ define('webrtc', [
                     }
                 };
 
-                //onaddstream
-                //ondatachannel
-                //oniceconnectionstatechange
-                //onnegotiationneeded
-                //onremovestream
-                //onsignalingstatechange
+                _this.data.peerConnection.ondatachannel = function(event) {
+                    _this.data.dataChannel = event.channel;
+                    _this.addDataChannelListeners();
+                };
+            },
+
+            addDataChannelListeners: function() {
+                var _this = this;
+                if (!_this.data.dataChannel) {
+                    return;
+                }
+                _this.removeDataChannelListeners();
+
+                _this.data.dataChannel.onopen = function() {
+                    _this.chat.data.mode = "messages";
+                    _this.chat.renderByMode();
+                };
+                _this.data.dataChannel.onmessage = function(e) {
+                    var message = JSON.parse(e.data);
+                    _this.chat.newMessages.addMessage({ remote: true }, message);
+                };
+            },
+
+            removeDataChannelListeners: function() {
+                var _this = this;
+                if (!_this.data.dataChannel) {
+                    return;
+                }
+
+                _this.data.dataChannel.onopen = undefined;
+                _this.data.dataChannel.onmessage = undefined;
             },
 
             setupDataChannel: function(options, callback) {
@@ -113,15 +138,7 @@ define('webrtc', [
                     callback(error);
                 }
 
-                _this.data.dataChannel.onopen = function() {
-                    console.log('Connected');
-                    _this.chat.data.mode = "messages";
-                    _this.chat.renderByMode();
-                };
-                _this.data.dataChannel.onmessage = function(e) {
-                    var data = JSON.parse(e.data);
-                    writeToChatLog(data.message, "text-info");
-                };
+                _this.addDataChannelListeners();
                 callback(null);
             },
 
