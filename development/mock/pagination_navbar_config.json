@@ -1,0 +1,81 @@
+[
+  {
+    "element": "button",
+    "icon": "",
+    "text": "<-",
+    "class": "",
+    "title": "Pagination_btn",
+    "data_role": "back",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "",
+    "class": "",
+    "title": "Pagination_btn",
+    "data_role": "first",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "...",
+    "class": "",
+    "title": "Pagination_btn",
+    "data_role": "choice",
+    "data_location": "left",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+  {
+    "element": "label",
+    "icon": "",
+    "text": "",
+    "class": "lblStyle",
+    "title": "Pagination_btn",
+    "data_role": "current",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "...",
+    "class": "",
+    "title": "Pagination_btn",
+    "data_role": "choice",
+    "data_location": "right",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "",
+    "class": "",
+    "title": "Pagination_btn",
+    "data_role": "last",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "->",
+    "class": "",
+    "title": "Pagination_btn",
+    "data_role": "forward",
+    "name": "",
+    "value": null,
+    "disable": false
+  }
+]

@@ -1,7 +1,15 @@
-<button data-role="back"><-</button>
-<button data-role="first" ></button>
-<button data-role="choice" data-location="left">...</button>
-<label data-role="current" class="lblStyle" ></label>
-<button data-role="choice" data-location="right">...</button>
-<button data-role="last"></button>
-<button data-role="forward">-></button>
+<% var array = arguments[0]; %>
+<% _.each(array.config, function (btn) { %>
+
+<% if(btn.element === "button") { %>
+<button class="<%= btn.class%>" name="<%= btn.name%>" <% if(btn.disable === true){ %> disabled <%}%> 
+<% if(btn.data_location){ %> data-location="<%= btn.data_location%>" <%}%>
+data-role="<%= btn.data_role%>" value="<%= btn.value%>"><%= btn.text%>
+</button>
+<% } %>
+
+<% if(btn.element === "label") { %>
+<label data-role="<%= btn.data_role%>" class="<%= btn.class%>" value="<%= btn.value%>" ><%= btn.text%></label>
+<% } %>
+
+<% }) %>

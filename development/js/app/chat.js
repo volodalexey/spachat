@@ -198,20 +198,20 @@ define('chat', [
                 _this.btnEditPanel = _this.chatElem.querySelector('[data-action="btnEditPanel"]');
                 _this.header_container = _this.chatElem.querySelector('[data-role="header_container"]');
                 _this.controls_container = _this.chatElem.querySelector('[data-role="controls_container"]');
-                _this.paginationContainer = _this.chatElem.querySelector('[data-role="pagination_container"]');
+                _this.pagination_container = _this.chatElem.querySelector('[data-role="pagination_container"]');
                 _this.choice_per_page_container = _this.chatElem.querySelector('[data-role="per_page_container"]');
                 _this.message = _this.messageElem.firstElementChild;
                 var turnScrol = _this.btnEditPanel.querySelector('input[name="ControlScrollMessage"]');
                 if (!turnScrol || turnScrol && !turnScrol.checked) {
                     var param = _this.body_outer_container.getAttribute('param-content');
-                    var height = window.innerHeight - _this.header_container.clientHeight - _this.choice_per_page_container.clientHeight - _this.paginationContainer.clientHeight - _this.controls_container.clientHeight - _this.messageElem.clientHeight - _this.data.padding.bottom;
+                    var height = window.innerHeight - _this.header_container.clientHeight - _this.choice_per_page_container.clientHeight - _this.pagination_container.clientHeight - _this.controls_container.clientHeight - _this.messageElem.clientHeight - _this.data.padding.bottom;
                     var paddingMessages = parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-top')) + parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-bottom'));
                     var marginMessages = parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-top'));
                     var borderEditor = parseInt(window.getComputedStyle(_this.message, null).getPropertyValue('border-top-width')) + parseInt(window.getComputedStyle(_this.message, null).getPropertyValue('border-bottom-width'));
                     /*console.log(
                      "window.innerHeight =" , window.innerHeight,
                      "_this.header_container.clientHeight=" , _this.header_container.clientHeight,
-                     "_this.paginationContainer.clientHeight=", _this.paginationContainer.clientHeight,
+                     "_this.pagination_container.clientHeight=", _this.pagination_container.clientHeight,
                      "_this.controls_container.clientHeight=", _this.controls_container.clientHeight,
                      "_this.messageElem.clientHeight=", _this.messageElem.clientHeight,
                      "paddingMessages=", paddingMessages,
