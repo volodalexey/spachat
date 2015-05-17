@@ -55,7 +55,7 @@ define('chat', [
                 _this.body_outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
 
                 _this.newHeader = new header();
-                _this.newEditor = new editor();
+                _this.newEditor = new editor().initialize({ chat: _this });
                 _this.newPagination = new pagination();
                 _this.newSettings = new settings();
                 _this.newContact_list = new contact_list();
@@ -78,7 +78,7 @@ define('chat', [
                     case "messages":
                         _this.newHeader.initialize({ chat: _this });
                         _this.body_outer_container.innerHTML = _this.outer_container_template();
-                        _this.newEditor.initialize(_this.chatElem);
+                        _this.newEditor.renderEditorPanel();
                         _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
                         _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
                         _this.newMessages.initialize({start: 0, chat: _this});
@@ -89,7 +89,7 @@ define('chat', [
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                _this.newEditor.on('sendMessage', _this.sendMessage.bind(_this), _this);
+                //_this.newEditor.on('sendMessage', _this.sendMessage.bind(_this), _this);
                 _this.newEditor.on('calcMessagesContainerHeight', _this.calcMessagesContainerHeight.bind(_this), _this);
 
                 _this.newHeader.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
@@ -118,7 +118,7 @@ define('chat', [
 
             removeEventListeners: function() {
                 var _this = this;
-                _this.newEditor.off('sendMessage');
+                //_this.newEditor.off('sendMessage');
                 _this.newEditor.off('calcMessagesContainerHeight');
 
                 _this.newHeader.off('changePerPage');
@@ -156,7 +156,7 @@ define('chat', [
                 var _this = this;
                 _this.body_outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
                 _this.body_outer_container.innerHTML = _this.outer_container_template();
-                _this.newEditor.initialize(_this.chatElem);
+                _this.newEditor.renderEditorPanel();
                 _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
                 _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
                 //_this.newMessages.initialize(_this.chatElem, {start: 0 , final: localStorage.length});
@@ -229,22 +229,6 @@ define('chat', [
                 var height = window.innerHeight - _this.header_container.clientHeight;
                 var marginHeader = parseInt(window.getComputedStyle(_this.header_container, null).getPropertyValue('margin-top'));
                 _this.body_outer_container.style.height = height - marginHeader + "px";
-            },
-
-            // TODO move to editor ?
-            sendMessage: function() {
-                var _this = this;
-                if (!_this.messageElem) {
-                    return;
-                }
-
-                // TODO replace with data-role
-                var newMessage = _this.messageElem.firstElementChild;
-                var pattern = /[^\s{0,}$|^$]/;
-                if (pattern.test(newMessage.innerText)) {
-                    _this.newMessages.addMessage({}, newMessage.innerHTML);
-                    newMessage.innerText = "";
-                }
             }
 
         };
