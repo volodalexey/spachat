@@ -1,0 +1,30 @@
+[
+  {
+    "element": "button",
+    "icon": "",
+    "text": "Format",
+    "class": "main-btn",
+    "title": "",
+    "data_role": "format",
+    "name": "",
+    "value": null,
+    "for": "",
+    "service_id": "",
+    "sort": 1,
+    "redraw_mode": ""
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "Send",
+    "class": "main-btn",
+    "title": "",
+    "data_role": "submit",
+    "name": "",
+    "value": null,
+    "for": "",
+    "service_id": "",
+    "sort": 2,
+    "redraw_mode": ""
+  }
+]

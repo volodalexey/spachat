@@ -1,0 +1,6 @@
+<% var label = arguments[0]; %>
+<label data-role="<%=label.data_role%>" class="<%=label.class%>"
+<% if(label.name !== ""){ %> name="<%= label.name%>" <%}%>
+<% if(label.value !== null){ %> value="<%=label.value%>" <%}%>
+<% if(label.for){ %> for="<%= label.for%>" <%}%>
+><%=label.text%></label>

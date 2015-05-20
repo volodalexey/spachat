@@ -3,12 +3,15 @@
 </div>
 <div class="modal-controls" data-role="controls_container">
     <div class="modal-main-btn">
-        <button data-role="format" class="main-btn">
-            Format
-        </button>
-        <button data-role="submit" class="main-btn">
-            Send
-        </button>
+        <% var array = arguments[0]; %>
+        <% _.each(array.editor_navbar_config, function (obj) { %>
+            <%= array.triple_element_template({
+            element: obj,
+            button_template: array.button_template,
+            input_template: array.input_template,
+            label_template: array.label_template
+            }) %>
+        <% }) %>
     </div>
     <div data-action="btnEditPanel" class="btnEditPanel"></div>
 </div>

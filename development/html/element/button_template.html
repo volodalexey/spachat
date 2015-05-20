@@ -1,0 +1,11 @@
+<% var btn = arguments[0]; %>
+<button data-role="<%= btn.data_role%>" class="<%= btn.class%>"
+<% if(btn.name !== ""){ %> name="<%= btn.name%>" <%}%>
+<% if(btn.disable === true){ %> disabled <%}%>
+<% if(btn.data_location){ %> data-location="<%= btn.data_location%>" <%}%>
+<% if(btn.value !== null){ %> value="<%= btn.value%>" <%}%>
+<% if(btn.data_action){ %> data-action="<%= btn.data_action%>" <%}%>
+
+>
+<%= btn.text%>
+</button>

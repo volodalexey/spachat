@@ -37,14 +37,16 @@ define('chat', [
             initialize: function(chatElem, mainContainer) {
                 var _this = this;
                 _this.data = {
-                    mode: "webrtc",
+                    mode: "messages", //webrtc
+                    redraw_mode: "rte",
+                    redraw_choice_page_mode: "rte",
                     curPage: null,
-                    firstPage: null,
+                    firstPage: 1,
                     lastPage: null,
                     padding: {
                         bottom: 5
                     },
-                    per_page_value: 10,
+                    per_page_value: 2,
                     valueEnablePagination: false
                 };
                 // TODO replcae with template
@@ -76,12 +78,13 @@ define('chat', [
                         _this.webrtc.renderHanshake();
                         break;
                     case "messages":
-                        _this.newHeader.initialize({ chat: _this });
                         _this.body_outer_container.innerHTML = _this.outer_container_template();
-                        _this.newEditor.renderEditorPanel();
-                        _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
-                        _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
-                        _this.newMessages.initialize({start: 0, chat: _this});
+                        _this.newEditor.renderEditorPanel(function(){
+                            _this.newHeader.initialize({ chat: _this });
+                            _this.newMessages.initialize({start: 0, chat: _this});
+                            _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
+                            _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
+                        });
                         break;
                 }
             },
@@ -168,12 +171,14 @@ define('chat', [
 
             renderPerPageMessages: function() {
                 var _this = this;
-                _this.newPagination.initialize({chat: _this});
+                _this.newPagination.renderPagination();
+
+                //_this.newPagination.initialize({chat: _this});
                 //if (_this.data.per_page_value !== NaN) {
-                _this.data.curPage = Math.ceil(localStorage.length / _this.data.per_page_value);
-                _this.newPagination.countQuantityPages();
-                _this.newPagination.fillFirstPage();
-                _this.newPagination.fillLastPage();
+                //_this.data.curPage = Math.ceil(localStorage.length / _this.data.per_page_value);
+                //_this.newPagination.countQuantityPages();
+                //_this.newPagination.fillFirstPage();
+                //_this.newPagination.fillLastPage();
                 //}
             },
 

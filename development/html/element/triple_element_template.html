@@ -1,0 +1,12 @@
+<% var obj = arguments[0]; %>
+<% if(obj.element.element === "button") { %>
+<%= obj.button_template(obj.element) %>
+<% } %>
+
+<% if(obj.element.element === "label") { %>
+<%= obj.label_template(obj.element) %>
+<% } %>
+
+<% if(obj.element.element === "input") { %>
+<%= obj.input_template(obj.element) %>
+<% } %>

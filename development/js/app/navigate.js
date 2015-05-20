@@ -13,6 +13,8 @@ define ('navigate', [
 
     navigate.prototype = {
 
+        hash: '#chat',
+
         initialize: function(){
             var _this = this;
             _this.addEventListeners();

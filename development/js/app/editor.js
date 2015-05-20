@@ -4,14 +4,22 @@ define('editor', [
         'ajax_core',
 
         'text!../html/editor_template.html',
-        'text!../html/edit_btn_template.html'
+        'text!../html/edit_btn_template.html',
+        'text!../html/element/triple_element_template.html',
+        'text!../html/element/button_template.html',
+        'text!../html/element/label_template.html',
+        'text!../html/element/input_template.html'
     ],
     function(event_core,
              async_core,
              ajax_core,
 
              editor_template,
-             edit_btn_template) {
+             edit_btn_template,
+             triple_element_template,
+             button_template,
+             label_template,
+             input_template) {
 
         var editor = function() {
         };
@@ -20,6 +28,10 @@ define('editor', [
 
             editor_template: _.template(editor_template),
             edit_btn_template: _.template(edit_btn_template),
+            triple_element_template: _.template(triple_element_template),
+            button_template: _.template(button_template),
+            label_template: _.template(label_template),
+            input_template: _.template(input_template),
 
             initialize: function(options) {
                 var _this = this;
@@ -29,40 +41,55 @@ define('editor', [
                 return _this;
             },
 
-            renderEditorPanel: function() {
+            renderEditorPanel: function(callback) {
                 var _this = this;
 
                 _this.editor_container = _this.chat.chatElem.querySelector('[data-role="editor_container"]');
-                _this.editor_container.innerHTML += _this.editor_template();
 
-                _this.submit = _this.chat.chatElem.querySelector('[data-role="submit"]');
-                _this.format = _this.chat.chatElem.querySelector('[data-role="format"]');
-                if (_this.format) {
-                    _this.btnEditPanel = _this.chat.chatElem.querySelector('[data-action="btnEditPanel"]');
-                }
-                _this.messageElem = _this.chat.chatElem.querySelector('[data-role="message_container"]');
-
-                _this.loadEditNavbarConfig(function(err) {
+                _this.sendRequest("/mock/editor_navbar_config.json", function(err, res) {
                     if (err) {
                         console.log(err);
-                        return;
-                    }
-                    _this.bindContexts();
-                    _this.addEventListeners();
+                    } else {
+                        _this.editor_navbar_config = JSON.parse(res);
 
-                    _this.edit_navbar_config_Filter = _.filter(_this.edit_navbar_config, function(btn) {
-                        return btn.icon
-                    });
-                    _this.edit_btn_icon = _this.edit_navbar_config_Filter.map(function(btn) {
-                        return btn.icon;
-                    });
-                    _this.edit_btn_icon_config = _this.loadEditNavbarIcon(function(err) {
-                        if (err) {
-                            console.log(err);
-                            return;
+                        _this.editor_container.innerHTML += _this.editor_template({
+                            editor_navbar_config: _this.editor_navbar_config,
+                            triple_element_template: _this.triple_element_template,
+                            button_template: _this.button_template,
+                            input_template: _this.input_template,
+                            label_template: _this.label_template
+                        });
+
+                        _this.submit = _this.chat.chatElem.querySelector('[data-role="submit"]');
+                        _this.format = _this.chat.chatElem.querySelector('[data-role="format"]');
+                        if (_this.format) {
+                            _this.btnEditPanel = _this.chat.chatElem.querySelector('[data-action="btnEditPanel"]');
                         }
-                    });
-                });
+                        _this.messageElem = _this.chat.chatElem.querySelector('[data-role="message_container"]');
+                        _this.loadEditNavbarConfig(function(err) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
+                            _this.bindContexts();
+                            _this.addEventListeners();
+
+                            _this.edit_navbar_config_Filter = _.filter(_this.edit_navbar_config, function(btn) {
+                                return btn.icon
+                            });
+                            _this.edit_btn_icon = _this.edit_navbar_config_Filter.map(function(btn) {
+                                return btn.icon;
+                            });
+                            _this.edit_btn_icon_config = _this.loadEditNavbarIcon(function(err) {
+                                if (err) {
+                                    console.log(err);
+                                    return;
+                                }
+                            });
+                            callback();
+                        });
+                    }
+                })
             },
 
             bindContexts: function() {

@@ -29,7 +29,6 @@ define('messages', [
                 };
 
                 _this.addEventListeners();
-                _this.messages_container = _this.chat.chatElem.querySelector('[data-role="messages_container"]');
                 _this.fillListMessage(options);
                 return _this;
             },
@@ -56,6 +55,8 @@ define('messages', [
 
             fillListMessage: function(options) {
                 var _this = this;
+                _this.messages_container = _this.chat.chatElem.querySelector('[data-role="messages_container"]');
+
                 if (!_this.messages_container) {
                     return;
                 }

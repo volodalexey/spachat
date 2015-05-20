@@ -1,0 +1,61 @@
+<% var obj = arguments[0]; %>
+<div data-role="auth_block_cont" class="block-container hide">
+    <%= obj.waiter_tmpl({ prefix : obj.prefix }) %>
+</div>
+<div data-role="auth_body_cont" class="container">
+    <form class="authentification-form">
+
+        <div class="cl-b">
+            <div class="authentification-col-left">
+                <div class="pull-left m-l70">
+                    <label>Login:</label>
+                </div>
+            </div>
+            <div class="authentification-col-right">
+                <input class="w-100p" type="text" name="userId" data-authentication="" >
+            </div>
+        </div>
+        <div class="cl-b">
+            <div class="authentification-col-left">
+                <div class="pull-left m-l70">
+                    <label>Password:</label>
+                </div>
+            </div>
+            <div class="authentification-col-right">
+                <input class="w-100p" type="password" name="password" data-authentication="">
+            </div>
+        </div>
+        <% if (obj.domains && obj.domains.length) { %>
+        <% var domains = _.sortBy(obj.domains, function(domain){ return domain.order; }); %>
+        <div class="cl-b">
+            <div class="authentification-col-left">
+                <div class="pull-left m-l70">
+                    <label>Domain:</label>
+                </div>
+            </div>
+            <div class="authentification-col-right">
+                <select class="w-100p" name="domain" data-authentication="" >
+                    <% _.each(domains, function(domain) { %>
+                    <option value="<%= domain.value %>" ><%= domain.text %></option>
+                    <% }); %>
+                </select>
+            </div>
+        </div>
+        <% } %>
+        <div class="cl-b">
+            <div class="authentification-col-left">
+                <div class="pull-left m-l70">
+                    <label>Remember me777777:</label>
+                </div>
+            </div>
+            <div class="authentification-col-right">
+                <div class="pull-left">
+                    <input class="" type="checkbox" name="rememberMe" value="true" data-authentication="" >
+                </div>
+            </div>
+        </div>
+        <div class="text-center cl-b">
+            <button type="submit">Login</button>
+        </div>
+    </form>
+</div>

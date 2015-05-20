@@ -1,2 +1,11 @@
-<button data-action="" class="floatR">button</button>
-<button data-action="" class="floatR">button</button>
+<% var array = arguments[0]; %>
+<% var array_leright_panel = array.config.filter( function(obj){ return obj.data_location === "right_panel" } ) %>
+<% _.each(array_leright_panel, function (obj) { %>
+<%= array.triple_element_template({
+element: obj,
+button_template: array.button_template,
+input_template: array.input_template,
+label_template: array.label_template
+}) %>
+<% }) %>
+<div data-role="user_info_container"></div>

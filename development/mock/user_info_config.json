@@ -1,0 +1,54 @@
+[
+  {
+    "element": "label",
+    "icon": "",
+    "text": "User name",
+    "class": "",
+    "title": "",
+    "data_role": "user_name",
+    "for": "user_name",
+    "name": "",
+    "value": null,
+    "sort": 1,
+    "disable": false
+  },
+  {
+    "element": "input",
+    "type": "text",
+    "icon": "",
+    "text": "",
+    "class": "",
+    "title": "",
+    "data_role": "user_name",
+    "name": "",
+    "value": null,
+    "id": "user_name",
+    "sort": 2
+  },
+  {
+    "element": "label",
+    "icon": "",
+    "text": "Password",
+    "class": "",
+    "title": "",
+    "data_role": "user_password",
+    "for": "user_password",
+    "name": "",
+    "value": null,
+    "sort": 1,
+    "disable": false
+  },
+  {
+    "element": "input",
+    "type": "text",
+    "icon": "",
+    "text": "",
+    "class": "",
+    "title": "",
+    "data_role": "user_password",
+    "name": "",
+    "value": null,
+    "id": "user_password",
+    "sort": 2
+  }
+]

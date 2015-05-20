@@ -3,18 +3,33 @@ define('pagination', [
         'ajax_core',
 
         'text!../html/pagination_template.html',
-        'text!../html/choice_per_page_template.html'
+        'text!../html/choice_per_page_template.html',
+        'text!../html/element/triple_element_template.html',
+        'text!../html/element/button_template.html',
+        'text!../html/element/label_template.html',
+        'text!../html/element/input_template.html'
     ],
     function(event_core,
-        ajax_core,
+             ajax_core,
              pagination_template,
-             choice_per_page_template) {
+             choice_per_page_template,
+             triple_element_template,
+             button_template,
+             label_template,
+             input_template) {
 
         var pagination = function() {
 
         };
 
         pagination.prototype = {
+
+            pagination_template: _.template(pagination_template),
+            choice_per_page_template: _.template(choice_per_page_template),
+            triple_element_template: _.template(triple_element_template),
+            button_template: _.template(button_template),
+            label_template: _.template(label_template),
+            input_template: _.template(input_template),
 
             initialize: function(options) {
                 var _this = this;
@@ -29,210 +44,248 @@ define('pagination', [
                     }
                 };
                 _this.chat = options.chat;
-                _this.newChat = _this.chat.chatElem;
-                _this.pagination_template = _.template(pagination_template);
-                _this.choice_per_page_template = _.template(choice_per_page_template);
-                _this.outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
-                _this.pagination_container = _this.newChat.querySelector('[data-role="pagination_container"]');
-
-                _this.per_page = _this.newChat.querySelector('[data-role="per_page"]');
-                if (_this.per_page) {
-                    _this.per_page.value = _this.chat.data.per_page_value;
-                    _this.per_page_value = _this.chat.data.per_page_value;
-                    if (_this.per_page.value === "") {
-                        _this.per_page.value = 10;
-                        _this.chat.data.per_page_value = 10;
-                    }
-                }
-                _this.enable_pagination = _this.newChat.querySelector('[data-role="enable_pagination"]');
-                if (_this.enable_pagination) {
-                    _this.enable_pagination.addEventListener('change', _this.showPagination.bind(_this), false);
-                } else {
-                    _this.valueChecked = _this.chat.data.valueEnablePagination;
-                }
-                _this.messages_container = _this.newChat.querySelector('[data-role="messages_container"]');
-
-                _this.renderPagination();
-                return _this;
-            },
-
-            renderPagination: function(){
-                 var _this = this;
+                _this.chatElem = _this.chat.chatElem;
+                _this.outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
+                _this.pagination_container = _this.chatElem.querySelector('[data-role="pagination_container"]');
+                _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
                 _this.sendRequest("/mock/pagination_navbar_config.json", function(err, res) {
                     if (err) {
-                        callback(err);
+                        console.log(err);
                     } else {
                         _this.pagination_navbar_config = JSON.parse(res);
-                        _this.pagination_container.innerHTML = _this.pagination_template({
-                          config: _this.pagination_navbar_config
-                        });
-                _this.btnBack = _this.pagination_container.querySelector('[data-role="back"]');
-                _this.btnBack.addEventListener('click', _this.selectBack.bind(_this), false);
-                _this.btnFirst = _this.pagination_container.querySelector('[data-role="first"]');
-                _this.btnFirst.addEventListener('click', _this.selectFirst.bind(_this), false);
-                _this.btnLast = _this.pagination_container.querySelector('[data-role="last"]');
-                _this.btnLast.addEventListener('click', _this.selectLast.bind(_this), false);
-                _this.btnForward = _this.pagination_container.querySelector('[data-role="forward"]');
-                _this.btnForward.addEventListener('click', _this.selectForward.bind(_this), false);
-                _this.lblCurrent = _this.pagination_container.querySelector('[data-role="current"]');
-                _this.btnChoiceLeft = _this.pagination_container.querySelector('[data-location="left"]');
-                _this.btnChoiceLeft.addEventListener('click', _this.renderChoicePerPage.bind(_this), false);
-                _this.btnChoiceRight = _this.pagination_container.querySelector('[data-location="right"]');
-                _this.btnChoiceRight.addEventListener('click', _this.renderChoicePerPage.bind(_this), false);
                     }
-                    _this.showPagination();
+                    _this.renderPagination();
                 })
-            },
+                return _this;
+            }
 
-            showPagination: function() {
+            ,
+
+            renderPagination: function() {
+                var _this = this;
+                _this.enable_pagination = _this.chatElem.querySelector('[data-role="enable_pagination"]');
+                _this.per_page = _this.chatElem.querySelector('[data-role="per_page"]');
+                if (_this.per_page) {
+                    _this.per_page.value = _this.chat.data.per_page_value;
+                    if (_this.per_page.value === "") {
+                        _this.per_page.value = 2;
+                        _this.chat.data.per_page_value = 2;
+                    }
+                }
+                _this.showPagination(function() {
+                    _this.pagination_container.innerHTML = _this.pagination_template({
+                        config: _this.pagination_navbar_config
+                    });
+                    _this.btnBack = _this.pagination_container.querySelector('[data-role="back"]');
+                    _this.btnBack.addEventListener('click', _this.selectBack.bind(_this), false);
+                    _this.btnFirst = _this.pagination_container.querySelector('[data-role="first"]');
+                    _this.btnFirst.addEventListener('click', _this.selectFirst.bind(_this), false);
+                    _this.btnLast = _this.pagination_container.querySelector('[data-role="last"]');
+                    _this.btnLast.addEventListener('click', _this.selectLast.bind(_this), false);
+                    _this.btnForward = _this.pagination_container.querySelector('[data-role="forward"]');
+                    _this.btnForward.addEventListener('click', _this.selectForward.bind(_this), false);
+                    _this.lblCurrent = _this.pagination_container.querySelector('[data-role="current"]');
+                    _this.btnChoiceLeft = _this.pagination_container.querySelector('[data-location="left"]');
+                    _this.btnChoiceLeft.addEventListener('click', _this.showChoicePerPage.bind(_this), false);
+                    _this.btnChoiceRight = _this.pagination_container.querySelector('[data-location="right"]');
+                    _this.btnChoiceRight.addEventListener('click', _this.showChoicePerPage.bind(_this), false);
+                });
+            }
+            ,
+
+            showPagination: function(callback) {
                 var _this = this;
                 if (_this.enable_pagination) {
+                    _this.chat.data.valueEnablePagination = _this.enable_pagination.checked;
+                    _this.chat.data.per_page_value = parseInt(_this.per_page.value);
                     if (_this.enable_pagination.checked) {
-                        _this.chat.data.valueEnablePagination = _this.enable_pagination.checked;
                         _this.pagination_container.classList.remove("hide");
-                        _this.per_page_value = parseInt(_this.per_page.value);
-                        _this.countQuantityPages();
+                        _this.countQuantityPages(callback);
                     } else {
-                        _this.chat.data.valueEnablePagination = _this.enable_pagination.checked;
                         _this.pagination_container.classList.add("hide");
-                        _this.chat.data.per_page_value = parseInt(_this.per_page.value);
                         _this.trigger('fillListMessage', {start: 0});
                     }
                     _this.trigger('resizeMessagesContainer');
                 } else {
-                    if (_this.valueChecked) {
-                        _this.chat.data.valueEnablePagination = _this.valueChecked;
+                    if (_this.chat.data.valueEnablePagination) {
                         _this.pagination_container.classList.remove("hide");
                         _this.countQuantityPages();
                     } else {
-                        _this.chat.data.valueEnablePagination = _this.valueChecked;
                         _this.pagination_container.classList.add("hide");
                         _this.trigger('fillListMessage', {start: 0});
                     }
                 }
-                _this.fillFirstPage();
-                _this.fillLastPage();
-            },
+            }
+            ,
 
-            fillFirstPage: function() {
-                var _this = this;
-                if (parseInt(_this.chat.data.curPage) === _this.chat.data.firstPage) {
-                    _this.btnFirst.disabled = true;
-                    _this.btnBack.disabled = true;
-                    _this.btnChoiceLeft.disabled = true;
-                } else {
-                    _this.btnFirst.disabled = false;
-                    _this.btnBack.disabled = false;
-                    _this.btnChoiceLeft.disabled = false;
-                    _this.btnFirst.innerHTML = _this.chat.data.firstPage;
-                    _this.btnLast.innerHTML = _this.chat.data.lastPage;
-                }
-            },
-
-            fillLastPage: function() {
-                var _this = this;
-                if (parseInt(_this.chat.data.curPage) === _this.chat.data.lastPage) {
-                    _this.btnLast.disabled = true;
-                    _this.btnForward.disabled = true;
-                    _this.btnChoiceRight.disabled = true;
-                } else {
-                    _this.btnLast.disabled = false;
-                    _this.btnForward.disabled = false;
-                    _this.btnChoiceRight.disabled = false;
-                    _this.btnLast.innerHTML = _this.chat.data.lastPage;
-                }
-            },
-
-            countQuantityPages: function() {
+            countQuantityPages: function(callback) {
                 var _this = this;
                 var start;
                 var final;
                 _this.chat.indexeddb.getAll(_this.data.collection, function(getAllErr, messages) {
                     var quantityMes = messages.length;
-
-                    //var quantityMes = localStorage.length;
                     var quantityPages = Math.ceil(quantityMes / _this.chat.data.per_page_value);
                     if (_this.chat.data.curPage === null) {
-                        start = quantityPages * _this.per_page_value - _this.per_page_value;
-                        final = quantityPages * _this.per_page_value;
-                        _this.chat.data.curPage = Math.ceil((start + 1) / _this.per_page_value);
+                        start = quantityPages * _this.chat.data.per_page_value - _this.chat.data.per_page_value;
+                        final = quantityPages * _this.chat.data.per_page_value;
+                        _this.chat.data.curPage = quantityPages;
                     } else {
-
-
-                        start = (parseInt(_this.chat.data.curPage) - 1) * parseInt(_this.per_page_value);
-                        final = (parseInt(_this.chat.data.curPage) - 1) * parseInt(_this.per_page_value) + parseInt(_this.per_page_value);
+                        start = (_this.chat.data.curPage - 1) * _this.chat.data.per_page_value;
+                        final = (_this.chat.data.curPage - 1) * _this.chat.data.per_page_value + _this.chat.data.per_page_value;
                     }
                     _this.trigger('fillListMessage', {start: start, final: final});
-                    _this.lblCurrent.innerHTML = _this.chat.data.curPage;
-                    _this.chat.data.firstPage = 1;
                     _this.chat.data.lastPage = quantityPages;
+                    _this.choicePaginationNavbarConfig(callback);
                 });
+            }
+            ,
 
-
-            },
+            choicePaginationNavbarConfig: function(callback) {
+                var _this = this;
+                _this.pagination_navbar_config.forEach(function(element) {
+                    if (element.data_role === "current" && element.element === "label") {
+                        element.text = _this.chat.data.curPage;
+                    }
+                    if (element.data_role === "last") {
+                        element.value = _this.chat.data.lastPage;
+                        element.text = _this.chat.data.lastPage;
+                    }
+                });
+                if (_this.chat.data.curPage === _this.chat.data.firstPage) {
+                    _this.pagination_navbar_config.forEach(function(element) {
+                        if (element.data_role === "first" || element.data_role === "back" || element.data_location === "left") {
+                            element.disable = true;
+                        }
+                    });
+                } else {
+                    _this.pagination_navbar_config.forEach(function(element) {
+                        if (element.data_role === "first" || element.data_role === "back" || element.data_location === "left") {
+                            element.disable = false;
+                        }
+                        if (element.data_role === "first") {
+                            element.value = _this.chat.data.firstPage;
+                            element.text = _this.chat.data.firstPage;
+                        }
+                    });
+                }
+                if (_this.chat.data.curPage === _this.chat.data.lastPage) {
+                    _this.pagination_navbar_config.forEach(function(element) {
+                        if (element.data_role === "last" || element.data_role === "forward" || element.data_location === "right") {
+                            element.disable = true;
+                        }
+                    });
+                } else {
+                    _this.pagination_navbar_config.forEach(function(element) {
+                        if (element.data_role === "last" || element.data_role === "forward" || element.data_location === "right") {
+                            element.disable = false;
+                        }
+                    });
+                }
+                if (callback) {
+                    callback();
+                }
+            }
+            ,
 
             selectFirst: function() {
                 var _this = this;
-                _this.chat.data.curPage = parseInt(_this.btnFirst.innerText);
-                _this.lblCurrent.innerHTML = _this.chat.data.curPage;
-                _this.fillFirstPage();
-                _this.fillLastPage();
-                _this.countQuantityPages();
-            },
+                _this.chat.data.curPage = parseInt(_this.btnFirst.value);
+                _this.renderPagination();
+            }
+            ,
 
             selectLast: function() {
                 var _this = this;
-                _this.chat.data.curPage = _this.btnLast.innerText;
-                _this.lblCurrent.innerHTML = _this.chat.data.curPage;
-                _this.fillFirstPage();
-                _this.fillLastPage();
-                _this.countQuantityPages();
+                _this.chat.data.curPage = parseInt(_this.btnLast.value);
+                _this.renderPagination();
             },
 
             selectBack: function() {
                 var _this = this;
                 _this.chat.data.curPage = parseInt(_this.chat.data.curPage) - 1;
-                _this.lblCurrent.innerHTML = _this.chat.data.curPage;
-                _this.fillFirstPage();
-                _this.fillLastPage();
-                _this.countQuantityPages();
+                _this.renderPagination();
             },
 
             selectForward: function() {
                 var _this = this;
                 _this.chat.data.curPage = parseInt(_this.chat.data.curPage) + 1;
-                _this.lblCurrent.innerHTML = _this.chat.data.curPage;
-                _this.fillFirstPage();
-                _this.fillLastPage();
-                _this.countQuantityPages();
+                _this.renderPagination();
             },
 
-            renderChoicePerPage: function() {
+            showChoicePerPage: function() {
                 var _this = this;
                 _this.choice_per_page_container = _this.outer_container.querySelector('[data-role="per_page_container"]');
                 if (_this.choice_per_page_container.innerHTML === "") {
-                    _this.choice_per_page_container.innerHTML = _this.choice_per_page_template();
-                    _this.inp_choise_per_page = _this.newChat.querySelector('input[data-role="choice_per_page"]');
-                    _this.btn_go_to_page = _this.newChat.querySelector('[data-role="go_to_page"]');
-                    _this.btn_go_to_page.addEventListener('click', _this.selectCurrent.bind(_this), false);
-                    _this.inp_choise_per_page.value = _this.chat.data.curPage;
+
+                    _this.sendRequest("/mock/choice_per_page_config.json", function(err, res) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            _this.choice_per_page_config = JSON.parse(res);
+                            _this.renderChoicePerPage();
+                        }
+                    })
                 } else {
                     _this.choice_per_page_container.innerHTML = "";
                 }
                 _this.trigger('calcMessagesContainerHeight');
             },
 
+            renderChoicePerPage: function() {
+                var _this = this;
+                _this.choice_per_page_container.innerHTML = _this.choice_per_page_template({
+                    choice_per_page_config: _this.choice_per_page_config,
+                    triple_element_template: _this.triple_element_template,
+                    button_template: _this.button_template,
+                    input_template: _this.input_template,
+                    label_template: _this.label_template,
+                    mode: _this.chat.data.redraw_choice_page_mode
+                });
+                _this.inp_choise_per_page = _this.chatElem.querySelector('input[data-role="choice_per_page"]');
+                if (_this.inp_choise_per_page) {
+                    _this.inp_choise_per_page.value = _this.chat.data.curPage;
+                    _this.inp_choise_per_page.addEventListener('input', _this.selectCurrent.bind(_this), false);
+                }
+                _this.rte_go_to_page = _this.chatElem.querySelector('input[data-role="rte_choice_per_page"]');
+                if (_this.rte_go_to_page) {
+                    _this.rte_go_to_page.addEventListener('change', _this.changeRTE.bind(_this), false);
+                    _this.rte_go_to_page.checked = true;
+                }
+                _this.btn_go_to_page = _this.chatElem.querySelector('button[data-role="go_to_page"]');
+                if (_this.btn_go_to_page) {
+                    _this.btn_go_to_page.addEventListener('click', _this.goToCurrentPage.bind(_this), false);
+                    _this.rte_go_to_page.checked = false;
+                }
+                _this.label_go_to_page = _this.chatElem.querySelector('label[data-role="go_to_page"]');
+                if (_this.label_go_to_page) {
+                    _this.rte_go_to_page.checked = true;
+                }
+            },
+
             selectCurrent: function() {
                 var _this = this;
-                var start = (_this.inp_choise_per_page.value - 1) * parseInt(_this.per_page_value);
-                var final = (_this.inp_choise_per_page.value - 1) * parseInt(_this.per_page_value) + parseInt(_this.per_page_value);
-                _this.trigger('fillListMessage', {start: start, final: final});
                 _this.chat.data.curPage = _this.inp_choise_per_page.value;
-                _this.lblCurrent.innerHTML = _this.chat.data.curPage;
-                _this.choice_per_page_container.innerHTML = "";
-                _this.fillFirstPage();
-                _this.fillLastPage();
-                _this.trigger('calcMessagesContainerHeight');
+                if (_this.chat.data.redraw_choice_page_mode === "rte") {
+                    _this.renderPagination();
+                }
+            },
+
+            goToCurrentPage: function() {
+                var _this = this;
+                _this.chat.data.curPage = _this.inp_choise_per_page.value;
+                //_this.choice_per_page_container.innerHTML = "";
+                _this.renderPagination();
+            },
+
+            changeRTE: function() {
+                var _this = this;
+                if (_this.rte_go_to_page.checked) {
+                    _this.chat.data.redraw_choice_page_mode = "rte";
+                } else {
+                    _this.chat.data.redraw_choice_page_mode = "nrte";
+                }
+                _this.renderChoicePerPage();
+
             }
 
         }
@@ -240,4 +293,5 @@ define('pagination', [
         extend(pagination, ajax_core);
 
         return pagination;
-    });
+    })
+;

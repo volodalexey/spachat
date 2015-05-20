@@ -1,0 +1,54 @@
+[
+  {
+    "element": "button",
+    "icon": "",
+    "text": "Add new chat",
+    "class": "",
+    "title": "Panel_btn",
+    "data_role": "",
+    "data_location": "left_panel",
+    "data_action": "addChat",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "ClearHistory",
+    "class": "",
+    "title": "Panel_btn",
+    "data_role": "",
+    "data_location": "left_panel",
+    "data_action": "btnClearListMessage",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "button",
+    "class": "floatR",
+    "title": "Panel_btn",
+    "data_role": "",
+    "data_location": "right_panel",
+    "data_action": "",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "User info",
+    "class": "floatR",
+    "title": "Panel_btn",
+    "data_role": "",
+    "data_location": "right_panel",
+    "data_action": "btn_user_info",
+    "name": "",
+    "value": null,
+    "disable": false
+  }
+]
