@@ -35,11 +35,18 @@ define('panel', [
 
             initialize: function() {
                 var _this = this;
+                _this.render();
+                return _this;
+            },
+
+            render: function() {
+                var _this = this;
 
                 _this.leftPanel = document.querySelector('[data-action="leftPanel"]');
                 _this.btnLeftPanel = _this.leftPanel.querySelector('[data-action="btnLeftPanel"]');
+
                 _this.bodyLeftPanel = _this.leftPanel.querySelector('[data-role="body_left_panel"]');
-                _this.btnLeftPanel.addEventListener('click', _this.workLeftPanel.bind(_this), false);
+
                 _this.leftPanel.style.left = -_this.leftPanel.offsetWidth + 'px';
                 _this.leftPanel.style.maxWidth = window.innerWidth + 'px';
                 _this.btnLeftPanel.style.left = _this.leftPanel.offsetWidth + 'px';
@@ -50,29 +57,61 @@ define('panel', [
                 _this.rightPanel.style.right = -_this.rightPanel.offsetWidth + 'px';
                 _this.rightPanel.style.maxWidth = window.innerWidth + 'px';
                 _this.btnRightPanel.style.right = _this.rightPanel.offsetWidth + 'px';
-                _this.btnRightPanel.addEventListener('click', _this.workRightPanel.bind(_this), false);
+
+                _this.rightPanel.classList.remove("hidden");
+                _this.leftPanel.classList.remove("hidden");
 
                 _this.leftPanel.classList.add("animate");
                 _this.rightPanel.classList.add("animate");
                 _this.bodyLeftPanel.classList.remove("hidden");
                 _this.bodyRightPanel.classList.remove("hidden");
-                return _this;
+                _this.bindContexts();
+                if (_this.btnRightPanel) {
+                    _this.btnRightPanel.addEventListener('click', _this.workRightPanel.bind(_this), false);
+                }
+                if (_this.btnLeftPanel) {
+                    _this.btnLeftPanel.addEventListener('click', _this.workLeftPanel.bind(_this), false);
+                }
+                //_this.addListener();
+            },
+
+            bindContexts: function() {
+                var _this = this;
+
+                _this.bindWorkRightPanel = _this.workRightPanel.bind(_this);
+
+                _this.bindRenderUserInfo = _this.renderUserInfo.bind(_this);
             },
 
             addListener: function() {
                 var _this = this;
-                var addChat = _this.bodyLeftPanel.querySelector('button[data-action="addChat"]');
-                if (addChat) {
-                    addChat.addEventListener('click', _this.throwEvent.bind(_this, 'addNewChat'), false);
+                _this.removeEventListeners();
+
+                _this.addChat = _this.bodyLeftPanel.querySelector('button[data-action="addChat"]');
+                _this.clearStory = _this.bodyLeftPanel.querySelector('[data-action="btnClearListMessage"]');
+
+                if (_this.addChat) {
+                    _this.addChat.addEventListener('click', _this.throwEvent.bind(_this, 'addNewChat'), false);
                 }
-                var clearStory = _this.bodyLeftPanel.querySelector('[data-action="btnClearListMessage"]');
-                if (clearStory) {
-                    clearStory.addEventListener('click', _this.throwEvent.bind(_this, 'clearStory'), false);
+                if (_this.clearStory) {
+                    _this.clearStory.addEventListener('click', _this.throwEvent.bind(_this, 'clearStory'), false);
                 }
-                var userInfo = _this.rightPanel.querySelector('[data-action="btn_user_info"]');
-                if (userInfo) {
-                    userInfo.addEventListener('click', _this.renderUserInfo.bind(_this), false);
+                _this.userInfo = _this.rightPanel.querySelector('[data-action="btn_user_info"]');
+
+                if (_this.userInfo) {
+                    _this.userInfo.addEventListener('click', _this.bindRenderUserInfo, false);
                 }
+            },
+
+            removeEventListeners: function() {
+                var _this = this;
+
+                _this.btnRightPanel.removeEventListener('click', _this.bindWorkRightPanel, false);
+
+                if (_this.userInfo) {
+                    _this.userInfo.removeEventListener('click', _this.bindRenderUserInfo, false);
+                }
+
             },
 
             throwEvent: function(name) {
@@ -175,12 +214,11 @@ define('panel', [
                 var _this = this;
                 _this.user_info_container = _this.rightPanel.querySelector('[data-role="user_info_container"]');
 
-                if(_this.user_info_container.innerHTML === ""){
+                if (_this.user_info_container.innerHTML === "") {
                     _this.sendRequest("/mock/user_info_config.json", function(err, res) {
                         if (err) {
                             console.log(err);
                         } else {
-
                             _this.user_info_config = JSON.parse(res);
                             _this.user_info_container.innerHTML = _this.user_info_template({
                                 config: _this.user_info_config,
@@ -194,13 +232,6 @@ define('panel', [
                 } else {
                     _this.user_info_container.innerHTML = "";
                 }
-
-                //_this.user_info_container = _this.bodyLeftPanel.querySelector('[data-role="user_info_container"]');
-                //if(! _this.user_info_container){
-                //
-                //} else {
-                //   //_this.body_right_panel_template.removeChild(_this.user_info_container);
-                //}
             },
 
             resizePanel: function() {

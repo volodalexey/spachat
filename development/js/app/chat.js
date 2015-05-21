@@ -21,7 +21,6 @@ define('chat', [
              ajax_core,
              indexeddb,
              webrtc,
-
              chat_template,
              outer_container_template) {
         var chat = function() {
@@ -57,13 +56,13 @@ define('chat', [
                 _this.body_outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
 
                 _this.newHeader = new header();
-                _this.newEditor = new editor().initialize({ chat: _this });
+                _this.newEditor = new editor().initialize({chat: _this});
                 _this.newPagination = new pagination();
                 _this.newSettings = new settings();
                 _this.newContact_list = new contact_list();
                 _this.newMessages = new messages();
                 _this.indexeddb = new indexeddb().initialize();
-                _this.webrtc = new webrtc().initialize({ chat: _this });
+                _this.webrtc = new webrtc().initialize({chat: _this});
                 _this.addEventListeners();
 
                 _this.renderByMode();
@@ -74,13 +73,13 @@ define('chat', [
                 var _this = this;
                 switch (_this.data.mode) {
                     case "webrtc":
-                        _this.newHeader.initialize({ chat: _this });
+                        _this.newHeader.initialize({chat: _this});
                         _this.webrtc.renderHanshake();
                         break;
                     case "messages":
                         _this.body_outer_container.innerHTML = _this.outer_container_template();
-                        _this.newEditor.renderEditorPanel(function(){
-                            _this.newHeader.initialize({ chat: _this });
+                        _this.newEditor.renderEditorPanel(function() {
+                            _this.newHeader.initialize({chat: _this});
                             _this.newMessages.initialize({start: 0, chat: _this});
                             _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
                             _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
@@ -92,7 +91,7 @@ define('chat', [
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                //_this.newEditor.on('sendMessage', _this.sendMessage.bind(_this), _this);
+
                 _this.newEditor.on('calcMessagesContainerHeight', _this.calcMessagesContainerHeight.bind(_this), _this);
 
                 _this.newHeader.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
@@ -147,7 +146,6 @@ define('chat', [
             renderPagination: function() {
                 var _this = this;
                 _this.newPagination.initialize({chat: _this});
-
             },
 
             fillMessages: function(obj) {
@@ -162,24 +160,13 @@ define('chat', [
                 _this.newEditor.renderEditorPanel();
                 _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
                 _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
-                //_this.newMessages.initialize(_this.chatElem, {start: 0 , final: localStorage.length});
-                //_this.newPagination.countQuantityPages();
                 _this.newPagination.initialize({chat: _this});
                 _this.resizeMessagesContainer();
-
             },
 
             renderPerPageMessages: function() {
                 var _this = this;
                 _this.newPagination.renderPagination();
-
-                //_this.newPagination.initialize({chat: _this});
-                //if (_this.data.per_page_value !== NaN) {
-                //_this.data.curPage = Math.ceil(localStorage.length / _this.data.per_page_value);
-                //_this.newPagination.countQuantityPages();
-                //_this.newPagination.fillFirstPage();
-                //_this.newPagination.fillLastPage();
-                //}
             },
 
             renderSettings: function() {

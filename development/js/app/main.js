@@ -11,7 +11,7 @@ require.config({
         "event_core": "app/extentions/event_core",
 
         "chat": "app/chat",
-        "navigate": "app/navigate",
+        "chat_platform": "app/chat_platform",
         "panel": "app/panel",
         "header": "app/header",
         "pagination": "app/pagination",
@@ -21,16 +21,20 @@ require.config({
         "contact_list": "app/contact_list",
         "indexeddb": "app/indexeddb",
         "tab": "app/tab",
-        "webrtc": "app/webrtc"
+        "webrtc": "app/webrtc",
+        "login": "app/login",
+        "navigator": "app/navigator"
     },
     "shim": {
-        "navigate": ["Underscore"],
-        "chat": ["Underscore"]
+        "chat_platform": ["Underscore"],
+        "chat": ["Underscore"],
+        "navigator": ["Underscore"]
     }
 });
 
 function extend(Child, Parent) {
-    var F = function () { };
+    var F = function() {
+    };
     F.prototype = Parent.prototype;
     var f = new F();
 
@@ -41,6 +45,9 @@ function extend(Child, Parent) {
     Child.prototype[Parent.prototype.__class_name] = Parent.prototype;
 }
 
-require(['navigate'], function() {
+
+
+require(['navigator'], function(navigator) {
     //OK
+    navigator.navigate();
 });

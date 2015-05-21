@@ -83,21 +83,21 @@
     </div>
 </div>
 
-<div data-action="leftPanel" class="fixed left">
+<div data-action="leftPanel" class="fixed left ">
     <button data-action="btnLeftPanel" class="btnPanel left">leftPanel</button>
     <div data-role="body_left_panel" class="panel left hidden"></div>
 </div>
 
-<div data-action="rightPanel" class="fixed right">
+<div data-action="rightPanel" class="fixed right ">
     <button data-action="btnRightPanel" class="btnPanel right">RightPanel</button>
     <div data-role="body_right_panel" class="panel right hidden"></div>
 </div>
 
 <div data-role="main_container" class="overlay"></div>
 
-<div data-role="login_container_global" class="login-container-global  hidden ">
-    <div data-role="auth_body_cont" class="container">
-        <form class="authentification-form flex">
+<div data-role="login_container_global" class="login-container-global   ">
+    <div data-role="auth_body_cont" class="">
+        <form class="authentification-form flex_login">
             <div class="flex-itm">
                 <label>Login:</label>
             </div>
@@ -117,7 +117,7 @@
                 <input class="" type="checkbox" name="rememberMe" value="true" data-authentication="" >
             </div>
             <div  class="flex-itm">
-                <button class="button_subm_login" type="submit">Login</button>
+                <button data-action="submit" class="button_subm_login" type="submit">Login</button>
             </div>
         </form>
     </div>

@@ -43,7 +43,6 @@ define('settings', [
                 }
                 _this.trigger('calcOuterContainerHeight');
                 if (param === "setting") {
-                    _this.data;
                     _this.trigger('renderMassagesEditor');
                     _this.trigger('renderPagination');
                     _this.body_outer_container.setAttribute("param-content", "message");
