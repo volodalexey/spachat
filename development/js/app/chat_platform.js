@@ -1,11 +1,13 @@
 define('chat_platform', [
         'chat',
-        'panel',
-        'overlay_core'
+        'panel_platform',
+        'overlay_core',
+        'event_core'
     ],
     function(chat,
-             panel,
-             overlay_core) {
+             panel_platform,
+             overlay_core,
+             event_core) {
 
         var chat_platform = function() {
         };
@@ -25,7 +27,8 @@ define('chat_platform', [
 
             render: function() {
                 var _this = this;
-                panel.initialize();
+                _this.trigger('addNewPanel');
+                //panel_platform.addNewPanel();
                 _this.toggleWaiter(true);
             },
 
@@ -40,20 +43,20 @@ define('chat_platform', [
                 var _this = this;
                 _this.removeEventListeners();
                 window.addEventListener('resize', _this.bindedOnresizeWindow, false);
-                panel.on('clearStory', _this.bindedClearStory, _this);
-                panel.on('addNewChat', _this.bindedAddNewChat, _this);
+                //panel_platform.on('clearStory', _this.bindedClearStory, _this);
+                //panel_platform.on('addNewChat', _this.bindedAddNewChat, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 window.removeEventListener('resize', _this.bindedOnresizeWindow, false);
-                panel.off('clearStory');
-                panel.off('addNewChat');
+                //panel_platform.off('clearStory');
+                //panel_platform.off('addNewChat');
             },
 
             onresizeWindow: function() {
                 var _this = this;
-                panel.resizePanel();
+                panel_platform.resizePanels();
 
                 chat.prototype.chatsArray.forEach(function(_chat) {
                     _chat.calcMessagesContainerHeight();
@@ -81,6 +84,7 @@ define('chat_platform', [
 
         };
         extend(chat_platform, overlay_core);
+        extend(chat_platform, event_core);
 
         return new chat_platform().initialize();
     });

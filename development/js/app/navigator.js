@@ -1,10 +1,18 @@
 define('navigator',
     [
         'chat_platform',
-        'login'
+        'panel_platform',
+        'login',
+
+        'indexeddb'
+
     ],
     function(chat_platform,
-             login) {
+             panel_platform,
+             login,
+
+             indexeddb
+    ) {
 
         var navigator = function() {
         };
@@ -36,12 +44,20 @@ define('navigator',
             addEventListeners: function() {
                 var _this = this;
                 window.addEventListener('popstate', _this.bindedNavigate, false);
+                chat_platform.on('addNewPanel', panel_platform.addNewPanel, panel_platform);
+                panel_platform.on('clearStory', chat_platform.clearStory, chat_platform);
+                panel_platform.on('addNewChat', chat_platform.addNewChat, chat_platform);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 login.off('navigate');
                 window.removeEventListener('popstate', _this.bindedNavigate, false);
+            },
+
+            throwEvent: function(name) {
+                var _this = this;
+                _this.trigger(name);
             },
 
             getCurrentPage: function(href) {
@@ -59,7 +75,6 @@ define('navigator',
 
             navigate: function() {
                 var _this = this;
-                console.log("navigate");
                 var href = window.location.href;
                 _this.getCurrentPage(href);
                 _.each(_this.data.matchedPages, function(page) {

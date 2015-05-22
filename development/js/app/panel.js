@@ -25,6 +25,8 @@ define('panel', [
 
         panel.prototype = {
 
+            panelArray: [],
+
             body_left_panel_template: _.template(body_left_panel_template),
             body_right_panel_template: _.template(body_right_panel_template),
             user_info_template: _.template(user_info_template),
@@ -35,18 +37,17 @@ define('panel', [
 
             initialize: function() {
                 var _this = this;
+                _this.bindContextsContent();
+                _this.bindContextsMain();
                 _this.render();
                 return _this;
             },
 
             render: function() {
                 var _this = this;
-
                 _this.leftPanel = document.querySelector('[data-action="leftPanel"]');
                 _this.btnLeftPanel = _this.leftPanel.querySelector('[data-action="btnLeftPanel"]');
-
                 _this.bodyLeftPanel = _this.leftPanel.querySelector('[data-role="body_left_panel"]');
-
                 _this.leftPanel.style.left = -_this.leftPanel.offsetWidth + 'px';
                 _this.leftPanel.style.maxWidth = window.innerWidth + 'px';
                 _this.btnLeftPanel.style.left = _this.leftPanel.offsetWidth + 'px';
@@ -60,58 +61,72 @@ define('panel', [
 
                 _this.rightPanel.classList.remove("hidden");
                 _this.leftPanel.classList.remove("hidden");
-
                 _this.leftPanel.classList.add("animate");
                 _this.rightPanel.classList.add("animate");
                 _this.bodyLeftPanel.classList.remove("hidden");
                 _this.bodyRightPanel.classList.remove("hidden");
-                _this.bindContexts();
+                _this.addMainEventListener();
+            },
+
+            bindContextsMain: function() {
+                var _this = this;
+                _this.bindedWorkRightPanel = _this.workRightPanel.bind(_this);
+                _this.bindedWorkLeftPanel = _this.workLeftPanel.bind(_this);
+            },
+
+            addMainEventListener: function() {
+                var _this = this;
+                _this.removeMainEventListeners();
                 if (_this.btnRightPanel) {
-                    _this.btnRightPanel.addEventListener('click', _this.workRightPanel.bind(_this), false);
+                    _this.btnRightPanel.addEventListener('click', _this.bindedWorkRightPanel, false);
                 }
                 if (_this.btnLeftPanel) {
-                    _this.btnLeftPanel.addEventListener('click', _this.workLeftPanel.bind(_this), false);
+                    _this.btnLeftPanel.addEventListener('click', _this.bindedWorkLeftPanel, false);
                 }
-                //_this.addListener();
             },
 
-            bindContexts: function() {
+            removeMainEventListeners: function() {
                 var _this = this;
-
-                _this.bindWorkRightPanel = _this.workRightPanel.bind(_this);
-
-                _this.bindRenderUserInfo = _this.renderUserInfo.bind(_this);
+                if (_this.btnRightPanel) {
+                    _this.btnRightPanel.removeEventListener('click', _this.bindedWorkRightPanel, false);
+                }
+                if (_this.btnLeftPanel) {
+                    _this.btnLeftPanel.removeEventListener('click', _this.bindedWorkLeftPanel, false);
+                }
             },
 
-            addListener: function() {
+            bindContextsContent: function() {
                 var _this = this;
-                _this.removeEventListeners();
+                _this.bindedThrowEventAddNewChat = _this.throwEvent.bind(_this, 'addNewChat');
+                _this.bindedThrowEventClearStory = _this.throwEvent.bind(_this, 'clearStory');
+                _this.bindedRenderUserInfo = _this.renderUserInfo.bind(_this);
+            },
 
-                _this.addChat = _this.bodyLeftPanel.querySelector('button[data-action="addChat"]');
-                _this.clearStory = _this.bodyLeftPanel.querySelector('[data-action="btnClearListMessage"]');
-
+            addContentEventListener: function() {
+                var _this = this;
+                _this.removeContentEventListeners();
                 if (_this.addChat) {
-                    _this.addChat.addEventListener('click', _this.throwEvent.bind(_this, 'addNewChat'), false);
+                    _this.addChat.addEventListener('click', _this.bindedThrowEventAddNewChat, false);
                 }
                 if (_this.clearStory) {
-                    _this.clearStory.addEventListener('click', _this.throwEvent.bind(_this, 'clearStory'), false);
+                    _this.clearStory.addEventListener('click', _this.bindedThrowEventClearStory, false);
                 }
-                _this.userInfo = _this.rightPanel.querySelector('[data-action="btn_user_info"]');
-
                 if (_this.userInfo) {
-                    _this.userInfo.addEventListener('click', _this.bindRenderUserInfo, false);
+                    _this.userInfo.addEventListener('click', _this.bindedRenderUserInfo, false);
                 }
             },
 
-            removeEventListeners: function() {
+            removeContentEventListeners: function() {
                 var _this = this;
-
-                _this.btnRightPanel.removeEventListener('click', _this.bindWorkRightPanel, false);
-
-                if (_this.userInfo) {
-                    _this.userInfo.removeEventListener('click', _this.bindRenderUserInfo, false);
+                if (_this.addChat) {
+                    _this.addChat.removeEventListener('click', _this.bindedThrowEventAddNewChat, false);
                 }
-
+                if (_this.clearStory) {
+                    _this.clearStory.removeEventListener('click', _this.bindedThrowEventClearStory, false);
+                }
+                if (_this.userInfo) {
+                    _this.userInfo.removeEventListener('click', _this.bindedRenderUserInfo, false);
+                }
             },
 
             throwEvent: function(name) {
@@ -128,16 +143,8 @@ define('panel', [
                         _this.panel_config = JSON.parse(res);
                         if (_this.leftPanel.clientWidth + _this.btnLeftPanel.clientWidth > document.body.clientWidth) {
                             if (_this.leftPanel.style.left !== '0px') {
-                                _this.leftPanel.style.left = 0 + 'px';
-                                _this.bodyLeftPanel.innerHTML = _this.body_left_panel_template({
-                                    config: _this.panel_config,
-                                    triple_element_template: _this.triple_element_template,
-                                    button_template: _this.button_template,
-                                    input_template: _this.input_template,
-                                    label_template: _this.label_template
-                                });
+                                _this.fillingTemplateBodyLeftPanel();
                                 _this.resizePanel();
-                                _this.addListener();
                             } else {
                                 _this.leftPanel.style.left = -_this.leftPanel.offsetWidth + 'px';
                                 _this.btnLeftPanel.style.left = _this.leftPanel.offsetWidth + 'px';
@@ -146,23 +153,29 @@ define('panel', [
                             }
                         } else {
                             if (_this.leftPanel.style.left !== '0px') {
-                                _this.leftPanel.style.left = 0 + 'px';
-                                _this.bodyLeftPanel.innerHTML = _this.body_left_panel_template({
-                                    config: _this.panel_config,
-                                    triple_element_template: _this.triple_element_template,
-                                    button_template: _this.button_template,
-                                    input_template: _this.input_template,
-                                    label_template: _this.label_template
-                                });
-                                _this.addListener();
+                                _this.fillingTemplateBodyLeftPanel();
                             } else {
                                 _this.leftPanel.style.left = -_this.leftPanel.offsetWidth + 'px';
                                 _this.bodyLeftPanel.innerHTML = "";
                             }
                         }
-
                     }
                 })
+            },
+
+            fillingTemplateBodyLeftPanel: function() {
+                var _this = this;
+                _this.leftPanel.style.left = 0 + 'px';
+                _this.bodyLeftPanel.innerHTML = _this.body_left_panel_template({
+                    config: _this.panel_config,
+                    triple_element_template: _this.triple_element_template,
+                    button_template: _this.button_template,
+                    input_template: _this.input_template,
+                    label_template: _this.label_template
+                });
+                _this.addChat = _this.bodyLeftPanel.querySelector('button[data-action="addChat"]');
+                _this.clearStory = _this.bodyLeftPanel.querySelector('[data-action="btnClearListMessage"]');
+                _this.addContentEventListener();
             },
 
             workRightPanel: function() {
@@ -174,15 +187,7 @@ define('panel', [
                         _this.panel_config = JSON.parse(res);
                         if (_this.rightPanel.clientWidth + _this.btnRightPanel.clientWidth > document.body.clientWidth) {
                             if (_this.rightPanel.style.right !== '0px') {
-                                _this.rightPanel.style.right = 0 + 'px';
-                                _this.bodyRightPanel.innerHTML = _this.body_right_panel_template({
-                                    config: _this.panel_config,
-                                    triple_element_template: _this.triple_element_template,
-                                    button_template: _this.button_template,
-                                    input_template: _this.input_template,
-                                    label_template: _this.label_template
-                                });
-                                _this.addListener();
+                                _this.fillingTemplateBodyRightPanel();
                                 _this.resizePanel();
                             } else {
                                 _this.rightPanel.style.right = -_this.rightPanel.offsetWidth + 'px';
@@ -192,15 +197,7 @@ define('panel', [
                             }
                         } else {
                             if (_this.rightPanel.style.right !== '0px') {
-                                _this.rightPanel.style.right = 0 + 'px';
-                                _this.bodyRightPanel.innerHTML = _this.body_right_panel_template({
-                                    config: _this.panel_config,
-                                    triple_element_template: _this.triple_element_template,
-                                    button_template: _this.button_template,
-                                    input_template: _this.input_template,
-                                    label_template: _this.label_template
-                                });
-                                _this.addListener();
+                                _this.fillingTemplateBodyRightPanel();
                             } else {
                                 _this.rightPanel.style.right = -_this.rightPanel.offsetWidth + 'px';
                                 _this.bodyRightPanel.innerHTML = "";
@@ -208,6 +205,20 @@ define('panel', [
                         }
                     }
                 })
+            },
+
+            fillingTemplateBodyRightPanel: function() {
+                var _this = this;
+                _this.rightPanel.style.right = 0 + 'px';
+                _this.bodyRightPanel.innerHTML = _this.body_right_panel_template({
+                    config: _this.panel_config,
+                    triple_element_template: _this.triple_element_template,
+                    button_template: _this.button_template,
+                    input_template: _this.input_template,
+                    label_template: _this.label_template
+                });
+                _this.userInfo = _this.rightPanel.querySelector('[data-action="btn_user_info"]');
+                _this.addContentEventListener();
             },
 
             renderUserInfo: function() {
@@ -267,5 +278,5 @@ define('panel', [
         extend(panel, event_core);
         extend(panel, ajax_core);
 
-        return new panel();
+        return panel;
     });

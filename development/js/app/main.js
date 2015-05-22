@@ -12,6 +12,7 @@ require.config({
 
         "chat": "app/chat",
         "chat_platform": "app/chat_platform",
+        "panel_platform": "app/panel_platform",
         "panel": "app/panel",
         "header": "app/header",
         "pagination": "app/pagination",

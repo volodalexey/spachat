@@ -120,7 +120,6 @@ define('chat', [
 
             removeEventListeners: function() {
                 var _this = this;
-                //_this.newEditor.off('sendMessage');
                 _this.newEditor.off('calcMessagesContainerHeight');
 
                 _this.newHeader.off('changePerPage');
@@ -157,11 +156,13 @@ define('chat', [
                 var _this = this;
                 _this.body_outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
                 _this.body_outer_container.innerHTML = _this.outer_container_template();
-                _this.newEditor.renderEditorPanel();
-                _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
-                _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
-                _this.newPagination.initialize({chat: _this});
-                _this.resizeMessagesContainer();
+                _this.newEditor.renderEditorPanel(function() {
+                    _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
+                    _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
+                    _this.newPagination.initialize({chat: _this});
+                    _this.resizeMessagesContainer();
+                });
+
             },
 
             renderPerPageMessages: function() {
