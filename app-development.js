@@ -4,7 +4,8 @@ var express = require('express')
     , dirPath = '/development'
     , path = require('path')
     , fullPath = path.join(__dirname, dirPath)
-    , fs = require('fs');
+    , fs = require('fs')
+    , expressWs = require('express-ws')(expressApp);
 
 /*var staticOptions = {
     'index': ['index.html']
@@ -24,6 +25,13 @@ expressApp.use('/login', function(req, res) {
 
 expressApp.use('/chat', function(req, res) {
     res.send(indexHTML);
+});
+
+expressApp.ws('/', function(ws, req) {
+    ws.on('message', function(msg) {
+        console.log(msg);
+    });
+    console.log('socket', req);
 });
 
 expressApp.listen(port);
