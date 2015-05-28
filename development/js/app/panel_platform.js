@@ -21,15 +21,15 @@ define('panel_platform', [
                 return _this;
             },
 
-            addNewPanel: function() {
+            addNewPanel: function(navigator) {
                 var _this = this;
+
                 _this.newPanel = new panel();
                 panel.prototype.panelArray.push(_this.newPanel);
-                _this.newPanel.initialize();
+                _this.newPanel.initialize(navigator);
                 _this.newPanel.on('clearStory', _this.throwEvent.bind(_this, 'clearStory'), _this);
                 _this.newPanel.on('addNewChat', _this.throwEvent.bind(_this, 'addNewChat'), _this);
                 _this.toggleWaiter(true);
-
             },
 
             bindContexts: function() {
@@ -39,7 +39,6 @@ define('panel_platform', [
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-
                 //navigator.on('addNewChat', _this.addNewPanel.bind(_this) , _this);
             },
 

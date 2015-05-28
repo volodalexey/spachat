@@ -3,6 +3,7 @@ define('navigator',
         'chat_platform',
         'panel_platform',
         'login',
+        'register',
 
         'indexeddb'
 
@@ -10,9 +11,8 @@ define('navigator',
     function(chat_platform,
              panel_platform,
              login,
-
-             indexeddb
-    ) {
+             register,
+             indexeddb) {
 
         var navigator = function() {
         };
@@ -20,7 +20,8 @@ define('navigator',
         navigator.prototype = {
 
             data: {
-                pages: [chat_platform, login],
+                userID: "",
+                pages: [chat_platform, login, register],
                 matchedPages: []
             },
 
@@ -30,9 +31,11 @@ define('navigator',
                 _this.bindContexts();
                 _this.addEventListeners();
                 _this.login = document.querySelector('[data-role="login_container_global"]');
+                _this.register_container = document.querySelector('[data-role="register_container_global"]');
                 _this.main = document.querySelector('[data-role="main_container"]');
                 _this.leftPanel = document.querySelector('[data-action="leftPanel"]');
                 _this.rightPanel = document.querySelector('[data-action="rightPanel"]');
+                //_this.data.authorization = false;
                 return _this;
             },
 
@@ -44,9 +47,17 @@ define('navigator',
             addEventListeners: function() {
                 var _this = this;
                 window.addEventListener('popstate', _this.bindedNavigate, false);
-                chat_platform.on('addNewPanel', panel_platform.addNewPanel, panel_platform);
+                //chat_platform.on('addNewPanel', panel_platform.addNewPanel, {"panel_platform": panel_platform, "navigator": _this});
+                chat_platform.on('addNewPanel', _this.addPanel, _this);
+
                 panel_platform.on('clearStory', chat_platform.clearStory, chat_platform);
                 panel_platform.on('addNewChat', chat_platform.addNewChat, chat_platform);
+            },
+
+            addPanel: function() {
+                var _this = this;
+
+                panel_platform.addNewPanel(_this);
             },
 
             removeEventListeners: function() {
@@ -77,23 +88,42 @@ define('navigator',
                 var _this = this;
                 var href = window.location.href;
                 _this.getCurrentPage(href);
+                //_this.data.matchedPages;
+
                 _.each(_this.data.matchedPages, function(page) {
-                    if (page !== login) {
-                        _this.login.classList.add("hidden_login");
+                    if(page !== register){
+                        _this.register_container.classList.add("hidden_login");
                     } else {
                         _this.leftPanel.classList.add("hidden");
                         _this.rightPanel.classList.add("hidden");
                     }
-                    page.render && page.render();
-                    if (page !== chat_platform) {
+                    if (page !== login) {
+                        _this.login.classList.add("hidden_login");
+                        _this.register_container.classList.add("hidden_login");
+                    } else {
+                            _this.leftPanel.classList.add("hidden");
+                            _this.rightPanel.classList.add("hidden");
+                            _this.main.innerHTML = "";
                     }
+                    if(!(page === login || page === register) ){
+                        if(_this.data.userID === ""){
+                            history.pushState(null, null, 'login');
+                            _this.navigate();
+                        } else {
+                            page.render && page.render(_this);
+                        }
+                    } else {
+                        page.render && page.render(_this);
+                    }
+
                 });
-                if (!_this.data.matchedPages.length) {
+                if (!_this.data.matchedPages.length ) {
                     history.pushState(null, null, 'login');
-                    window.history.go(0);
                     _this.navigate();
                 }
             }
+
+
         };
 
         return (new navigator()).initialize();

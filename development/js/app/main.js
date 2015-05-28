@@ -24,6 +24,7 @@ require.config({
         "tab": "app/tab",
         "webrtc": "app/webrtc",
         "login": "app/login",
+        "register": "app/register",
         "navigator": "app/navigator"
     },
     "shim": {

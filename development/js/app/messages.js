@@ -1,8 +1,10 @@
 define('messages', [
+        'event_core',
 
         'text!../html/message_template.html'
     ],
     function(
+        event_core,
 
         message_template
     ) {
@@ -27,7 +29,6 @@ define('messages', [
                         "keyPath": "id"
                     }
                 };
-
                 _this.addEventListeners();
                 _this.fillListMessage(options);
                 return _this;
@@ -81,6 +82,10 @@ define('messages', [
                     }
                     _this.messages_container.innerHTML = generatedMessages.join('');
                     _this.scrollTo(options);
+                    if(options.callback){
+                        options.callback();
+                    }
+                    _this.trigger('resizeMessagesContainer');
                 });
             },
 
@@ -116,6 +121,7 @@ define('messages', [
                 );
             }
         };
+        extend(messages, event_core);
 
         return messages;
     });

@@ -85,19 +85,29 @@
 
 <div data-action="leftPanel" class="fixed left ">
     <button data-action="btnLeftPanel" class="btnPanel left">leftPanel</button>
-    <div data-role="body_left_panel" class="panel left hidden"></div>
+    <div data-role="left_panel_inner_container" class="panel left hidden">
+        <div data-role="toolbar_left_panel" class=""></div>
+        <div data-role="body_left_panel" class="body_panel"></div>
+    </div>
 </div>
 
 <div data-action="rightPanel" class="fixed right ">
     <button data-action="btnRightPanel" class="btnPanel right">RightPanel</button>
-    <div data-role="body_right_panel" class="panel right hidden"></div>
+    <div data-role="right_panel_inner_container" class="panel right hidden">
+        <div data-role="toolbar_right_panel" class="" ></div>
+        <div data-role="body_right_panel" class="body_panel"></div>
+    </div>
+
 </div>
 
 <div data-role="main_container" class="overlay"></div>
 
-<div data-role="login_container_global" class="login-container-global   ">
+<div data-role="login_container_global" class="login-container-global">
     <div data-role="auth_body_cont" class="">
         <form class="authentification-form flex_login">
+            <div  class="flex-itm register">
+                <button data-action="register_user" class="button_login" type="submit">Register</button>
+            </div>
             <div class="flex-itm">
                 <label>Login:</label>
             </div>
@@ -110,15 +120,44 @@
             <div class="flex-itm">
                 <input class="w-100p" type="password" name="password" data-authentication="">
             </div>
-            <!--<div class="flex-itm">
+<!--            <div class="flex-itm">
                 <label>Remember me:</label>
             </div>
             <div class="flex-itm">
                 <input class="" type="checkbox" name="rememberMe" value="true" data-authentication="" >
             </div>-->
             <div  class="flex-itm">
-                <button data-action="submit" class="button_subm_login" type="submit">Login</button>
+                <button data-action="submit" class="button_login" type="submit">Login</button>
             </div>
+        </form>
+    </div>
+</div>
+
+<div data-role="register_container_global" class="login-container-global hidden_login">
+    <div data-role="auth_body_cont" class="">
+        <form class="register-form flex_login">
+            <div class="flex-itm">
+                <label>User name:</label>
+            </div>
+            <div class="flex-itm">
+                <input class="w-100p" type="text" name="user_name" data-authentication="" >
+            </div>
+            <div class="flex-itm">
+                <label>Password:</label>
+            </div>
+            <div class="flex-itm">
+                <input class="w-100p" type="password" name="password_new" data-authentication="">
+            </div>
+            <div class="flex-itm">
+                <label>Password confirm:</label>
+            </div>
+            <div class="flex-itm">
+                <input class="w-100p" type="password" name="password_confirm" data-authentication="">
+            </div>
+            <div  class="flex-itm">
+                <button data-action="register" class="button_login" type="submit">Register</button>
+            </div>
+
         </form>
     </div>
 </div>

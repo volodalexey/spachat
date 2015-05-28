@@ -12,12 +12,12 @@ define('contact_list', [
 
         contact_list.prototype = {
 
-            initialize: function(newChat) {
+            initialize: function(options) {
                 var _this = this;
                 _this.addEventListeners();
-                _this.newChat = newChat;
+                _this.chat = options.chat;
                 _this.contact_list_template = _.template(contact_list_template);
-                _this.body_outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
+                _this.body_outer_container = _this.chat.body_outer_container;
                 _this.renderContactList();
                 return _this;
             },
@@ -33,20 +33,19 @@ define('contact_list', [
 
             renderContactList: function() {
                 var _this = this;
-                var param = _this.body_outer_container.getAttribute('param-content');
-                _this.filter_container = _this.newChat.querySelector('[data-role="filter_container"]');
+                _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
                 if (!_this.filter_container.classList.contains('hide')) {
                     _this.filter_container.classList.add('hide');
                 }
                 _this.trigger('calcOuterContainerHeight');
-                if (param === "contact_list") {
+                if (_this.chat.data.body_mode === "contact_list") {
                     _this.trigger('renderMassagesEditor');
                     _this.trigger('renderPagination');
-                    _this.body_outer_container.setAttribute("param-content", "message");
+                    _this.chat.data.body_mode = "messages";
                     _this.body_outer_container.classList.remove('background');
                 } else {
                     _this.body_outer_container.innerHTML = _this.contact_list_template();
-                    _this.body_outer_container.setAttribute("param-content", "contact_list");
+                    _this.chat.data.body_mode = "contact_list";
                     _this.body_outer_container.classList.add('background');
                     this.sendRequest('/mock/contact_list_config.json', function(err, res) {
                         if (err) {

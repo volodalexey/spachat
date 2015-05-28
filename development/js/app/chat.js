@@ -37,6 +37,7 @@ define('chat', [
                 var _this = this;
                 _this.data = {
                     mode: "messages", //webrtc
+                    body_mode: "messages",
                     redraw_mode: "rte",
                     redraw_choice_page_mode: "rte",
                     curPage: null,
@@ -110,12 +111,13 @@ define('chat', [
                 _this.newContact_list.on('renderMassagesEditor', _this.renderMassagesEditor.bind(_this), _this);
                 _this.newContact_list.on('renderPagination', _this.renderPagination.bind(_this), _this);
 
-                _this.newPagination.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
+                //_this.newPagination.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
                 _this.newPagination.on('fillListMessage', function(obj) {
                     _this.fillMessages(obj);
                 }, _this);
                 _this.newPagination.on('calcMessagesContainerHeight', _this.calcMessagesContainerHeight.bind(_this), _this);
 
+                _this.newMessages.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
             },
 
             removeEventListeners: function() {
@@ -138,7 +140,7 @@ define('chat', [
                 _this.newContact_list.off('renderMassagesEditor');
                 _this.newContact_list.off('renderPagination');
 
-                _this.newPagination.off('resizeMessagesContainer');
+                //_this.newPagination.off('resizeMessagesContainer');
                 _this.newPagination.off('fillListMessage');
             },
 
@@ -152,17 +154,19 @@ define('chat', [
                 _this.newMessages.fillListMessage(obj);
             },
 
-            renderMassagesEditor: function() {
+            renderMassagesEditor: function(callback) {
                 var _this = this;
                 _this.body_outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
                 _this.body_outer_container.innerHTML = _this.outer_container_template();
                 _this.newEditor.renderEditorPanel(function() {
                     _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
                     _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
-                    _this.newPagination.initialize({chat: _this});
-                    _this.resizeMessagesContainer();
+                    _this.newPagination.initialize({chat: _this}, callback);
+                    //_this.resizeMessagesContainer();
+                    //if (callback) {
+                    //    callback();
+                    //}
                 });
-
             },
 
             renderPerPageMessages: function() {
@@ -172,12 +176,12 @@ define('chat', [
 
             renderSettings: function() {
                 var _this = this;
-                _this.newSettings.initialize(_this.chatElem, _this.data);
+                _this.newSettings.initialize({chat: _this});
             },
 
             renderContactList: function() {
                 var _this = this;
-                _this.newContact_list.initialize(_this.chatElem);
+                _this.newContact_list.initialize({chat: _this});
             },
 
             resizeMessagesContainer: function() {
@@ -189,12 +193,14 @@ define('chat', [
             calcMessagesContainerHeight: function() {
                 var _this = this;
                 _this.btnEditPanel = _this.chatElem.querySelector('[data-action="btnEditPanel"]');
+                if(_this.btnEditPanel){
+                    var turnScrol = _this.btnEditPanel.querySelector('input[name="ControlScrollMessage"]');
+                }
                 _this.header_container = _this.chatElem.querySelector('[data-role="header_container"]');
                 _this.controls_container = _this.chatElem.querySelector('[data-role="controls_container"]');
                 _this.pagination_container = _this.chatElem.querySelector('[data-role="pagination_container"]');
                 _this.choice_per_page_container = _this.chatElem.querySelector('[data-role="per_page_container"]');
                 _this.message = _this.messageElem.firstElementChild;
-                var turnScrol = _this.btnEditPanel.querySelector('input[name="ControlScrollMessage"]');
                 if (!turnScrol || turnScrol && !turnScrol.checked) {
                     var param = _this.body_outer_container.getAttribute('param-content');
                     var height = window.innerHeight - _this.header_container.clientHeight - _this.choice_per_page_container.clientHeight - _this.pagination_container.clientHeight - _this.controls_container.clientHeight - _this.messageElem.clientHeight - _this.data.padding.bottom;

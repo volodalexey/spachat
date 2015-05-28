@@ -6,9 +6,7 @@ define('login', [
     ],
     function(overlay_core,
              event_core,
-
-             indexeddb
-    ) {
+             indexeddb) {
 
         var login = function() {
         };
@@ -20,8 +18,9 @@ define('login', [
             initialize: function() {
                 var _this = this;
                 _this.login_container = document.querySelector('[data-role="login_container_global"]');
-                _this.main_container = document.querySelector('[data-role="main_container"]');
-                _this.submit = _this.login_container.querySelector('[data-action="submit"]');
+                _this.form = _this.login_container.querySelector('form');
+                _this.submit = _this.form.querySelector('[data-action="submit"]');
+                _this.register = _this.form.querySelector('[data-action="register_user"]');
                 _this.data = {
                     collection: {
                         "id": 1,
@@ -32,69 +31,72 @@ define('login', [
                     }
                 };
                 _this.indexeddb = new indexeddb().initialize();
+                _this.bindContexts();
                 return _this;
             },
 
-            render: function() {
+            render: function(navigator) {
                 var _this = this;
+                _this.navigator = navigator;
+                _this.navigatorData = _this.navigator.data;
                 _this.login_container.classList.remove("hidden_login");
                 _this.addEventListeners();
                 _this.toggleWaiter(true);
             },
 
+            bindContexts: function() {
+                var _this = this;
+                _this.bindedOnSubmit = _this.onSubmit.bind(_this);
+                _this.bindedOnRegister = _this.onRegister.bind(_this);
+            },
+
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                _this.submit.addEventListener('click', _this.onSubmit.bind(_this), false);
+                if (_this.submit) {
+                    _this.submit.addEventListener('click', _this.bindedOnSubmit, false);
+                }
+                if (_this.register) {
+                    _this.register.addEventListener('click', _this.bindedOnRegister, false);
+                }
             },
 
             removeEventListeners: function() {
                 var _this = this;
-                _this.submit.removeEventListener('click', _this.onSubmit.bind(_this), false);
+                _this.submit.removeEventListener('click', _this.bindedOnSubmit, false);
+                _this.register.removeEventListener('click', _this.bindedOnRegister, false);
             },
 
             onSubmit: function(event) {
                 var _this = this;
                 event.preventDefault();
-
-                console.log("onSubmit");
-                _this.authentification(function() {
-                    history.pushState({"name": "chat"}, null, 'chat');
-                    window.history.go(0);
-                });
-
+                _this.userName = _this.form.elements.userId.value;
+                _this.password = _this.form.elements.password.value;
+                if (_this.userName !== "" && _this.password !== "") {
+                    _this.indexeddb.getAll(_this.data.collection, function(getAllErr, users) {
+                        if (getAllErr) {
+                            console.error(getAllErr);
+                        } else {
+                            var user = _.findWhere(users, {"userName": _this.userName, "userPassword": _this.password});
+                            if (!user) {
+                                _this.navigatorData.userID = "";
+                                _this.form.elements.password.value = "";
+                                history.pushState(null, null, 'login');
+                                _this.navigator.navigate();
+                            } else {
+                                _this.navigatorData.userID = user.userId;
+                                history.pushState(null, null, 'chat');
+                                _this.navigator.navigate();
+                            }
+                        }
+                    });
+                }
             },
 
-            authentification: function(callback){
-                var _this = this, account;
-                _this.form = _this.login_container.querySelector('form');
-
-                account = {
-                    userId: _this.form.elements.userId.value,
-                    password: _this.form.elements.password.value
-                };
-
-                _this.indexeddb.addOrUpdateAll(
-                    _this.data.collection,
-                    [
-                        account
-                    ],
-                    function(error) {
-                        if (error) {
-                            console.error(error);
-
-                            return;
-                        }
-                        console.log("account", account);
-                        callback();
-                    }
-                );
-
-
-                console.log(_this.form.elements.userId.value);
-
-                console.log(_this.form.elements.password.value);
-
+            onRegister: function() {
+                event.preventDefault();
+                history.pushState(null, null, 'register');
+                window.history.go(0);
             }
         };
 

@@ -47,6 +47,7 @@
     "data_role": "",
     "data_location": "right_panel",
     "data_action": "btn_user_info",
+    "data_mode": "user_info",
     "name": "",
     "value": null,
     "disable": false

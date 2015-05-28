@@ -14,13 +14,13 @@ define('settings', [
 
         settings.prototype = {
 
-            initialize: function(newChat, data) {
+            initialize: function(options) {
                 var _this = this;
+
                 _this.addEventListeners();
-                _this.newChat = newChat;
-                _this.data = data;
+                _this.chat = options.chat;
                 _this.setting_template = _.template(setting_template);
-                _this.body_outer_container = _this.newChat.querySelector('[data-role="body_outer_container"]');
+                _this.body_outer_container = _this.chat.body_outer_container;
                 _this.renderSettings();
                 return _this;
             },
@@ -36,20 +36,18 @@ define('settings', [
 
             renderSettings: function() {
                 var _this = this;
-                var param = _this.body_outer_container.getAttribute('param-content');
-                _this.filter_container = _this.newChat.querySelector('[data-role="filter_container"]');
+                _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
                 if (!_this.filter_container.classList.contains('hide')) {
                     _this.filter_container.classList.add('hide');
                 }
                 _this.trigger('calcOuterContainerHeight');
-                if (param === "setting") {
+                if (_this.chat.data.body_mode === "setting") {
                     _this.trigger('renderMassagesEditor');
-                    _this.trigger('renderPagination');
-                    _this.body_outer_container.setAttribute("param-content", "message");
+                    _this.chat.data.body_mode = "messages";
                     _this.body_outer_container.classList.remove('background');
                 } else {
                     _this.body_outer_container.innerHTML = _this.setting_template();
-                    _this.body_outer_container.setAttribute("param-content", "setting");
+                    _this.chat.data.body_mode = "setting";
                     _this.body_outer_container.classList.add('background');
                 }
             }

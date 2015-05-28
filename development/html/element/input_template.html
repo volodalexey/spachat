@@ -2,6 +2,7 @@
 <input data-role="<%= input.data_role%>" type="<%= input.type%>" class="<%= input.class%>"
 <% if(input.value !== null){ %>  value="<%= input.value%>" <%}%>
 <% if(input.id){ %> id="<%= input.id%>" <%}%>
+<% if(input.disabled){ %> disabled="<%= disabled %>" <%}%>
 <% if(input.onkeypress){ %> onkeypress="<%= input.onkeypress %>" <%}%>
  >
 <%= input.text%>

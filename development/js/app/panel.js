@@ -1,9 +1,10 @@
 define('panel', [
         'event_core',
         'ajax_core',
+        'indexeddb',
 
-        'text!../html/body_left_panel_template.html',
-        'text!../html/body_right_panel_template.html',
+        'text!../html/toolbar_left_panel_template.html',
+        'text!../html/toolbar_right_panel_template.html',
         'text!../html/user_info_template.html',
         'text!../html/element/triple_element_template.html',
         'text!../html/element/button_template.html',
@@ -12,8 +13,9 @@ define('panel', [
     ],
     function(event_core,
              ajax_core,
-             body_left_panel_template,
-             body_right_panel_template,
+             indexeddb,
+             toolbar_left_panel_template,
+             toolbar_right_panel_template,
              user_info_template,
              triple_element_template,
              button_template,
@@ -27,19 +29,34 @@ define('panel', [
 
             panelArray: [],
 
-            body_left_panel_template: _.template(body_left_panel_template),
-            body_right_panel_template: _.template(body_right_panel_template),
+            toolbar_left_panel_template: _.template(toolbar_left_panel_template),
+            toolbar_right_panel_template: _.template(toolbar_right_panel_template),
             user_info_template: _.template(user_info_template),
             triple_element_template: _.template(triple_element_template),
             button_template: _.template(button_template),
             label_template: _.template(label_template),
             input_template: _.template(input_template),
 
-            initialize: function() {
+            initialize: function(navigator) {
                 var _this = this;
                 _this.bindContextsContent();
                 _this.bindContextsMain();
                 _this.render();
+                _this.navigator = navigator;
+                _this.navigatorData = _this.navigator.data;
+
+                _this.data = {
+                    mode: "",
+                    mode_user_info: "reading",
+                    collection: {
+                        "id": 1,
+                        "db_name": 'authentification',
+                        "table_name": 'authentification',
+                        "db_version": 2,
+                        "keyPath": "userId"
+                    }
+                };
+                _this.indexeddb = new indexeddb().initialize();
                 return _this;
             },
 
@@ -47,14 +64,18 @@ define('panel', [
                 var _this = this;
                 _this.leftPanel = document.querySelector('[data-action="leftPanel"]');
                 _this.btnLeftPanel = _this.leftPanel.querySelector('[data-action="btnLeftPanel"]');
+                _this.left_panel_inner_container = _this.leftPanel.querySelector('[data-role="left_panel_inner_container"]');
                 _this.bodyLeftPanel = _this.leftPanel.querySelector('[data-role="body_left_panel"]');
+                _this.toolbarLeftPanel = _this.leftPanel.querySelector('[data-role="toolbar_left_panel"]');
                 _this.leftPanel.style.left = -_this.leftPanel.offsetWidth + 'px';
                 _this.leftPanel.style.maxWidth = window.innerWidth + 'px';
                 _this.btnLeftPanel.style.left = _this.leftPanel.offsetWidth + 'px';
 
                 _this.rightPanel = document.querySelector('[data-action="rightPanel"]');
                 _this.btnRightPanel = _this.rightPanel.querySelector('[data-action="btnRightPanel"]');
+                _this.right_panel_inner_container = _this.rightPanel.querySelector('[data-role="right_panel_inner_container"]');
                 _this.bodyRightPanel = _this.rightPanel.querySelector('[data-role="body_right_panel"]');
+                _this.toolbarRightPanel = _this.rightPanel.querySelector('[data-role="toolbar_right_panel"]');
                 _this.rightPanel.style.right = -_this.rightPanel.offsetWidth + 'px';
                 _this.rightPanel.style.maxWidth = window.innerWidth + 'px';
                 _this.btnRightPanel.style.right = _this.rightPanel.offsetWidth + 'px';
@@ -63,8 +84,8 @@ define('panel', [
                 _this.leftPanel.classList.remove("hidden");
                 _this.leftPanel.classList.add("animate");
                 _this.rightPanel.classList.add("animate");
-                _this.bodyLeftPanel.classList.remove("hidden");
-                _this.bodyRightPanel.classList.remove("hidden");
+                _this.left_panel_inner_container.classList.remove("hidden");
+                _this.right_panel_inner_container.classList.remove("hidden");
                 _this.addMainEventListener();
             },
 
@@ -99,7 +120,7 @@ define('panel', [
                 var _this = this;
                 _this.bindedThrowEventAddNewChat = _this.throwEvent.bind(_this, 'addNewChat');
                 _this.bindedThrowEventClearStory = _this.throwEvent.bind(_this, 'clearStory');
-                _this.bindedRenderUserInfo = _this.renderUserInfo.bind(_this);
+                _this.bindedDownloadUserInfo = _this.downloadUserInfo.bind(_this);
             },
 
             addContentEventListener: function() {
@@ -112,7 +133,7 @@ define('panel', [
                     _this.clearStory.addEventListener('click', _this.bindedThrowEventClearStory, false);
                 }
                 if (_this.userInfo) {
-                    _this.userInfo.addEventListener('click', _this.bindedRenderUserInfo, false);
+                    _this.userInfo.addEventListener('click', _this.bindedDownloadUserInfo, false);
                 }
             },
 
@@ -125,7 +146,7 @@ define('panel', [
                     _this.clearStory.removeEventListener('click', _this.bindedThrowEventClearStory, false);
                 }
                 if (_this.userInfo) {
-                    _this.userInfo.removeEventListener('click', _this.bindedRenderUserInfo, false);
+                    _this.userInfo.removeEventListener('click', _this.bindedDownloadUserInfo, false);
                 }
             },
 
@@ -166,15 +187,15 @@ define('panel', [
             fillingTemplateBodyLeftPanel: function() {
                 var _this = this;
                 _this.leftPanel.style.left = 0 + 'px';
-                _this.bodyLeftPanel.innerHTML = _this.body_left_panel_template({
+                _this.toolbarLeftPanel.innerHTML = _this.toolbar_left_panel_template({
                     config: _this.panel_config,
                     triple_element_template: _this.triple_element_template,
                     button_template: _this.button_template,
                     input_template: _this.input_template,
                     label_template: _this.label_template
                 });
-                _this.addChat = _this.bodyLeftPanel.querySelector('button[data-action="addChat"]');
-                _this.clearStory = _this.bodyLeftPanel.querySelector('[data-action="btnClearListMessage"]');
+                _this.addChat = _this.toolbarLeftPanel.querySelector('button[data-action="addChat"]');
+                _this.clearStory = _this.toolbarLeftPanel.querySelector('[data-action="btnClearListMessage"]');
                 _this.addContentEventListener();
             },
 
@@ -187,7 +208,10 @@ define('panel', [
                         _this.panel_config = JSON.parse(res);
                         if (_this.rightPanel.clientWidth + _this.btnRightPanel.clientWidth > document.body.clientWidth) {
                             if (_this.rightPanel.style.right !== '0px') {
-                                _this.fillingTemplateBodyRightPanel();
+                                _this.fillingTemplateToolbarRightPanel();
+                                if (_this.data.mode === _this.userInfo.getAttribute("data-mode")) {
+                                    _this.downloadUserInfo();
+                                }
                                 _this.resizePanel();
                             } else {
                                 _this.rightPanel.style.right = -_this.rightPanel.offsetWidth + 'px';
@@ -197,52 +221,189 @@ define('panel', [
                             }
                         } else {
                             if (_this.rightPanel.style.right !== '0px') {
-                                _this.fillingTemplateBodyRightPanel();
+                                _this.fillingTemplateToolbarRightPanel();
+                                if (_this.data.mode === _this.userInfo.getAttribute("data-mode")) {
+                                    _this.downloadUserInfo();
+                                }
                             } else {
                                 _this.rightPanel.style.right = -_this.rightPanel.offsetWidth + 'px';
                                 _this.bodyRightPanel.innerHTML = "";
+
                             }
                         }
                     }
                 })
             },
 
-            fillingTemplateBodyRightPanel: function() {
+            fillingTemplateToolbarRightPanel: function() {
                 var _this = this;
                 _this.rightPanel.style.right = 0 + 'px';
-                _this.bodyRightPanel.innerHTML = _this.body_right_panel_template({
+                _this.toolbarRightPanel.innerHTML = _this.toolbar_right_panel_template({
                     config: _this.panel_config,
                     triple_element_template: _this.triple_element_template,
                     button_template: _this.button_template,
                     input_template: _this.input_template,
                     label_template: _this.label_template
                 });
-                _this.userInfo = _this.rightPanel.querySelector('[data-action="btn_user_info"]');
+                _this.userInfo = _this.toolbarRightPanel.querySelector('[data-action="btn_user_info"]');
                 _this.addContentEventListener();
+            },
+
+            downloadUserInfo: function(event, update) {
+                var _this = this;
+                if (_this.data.mode === _this.userInfo.getAttribute("data-mode")) {
+                    if (_this.bodyRightPanel.innerHTML === "" || update) {
+                        _this.indexeddb.getAll(_this.data.collection, function(getAllErr, users) {
+                            if (getAllErr) {
+                                console.error(getAllErr);
+                            } else {
+                                _this.user = _.findWhere(users, {"userId": _this.navigatorData.userID});
+                                if (_this.user_info_config) {
+                                    _this.renderUserInfo();
+                                } else {
+                                    _this.sendRequest("/mock/user_info_config.json", function(err, res) {
+                                        if (err) {
+                                            console.log(err);
+                                        } else {
+                                            _this.user_info_config = JSON.parse(res);
+                                            _this.renderUserInfo();
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    _this.data.mode = _this.userInfo.getAttribute("data-mode");
+                    _this.downloadUserInfo();
+                }
             },
 
             renderUserInfo: function() {
                 var _this = this;
-                _this.user_info_container = _this.rightPanel.querySelector('[data-role="user_info_container"]');
+                _this.user_info_config.forEach(function(element) {
+                    if (element.data_role === "user_name_input") {
+                        element.value = _this.user.userName;
+                    }
+                    if (element.data_role === "user_id_input") {
+                        element.value = _this.user.userId;
+                    }
+                });
+                _this.fillingTemplateUserInfo();
+            },
 
-                if (_this.user_info_container.innerHTML === "") {
-                    _this.sendRequest("/mock/user_info_config.json", function(err, res) {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            _this.user_info_config = JSON.parse(res);
-                            _this.user_info_container.innerHTML = _this.user_info_template({
-                                config: _this.user_info_config,
-                                triple_element_template: _this.triple_element_template,
-                                button_template: _this.button_template,
-                                input_template: _this.input_template,
-                                label_template: _this.label_template
-                            });
-                        }
-                    })
+            fillingTemplateUserInfo: function() {
+                var _this = this;
+
+                _this.bodyRightPanel.innerHTML = _this.user_info_template({
+                    config: _this.user_info_config,
+                    triple_element_template: _this.triple_element_template,
+                    button_template: _this.button_template,
+                    input_template: _this.input_template,
+                    label_template: _this.label_template,
+                    mode: _this.data.mode_user_info
+                });
+
+                _this.data.mode = _this.userInfo.getAttribute("data-mode");
+                //_this.user_id = _this.bodyRightPanel.querySelector('input[data-role="user_id"]');
+                //_this.user_name = _this.bodyRightPanel.querySelector('input[data-role="user_name"]');
+                //_this.old_password = _this.bodyRightPanel.querySelector('input[data-role="user_old_password"]');
+                //_this.new_password = _this.bodyRightPanel.querySelector('input[data-role="user_new_password"]');
+                //_this.confirm_password = _this.bodyRightPanel.querySelector('input[data-role="user_confirm_password"]');
+
+                if (_this.data.mode_user_info === "reading") {
+                    _this.change_user_info = _this.bodyRightPanel.querySelector('button[data-action="change_user_info"]');
+                    if (_this.change_user_info) {
+                        _this.change_user_info.addEventListener('click', _this.changeUserInfo.bind(_this), false);
+                    }
+                    _this.logout_user = _this.bodyRightPanel.querySelector('button[data-action="logout"]');
+                    if (_this.logout_user) {
+                        _this.logout_user.addEventListener('click', _this.logout.bind(_this), false);
+                    }
                 } else {
-                    _this.user_info_container.innerHTML = "";
+                    _this.cancel_change_user_info = _this.bodyRightPanel.querySelector('button[data-action="cancel_change_user_info"]');
+                    if (_this.cancel_change_user_info) {
+                        _this.cancel_change_user_info.addEventListener('click', _this.cancelChangeUserInfo.bind(_this), false);
+                    }
+                    _this.save_change_user_info = _this.bodyRightPanel.querySelector('button[data-action="save_change_user_info"]');
+                    if (_this.save_change_user_info) {
+                        _this.save_change_user_info.addEventListener('click', _this.saveChangeUserInfo.bind(_this), false);
+                    }
                 }
+            },
+
+            cancelChangeUserInfo: function() {
+                var _this = this;
+                _this.data.mode_user_info = "reading";
+                _this.renderUserInfo(null, true);
+            },
+
+            saveChangeUserInfo: function() {
+                var _this = this;
+
+                if (_this.user_name.value !== "" && _this.old_password.value !== "" && _this.new_password.value !== "" && _this.confirm_password.value !== "") {
+                    if (_this.old_password.value === _this.user.userPassword) {
+                        if (_this.new_password.value === _this.confirm_password.value) {
+                            _this.updateUserInfo(function() {
+                                _this.data.mode_user_info = "reading";
+                                _this.renderUserInfo(true);
+                            })
+                        } else {
+                            alert("New password and confirm password do not match");
+                            _this.new_password.value = "";
+                            _this.confirm_password.value = "";
+                        }
+                    } else {
+                        alert("Old password is not correct");
+                        _this.old_password.value = "";
+                        _this.new_password.value = "";
+                        _this.confirm_password.value = "";
+                    }
+                } else {
+                    alert("Fill in all the fields");
+                }
+            },
+
+            updateUserInfo: function(callback) {
+                var _this = this;
+                _this.account = {
+                    userId: _this.navigatorData.userID,
+                    userPassword: _this.new_password.value,
+                    userName: _this.user_name.value
+                };
+                _this.indexeddb.addOrUpdateAll(
+                    _this.data.collection,
+                    [
+                        _this.account
+                    ],
+                    function(error) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
+                        console.log("account", _this.account);
+                        callback();
+                    }
+                );
+            },
+
+            changeUserInfo: function() {
+                var _this = this;
+                _this.data.mode = "";
+                _this.data.mode_user_info = "editing";
+                _this.fillingTemplateUserInfo(function() {
+                    _this.user_name.value = _this.user.userName;
+                });
+            },
+
+            logout: function() {
+                var _this = this;
+                _this.navigatorData.userID = "";
+                _this.data.mode = "";
+                _this.bodyRightPanel.innerHTML = "";
+                _this.removeMainEventListeners();
+                history.pushState(null, null, 'login');
+                _this.navigator.navigate();
             },
 
             resizePanel: function() {
