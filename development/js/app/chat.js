@@ -47,7 +47,8 @@ define('chat', [
                         bottom: 5
                     },
                     per_page_value: 2,
-                    valueEnablePagination: false
+                    valueEnablePagination: false,
+                    showChoicePerPage: false
                 };
                 // TODO replcae with template
                 _this.chatElem = chatElem;

@@ -62,30 +62,28 @@ define('panel', [
 
             render: function() {
                 var _this = this;
-                _this.leftPanel = document.querySelector('[data-action="leftPanel"]');
+                _this.left_panel_outer_container = document.querySelector('[data-role="left_panel_outer_container"]');
+                _this.leftPanel = _this.left_panel_outer_container.querySelector('[data-action="leftPanel"]');
                 _this.btnLeftPanel = _this.leftPanel.querySelector('[data-action="btnLeftPanel"]');
                 _this.left_panel_inner_container = _this.leftPanel.querySelector('[data-role="left_panel_inner_container"]');
-                _this.bodyLeftPanel = _this.leftPanel.querySelector('[data-role="body_left_panel"]');
-                _this.toolbarLeftPanel = _this.leftPanel.querySelector('[data-role="toolbar_left_panel"]');
-                _this.leftPanel.style.left = -_this.leftPanel.offsetWidth + 'px';
-                _this.leftPanel.style.maxWidth = window.innerWidth + 'px';
-                _this.btnLeftPanel.style.left = _this.leftPanel.offsetWidth + 'px';
+                _this.bodyLeftPanel = _this.left_panel_inner_container.querySelector('[data-role="body_left_panel"]');
+                _this.toolbarLeftPanel = _this.left_panel_inner_container.querySelector('[data-role="toolbar_left_panel"]');
+                _this.left_panel_outer_container.classList.remove("hide");
+                _this.left_panel_outer_container.classList.add("animate");
+                _this.left_panel_outer_container.style.maxWidth = window.innerWidth + 'px';
+                _this.left_panel_outer_container.style.left = -_this.left_panel_outer_container.offsetWidth + 'px';
 
-                _this.rightPanel = document.querySelector('[data-action="rightPanel"]');
+                _this.right_panel_outer_container = document.querySelector('[data-role="right_panel_outer_container"]');
+                _this.rightPanel = _this.right_panel_outer_container.querySelector('[data-action="rightPanel"]');
                 _this.btnRightPanel = _this.rightPanel.querySelector('[data-action="btnRightPanel"]');
                 _this.right_panel_inner_container = _this.rightPanel.querySelector('[data-role="right_panel_inner_container"]');
-                _this.bodyRightPanel = _this.rightPanel.querySelector('[data-role="body_right_panel"]');
-                _this.toolbarRightPanel = _this.rightPanel.querySelector('[data-role="toolbar_right_panel"]');
-                _this.rightPanel.style.right = -_this.rightPanel.offsetWidth + 'px';
-                _this.rightPanel.style.maxWidth = window.innerWidth + 'px';
-                _this.btnRightPanel.style.right = _this.rightPanel.offsetWidth + 'px';
+                _this.bodyRightPanel = _this.right_panel_inner_container.querySelector('[data-role="body_right_panel"]');
+                _this.toolbarRightPanel = _this.right_panel_inner_container.querySelector('[data-role="toolbar_right_panel"]');
+                _this.right_panel_outer_container.classList.remove("hide");
+                _this.right_panel_outer_container.classList.add("animate");
+                _this.right_panel_outer_container.style.maxWidth = window.innerWidth + 'px';
+                _this.right_panel_outer_container.style.right = - _this.right_panel_outer_container.offsetWidth + 'px';
 
-                _this.rightPanel.classList.remove("hidden");
-                _this.leftPanel.classList.remove("hidden");
-                _this.leftPanel.classList.add("animate");
-                _this.rightPanel.classList.add("animate");
-                _this.left_panel_inner_container.classList.remove("hidden");
-                _this.right_panel_inner_container.classList.remove("hidden");
                 _this.addMainEventListener();
             },
 
@@ -93,6 +91,7 @@ define('panel', [
                 var _this = this;
                 _this.bindedWorkRightPanel = _this.workRightPanel.bind(_this);
                 _this.bindedWorkLeftPanel = _this.workLeftPanel.bind(_this);
+                _this.bindedInutUserInfo = _this.inputUserInfo.bind(_this);
             },
 
             addMainEventListener: function() {
@@ -104,6 +103,9 @@ define('panel', [
                 if (_this.btnLeftPanel) {
                     _this.btnLeftPanel.addEventListener('click', _this.bindedWorkLeftPanel, false);
                 }
+                if (_this.bodyRightPanel) {
+                    _this.bodyRightPanel.addEventListener("input", _this.bindedInutUserInfo, false);
+                }
             },
 
             removeMainEventListeners: function() {
@@ -113,6 +115,9 @@ define('panel', [
                 }
                 if (_this.btnLeftPanel) {
                     _this.btnLeftPanel.removeEventListener('click', _this.bindedWorkLeftPanel, false);
+                }
+                if (_this.bodyRightPanel) {
+                    _this.bodyRightPanel.removeEventListener("input", _this.bindedInutUserInfo, false);
                 }
             },
 
@@ -162,21 +167,24 @@ define('panel', [
                         console.log(err);
                     } else {
                         _this.panel_config = JSON.parse(res);
-                        if (_this.leftPanel.clientWidth + _this.btnLeftPanel.clientWidth > document.body.clientWidth) {
-                            if (_this.leftPanel.style.left !== '0px') {
+                        if (_this.left_panel_outer_container.clientWidth + _this.btnLeftPanel.clientWidth > document.body.clientWidth) {
+                            if (_this.left_panel_outer_container.style.left !== '0px') {
+                                _this.left_panel_outer_container.style.left = "0px";
                                 _this.fillingTemplateBodyLeftPanel();
                                 _this.resizePanel();
                             } else {
-                                _this.leftPanel.style.left = -_this.leftPanel.offsetWidth + 'px';
-                                _this.btnLeftPanel.style.left = _this.leftPanel.offsetWidth + 'px';
+                                _this.left_panel_outer_container.style.left = -_this.left_panel_outer_container.offsetWidth + 'px';
+                                _this.btnLeftPanel.classList.remove("floatR");
+                                _this.left_panel_inner_container.classList.remove("clear");
                                 _this.btnLeftPanel.classList.add("btnPanel");
                                 _this.bodyLeftPanel.innerHTML = "";
                             }
                         } else {
-                            if (_this.leftPanel.style.left !== '0px') {
+                            if (_this.left_panel_outer_container.style.left !== '0px') {
+                                _this.left_panel_outer_container.style.left = "0px";
                                 _this.fillingTemplateBodyLeftPanel();
                             } else {
-                                _this.leftPanel.style.left = -_this.leftPanel.offsetWidth + 'px';
+                                _this.left_panel_outer_container.style.left = -_this.left_panel_outer_container.offsetWidth + 'px';
                                 _this.bodyLeftPanel.innerHTML = "";
                             }
                         }
@@ -206,29 +214,30 @@ define('panel', [
                         console.log(err);
                     } else {
                         _this.panel_config = JSON.parse(res);
-                        if (_this.rightPanel.clientWidth + _this.btnRightPanel.clientWidth > document.body.clientWidth) {
-                            if (_this.rightPanel.style.right !== '0px') {
+                        if (_this.right_panel_outer_container.clientWidth + _this.btnRightPanel.clientWidth  > document.body.clientWidth) {
+                            if (_this.right_panel_outer_container.style.right !== '0px') {
+                                _this.right_panel_outer_container.style.right =  '0px';
                                 _this.fillingTemplateToolbarRightPanel();
                                 if (_this.data.mode === _this.userInfo.getAttribute("data-mode")) {
                                     _this.downloadUserInfo();
                                 }
                                 _this.resizePanel();
                             } else {
-                                _this.rightPanel.style.right = -_this.rightPanel.offsetWidth + 'px';
-                                _this.btnRightPanel.style.right = _this.rightPanel.offsetWidth + 'px';
+                                _this.right_panel_outer_container.style.right = - _this.right_panel_outer_container.offsetWidth + 'px';
+                                _this.right_panel_inner_container.classList.remove("clear");
                                 _this.btnRightPanel.classList.add("btnPanel");
                                 _this.bodyRightPanel.innerHTML = "";
                             }
                         } else {
-                            if (_this.rightPanel.style.right !== '0px') {
+                            if (_this.right_panel_outer_container.style.right !== '0px') {
+                                _this.right_panel_outer_container.style.right =  '0px';
                                 _this.fillingTemplateToolbarRightPanel();
                                 if (_this.data.mode === _this.userInfo.getAttribute("data-mode")) {
                                     _this.downloadUserInfo();
                                 }
                             } else {
-                                _this.rightPanel.style.right = -_this.rightPanel.offsetWidth + 'px';
+                                _this.right_panel_outer_container.style.right = -_this.right_panel_outer_container.offsetWidth + 'px';
                                 _this.bodyRightPanel.innerHTML = "";
-
                             }
                         }
                     }
@@ -282,8 +291,10 @@ define('panel', [
             renderUserInfo: function() {
                 var _this = this;
                 _this.user_info_config.forEach(function(element) {
-                    if (element.data_role === "user_name_input") {
-                        element.value = _this.user.userName;
+                    if (element.data_role === "user_name_input" || element.data_role === "user_name") {
+                        if(element.value === ""){
+                            element.value = _this.user.userName;
+                        }
                     }
                     if (element.data_role === "user_id_input") {
                         element.value = _this.user.userId;
@@ -306,10 +317,10 @@ define('panel', [
 
                 _this.data.mode = _this.userInfo.getAttribute("data-mode");
                 //_this.user_id = _this.bodyRightPanel.querySelector('input[data-role="user_id"]');
-                //_this.user_name = _this.bodyRightPanel.querySelector('input[data-role="user_name"]');
-                //_this.old_password = _this.bodyRightPanel.querySelector('input[data-role="user_old_password"]');
-                //_this.new_password = _this.bodyRightPanel.querySelector('input[data-role="user_new_password"]');
-                //_this.confirm_password = _this.bodyRightPanel.querySelector('input[data-role="user_confirm_password"]');
+                _this.user_name = _this.bodyRightPanel.querySelector('[data-role="user_name_input"]');
+                _this.old_password = _this.bodyRightPanel.querySelector('[data-role="user_old_password_input"]');
+                _this.new_password = _this.bodyRightPanel.querySelector('[data-role="user_new_password_input"]');
+                _this.confirm_password = _this.bodyRightPanel.querySelector('[data-role="user_confirm_password_input"]');
 
                 if (_this.data.mode_user_info === "reading") {
                     _this.change_user_info = _this.bodyRightPanel.querySelector('button[data-action="change_user_info"]');
@@ -332,21 +343,48 @@ define('panel', [
                 }
             },
 
+            inputUserInfo: function(event) {
+                var _this = this;
+                if (_this.user_info_config) {
+                    var param = event.target.getAttribute("data-role");
+                    _this.user_info_config.forEach(function(element) {
+                            if (param === element.data_role) {
+                                element.value = event.target.value;
+                            }
+                        }
+                    )
+                }
+            },
+
+            clearUserInfo: function() {
+                var _this = this;
+                _this.user_info_config.forEach(function(element) {
+                        if (element.data_role === "user_name_input" || element.data_role === "user_old_password_input" ||
+                            element.data_role === "user_new_password_input" ||  element.data_role === "user_confirm_password_input") {
+                            element.value = "";
+                        }
+                    }
+                )
+            },
+
             cancelChangeUserInfo: function() {
                 var _this = this;
                 _this.data.mode_user_info = "reading";
+                _this.clearUserInfo();
                 _this.renderUserInfo(null, true);
             },
 
             saveChangeUserInfo: function() {
                 var _this = this;
-
                 if (_this.user_name.value !== "" && _this.old_password.value !== "" && _this.new_password.value !== "" && _this.confirm_password.value !== "") {
                     if (_this.old_password.value === _this.user.userPassword) {
                         if (_this.new_password.value === _this.confirm_password.value) {
                             _this.updateUserInfo(function() {
                                 _this.data.mode_user_info = "reading";
-                                _this.renderUserInfo(true);
+                                _this.clearUserInfo();
+                                _this.user_info_config = null;
+                                _this.downloadUserInfo(null, true);
+                                //_this.renderUserInfo(true);
                             })
                         } else {
                             alert("New password and confirm password do not match");
@@ -408,28 +446,25 @@ define('panel', [
 
             resizePanel: function() {
                 var _this = this;
-                var widthPanel;
-                if (_this.leftPanel.style.left === '0px') {
-                    widthPanel = _this.leftPanel.clientWidth + _this.btnLeftPanel.clientWidth;
-                    if (widthPanel > document.body.clientWidth) {
-                        _this.btnLeftPanel.style.left = parseInt(_this.btnLeftPanel.style.left) - _this.btnLeftPanel.clientWidth + 'px';
-                        _this.btnLeftPanel.style.left = 0 + "px";
+                if (_this.left_panel_outer_container.style.left === '0px') {
+                    if (_this.left_panel_outer_container.clientWidth + _this.btnLeftPanel.clientWidth > document.body.clientWidth) {
+                        _this.btnLeftPanel.classList.add("floatR");
+                        _this.left_panel_inner_container.classList.add("clear");
                         _this.btnLeftPanel.classList.remove("btnPanel");
                     }
                     else {
-                        _this.btnLeftPanel.style.left = _this.leftPanel.offsetWidth + 'px';
+                        _this.btnLeftPanel.classList.remove("floatR");
+                        _this.left_panel_inner_container.classList.remove("clear");
                         _this.btnLeftPanel.classList.add("btnPanel");
                     }
                 }
-                if (_this.rightPanel.style.right === '0px') {
-                    widthPanel = _this.rightPanel.clientWidth + _this.btnRightPanel.clientWidth;
-                    if (widthPanel > document.body.clientWidth) {
-                        _this.btnRightPanel.style.right = _this.rightPanel.clientWidth - _this.btnRightPanel.clientWidth + 'px';
+                if (_this.right_panel_outer_container.style.right === '0px') {
+                    if (_this.right_panel_outer_container.clientWidth + _this.btnRightPanel.clientWidth > document.body.clientWidth) {
+                        _this.right_panel_inner_container.classList.add("clear");
                         _this.btnRightPanel.classList.remove("btnPanel");
-                        _this.btnRightPanel.classList.add("floatR");
                     }
                     else {
-                        _this.btnRightPanel.style.right = _this.rightPanel.offsetWidth + 'px';
+                        _this.right_panel_inner_container.classList.remove("clear");
                         _this.btnRightPanel.classList.add("btnPanel");
                     }
                 }

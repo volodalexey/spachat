@@ -1,25 +1,21 @@
 .fixed{
   position: fixed;
-  z-index: 25;
+  //z-index: 25;
   height: 100%;
   min-width: 300px;
-  &.animate{
-    transition: left  0.2s ease, right  0.2s ease;
-  }
 }
 .panel{
   height: 100%;
-  &.right{
-    clear: both;
-    background-color: @pink;
-  }
-  &.left{
-    background-color: @mistyrose;
-  }
 }
 .btnPanel{
   position: absolute;
   height: 50px;
+  &.right{
+    right: 100%;
+  }
+  &.left{
+    left: 100%;
+  }
 }
 .left{
   left: 0px;
@@ -37,4 +33,17 @@
   width: 300px;
   clear: both;
   padding-top: 10px;
+}
+.relative{
+  position: relative;
+  height: 100%;
+  &.colorR{
+    background-color: @pink;
+  }
+  &.colorL{
+    background-color: @mistyrose;
+  }
+}
+.animate{
+  transition: left  0.2s ease, right  0.2s ease;
 }

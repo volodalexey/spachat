@@ -40,7 +40,7 @@ define('contact_list', [
                 _this.trigger('calcOuterContainerHeight');
                 if (_this.chat.data.body_mode === "contact_list") {
                     _this.trigger('renderMassagesEditor');
-                    _this.trigger('renderPagination');
+                    //_this.trigger('renderPagination');
                     _this.chat.data.body_mode = "messages";
                     _this.body_outer_container.classList.remove('background');
                 } else {

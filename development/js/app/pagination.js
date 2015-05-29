@@ -48,12 +48,14 @@ define('pagination', [
                 _this.outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
                 _this.pagination_container = _this.chatElem.querySelector('[data-role="pagination_container"]');
                 _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
+                _this.choice_per_page_container = _this.outer_container.querySelector('[data-role="per_page_container"]');
                 _this.sendRequest("/mock/pagination_navbar_config.json", function(err, res) {
                     if (err) {
                         console.log(err);
                     } else {
                         _this.pagination_navbar_config = JSON.parse(res);
                     }
+
                     _this.renderPagination(callback);
                 });
                 return _this;
@@ -97,6 +99,9 @@ define('pagination', [
                     _this.chat.data.valueEnablePagination = _this.enable_pagination.checked;
                     _this.chat.data.per_page_value = parseInt(_this.per_page.value);
                     if (_this.enable_pagination.checked) {
+                        if(_this.chat.data.showChoicePerPage){
+                            _this.showChoicePerPage();
+                        }
                         _this.pagination_container.classList.remove("hide");
                         _this.countQuantityPages(callback);
                         if(_callback){
@@ -110,6 +115,9 @@ define('pagination', [
                     }
                 } else {
                     if (_this.chat.data.valueEnablePagination) {
+                        if(_this.chat.data.showChoicePerPage){
+                            _this.showChoicePerPage();
+                        }
                         _this.pagination_container.classList.remove("hide");
                         _this.countQuantityPages(callback);
                     } else {
@@ -217,9 +225,12 @@ define('pagination', [
 
             showChoicePerPage: function() {
                 var _this = this;
-                _this.choice_per_page_container = _this.outer_container.querySelector('[data-role="per_page_container"]');
-                if (_this.choice_per_page_container.innerHTML === "") {
-
+                /*if(_this.chat.data.showChoicePerPage){
+                    _this.chat.data.showChoicePerPage = false;
+                    _this.choice_per_page_container.innerHTML = "";
+                    _this.trigger('calcMessagesContainerHeight');
+                } else {
+                    _this.chat.data.showChoicePerPage = true;
                     _this.sendRequest("/mock/choice_per_page_config.json", function(err, res) {
                         if (err) {
                             console.log(err);
@@ -227,13 +238,25 @@ define('pagination', [
                             _this.choice_per_page_config = JSON.parse(res);
                             _this.renderChoicePerPage();
                             _this.trigger('calcMessagesContainerHeight');
+                        }
+                    })
+                }*/
+                if (_this.choice_per_page_container.innerHTML === "") {
 
+                    _this.sendRequest("/mock/choice_per_page_config.json", function(err, res) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            _this.choice_per_page_config = JSON.parse(res);
+                            _this.chat.data.showChoicePerPage = true;
+                            _this.renderChoicePerPage();
+                            _this.trigger('calcMessagesContainerHeight');
                         }
                     })
                 } else {
                     _this.choice_per_page_container.innerHTML = "";
+                    _this.chat.data.showChoicePerPage = false;
                     _this.trigger('calcMessagesContainerHeight');
-
                 }
             },
 

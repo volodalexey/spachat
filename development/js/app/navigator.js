@@ -34,7 +34,8 @@ define('navigator',
                 _this.register_container = document.querySelector('[data-role="register_container_global"]');
                 _this.main = document.querySelector('[data-role="main_container"]');
                 _this.leftPanel = document.querySelector('[data-action="leftPanel"]');
-                _this.rightPanel = document.querySelector('[data-action="rightPanel"]');
+                _this.right_panel_outer_container = document.querySelector('[data-role="right_panel_outer_container"]');
+                _this.left_panel_outer_container = document.querySelector('[data-role="left_panel_outer_container"]');
                 //_this.data.authorization = false;
                 return _this;
             },
@@ -94,15 +95,15 @@ define('navigator',
                     if(page !== register){
                         _this.register_container.classList.add("hidden_login");
                     } else {
-                        _this.leftPanel.classList.add("hidden");
-                        _this.rightPanel.classList.add("hidden");
+                        _this.left_panel_outer_container.classList.add("hide");
+                        _this.right_panel_outer_container.classList.add("hide");
                     }
                     if (page !== login) {
                         _this.login.classList.add("hidden_login");
                         _this.register_container.classList.add("hidden_login");
                     } else {
-                            _this.leftPanel.classList.add("hidden");
-                            _this.rightPanel.classList.add("hidden");
+                            _this.left_panel_outer_container.classList.add("hide");
+                            _this.right_panel_outer_container.classList.add("hide");
                             _this.main.innerHTML = "";
                     }
                     if(!(page === login || page === register) ){
