@@ -51,20 +51,14 @@ define('register', [
                 _this.toggleWaiter();
             },
 
+            dispose: function() {
+                var _this = this;
+                _this.removeEventListeners();
+            },
+
             bindContexts: function() {
                 var _this = this;
                 _this.bindedRegisterWorkflow = _this.registerWorkflow.bind(_this);
-            },
-
-            addRemoveListener: function(element, eventName, listener, phase) {
-                if (!element || !listener || !eventName) {
-                    return;
-                }
-                if (this.addRemoveListener.caller === this.addEventListeners) {
-                    element.addEventListener(eventName, listener, phase);
-                } else if (this.addRemoveListener.caller === this.removeEventListeners) {
-                    element.removeEventListener(eventName, listener, phase);
-                }
             },
 
             addEventListeners: function() {

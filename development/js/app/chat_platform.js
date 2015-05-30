@@ -1,24 +1,24 @@
 define('chat_platform', [
         'chat',
-        'panel_platform',
+
         'overlay_core',
         'event_core'
     ],
     function(chat,
-             panel_platform,
+
              overlay_core,
              event_core) {
 
         var chat_platform = function() {
+            this.link = /chat/;
+            this.withPanels = true;
+            this.bindContexts();
         };
 
         chat_platform.prototype = {
 
-            link: /chat/,
-
             initialize: function() {
                 var _this = this;
-                _this.bindContexts();
                 _this.addEventListeners();
                 _this.login_container = document.querySelector('[data-role="login_container_global"]');
                 _this.messages_container_Array = document.querySelectorAll('[data-role="messages_container"]');
@@ -27,9 +27,13 @@ define('chat_platform', [
 
             render: function() {
                 var _this = this;
-                _this.trigger('addNewPanel');
-                //panel_platform.addNewPanel();
+                _this.trigger('renderPanels');
                 _this.toggleWaiter(true);
+            },
+
+            dispose: function() {
+                var _this = this;
+                _this.removeEventListeners();
             },
 
             bindContexts: function() {
@@ -43,21 +47,19 @@ define('chat_platform', [
                 var _this = this;
                 _this.removeEventListeners();
                 window.addEventListener('resize', _this.bindedOnresizeWindow, false);
-                //panel_platform.on('clearStory', _this.bindedClearStory, _this);
-                //panel_platform.on('addNewChat', _this.bindedAddNewChat, _this);
+                panel_platform.on('clearStory', _this.bindedClearStory, _this);
+                panel_platform.on('addNewRoom', _this.bindedAddNewChat, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 window.removeEventListener('resize', _this.bindedOnresizeWindow, false);
-                //panel_platform.off('clearStory');
-                //panel_platform.off('addNewChat');
+                panel_platform.off('clearStory');
+                panel_platform.off('addNewChat');
             },
 
             onresizeWindow: function() {
                 var _this = this;
-                panel_platform.resizePanels();
-
                 chat.prototype.chatsArray.forEach(function(_chat) {
                     _chat.calcMessagesContainerHeight();
                 });
@@ -89,5 +91,5 @@ define('chat_platform', [
         extend(chat_platform, overlay_core);
         extend(chat_platform, event_core);
 
-        return new chat_platform().initialize();
+        return new chat_platform();
     });

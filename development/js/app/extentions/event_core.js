@@ -56,6 +56,17 @@ define('event_core', ['Underscore'],
                     listener.handler.apply(listener.context, args);
                 });
                 return this;
+            },
+
+            addRemoveListener: function(element, eventName, listener, phase) {
+                if (!element || !listener || !eventName) {
+                    return;
+                }
+                if (this.addRemoveListener.caller === this.addEventListeners) {
+                    element.addEventListener(eventName, listener, phase);
+                } else if (this.addRemoveListener.caller === this.removeEventListeners) {
+                    element.removeEventListener(eventName, listener, phase);
+                }
             }
         };
 

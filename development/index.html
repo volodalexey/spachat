@@ -2,13 +2,11 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-
     <title>Project</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
     <link rel="stylesheet/less" type="text/css" href="less/total.less"/>
     <script src="js/lib/less.min.js"></script>
-    <script data-main="js/app/main.js" src="js/lib/require.js"></script>
-
+    <script async defer data-main="js/app/main.js" src="js/lib/require.js"></script>
 </head>
 <body>
 
@@ -119,9 +117,7 @@
 
 <div data-role="left_panel_outer_container" class="fixed left hide">
     <div data-action="leftPanel" class="relative colorL">
-        <!--<div>-->
-        <button data-action="btnLeftPanel" class="btnPanel left">leftPanel</button>
-        <!--</div>-->
+        <button type="button" data-action="btnLeftPanel" class="btnPanel left">leftPanel</button>
         <div data-role="left_panel_inner-container">
             <div data-role="toolbar_left_panel"></div>
             <div data-role="body_left_panel" class="body_panel"></div>
@@ -131,9 +127,7 @@
 
 <div data-role="right_panel_outer_container" class="fixed right hide">
     <div data-action="rightPanel" class="relative colorR">
-        <!--<div>-->
-        <button data-action="btnRightPanel" class="btnPanel right">RightPanel</button>
-        <!--</div>-->
+        <button type="button" data-action="btnRightPanel" class="btnPanel right">RightPanel</button>
         <div data-role="right_panel_inner-container">
             <div data-role="toolbar_right_panel"></div>
             <div data-role="body_right_panel" class="body_panel"></div>

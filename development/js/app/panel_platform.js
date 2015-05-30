@@ -1,50 +1,76 @@
 define('panel_platform', [
         'panel',
         'overlay_core',
-        'event_core'
-
+        'event_core',
+        'ping_core'
     ],
     function(panel,
              overlay_core,
-             event_core) {
+             event_core,
+             ping_core) {
 
         var panel_platform = function() {
+            var _this = this;
+            this.PANEL_TYPES = {
+                LEFT: "LEFT",
+                RIGHT: "RIGHT"
+            };
+            this.panelsOptions = [
+                {
+                    type: this.PANEL_TYPES.LEFT
+                },
+                {
+                    type: this.PANEL_TYPES.RIGHT
+                }
+            ];
+            this.panelsOptions.forEach(function(panelDescription) {
+                var _panel = new panel({
+                    panelDescription: panelDescription,
+                    PANEL_TYPES: _this.PANEL_TYPES
+                });
+                panel.prototype.panelArray.push(_panel);
+            });
+            _this.bindContexts();
         };
 
         panel_platform.prototype = {
 
-            initialize: function() {
-                var _this = this;
-                _this.bindContexts();
-                _this.addEventListeners();
-                //_this.addNewPanel();
-                return _this;
-            },
-
-            addNewPanel: function(navigator) {
-                var _this = this;
-
-                _this.newPanel = new panel();
-                panel.prototype.panelArray.push(_this.newPanel);
-                _this.newPanel.initialize(navigator);
-                _this.newPanel.on('clearStory', _this.throwEvent.bind(_this, 'clearStory'), _this);
-                _this.newPanel.on('addNewChat', _this.throwEvent.bind(_this, 'addNewChat'), _this);
-                _this.toggleWaiter(true);
-            },
-
             bindContexts: function() {
                 var _this = this;
+                _this.bindedResizePanel = _this.throttle(_this.resizePanels.bind(_this), 300, _this);
+            },
+
+            renderPanels: function(navigator) {
+                var _this = this;
+                panel.prototype.panelArray.forEach(function(_panel) {
+                    _panel.render(navigator);
+                    _panel.on('clearStory', _this.throwEvent.bind(_this, 'clearStory'), _this);
+                    _panel.on('addNewRoom', _this.throwEvent.bind(_this, 'addNewRoom'), _this);
+                });
+            },
+
+            disposePanels: function() {
+                var _this = this;
+                _this.removeEventListeners();
             },
 
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                //navigator.on('addNewChat', _this.addNewPanel.bind(_this) , _this);
+                _this.on('resize', _this.bindedResizePanel, _this);
+                panel.prototype.panelArray.forEach(function(_panel) {
+                    _panel.on('clearStory', _this.throwEvent.bind(_this, 'clearStory'), _this);
+                    _panel.on('addNewRoom', _this.throwEvent.bind(_this, 'addNewRoom'), _this);
+                });
             },
 
             removeEventListeners: function() {
                 var _this = this;
-
+                _this.off('resize');
+                panel.prototype.panelArray.forEach(function(_panel) {
+                    _panel.off('clearStory');
+                    _panel.off('addNewRoom');
+                });
             },
 
             throwEvent: function(name) {
@@ -57,15 +83,11 @@ define('panel_platform', [
                 panel.prototype.panelArray.forEach(function(_panel) {
                     _panel.resizePanel();
                 });
-               /* _.each(panel.prototype.panelArray, function(_panel) {
-                    _panel.resizePanel();
-                })*/
             }
-
-
         };
         extend(panel_platform, overlay_core);
         extend(panel_platform, event_core);
+        extend(panel_platform, ping_core);
 
-        return new panel_platform().initialize();
+        return new panel_platform();
     });

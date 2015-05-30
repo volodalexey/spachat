@@ -4,8 +4,8 @@ define('panel', [
         'indexeddb',
         'template_core',
 
-        'text!../html/toolbar_left_panel_template.html',
-        'text!../html/toolbar_right_panel_template.html',
+        'text!../html/panel_left_template.html',
+        'text!../html/panel_right_template.html',
         'text!../html/user_info_template.html',
         'text!../html/element/triple_element_template.html',
         'text!../html/element/button_template.html',
@@ -16,8 +16,9 @@ define('panel', [
              ajax_core,
              indexeddb,
              template_core,
-             toolbar_left_panel_template,
-             toolbar_right_panel_template,
+
+             panel_left_template,
+             panel_right_template,
              user_info_template,
              triple_element_template,
              button_template,
@@ -34,8 +35,8 @@ define('panel', [
             initialize: function(navigator) {
                 var _this = this;
 
-                _this.toolbar_left_panel_template = _this.template(toolbar_left_panel_template);
-                _this.toolbar_right_panel_template = _this.template(toolbar_right_panel_template);
+                _this.left_panel_template = _this.template(left_panel_template);
+                _this.right_panel_template = _this.template(right_panel_template);
                 _this.user_info_template = _this.template(user_info_template);
                 _this.triple_element_template = _this.template(triple_element_template);
                 _this.button_template = _this.template(button_template);
@@ -60,7 +61,6 @@ define('panel', [
                         "keyPath": "userId"
                     }
                 };
-                _this.indexeddb = new indexeddb();
                 _this.render();
                 return _this;
             },
@@ -212,7 +212,7 @@ define('panel', [
             fillingTemplateBodyLeftPanel: function() {
                 var _this = this;
                 _this.leftPanel.style.left = 0 + 'px';
-                _this.toolbarLeftPanel.innerHTML = _this.toolbar_left_panel_template({
+                _this.toolbarLeftPanel.innerHTML = _this.left_panel_template({
                     config: _this.panel_config,
                     triple_element_template: _this.triple_element_template,
                     button_template: _this.button_template,
@@ -274,7 +274,7 @@ define('panel', [
             fillingTemplateToolbarRightPanel: function() {
                 var _this = this;
                 _this.rightPanel.style.right = 0 + 'px';
-                _this.toolbarRightPanel.innerHTML = _this.toolbar_right_panel_template({
+                _this.toolbarRightPanel.innerHTML = _this.right_panel_template({
                     config: _this.panel_config,
                     triple_element_template: _this.triple_element_template,
                     button_template: _this.button_template,
@@ -289,7 +289,7 @@ define('panel', [
                 var _this = this;
                 if (_this.data.mode === _this.userInfo.getAttribute("data-mode")) {
                     if (_this.bodyRightPanel.innerHTML === "" || update) {
-                        _this.indexeddb.getAll(_this.data.collection, function(getAllErr, users) {
+                        indexeddb.getAll(_this.data.collection, function(getAllErr, users) {
                             if (getAllErr) {
                                 console.error(getAllErr);
                             } else {
@@ -436,7 +436,7 @@ define('panel', [
                     userPassword: _this.new_password.value,
                     userName: _this.user_name.value
                 };
-                _this.indexeddb.addOrUpdateAll(
+                indexeddb.addOrUpdateAll(
                     _this.data.collection,
                     [
                         _this.account

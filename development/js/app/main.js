@@ -10,6 +10,7 @@ require.config({
         "overlay_core": "app/extentions/overlay_core",
         "event_core": "app/extentions/event_core",
         "template_core": "app/extentions/template_core",
+        "ping_core": "app/extentions/ping_core",
 
         "chat": "app/chat",
         "chat_platform": "app/chat_platform",

@@ -26,25 +26,25 @@ define('navigator',
                 var _this = this;
                 _this.bindedNavigate = _this.navigate.bind(_this);
                 _this.bindedRedirectToLogin = _this.redirectToLogin.bind(_this);
+                _this.bindedNotifyCurrentPage = _this.notifyCurrentPage.bind(_this);
             },
 
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
                 window.addEventListener('popstate', _this.bindedNavigate, false);
-                chat_platform.on('addNewPanel', _this.addPanel, _this);
-                //panel_platform.on('clearStory', chat_platform.clearStory, chat_platform);
-                //panel_platform.on('addNewChat', chat_platform.addNewChat, chat_platform);
+                window.addEventListener('resize', _this.bindedNotifyCurrentPage, false);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 window.removeEventListener('popstate', _this.bindedNavigate, false);
+                chat_platform.off('addNewPanel');
             },
 
-            addPanel: function() {
+            renderPanels: function() {
                 var _this = this;
-                panel_platform.addNewPanel(_this);
+                panel_platform.renderPanels({ navigator: _this });
             },
 
             getCurrentPage: function(href) {
@@ -66,7 +66,14 @@ define('navigator',
             navigate: function() {
                 var _this = this;
                 var href = window.location.href;
+                var oldCurrentPage = _this.currentPage;
                 _this.getCurrentPage(href);
+                if (oldCurrentPage && oldCurrentPage !== _this.currentPage) {
+                    oldCurrentPage.dispose();
+                    if (oldCurrentPage.withPanels && (_this.currentPage && !_this.currentPage.withPanels)) {
+                        panel_platform.disposePanels();
+                    }
+                }
                 if(!(_this.currentPage === login || _this.currentPage === register) && !_this.userId ) {
                     _this.redirectToLogin();
                 } else if (_this.currentPage) {
@@ -75,9 +82,19 @@ define('navigator',
                     } else {
                         _this.main_container.innerHTML = '';
                     }
+                    if (_this.currentPage.withPanels) {
+                        panel_platform.renderPanels({ navigator: _this });
+                    }
                     _this.currentPage.render && _this.currentPage.render({ navigator: _this });
                 } else {
                     _this.redirectToLogin();
+                }
+            },
+
+            notifyCurrentPage: function(event) {
+                this.currentPage.trigger(event.type);
+                if (this.currentPage.withPanels) {
+                    panel_platform.trigger(event.type);
                 }
             }
         };
