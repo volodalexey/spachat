@@ -1,8 +1,9 @@
 define('panel', [
         'event_core',
         'ajax_core',
-        'indexeddb',
         'template_core',
+
+        'indexeddb',
 
         'text!../html/panel_left_template.html',
         'text!../html/panel_right_template.html',
@@ -14,8 +15,9 @@ define('panel', [
     ],
     function(event_core,
              ajax_core,
-             indexeddb,
              template_core,
+
+             indexeddb,
 
              panel_left_template,
              panel_right_template,
@@ -25,73 +27,59 @@ define('panel', [
              label_template,
              input_template) {
 
-        var panel = function() {
+        var panel = function(description) {
+            this.panel_left_template = this.template(panel_left_template);
+            this.panel_right_template = this.template(panel_right_template);
+            this.user_info_template = this.template(user_info_template);
+            this.triple_element_template = this.template(triple_element_template);
+            this.button_template = this.template(button_template);
+            this.label_template = this.template(label_template);
+            this.input_template = this.template(input_template);
+
+            this.bindContextsContent();
+            this.bindContextsMain();
+
+            this.mode = "";
+            this.mode_user_info = "reading";
+            this.collectionDescription = {
+                "db_name": 'authentication',
+                "table_name": 'authentication',
+                "db_version": 1,
+                "keyPath": "userId"
+            };
+            this.type = description.type;
+            this.panel_platform = description.panel_platform;
+            this.outer_container = description.outer_container;
+            this.inner_container = description.inner_container;
         };
 
         panel.prototype = {
 
             panelArray: [],
 
-            initialize: function(navigator) {
+            z_index: 80,
+
+            render: function(options) {
+                if (!options || !options.navigator || !options.panel_platform) {
+                    console.error(new Error('Invalid input options for render'));
+                    return;
+                }
                 var _this = this;
+                _this.navigator = options.navigator;
 
-                _this.left_panel_template = _this.template(left_panel_template);
-                _this.right_panel_template = _this.template(right_panel_template);
-                _this.user_info_template = _this.template(user_info_template);
-                _this.triple_element_template = _this.template(triple_element_template);
-                _this.button_template = _this.template(button_template);
-                _this.label_template = _this.template(label_template);
-                _this.input_template = _this.template(input_template);
-
-                _this.bindContextsContent();
-                _this.bindContextsMain();
-
-                _this.navigator = navigator;
-                _this.navigatorData = _this.navigator.data;
-
-                _this.data = {
-                    mode: "",
-                    mode_user_info: "reading",
-                    z_index: 80,
-                    collection: {
-                        "id": 1,
-                        "db_name": 'authentification',
-                        "table_name": 'authentification',
-                        "db_version": 2,
-                        "keyPath": "userId"
-                    }
-                };
-                _this.render();
-                return _this;
+                _this.cashElements();
+                _this.addMainEventListener();
+                _this.outer_container.classList.remove("hide");
+                _this.outer_container.style.maxWidth = window.innerWidth + 'px';
+                _this.outer_container.style[_this.type] = (-_this.outer_container.offsetWidth) + 'px';
+                _this.outer_container.style.zIndex = _this.z_index;
             },
 
-            render: function() {
+            cashElements: function() {
                 var _this = this;
-                _this.left_panel_outer_container = document.querySelector('[data-role="left_panel_outer_container"]');
-                _this.leftPanel = _this.left_panel_outer_container.querySelector('[data-action="leftPanel"]');
-                _this.btnLeftPanel = _this.leftPanel.querySelector('[data-action="btnLeftPanel"]');
-                _this.left_panel_inner_container = _this.leftPanel.querySelector('[data-role="left_panel_inner_container"]');
-                _this.bodyLeftPanel = _this.left_panel_inner_container.querySelector('[data-role="body_left_panel"]');
-                _this.toolbarLeftPanel = _this.left_panel_inner_container.querySelector('[data-role="toolbar_left_panel"]');
-                _this.left_panel_outer_container.classList.remove("hide");
-                _this.left_panel_outer_container.classList.add("animate");
-                _this.left_panel_outer_container.style.maxWidth = window.innerWidth + 'px';
-                _this.left_panel_outer_container.style.left = -_this.left_panel_outer_container.offsetWidth + 'px';
-                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
-
-                _this.right_panel_outer_container = document.querySelector('[data-role="right_panel_outer_container"]');
-                _this.rightPanel = _this.right_panel_outer_container.querySelector('[data-action="rightPanel"]');
-                _this.btnRightPanel = _this.rightPanel.querySelector('[data-action="btnRightPanel"]');
-                _this.right_panel_inner_container = _this.rightPanel.querySelector('[data-role="right_panel_inner_container"]');
-                _this.bodyRightPanel = _this.right_panel_inner_container.querySelector('[data-role="body_right_panel"]');
-                _this.toolbarRightPanel = _this.right_panel_inner_container.querySelector('[data-role="toolbar_right_panel"]');
-                _this.right_panel_outer_container.classList.remove("hide");
-                _this.right_panel_outer_container.classList.add("animate");
-                _this.right_panel_outer_container.style.maxWidth = window.innerWidth + 'px';
-                _this.right_panel_outer_container.style.right = -_this.right_panel_outer_container.offsetWidth + 'px';
-                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
-
-                _this.addMainEventListener();
+                _this.togglePanelElement = _this.outer_container.querySelector('[data-action="togglePanel"]');
+                _this.panel_body = _this.outer_container.querySelector('[data-role="panel_body"]');
+                _this.panel_toolbar = _this.outer_container.querySelector('[data-role="panel_toolbar"]');
             },
 
             bindContextsMain: function() {

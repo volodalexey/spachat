@@ -27,8 +27,6 @@ define('chat_platform', [
 
             render: function() {
                 var _this = this;
-                _this.trigger('renderPanels');
-                _this.toggleWaiter(true);
             },
 
             dispose: function() {
@@ -47,15 +45,11 @@ define('chat_platform', [
                 var _this = this;
                 _this.removeEventListeners();
                 window.addEventListener('resize', _this.bindedOnresizeWindow, false);
-                panel_platform.on('clearStory', _this.bindedClearStory, _this);
-                panel_platform.on('addNewRoom', _this.bindedAddNewChat, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 window.removeEventListener('resize', _this.bindedOnresizeWindow, false);
-                panel_platform.off('clearStory');
-                panel_platform.off('addNewChat');
             },
 
             onresizeWindow: function() {
@@ -77,11 +71,6 @@ define('chat_platform', [
             },
 
             clearStory: function() {
-                var _this = this;
-                localStorage.clear();
-/*                _.each(chat.prototype.chatsArray, function(chat) {
-                    chat.querySelector('[data-role="messages_container"]').innerHTML = "";
-                });*/
                 chat.prototype.chatsArray.forEach(function(chat) {
                     chat.querySelector('[data-role="messages_container"]').innerHTML = "";
                 })

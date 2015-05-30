@@ -11,23 +11,30 @@ define('panel_platform', [
 
         var panel_platform = function() {
             var _this = this;
+            _this.left_panel_outer_container = document.querySelector('[data-role="left_panel_outer_container"]');
+            _this.right_panel_outer_container = document.querySelector('[data-role="right_panel_outer_container"]');
+            _this.left_panel_inner_container = document.querySelector('[data-role="left_panel_inner_container"]');
+            _this.right_panel_inner_container = document.querySelector('[data-role="right_panel_inner_container"]');
             this.PANEL_TYPES = {
-                LEFT: "LEFT",
-                RIGHT: "RIGHT"
+                LEFT: "left",
+                RIGHT: "right"
             };
-            this.panelsOptions = [
+            this.panelsDescriptions = [
                 {
-                    type: this.PANEL_TYPES.LEFT
+                    type: this.PANEL_TYPES.LEFT,
+                    outer_container: _this.left_panel_outer_container,
+                    inner_container: _this.left_panel_inner_container,
+                    panel_platform: this
                 },
                 {
-                    type: this.PANEL_TYPES.RIGHT
+                    type: this.PANEL_TYPES.RIGHT,
+                    outer_container: _this.right_panel_outer_container,
+                    inner_container: _this.right_panel_inner_container,
+                    panel_platform: this
                 }
             ];
-            this.panelsOptions.forEach(function(panelDescription) {
-                var _panel = new panel({
-                    panelDescription: panelDescription,
-                    PANEL_TYPES: _this.PANEL_TYPES
-                });
+            this.panelsDescriptions.forEach(function(panelDescription) {
+                var _panel = new panel(panelDescription);
                 panel.prototype.panelArray.push(_panel);
             });
             _this.bindContexts();
@@ -40,10 +47,11 @@ define('panel_platform', [
                 _this.bindedResizePanel = _this.throttle(_this.resizePanels.bind(_this), 300, _this);
             },
 
-            renderPanels: function(navigator) {
+            renderPanels: function(options) {
                 var _this = this;
+                options.panel_platform = _this;
                 panel.prototype.panelArray.forEach(function(_panel) {
-                    _panel.render(navigator);
+                    _panel.render(options);
                     _panel.on('clearStory', _this.throwEvent.bind(_this, 'clearStory'), _this);
                     _panel.on('addNewRoom', _this.throwEvent.bind(_this, 'addNewRoom'), _this);
                 });
