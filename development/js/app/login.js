@@ -74,11 +74,11 @@ define('login', [
 
             onSubmit: function(event) {
                 var _this = this;
-                _this.toggleWaiter(true);
                 event.preventDefault();
                 var userName = _this.loginForm.elements.userName.value;
                 var userPassword = _this.loginForm.elements.userPassword.value;
-                if (_this.userName && _this.password) {
+                if (userName && userPassword) {
+                    _this.toggleWaiter(true);
                     indexeddb.getAll(_this.collectionDescription, function(getAllErr, users) {
                         _this.toggleWaiter();
                         if (getAllErr) {

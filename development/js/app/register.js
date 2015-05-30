@@ -138,8 +138,8 @@ define('register', [
 
                     var account = {
                         userId: _this.generateId(),
-                        userName: _this.form.elements.userName.value,
-                        userPassword: _this.form.elements.userPassword.value
+                        userName: options.userName,
+                        userPassword: options.userPassword
                     };
 
                     indexeddb.addOrUpdateAll(
@@ -153,7 +153,7 @@ define('register', [
                                 return;
                             }
                             
-                            callback(account);
+                            callback(null, account);
                         }
                     );
                 });
