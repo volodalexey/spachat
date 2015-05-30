@@ -20,10 +20,12 @@ define('chat', [
              settings,
              contact_list,
              messages,
+
              ajax_core,
              indexeddb,
              template_core,
              webrtc,
+
              chat_template,
              outer_container_template) {
         var chat = function() {
@@ -70,7 +72,7 @@ define('chat', [
                 _this.newSettings = new settings();
                 _this.newContact_list = new contact_list();
                 _this.newMessages = new messages();
-                _this.indexeddb = new indexeddb().initialize();
+                _this.indexeddb = new indexeddb();
                 _this.webrtc = new webrtc().initialize({chat: _this});
                 _this.addEventListeners();
 

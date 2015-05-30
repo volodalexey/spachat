@@ -1,13 +1,16 @@
-body{
+body {
   background-color: @light_green;
   margin: 0;
 }
+
 .hide{
   display: none !important;
 }
+
 .hidden{
-  visibility: hidden;
+  visibility: hidden !important;
 }
+
 .overlay {
   position: absolute;
   top: 0;
@@ -15,9 +18,38 @@ body{
   width: 100%;
   overflow: auto;
   justify-content: space-around;
-
 }
 
 .marginT {
   margin-top: 5px;
+}
+
+.p-fx {
+  position: fixed;
+}
+
+.login-outer-container {
+  &.hidden {
+    position: absolute;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    opacity: 0;
+  }
+}
+
+.w-100p {
+  width: 100%;
+}
+
+.p-t-b {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+.form-small {
+  background: linear-gradient(to top, @cornflowerblue, @springgreen);
+  margin: 20px 0;
+  padding: 5px;
+  max-width: 400px;
 }

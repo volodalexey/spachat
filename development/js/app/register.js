@@ -1,131 +1,179 @@
 define('register', [
         'overlay_core',
         'event_core',
+        'template_core',
 
-        'indexeddb'
+        'indexeddb',
+
+        'text!../html/register_template.html'
     ],
     function(overlay_core,
              event_core,
-             indexeddb) {
+             template_core,
 
+             indexeddb,
+
+             register_template) {
+
+        /**
+         * register constructor
+         */
         var register = function() {
+            this.link = /register/; // is used for navigator
+            this.collectionDescription = {
+                "db_name": 'authentication',
+                "table_name": 'authentication',
+                "db_version": 1,
+                "keyPath": "userId"
+            };
+            this.bindContexts();
+            this.register_template = this.template(register_template);
         };
 
         register.prototype = {
 
-            link: 'register',
-
-            initialize: function() {
+            cashElements: function() {
                 var _this = this;
-                _this.register_outer_container = document.querySelector('[data-role="register_outer_container"]');
-                _this.register_container = _this.register_outer_container.querySelector('[data-role="register_container_global"]');
-                _this.login_container = document.querySelector('[data-role="login_container_global"]');
-                _this.form = _this.register_container.querySelector('form');
-                _this.register = _this.form.querySelector('[data-action="register"]');
-                _this.data = {
-                    collection: {
-                        "id": 1,
-                        "db_name": 'authentification',
-                        "table_name": 'authentification',
-                        "db_version": 2,
-                        "keyPath": "userId"
-                    }
-                };
-                _this.indexeddb = new indexeddb().initialize();
-                _this.bindContexts();
-                return _this;
+                _this.registerForm = _this.navigator.main_container.querySelector('[data-role="registerForm"]');
+                _this.redirectToLogin = _this.registerForm.querySelector('[data-action="redirectToLogin"]');
             },
 
-            render: function(navigator) {
+            render: function(options) {
+                if (!options || !options.navigator || !options.navigator.main_container) {
+                    console.error(new Error('Invalid input options for render'));
+                    return;
+                }
                 var _this = this;
-                _this.navigator = navigator;
-                _this.navigatorData = _this.navigator.data;
-                _this.register_outer_container.classList.remove("hidden");
+                _this.navigator = options.navigator;
+                _this.navigator.main_container.innerHTML = _this.register_template();
+                _this.cashElements();
                 _this.addEventListeners();
-                _this.toggleWaiter(true);
+                _this.toggleWaiter();
             },
 
             bindContexts: function() {
                 var _this = this;
-                _this.bindedToRegister = _this.toRegister.bind(_this);
+                _this.bindedRegisterWorkflow = _this.registerWorkflow.bind(_this);
+            },
+
+            addRemoveListener: function(element, eventName, listener, phase) {
+                if (!element || !listener || !eventName) {
+                    return;
+                }
+                if (this.addRemoveListener.caller === this.addEventListeners) {
+                    element.addEventListener(eventName, listener, phase);
+                } else if (this.addRemoveListener.caller === this.removeEventListeners) {
+                    element.removeEventListener(eventName, listener, phase);
+                }
             },
 
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                if(_this.register){
-                    _this.register.addEventListener('click', _this.bindedToRegister, false);
-                }
+                _this.addRemoveListener(_this.registerForm, 'submit', _this.bindedRegisterWorkflow, false);
+                _this.addRemoveListener(_this.redirectToLogin, 'click', _this.navigator.bindedRedirectToLogin, false);
             },
 
             removeEventListeners: function() {
                 var _this = this;
-                if(_this.register){
-                    _this.register.removeEventListener('click', _this.bindedToRegister, false);
-                }
+                _this.addRemoveListener(_this.registerForm, 'submit', _this.bindedRegisterWorkflow, false);
+                _this.addRemoveListener(_this.redirectToLogin, 'click', _this.navigator.bindedRedirectToLogin, false);
             },
 
-            toRegister: function(){
+            registerWorkflow: function(){
                 var _this = this;
                 event.preventDefault();
-                _this.userName = _this.form.elements.user_name.value;
-                _this.password = _this.form.elements.password_new.value;
-                _this.password_confirm = _this.form.elements.password_confirm.value;
-                if(_this.userName !== "" && _this.password !== "" && _this.password_confirm !== ""){
-                    if(_this.password === _this.password_confirm){
-                        _this.registerNewUser(function() {
-                            _this.navigatorData.userID =_this.account.userId;
-                            history.pushState(null, null, 'chat');
-                            _this.navigator.navigate();
-
-                        });
+                var userName = _this.registerForm.elements.userName.value;
+                var userPassword = _this.registerForm.elements.userPassword.value;
+                var userPasswordConfirm = _this.registerForm.elements.userPasswordConfirm.value;
+                if(userName && userPassword && userPasswordConfirm){
+                    if (userPassword === userPasswordConfirm) {
+                        _this.toggleWaiter(true);
+                        _this.registerNewUser(
+                            {
+                                userName: userName,
+                                userPassword: userPassword
+                            },
+                            function(regErr) {
+                                if (regErr) {
+                                    _this.toggleWaiter();
+                                    console.error(regErr);
+                                    return;
+                                }
+                                
+                                _this.navigatorData.userId =_this.account.userId;
+                                history.pushState(null, null, 'chat');
+                                _this.navigator.navigate();
+                            }
+                        );
                     } else {
-                        _this.navigatorData.userID = "";
-                        _this.form.elements.password_new.value = "";
-                        _this.form.elements.password_confirm.value = "";
+                        _this.navigator.userId = null;
+                        _this.registerForm.elements.userPassword.value = "";
+                        _this.registerForm.elements.userPasswordConfirm.value = "";
+                        console.error(new Error('Passwords don\'t match!'));
                     }
                 }
             },
 
-            registerNewUser: function(callback){
+            registerNewUser: function(options, callback){
                 var _this = this;
-                _this.account = {
-                    userId: _this.renderID(),
-                    userPassword: _this.form.elements.password_new.value,
-                    userName: _this.form.elements.user_name.value
-                };
-                _this.indexeddb.addOrUpdateAll(
-                    _this.data.collection,
-                    [
-                        _this.account
-                    ],
-                    function(error) {
-                        if (error) {
-                            console.error(error);
-                            return;
-                        }
-                        console.log("account", _this.account);
-                        callback();
+                indexeddb.getAll(_this.collectionDescription, function(getAllErr, users) {
+                    if (getAllErr) {
+                        callback(getAllErr);
+                        return;
                     }
-                );
+                    
+                    var user;
+                    users.every(function(_user) {
+                        if (_user.userName === options.userName) {
+                            user = _user;
+                        }
+                        return !_user;
+                    });
+
+                    if (user) {
+                        callback(new Error('User with such username is already exist!'));
+                        return;
+                    }
+
+                    var account = {
+                        userId: _this.generateId(),
+                        userName: _this.form.elements.userName.value,
+                        userPassword: _this.form.elements.userPassword.value
+                    };
+
+                    indexeddb.addOrUpdateAll(
+                        _this.collectionDescription,
+                        [
+                            account
+                        ],
+                        function(error) {
+                            if (error) {
+                                callback(error);
+                                return;
+                            }
+                            
+                            callback(account);
+                        }
+                    );
+                });
             },
 
+            s4: function() {
+                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+            },
 
-            renderID: function() {
-                function s4() {
-                    return Math.floor((1 + Math.random()) * 0x10000)
-                        .toString(16)
-                        .substring(1);
-                }
-                return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-                    s4() + '-' + s4() + s4() + s4();
+            generateId: function() {
+                return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
+                    this.s4() + '-' + this.s4() + this.s4() + this.s4();
             }
         };
 
         extend(register, overlay_core);
         extend(register, event_core);
+        extend(register, template_core);
 
-        return (new register()).initialize();
+        return new register();
 
     }
 );

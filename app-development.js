@@ -7,24 +7,22 @@ var express = require('express')
     , fs = require('fs')
     , expressWs = require('express-ws')(expressApp);
 
-/*var staticOptions = {
-    'index': ['index.html']
-};*/
-
-var indexHTML = fs.readFileSync(fullPath + '/index.html', 'utf8');
+var readMainFile = function() {
+  return fs.readFileSync(fullPath + '/index.html', 'utf8');
+};
 
 expressApp.use(express.static(fullPath));
 
 expressApp.use('/', function(req, res) {
-    res.send(indexHTML);
+    res.send(readMainFile());
 });
 
 expressApp.use('/login', function(req, res) {
-    res.send(indexHTML);
+    res.send(readMainFile());
 });
 
 expressApp.use('/chat', function(req, res) {
-    res.send(indexHTML);
+    res.send(readMainFile());
 });
 
 expressApp.ws('/', function(ws, req) {

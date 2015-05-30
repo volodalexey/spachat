@@ -33,11 +33,6 @@ define('template_core', [],
                     return '\\' + escapes[match];
                 };
 
-
-
-
-
-
                 if (!settings && oldSettings) settings = oldSettings;
                 settings = _.defaults({}, settings, templateSettings);
 
@@ -91,7 +86,7 @@ define('template_core', [],
                 template.source = 'function(' + argument + '){\n' + source + '}';
 
                 return template;
-            }}
+            }};
 
             return template_core;
     });

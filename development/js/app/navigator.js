@@ -3,163 +3,85 @@ define('navigator',
         'chat_platform',
         'panel_platform',
         'login',
-        'register',
-
-        'indexeddb'
-
+        'register'
     ],
     function(chat_platform,
              panel_platform,
              login,
-             register,
-             indexeddb) {
+             register) {
 
         var navigator = function() {
+            this.bindContexts();
+            this.login_outer_container = document.querySelector('[data-role="login_outer_container"]');
+            this.main_container = document.querySelector('[data-role="main_container"]');
+            this.addEventListeners();
+            this.userId = null;
+            this.pages = [chat_platform, login, register];
+            this.currentPage = null;
         };
 
         navigator.prototype = {
 
-            data: {
-                userID: "",
-                pages: [chat_platform, login, register],
-                matchedPages: []
-            },
-
-            initialize: function() {
-                var _this = this;
-                _this.window = window;
-                _this.bindContexts();
-                _this.addEventListeners();
-                _this.login = document.querySelector('[data-role="login_outer_container"]');
-                _this.register_container = document.querySelector('[data-role="register_outer_container"]');
-                _this.main = document.querySelector('[data-role="main_container"]');
-                _this.leftPanel = document.querySelector('[data-action="leftPanel"]');
-                _this.right_panel_outer_container = document.querySelector('[data-role="right_panel_outer_container"]');
-                _this.left_panel_outer_container = document.querySelector('[data-role="left_panel_outer_container"]');
-                //_this.data.authorization = false;
-                return _this;
-            },
-
             bindContexts: function() {
                 var _this = this;
                 _this.bindedNavigate = _this.navigate.bind(_this);
+                _this.bindedRedirectToLogin = _this.redirectToLogin.bind(_this);
             },
 
             addEventListeners: function() {
                 var _this = this;
+                _this.removeEventListeners();
                 window.addEventListener('popstate', _this.bindedNavigate, false);
-                //chat_platform.on('addNewPanel', panel_platform.addNewPanel, {"panel_platform": panel_platform, "navigator": _this});
                 chat_platform.on('addNewPanel', _this.addPanel, _this);
-
-                panel_platform.on('clearStory', chat_platform.clearStory, chat_platform);
-                panel_platform.on('addNewChat', chat_platform.addNewChat, chat_platform);
-            },
-
-            addPanel: function() {
-                var _this = this;
-
-                panel_platform.addNewPanel(_this);
+                //panel_platform.on('clearStory', chat_platform.clearStory, chat_platform);
+                //panel_platform.on('addNewChat', chat_platform.addNewChat, chat_platform);
             },
 
             removeEventListeners: function() {
                 var _this = this;
-                login.off('navigate');
                 window.removeEventListener('popstate', _this.bindedNavigate, false);
             },
 
-            throwEvent: function(name) {
+            addPanel: function() {
                 var _this = this;
-                _this.trigger(name);
+                panel_platform.addNewPanel(_this);
             },
 
             getCurrentPage: function(href) {
                 var _this = this;
-                _this.data.matchedPages = [];
-                _this.data.pages.forEach(function(page) {
-                    if (page.link) {
-                        var pageRegExp = new RegExp(page.link, "gi");
-                        if (pageRegExp.test(href)) {
-                            _this.data.matchedPages.push(page);
-                        }
+                _this.currentPage = null;
+                _this.pages.every(function(page) {
+                    if (page.link instanceof RegExp && page.link.test(href)) {
+                        _this.currentPage = page;
                     }
+                    return !_this.currentPage;
                 });
-                /*_.each(_this.data.pages, function(page) {
-                    if (page.link) {
-                        var pageRegExp = new RegExp(page.link, "gi");
-                        if (pageRegExp.test(href)) {
-                            _this.data.matchedPages.push(page);
-                        }
-                    }
-                });*/
+            },
+            
+            redirectToLogin: function() {
+                history.pushState(null, null, 'login');
+                this.navigate();
             },
 
             navigate: function() {
                 var _this = this;
                 var href = window.location.href;
                 _this.getCurrentPage(href);
-                //_this.data.matchedPages;
-
-/*                _.each(_this.data.matchedPages, function(page) {
-                    if(page !== register){
-                        _this.register_container.classList.add("hidden");
+                if(!(_this.currentPage === login || _this.currentPage === register) && !_this.userId ) {
+                    _this.redirectToLogin();
+                } else if (_this.currentPage) {
+                    if (_this.currentPage !== login) {
+                        _this.login_outer_container.classList.add("hidden");
                     } else {
-                        _this.left_panel_outer_container.classList.add("hide");
-                        _this.right_panel_outer_container.classList.add("hide");
+                        _this.main_container.innerHTML = '';
                     }
-                    if (page !== login) {
-                        _this.login.classList.add("hidden");
-                        //_this.register_container.classList.add("hidden");
-                    } else {
-                            _this.left_panel_outer_container.classList.add("hide");
-                            _this.right_panel_outer_container.classList.add("hide");
-                            _this.main.innerHTML = "";
-                    }
-                    if(!(page === login || page === register) ){
-                        if(_this.data.userID === ""){
-                            history.pushState(null, null, 'login');
-                            _this.navigate();
-                        } else {
-                            page.render && page.render(_this);
-                        }
-                    } else {
-                        page.render && page.render(_this);
-                    }
-                });*/
-                _this.data.matchedPages.forEach(function(page) {
-                    if(page !== register){
-                        _this.register_container.classList.add("hidden");
-                    } else {
-                        _this.left_panel_outer_container.classList.add("hide");
-                        _this.right_panel_outer_container.classList.add("hide");
-                    }
-                    if (page !== login) {
-                        _this.login.classList.add("hidden");
-                        //_this.register_container.classList.add("hidden");
-                    } else {
-                        _this.left_panel_outer_container.classList.add("hide");
-                        _this.right_panel_outer_container.classList.add("hide");
-                        _this.main.innerHTML = "";
-                    }
-                    if(!(page === login || page === register) ){
-                        if(_this.data.userID === ""){
-                            history.pushState(null, null, 'login');
-                            _this.navigate();
-                        } else {
-                            page.render && page.render(_this);
-                        }
-                    } else {
-                        page.render && page.render(_this);
-                    }
-                });
-                if (!_this.data.matchedPages.length ) {
-                    history.pushState(null, null, 'login');
-                    _this.navigate();
+                    _this.currentPage.render && _this.currentPage.render({ navigator: _this });
+                } else {
+                    _this.redirectToLogin();
                 }
             }
-
-
         };
 
-        return (new navigator()).initialize();
+        return new navigator();
     }
 );

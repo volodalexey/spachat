@@ -31,14 +31,6 @@ define('panel', [
 
             panelArray: [],
 
-            /*            toolbar_left_panel_template: _.template(toolbar_left_panel_template),
-             toolbar_right_panel_template: _.template(toolbar_right_panel_template),
-             user_info_template: _.template(user_info_template),
-             triple_element_template: _.template(triple_element_template),
-             button_template: _.template(button_template),
-             label_template: _.template(label_template),
-             input_template: _.template(input_template),*/
-
             initialize: function(navigator) {
                 var _this = this;
 
@@ -68,7 +60,7 @@ define('panel', [
                         "keyPath": "userId"
                     }
                 };
-                _this.indexeddb = new indexeddb().initialize();
+                _this.indexeddb = new indexeddb();
                 _this.render();
                 return _this;
             },

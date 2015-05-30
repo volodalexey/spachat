@@ -2,36 +2,30 @@ define('indexeddb',
     ['async_core', 'event_core'],
     function (async_core, event_core) {
 
-        var indexeddb = function() {};
+        var indexeddb = function() {
+            this.defaultKeyPath = 'id';
+            this.defaultVersion = 1;
+            this.STATES = {
+                READY: 1
+            };
+            this.state = this.STATES.READY;
+            this.openDatabases =  {};
+        };
 
         indexeddb.prototype = {
 
-            initialize: function () {
-                var _this = this;
-                _this.data = {
-                    defaultKeyPath: 'id',
-                    defaultVersion: 1,
-                    state: 'ready',
-                    openDatabases: {},
-                    openTimeout: 3500,
-                        tabAnswerKey: 'tabAnswerKey',
-                        tabAskKey: 'tabAskKey'
-                };
-                return _this;
-            },
-
             getKeyPath: function(options) {
-                return options.keyPath ? options.keyPath : this.data.defaultKeyPath;
+                return options.keyPath ? options.keyPath : this.defaultKeyPath;
             },
 
             getVersion: function(options) {
-                return options.db_version ? options.db_version : this.data.defaultVersion;
+                return options.db_version ? options.db_version : this.defaultVersion;
             },
 
             open: function(options, callback) {
                 var _this = this;
 
-                if (_this.data.state !== 'ready') {
+                if (_this.state !== _this.STATES.READY) {
                     callback(new Error('ErrorState'));
                     return;
                 }
@@ -41,18 +35,18 @@ define('indexeddb',
                 var upgraded = false;
 
                 var onSuccess = function(event) {
-                    if (!_this.data.openDatabases[options.id]) {
-                        _this.data.openDatabases[options.id] = {};
+                    if (!_this.openDatabases[options.id]) {
+                        _this.openDatabases[options.id] = {};
                     }
                     if (event && event.target) {
-                        _this.data.openDatabases[options.id].db = event.target.result;
+                        _this.openDatabases[options.id].db = event.target.result;
                     }
-                    _this.data.openDatabases[options.id].options = options;
+                    _this.openDatabases[options.id].options = options;
                     callback(null, upgraded);
                 };
 
-                if (_this.data.openDatabases[options.id] &&
-                    _this.data.openDatabases[options.id].db) {
+                if (_this.openDatabases[options.id] &&
+                    _this.openDatabases[options.id].db) {
                     onSuccess();
                     return;
                 }
@@ -86,7 +80,7 @@ define('indexeddb',
             addOrUpdateAll: function(options, addOrUpdateData, callback) {
                 var _this = this;
 
-                if (_this.data.state !== 'ready') {
+                if (_this.state !== _this.STATES.READY) {
                     callback(new Error('ErrorState'));
                     return;
                 }
@@ -94,7 +88,7 @@ define('indexeddb',
                 var executeAddOrUpdateAll = function() {
                     var trans, store, keyPath = _this.getKeyPath(options);
                     try {
-                        trans = _this.data.openDatabases[options.id].db.transaction([options.db_name], "readwrite");
+                        trans = _this.openDatabases[options.id].db.transaction([options.db_name], "readwrite");
                         store = trans.objectStore(options.table_name);
                     } catch (error) {
                         callback(error);
@@ -142,7 +136,7 @@ define('indexeddb',
                     });
                 };
 
-                if (_this.data.openDatabases[options.id]) {
+                if (_this.openDatabases[options.id]) {
                     executeAddOrUpdateAll();
                 } else {
                     _this.open(options, function(err, upgraded) {
@@ -158,7 +152,7 @@ define('indexeddb',
             getAll: function(options, callback) {
                 var returnData = [], _this = this;
 
-                if (_this.data.state !== 'ready') {
+                if (_this.state !== _this.STATES.READY) {
                     callback(new Error('ErrorState'));
                     return;
                 }
@@ -166,7 +160,7 @@ define('indexeddb',
                 var executeGetAll = function() {
                     var trans, store, openRequest;
                     try {
-                        trans = _this.data.openDatabases[options.id].db.transaction([options.db_name], "readonly");
+                        trans = _this.openDatabases[options.id].db.transaction([options.db_name], "readonly");
                         store = trans.objectStore(options.table_name);
                         openRequest = store.openCursor();
                     } catch (error) {
@@ -190,7 +184,7 @@ define('indexeddb',
                     };
                 };
 
-                if (_this.data.openDatabases[options.id]) {
+                if (_this.openDatabases[options.id]) {
                     executeGetAll();
                 } else {
                     _this.open(options, function(err, upgraded) {
@@ -206,6 +200,6 @@ define('indexeddb',
         extend(indexeddb, async_core);
         extend(indexeddb, event_core);
 
-        return indexeddb;
+        return new indexeddb();
     }
 );

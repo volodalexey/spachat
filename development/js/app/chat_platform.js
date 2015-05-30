@@ -14,7 +14,7 @@ define('chat_platform', [
 
         chat_platform.prototype = {
 
-            link: 'chat',
+            link: /chat/,
 
             initialize: function() {
                 var _this = this;

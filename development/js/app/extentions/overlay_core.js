@@ -15,7 +15,7 @@ define('overlay_core', [],
             toggleWaiter: function(show) {
                 var _this = this;
                 _this.waiter_outer_container = document.querySelector('[data-role="waiter_outer_container"]');
-                this.waiter_outer_container.classList[(show === true ? 'add' : 'remove')]('hide');
+                _this.waiter_outer_container.classList[(show === true ? 'remove' : 'add')]('hide');
             }
         };
 
