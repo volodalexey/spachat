@@ -30,8 +30,8 @@ define('navigator',
                 _this.window = window;
                 _this.bindContexts();
                 _this.addEventListeners();
-                _this.login = document.querySelector('[data-role="login_container_global"]');
-                _this.register_container = document.querySelector('[data-role="register_container_global"]');
+                _this.login = document.querySelector('[data-role="login_outer_container"]');
+                _this.register_container = document.querySelector('[data-role="register_outer_container"]');
                 _this.main = document.querySelector('[data-role="main_container"]');
                 _this.leftPanel = document.querySelector('[data-action="leftPanel"]');
                 _this.right_panel_outer_container = document.querySelector('[data-role="right_panel_outer_container"]');
@@ -75,7 +75,7 @@ define('navigator',
             getCurrentPage: function(href) {
                 var _this = this;
                 _this.data.matchedPages = [];
-                _.each(_this.data.pages, function(page) {
+                _this.data.pages.forEach(function(page) {
                     if (page.link) {
                         var pageRegExp = new RegExp(page.link, "gi");
                         if (pageRegExp.test(href)) {
@@ -83,6 +83,14 @@ define('navigator',
                         }
                     }
                 });
+                /*_.each(_this.data.pages, function(page) {
+                    if (page.link) {
+                        var pageRegExp = new RegExp(page.link, "gi");
+                        if (pageRegExp.test(href)) {
+                            _this.data.matchedPages.push(page);
+                        }
+                    }
+                });*/
             },
 
             navigate: function() {
@@ -91,16 +99,16 @@ define('navigator',
                 _this.getCurrentPage(href);
                 //_this.data.matchedPages;
 
-                _.each(_this.data.matchedPages, function(page) {
+/*                _.each(_this.data.matchedPages, function(page) {
                     if(page !== register){
-                        _this.register_container.classList.add("hidden_login");
+                        _this.register_container.classList.add("hidden");
                     } else {
                         _this.left_panel_outer_container.classList.add("hide");
                         _this.right_panel_outer_container.classList.add("hide");
                     }
                     if (page !== login) {
-                        _this.login.classList.add("hidden_login");
-                        _this.register_container.classList.add("hidden_login");
+                        _this.login.classList.add("hidden");
+                        //_this.register_container.classList.add("hidden");
                     } else {
                             _this.left_panel_outer_container.classList.add("hide");
                             _this.right_panel_outer_container.classList.add("hide");
@@ -116,7 +124,32 @@ define('navigator',
                     } else {
                         page.render && page.render(_this);
                     }
-
+                });*/
+                _this.data.matchedPages.forEach(function(page) {
+                    if(page !== register){
+                        _this.register_container.classList.add("hidden");
+                    } else {
+                        _this.left_panel_outer_container.classList.add("hide");
+                        _this.right_panel_outer_container.classList.add("hide");
+                    }
+                    if (page !== login) {
+                        _this.login.classList.add("hidden");
+                        //_this.register_container.classList.add("hidden");
+                    } else {
+                        _this.left_panel_outer_container.classList.add("hide");
+                        _this.right_panel_outer_container.classList.add("hide");
+                        _this.main.innerHTML = "";
+                    }
+                    if(!(page === login || page === register) ){
+                        if(_this.data.userID === ""){
+                            history.pushState(null, null, 'login');
+                            _this.navigate();
+                        } else {
+                            page.render && page.render(_this);
+                        }
+                    } else {
+                        page.render && page.render(_this);
+                    }
                 });
                 if (!_this.data.matchedPages.length ) {
                     history.pushState(null, null, 'login');

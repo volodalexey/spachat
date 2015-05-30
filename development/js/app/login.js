@@ -17,7 +17,8 @@ define('login', [
 
             initialize: function() {
                 var _this = this;
-                _this.login_container = document.querySelector('[data-role="login_container_global"]');
+                _this.login = document.querySelector('[data-role="login_outer_container"]');
+                _this.login_container = _this.login.querySelector('[data-role="login_container_global"]');
                 _this.form = _this.login_container.querySelector('form');
                 _this.submit = _this.form.querySelector('[data-action="submit"]');
                 _this.register = _this.form.querySelector('[data-action="register_user"]');
@@ -39,7 +40,7 @@ define('login', [
                 var _this = this;
                 _this.navigator = navigator;
                 _this.navigatorData = _this.navigator.data;
-                _this.login_container.classList.remove("hidden_login");
+                _this.login.classList.remove("hidden");
                 _this.addEventListeners();
                 _this.toggleWaiter(true);
             },
@@ -94,9 +95,11 @@ define('login', [
             },
 
             onRegister: function() {
+                var _this = this;
                 event.preventDefault();
                 history.pushState(null, null, 'register');
-                window.history.go(0);
+                //window.history.go(0);
+                _this.navigator.navigate();
             }
         };
 

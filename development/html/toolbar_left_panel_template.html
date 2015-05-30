@@ -1,6 +1,6 @@
     <% var array = arguments[0]; %>
     <% var array_left_panel = array.config.filter( function(obj){ return obj.data_location === "left_panel" } ) %>
-    <% _.each(array_left_panel, function (obj) { %>
+    <% array_left_panel.forEach(function (obj) { %>
     <%= array.triple_element_template({
     element: obj,
     button_template: array.button_template,

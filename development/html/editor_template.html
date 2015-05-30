@@ -4,7 +4,7 @@
 <div class="modal-controls" data-role="controls_container">
     <div class="modal-main-btn">
         <% var array = arguments[0]; %>
-        <% _.each(array.editor_navbar_config, function (obj) { %>
+        <% array.editor_navbar_config.forEach(function (obj) { %>
             <%= array.triple_element_template({
             element: obj,
             button_template: array.button_template,

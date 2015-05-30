@@ -1,10 +1,13 @@
 define('webrtc', [
         'event_core',
+        'template_core',
 
         'text!../html/webrtc_template.html',
         'text!../html/waiter_template.html'
     ],
     function(event_core,
+             template_core,
+
              webrtc_template,
              waiter_template) {
 
@@ -13,11 +16,15 @@ define('webrtc', [
 
         webrtc.prototype = {
 
-            webrtc_template: _.template(webrtc_template),
-            waiter_template: _.template(waiter_template),
+            /*            webrtc_template: _.template(webrtc_template),
+             waiter_template: _.template(waiter_template),*/
 
             initialize: function(options) {
                 var _this = this;
+
+                _this.webrtc_template = _this.template(webrtc_template);
+                _this.waiter_template = _this.template(waiter_template);
+
                 _this.configuration = {
                     RTC: {
                         "iceServers": [
@@ -115,7 +122,7 @@ define('webrtc', [
                 };
                 _this.data.dataChannel.onmessage = function(e) {
                     var message = JSON.parse(e.data);
-                    _this.chat.newMessages.addMessage({ remote: true }, message);
+                    _this.chat.newMessages.addMessage({remote: true}, message);
                 };
             },
 
@@ -223,6 +230,7 @@ define('webrtc', [
             }
         };
         extend(webrtc, event_core);
+        extend(webrtc, template_core);
 
         return webrtc;
     }

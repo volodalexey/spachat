@@ -17,7 +17,8 @@ define('register', [
 
             initialize: function() {
                 var _this = this;
-                _this.register_container = document.querySelector('[data-role="register_container_global"]');
+                _this.register_outer_container = document.querySelector('[data-role="register_outer_container"]');
+                _this.register_container = _this.register_outer_container.querySelector('[data-role="register_container_global"]');
                 _this.login_container = document.querySelector('[data-role="login_container_global"]');
                 _this.form = _this.register_container.querySelector('form');
                 _this.register = _this.form.querySelector('[data-action="register"]');
@@ -39,7 +40,7 @@ define('register', [
                 var _this = this;
                 _this.navigator = navigator;
                 _this.navigatorData = _this.navigator.data;
-                _this.register_container.classList.remove("hidden_login");
+                _this.register_outer_container.classList.remove("hidden");
                 _this.addEventListeners();
                 _this.toggleWaiter(true);
             },

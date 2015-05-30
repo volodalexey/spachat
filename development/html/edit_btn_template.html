@@ -1,5 +1,5 @@
 <% var array = arguments[0]; %>
-<% _.each(array.config, function (btn) { %>
+<% array.config.forEach(function (btn) { %>
 
 <% if(btn.element === "button") { %>
 <button class="<%= btn.class%>" <% if(btn.param){ %> param <%}%> name="<%= btn.name%>" data-role="<%= btn.data_role%>" >

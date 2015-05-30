@@ -2,41 +2,22 @@ body{
   background-color: @light_green;
   margin: 0;
 }
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  //height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: auto;
-  flex-wrap: wrap;
-}
 .hide{
   display: none !important;
 }
 .hidden{
   visibility: hidden;
 }
-.waiter-outer-container {
-  position: fixed;
-  top: 0%;
-  background-color: rgba(207, 207, 207, 0.5);
-  z-index: 200;
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
+  overflow: auto;
+  justify-content: space-around;
 
+}
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .waiter-inner-container {
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 150px;
-    justify-content: center;
-  }
+.marginT {
+  margin-top: 5px;
 }

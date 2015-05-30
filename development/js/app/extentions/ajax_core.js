@@ -1,5 +1,5 @@
-define ('ajax_core',[],
-    function(    ) {
+define('ajax_core', [],
+    function() {
 
         var ajax_core = function() {
         };

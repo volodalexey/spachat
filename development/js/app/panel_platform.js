@@ -54,9 +54,12 @@ define('panel_platform', [
 
             resizePanels: function(){
                 var _this = this;
-                _.each(panel.prototype.panelArray, function(_panel) {
+                panel.prototype.panelArray.forEach(function(_panel) {
                     _panel.resizePanel();
-                })
+                });
+               /* _.each(panel.prototype.panelArray, function(_panel) {
+                    _panel.resizePanel();
+                })*/
             }
 
 

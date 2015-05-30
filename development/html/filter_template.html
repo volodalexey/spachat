@@ -8,7 +8,7 @@
 
 <div class="flex-item flex">
     <div class="elements">
-        <% _.each(array_date_from, function (obj) { %>
+        <% array_date_from.forEach(function (obj) { %>
         <%= array.triple_element_template({
         element: obj,
         button_template: array.button_template,
@@ -16,7 +16,7 @@
         label_template: array.label_template
         }) %>
         <% }) %>
-        <% _.each(array_date_to, function (obj) { %>
+        <% array_date_to.forEach(function (obj) { %>
         <%= array.triple_element_template({
         element: obj,
         button_template: array.button_template,
@@ -29,7 +29,7 @@
 
 <div class="flex-item flex">
     <div class="elements">
-        <% _.each(array_pagination, function (obj) { %>
+        <% array_pagination.forEach(function (obj) { %>
         <%= array.triple_element_template({
         element: obj,
         button_template: array.button_template,
@@ -40,7 +40,7 @@
     </div>
     <div class="elements">
         <% if(array.mode === 'nrte') { %>
-            <% _.each(array_per_page_nrte, function (obj) { %>
+            <% array_per_page_nrte.forEach(function (obj) { %>
                 <%= array.triple_element_template({
                 element: obj,
                 button_template: array.button_template,
@@ -49,7 +49,7 @@
                 }) %>
             <% }) %>
         <% } else { %>
-            <% _.each(array_per_page_rte, function (obj) { %>
+            <% array_per_page_rte.forEach(function (obj) { %>
             <%= array.triple_element_template({
             element: obj,
             button_template: array.button_template,

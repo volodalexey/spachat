@@ -1,28 +1,99 @@
 <% var array = arguments[0]; %>
-<% console.log(array)%>
 <% var array_reading = array.config.filter( function(obj){ return obj.mode === "reading" } ) %>
-<% var array_editing = array.config.filter( function(obj){ return obj.mode === "editing" } ) %>
+<% var array_user_id_location_r = array_reading.filter( function(obj){ return obj.data_location === "user_id" } ) %>
+<% var array_user_name_location_r = array_reading.filter( function(obj){ return obj.data_location === "user_name" } ) %>
+<% var array_navbar_location_r = array_reading.filter( function(obj){ return obj.data_location === "navbar" } ) %>
 
+<% var array_editing = array.config.filter( function(obj){ return obj.mode === "editing" } ) %>
+<% var array_user_name_location_e = array_editing.filter( function(obj){ return obj.data_location === "user_name" } ) %>
+<% var array_old_password_location_e = array_editing.filter( function(obj){ return obj.data_location === "old_password" } ) %>
+<% var array_new_password_location_e = array_editing.filter( function(obj){ return obj.data_location === "new_password" } ) %>
+<% var array_confirm_password_location_e = array_editing.filter( function(obj){ return obj.data_location === "confirm_password" } ) %>
+<% var array_navbar_location_e = array_editing.filter( function(obj){ return obj.data_location === "navbar" } ) %>
 
 
     <% if(array.mode === 'reading') { %>
-        <% _.each(array_reading, function (obj) { %>
-        <%= array.triple_element_template({
-        element: obj,
-        button_template: array.button_template,
-        input_template: array.input_template,
-        label_template: array.label_template
-        }) %>
-        <% }) %>
+        <div class="flex justContSB marginT">
+            <% array_user_id_location_r.forEach(function (obj) { %>
+            <%= array.triple_element_template({
+            element: obj,
+            button_template: array.button_template,
+            input_template: array.input_template,
+            label_template: array.label_template
+            }) %>
+            <% }) %>
+        </div>
+        <div class="flex justContSB marginT">
+            <% array_user_name_location_r.forEach(function (obj) { %>
+            <%= array.triple_element_template({
+            element: obj,
+            button_template: array.button_template,
+            input_template: array.input_template,
+            label_template: array.label_template
+            }) %>
+            <% }) %>
+        </div>
+        <div class="flex justContSA marginT">
+            <% array_navbar_location_r.forEach(function (obj) { %>
+            <%= array.triple_element_template({
+            element: obj,
+            button_template: array.button_template,
+            input_template: array.input_template,
+            label_template: array.label_template
+            }) %>
+            <% }) %>
+        </div>
     <% } else { %>
-    <% _.each(array_editing, function (obj) { %>
-        <%= array.triple_element_template({
-        element: obj,
-        button_template: array.button_template,
-        input_template: array.input_template,
-        label_template: array.label_template
-        }) %>
-        <% }) %>
+        <div class="flex justContSB marginT">
+            <% array_user_name_location_e.forEach(function (obj) { %>
+            <%= array.triple_element_template({
+            element: obj,
+            button_template: array.button_template,
+            input_template: array.input_template,
+            label_template: array.label_template
+            }) %>
+            <% }) %>
+        </div>
+        <div class="flex justContSB marginT">
+            <% array_old_password_location_e.forEach(function (obj) { %>
+            <%= array.triple_element_template({
+            element: obj,
+            button_template: array.button_template,
+            input_template: array.input_template,
+            label_template: array.label_template
+            }) %>
+            <% }) %>
+        </div>
+        <div class="flex justContSB marginT">
+            <% array_new_password_location_e.forEach(function (obj) { %>
+            <%= array.triple_element_template({
+            element: obj,
+            button_template: array.button_template,
+            input_template: array.input_template,
+            label_template: array.label_template
+            }) %>
+            <% }) %>
+        </div>
+        <div class="flex justContSB marginT">
+            <% array_confirm_password_location_e.forEach(function (obj) { %>
+            <%= array.triple_element_template({
+            element: obj,
+            button_template: array.button_template,
+            input_template: array.input_template,
+            label_template: array.label_template
+            }) %>
+            <% }) %>
+        </div>
+        <div class="flex justContSA marginT">
+            <% array_navbar_location_e.forEach(function (obj) { %>
+            <%= array.triple_element_template({
+            element: obj,
+            button_template: array.button_template,
+            input_template: array.input_template,
+            label_template: array.label_template
+            }) %>
+            <% }) %>
+        </div>
     <%} %>
 
 

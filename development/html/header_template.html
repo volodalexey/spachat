@@ -3,7 +3,7 @@
     <h3><%= _in.description %></h3>
     <hr/>
     <div data-role="btnHeaderPanel">
-        <% _.each(_in.header_btn, function (btn) { %>
+        <% _in.header_btn.forEach(function (btn) { %>
         <button class="<%= btn.class%>" name="<%= btn.name%>" data-role="<%= btn.data_role%>" data-action="<%= btn.data_action%>"> <%= btn.text%></button>
         <%})%>
     </div>

@@ -2,6 +2,7 @@ define('editor', [
         'event_core',
         'async_core',
         'ajax_core',
+        'template_core',
 
         'text!../html/editor_template.html',
         'text!../html/edit_btn_template.html',
@@ -13,6 +14,7 @@ define('editor', [
     function(event_core,
              async_core,
              ajax_core,
+             template_core,
 
              editor_template,
              edit_btn_template,
@@ -26,15 +28,22 @@ define('editor', [
 
         editor.prototype = {
 
-            editor_template: _.template(editor_template),
-            edit_btn_template: _.template(edit_btn_template),
-            triple_element_template: _.template(triple_element_template),
-            button_template: _.template(button_template),
-            label_template: _.template(label_template),
-            input_template: _.template(input_template),
+            /*            editor_template: _.template(editor_template),
+             edit_btn_template: _.template(edit_btn_template),
+             triple_element_template: _.template(triple_element_template),
+             button_template: _.template(button_template),
+             label_template: _.template(label_template),
+             input_template: _.template(input_template),*/
 
             initialize: function(options) {
                 var _this = this;
+
+                _this.editor_template = _this.template(editor_template);
+                _this.edit_btn_template = _this.template(edit_btn_template);
+                _this.triple_element_template = _this.template(triple_element_template);
+                _this.button_template = _this.template(button_template);
+                _this.label_template = _this.template(label_template);
+                _this.input_template = _this.template(input_template);
 
                 _this.chat = options.chat;
 
@@ -170,13 +179,20 @@ define('editor', [
             },
 
             addRemoveClassElements: function(arElem, className) {
-                _.each(arElem, function(elem) {
+                arElem.forEach(function(elem) {
                     if (elem.classList.contains(className)) {
                         elem.classList.remove(className);
                     } else {
                         elem.classList.add(className);
                     }
-                })
+                });
+                /*_.each(arElem, function(elem) {
+                    if (elem.classList.contains(className)) {
+                        elem.classList.remove(className);
+                    } else {
+                        elem.classList.add(className);
+                    }
+                })*/
             },
 
             loadEditNavbarConfig: function(callback) {
@@ -233,7 +249,7 @@ define('editor', [
                 var newMessage = _this.messageElem.firstElementChild;
                 var pattern = /[^\s{0,}$|^$]/;
                 if (pattern.test(newMessage.innerText)) {
-                    _this.chat.newMessages.addMessage({ scrollTop: true }, newMessage.innerHTML);
+                    _this.chat.newMessages.addMessage({scrollTop: true}, newMessage.innerHTML);
                     newMessage.innerText = "";
                 }
             }
@@ -242,6 +258,7 @@ define('editor', [
         extend(editor, event_core);
         extend(editor, async_core);
         extend(editor, ajax_core);
+        extend(editor, template_core);
 
         return editor;
     });

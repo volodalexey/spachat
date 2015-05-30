@@ -2,6 +2,8 @@ define('header', [
         'event_core',
         'ajax_core',
         'async_core',
+        'template_core',
+
         'pagination',
 
         'text!../html/filter_template.html',
@@ -14,7 +16,10 @@ define('header', [
     function(event_core,
              ajax_core,
              async_core,
+             template_core,
+
              pagination,
+
              filter_template,
              header_template,
              triple_element_template,
@@ -27,15 +32,22 @@ define('header', [
 
         header.prototype = {
 
-            header_template: _.template(header_template),
-            filter_template: _.template(filter_template),
-            triple_element_template: _.template(triple_element_template),
-            button_template: _.template(button_template),
-            label_template: _.template(label_template),
-            input_template: _.template(input_template),
+            /*header_template: _.template(header_template),
+             filter_template: _.template(filter_template),
+             triple_element_template: _.template(triple_element_template),
+             button_template: _.template(button_template),
+             label_template: _.template(label_template),
+             input_template: _.template(input_template),*/
 
             initialize: function(options) {
                 var _this = this;
+
+                _this.header_template = _this.template(header_template);
+                _this.filter_template = _this.template(filter_template);
+                _this.triple_element_template = _this.template(triple_element_template);
+                _this.button_template = _this.template(button_template);
+                _this.label_template = _this.template(label_template);
+                _this.input_template = _this.template(input_template);
 
                 _this.chat = options.chat;
 
@@ -137,7 +149,7 @@ define('header', [
                                 if (_this.real_time_editing) {
                                     _this.real_time_editing.addEventListener('change', _this.changeRealTimeEditing.bind(_this), false);
                                 }
-                                if(_this.chat.data.redraw_mode === "rte"){
+                                if (_this.chat.data.redraw_mode === "rte") {
                                     _this.real_time_editing.checked = true;
                                 } else {
                                     _this.real_time_editing.checked = false;
@@ -166,7 +178,6 @@ define('header', [
                     return obj.service_id === "per_page" && obj.redraw_mode === "rte"
                 })
 
-
                 if (_this.real_time_editing.checked) {
                     _this.chat.data.redraw_mode = "rte";
                     _this.array_per_page = array_per_page_rte;
@@ -176,9 +187,9 @@ define('header', [
                 }
                 var parentDiv = _this.real_time_editing.parentNode;
                 parentDiv.innerHTML = "";
-               _this.array_per_page.forEach(function(obj) {
-                   console.log(obj)
-                   parentDiv.innerHTML +=  _this.triple_element_template({
+                _this.array_per_page.forEach(function(obj) {
+                    console.log(obj)
+                    parentDiv.innerHTML += _this.triple_element_template({
                         element: obj,
                         button_template: _this.button_template,
                         input_template: _this.input_template,
@@ -220,7 +231,7 @@ define('header', [
                 var _this = this;
                 _this.chat.data.per_page_value = parseInt(_this.labeltPerPage.value);
 
-                if(_this.chat.data.redraw_mode === "rte"){
+                if (_this.chat.data.redraw_mode === "rte") {
                     _this.chat.data.curPage = null;
                     if (_this.chat.data.valueEnablePagination) {
                         if (_this.labeltPerPage.value !== "") {
@@ -233,13 +244,13 @@ define('header', [
             showPerPage: function() {
                 var _this = this;
 
-                    _this.chat.data.per_page_value = parseInt(_this.labeltPerPage.value);
-                    _this.chat.data.curPage = null;
-                    if (_this.chat.data.valueEnablePagination) {
-                        if (_this.labeltPerPage.value !== "") {
-                            _this.trigger("changePerPage");
-                        }
+                _this.chat.data.per_page_value = parseInt(_this.labeltPerPage.value);
+                _this.chat.data.curPage = null;
+                if (_this.chat.data.valueEnablePagination) {
+                    if (_this.labeltPerPage.value !== "") {
+                        _this.trigger("changePerPage");
                     }
+                }
             }
 
             /* addToolbarListeners: function() {
@@ -278,5 +289,7 @@ define('header', [
         extend(header, event_core);
         extend(header, async_core);
         extend(header, ajax_core);
+        extend(header, template_core);
+
         return header;
     });

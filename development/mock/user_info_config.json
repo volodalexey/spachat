@@ -11,7 +11,8 @@
     "value": null,
     "sort": 1,
     "disable": false,
-    "mode": "reading"
+    "mode": "reading",
+    "data_location": "user_id"
   },
   {
     "element": "input",
@@ -26,7 +27,8 @@
     "id": "user_id",
     "disabled" : true,
     "sort": 2,
-    "mode": "reading"
+    "mode": "reading",
+    "data_location": "user_id"
   },
   {
     "element": "label",
@@ -40,7 +42,8 @@
     "value": null,
     "sort": 3,
     "disable": false,
-    "mode": "reading"
+    "mode": "reading",
+    "data_location": "user_name"
   },
   {
     "element": "input",
@@ -55,7 +58,8 @@
     "id": "user_name",
     "disabled" : true,
     "sort": 4,
-    "mode": "reading"
+    "mode": "reading",
+    "data_location": "user_name"
   },
   {
     "element": "button",
@@ -69,7 +73,8 @@
     "value": null,
     "disable": false,
     "sort": 5,
-    "mode": "reading"
+    "mode": "reading",
+    "data_location": "navbar"
   },
   {
     "element": "button",
@@ -83,7 +88,8 @@
     "value": null,
     "disable": false,
     "sort": 6,
-    "mode": "reading"
+    "mode": "reading",
+    "data_location": "navbar"
   },
   {
     "element": "label",
@@ -97,7 +103,8 @@
     "value": null,
     "sort": 1,
     "disable": false,
-    "mode": "editing"
+    "mode": "editing",
+    "data_location": "user_name"
   },
   {
     "element": "input",
@@ -112,7 +119,8 @@
     "id": "user_name",
     "disabled" : false,
     "sort": 2,
-    "mode": "editing"
+    "mode": "editing",
+    "data_location": "user_name"
   },
   {
     "element": "label",
@@ -126,7 +134,8 @@
     "value": null,
     "sort": 3,
     "disable": false,
-    "mode": "editing"
+    "mode": "editing",
+    "data_location": "old_password"
   },
   {
     "element": "input",
@@ -141,7 +150,8 @@
     "id": "user_old_password",
     "disabled" : false,
     "sort": 4,
-    "mode": "editing"
+    "mode": "editing",
+    "data_location": "old_password"
   },
   {
     "element": "label",
@@ -155,7 +165,8 @@
     "value": null,
     "sort": 5,
     "disable": false,
-    "mode": "editing"
+    "mode": "editing",
+    "data_location": "new_password"
   },
   {
     "element": "input",
@@ -170,7 +181,8 @@
     "id": "user_new_password",
     "disabled" : false,
     "sort": 6,
-    "mode": "editing"
+    "mode": "editing",
+    "data_location": "new_password"
   },
   {
     "element": "label",
@@ -184,7 +196,8 @@
     "value": null,
     "sort": 7,
     "disable": false,
-    "mode": "editing"
+    "mode": "editing",
+    "data_location": "confirm_password"
   },
   {
     "element": "input",
@@ -199,7 +212,8 @@
     "id": "user_confirm_password",
     "disabled" : false,
     "sort": 8,
-    "mode": "editing"
+    "mode": "editing",
+    "data_location": "confirm_password"
   },
   {
     "element": "button",
@@ -213,7 +227,8 @@
     "value": null,
     "disable": false,
     "sort": 9,
-    "mode": "editing"
+    "mode": "editing",
+    "data_location": "navbar"
   },
   {
     "element": "button",
@@ -227,6 +242,7 @@
     "value": null,
     "disable": false,
     "sort": 10,
-    "mode": "editing"
+    "mode": "editing",
+    "data_location": "navbar"
   }
 ]

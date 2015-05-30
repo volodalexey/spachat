@@ -77,7 +77,10 @@ define('chat_platform', [
             clearStory: function() {
                 var _this = this;
                 localStorage.clear();
-                _.each(chat.prototype.chatsArray, function(chat) {
+/*                _.each(chat.prototype.chatsArray, function(chat) {
+                    chat.querySelector('[data-role="messages_container"]').innerHTML = "";
+                });*/
+                chat.prototype.chatsArray.forEach(function(chat) {
                     chat.querySelector('[data-role="messages_container"]').innerHTML = "";
                 })
             }

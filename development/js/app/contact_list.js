@@ -1,10 +1,14 @@
 define('contact_list', [
         'event_core',
         'ajax_core',
+        'template_core',
+
         'text!../html/contact_list_template.html'
     ],
     function(event_core,
              ajax_core,
+             template_core,
+
              contact_list_template) {
 
         var contact_list = function() {
@@ -16,7 +20,7 @@ define('contact_list', [
                 var _this = this;
                 _this.addEventListeners();
                 _this.chat = options.chat;
-                _this.contact_list_template = _.template(contact_list_template);
+                _this.contact_list_template = _this.template(contact_list_template);
                 _this.body_outer_container = _this.chat.body_outer_container;
                 _this.renderContactList();
                 return _this;
@@ -61,6 +65,7 @@ define('contact_list', [
 
         extend(contact_list, event_core);
         extend(contact_list, ajax_core);
+        extend(contact_list, template_core);
 
         return contact_list;
     });

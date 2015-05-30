@@ -5,8 +5,10 @@ define('chat', [
         'settings',
         'contact_list',
         'messages',
+
         'ajax_core',
         'indexeddb',
+        'template_core',
         'webrtc',
 
         'text!../html/chat_template.html',
@@ -20,6 +22,7 @@ define('chat', [
              messages,
              ajax_core,
              indexeddb,
+             template_core,
              webrtc,
              chat_template,
              outer_container_template) {
@@ -28,13 +31,17 @@ define('chat', [
 
         chat.prototype = {
 
-            chat_template: _.template(chat_template),
-            outer_container_template: _.template(outer_container_template),
+            //chat_template: _.template(chat_template),
+            //outer_container_template: _.template(outer_container_template),
 
             chatsArray: [],
 
             initialize: function(chatElem, mainContainer) {
                 var _this = this;
+
+                _this.chat_template = _this.template(chat_template);
+                _this.outer_container_template = _this.template(outer_container_template);
+
                 _this.data = {
                     mode: "messages", //webrtc
                     body_mode: "messages",
@@ -233,6 +240,7 @@ define('chat', [
 
         };
         extend(chat, ajax_core);
+        extend(chat, template_core);
 
         return chat;
     });

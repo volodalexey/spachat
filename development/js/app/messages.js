@@ -1,10 +1,12 @@
 define('messages', [
         'event_core',
+        'template_core',
 
         'text!../html/message_template.html'
     ],
     function(
         event_core,
+        template_core,
 
         message_template
     ) {
@@ -14,10 +16,13 @@ define('messages', [
 
         messages.prototype = {
 
-            message_template: _.template(message_template),
+            //message_template: _.template(message_template),
 
             initialize: function(options) {
                 var _this = this;
+
+                _this.message_template = _this.template(message_template);
+
                 _this.chat = options.chat;
                 _this.data = {
                     options: options,
@@ -122,6 +127,7 @@ define('messages', [
             }
         };
         extend(messages, event_core);
+        extend(messages, template_core);
 
         return messages;
     });

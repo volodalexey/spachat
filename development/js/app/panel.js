@@ -2,6 +2,7 @@ define('panel', [
         'event_core',
         'ajax_core',
         'indexeddb',
+        'template_core',
 
         'text!../html/toolbar_left_panel_template.html',
         'text!../html/toolbar_right_panel_template.html',
@@ -14,6 +15,7 @@ define('panel', [
     function(event_core,
              ajax_core,
              indexeddb,
+             template_core,
              toolbar_left_panel_template,
              toolbar_right_panel_template,
              user_info_template,
@@ -29,25 +31,35 @@ define('panel', [
 
             panelArray: [],
 
-            toolbar_left_panel_template: _.template(toolbar_left_panel_template),
-            toolbar_right_panel_template: _.template(toolbar_right_panel_template),
-            user_info_template: _.template(user_info_template),
-            triple_element_template: _.template(triple_element_template),
-            button_template: _.template(button_template),
-            label_template: _.template(label_template),
-            input_template: _.template(input_template),
+            /*            toolbar_left_panel_template: _.template(toolbar_left_panel_template),
+             toolbar_right_panel_template: _.template(toolbar_right_panel_template),
+             user_info_template: _.template(user_info_template),
+             triple_element_template: _.template(triple_element_template),
+             button_template: _.template(button_template),
+             label_template: _.template(label_template),
+             input_template: _.template(input_template),*/
 
             initialize: function(navigator) {
                 var _this = this;
+
+                _this.toolbar_left_panel_template = _this.template(toolbar_left_panel_template);
+                _this.toolbar_right_panel_template = _this.template(toolbar_right_panel_template);
+                _this.user_info_template = _this.template(user_info_template);
+                _this.triple_element_template = _this.template(triple_element_template);
+                _this.button_template = _this.template(button_template);
+                _this.label_template = _this.template(label_template);
+                _this.input_template = _this.template(input_template);
+
                 _this.bindContextsContent();
                 _this.bindContextsMain();
-                _this.render();
+
                 _this.navigator = navigator;
                 _this.navigatorData = _this.navigator.data;
 
                 _this.data = {
                     mode: "",
                     mode_user_info: "reading",
+                    z_index: 80,
                     collection: {
                         "id": 1,
                         "db_name": 'authentification',
@@ -57,6 +69,7 @@ define('panel', [
                     }
                 };
                 _this.indexeddb = new indexeddb().initialize();
+                _this.render();
                 return _this;
             },
 
@@ -72,6 +85,7 @@ define('panel', [
                 _this.left_panel_outer_container.classList.add("animate");
                 _this.left_panel_outer_container.style.maxWidth = window.innerWidth + 'px';
                 _this.left_panel_outer_container.style.left = -_this.left_panel_outer_container.offsetWidth + 'px';
+                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
 
                 _this.right_panel_outer_container = document.querySelector('[data-role="right_panel_outer_container"]');
                 _this.rightPanel = _this.right_panel_outer_container.querySelector('[data-action="rightPanel"]');
@@ -82,7 +96,8 @@ define('panel', [
                 _this.right_panel_outer_container.classList.remove("hide");
                 _this.right_panel_outer_container.classList.add("animate");
                 _this.right_panel_outer_container.style.maxWidth = window.innerWidth + 'px';
-                _this.right_panel_outer_container.style.right = - _this.right_panel_outer_container.offsetWidth + 'px';
+                _this.right_panel_outer_container.style.right = -_this.right_panel_outer_container.offsetWidth + 'px';
+                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
 
                 _this.addMainEventListener();
             },
@@ -169,10 +184,15 @@ define('panel', [
                         _this.panel_config = JSON.parse(res);
                         if (_this.left_panel_outer_container.clientWidth + _this.btnLeftPanel.clientWidth > document.body.clientWidth) {
                             if (_this.left_panel_outer_container.style.left !== '0px') {
+                                _this.data.z_index = _this.data.z_index + 1;
+                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
                                 _this.left_panel_outer_container.style.left = "0px";
                                 _this.fillingTemplateBodyLeftPanel();
                                 _this.resizePanel();
                             } else {
+                                _this.data.z_index = _this.data.z_index - 1;
+                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
+                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
                                 _this.left_panel_outer_container.style.left = -_this.left_panel_outer_container.offsetWidth + 'px';
                                 _this.btnLeftPanel.classList.remove("floatR");
                                 _this.left_panel_inner_container.classList.remove("clear");
@@ -181,9 +201,14 @@ define('panel', [
                             }
                         } else {
                             if (_this.left_panel_outer_container.style.left !== '0px') {
+                                _this.data.z_index = _this.data.z_index + 1;
+                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
                                 _this.left_panel_outer_container.style.left = "0px";
                                 _this.fillingTemplateBodyLeftPanel();
                             } else {
+                                _this.data.z_index = _this.data.z_index - 1;
+                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
+                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
                                 _this.left_panel_outer_container.style.left = -_this.left_panel_outer_container.offsetWidth + 'px';
                                 _this.bodyLeftPanel.innerHTML = "";
                             }
@@ -214,28 +239,38 @@ define('panel', [
                         console.log(err);
                     } else {
                         _this.panel_config = JSON.parse(res);
-                        if (_this.right_panel_outer_container.clientWidth + _this.btnRightPanel.clientWidth  > document.body.clientWidth) {
+                        if (_this.right_panel_outer_container.clientWidth + _this.btnRightPanel.clientWidth > document.body.clientWidth) {
                             if (_this.right_panel_outer_container.style.right !== '0px') {
-                                _this.right_panel_outer_container.style.right =  '0px';
+                                _this.data.z_index = _this.data.z_index + 1;
+                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
+                                _this.right_panel_outer_container.style.right = '0px';
                                 _this.fillingTemplateToolbarRightPanel();
                                 if (_this.data.mode === _this.userInfo.getAttribute("data-mode")) {
                                     _this.downloadUserInfo();
                                 }
                                 _this.resizePanel();
                             } else {
-                                _this.right_panel_outer_container.style.right = - _this.right_panel_outer_container.offsetWidth + 'px';
+                                _this.data.z_index = _this.data.z_index - 1;
+                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
+                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
+                                _this.right_panel_outer_container.style.right = -_this.right_panel_outer_container.offsetWidth + 'px';
                                 _this.right_panel_inner_container.classList.remove("clear");
                                 _this.btnRightPanel.classList.add("btnPanel");
                                 _this.bodyRightPanel.innerHTML = "";
                             }
                         } else {
                             if (_this.right_panel_outer_container.style.right !== '0px') {
-                                _this.right_panel_outer_container.style.right =  '0px';
+                                _this.data.z_index = _this.data.z_index + 1;
+                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
+                                _this.right_panel_outer_container.style.right = '0px';
                                 _this.fillingTemplateToolbarRightPanel();
                                 if (_this.data.mode === _this.userInfo.getAttribute("data-mode")) {
                                     _this.downloadUserInfo();
                                 }
                             } else {
+                                _this.data.z_index = _this.data.z_index - 1;
+                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
+                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
                                 _this.right_panel_outer_container.style.right = -_this.right_panel_outer_container.offsetWidth + 'px';
                                 _this.bodyRightPanel.innerHTML = "";
                             }
@@ -292,7 +327,7 @@ define('panel', [
                 var _this = this;
                 _this.user_info_config.forEach(function(element) {
                     if (element.data_role === "user_name_input" || element.data_role === "user_name") {
-                        if(element.value === ""){
+                        if (element.value === "") {
                             element.value = _this.user.userName;
                         }
                     }
@@ -359,10 +394,10 @@ define('panel', [
             clearUserInfo: function() {
                 var _this = this;
                 _this.user_info_config.forEach(function(element) {
-                        if (element.data_role === "user_name_input" || element.data_role === "user_old_password_input" ||
-                            element.data_role === "user_new_password_input" ||  element.data_role === "user_confirm_password_input") {
-                            element.value = "";
-                        }
+                    if (element.data_role === "user_name_input" || element.data_role === "user_old_password_input" ||
+                        element.data_role === "user_new_password_input" || element.data_role === "user_confirm_password_input") {
+                        element.value = "";
+                    }
                     }
                 )
             },
@@ -473,6 +508,7 @@ define('panel', [
         }
         extend(panel, event_core);
         extend(panel, ajax_core);
+        extend(panel, template_core);
 
         return panel;
     });

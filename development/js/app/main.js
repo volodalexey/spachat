@@ -9,6 +9,7 @@ require.config({
         "ajax_core": "app/extentions/ajax_core",
         "overlay_core": "app/extentions/overlay_core",
         "event_core": "app/extentions/event_core",
+        "template_core": "app/extentions/template_core",
 
         "chat": "app/chat",
         "chat_platform": "app/chat_platform",

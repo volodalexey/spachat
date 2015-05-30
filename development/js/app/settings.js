@@ -2,11 +2,15 @@ define('settings', [
         'chat',
         'event_core',
         'ajax_core',
+        'template_core',
+
         'text!../html/setting_template.html'
     ],
     function(chat,
              event_core,
              ajax_core,
+             template_core,
+
              setting_template) {
 
         var settings = function() {
@@ -19,7 +23,7 @@ define('settings', [
 
                 _this.addEventListeners();
                 _this.chat = options.chat;
-                _this.setting_template = _.template(setting_template);
+                _this.setting_template = _this.template(setting_template);
                 _this.body_outer_container = _this.chat.body_outer_container;
                 _this.renderSettings();
                 return _this;
@@ -55,6 +59,8 @@ define('settings', [
 
         extend(settings, event_core);
         extend(settings, ajax_core);
+        extend(settings, template_core);
+
 
         return settings;
     });

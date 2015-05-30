@@ -5,7 +5,9 @@
 
 <div>
     <% if(array.mode === 'nrte') { %>
-        <% _.each(array_choice_nrte, function (obj) { %>
+
+
+        <% array_choice_nrte.forEach( function (obj) { %>
             <%= array.triple_element_template({
             element: obj,
             button_template: array.button_template,
@@ -13,8 +15,10 @@
             label_template: array.label_template
             }) %>
         <% }) %>
+
+
     <% } else { %>
-        <% _.each(array_choice_rte, function (obj) { %>
+        <% array_choice_rte.forEach( function (obj) { %>
             <%= array.triple_element_template({
             element: obj,
             button_template: array.button_template,

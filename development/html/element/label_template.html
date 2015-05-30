@@ -3,4 +3,6 @@
 <% if(label.name !== ""){ %> name="<%= label.name%>" <%}%>
 <% if(label.value !== null){ %> value="<%=label.value%>" <%}%>
 <% if(label.for){ %> for="<%= label.for%>" <%}%>
+<% if(label.data_location){ %> data-location="<%= label.data_location%>" <%}%>
+
 ><%=label.text%></label>

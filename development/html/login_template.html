@@ -35,7 +35,7 @@
             </div>
             <div class="authentification-col-right">
                 <select class="w-100p" name="domain" data-authentication="" >
-                    <% _.each(domains, function(domain) { %>
+                    <% domains.forEach(function(domain) { %>
                     <option value="<%= domain.value %>" ><%= domain.text %></option>
                     <% }); %>
                 </select>

@@ -1,6 +1,7 @@
 define('pagination', [
         'event_core',
         'ajax_core',
+        'template_core',
 
         'text!../html/pagination_template.html',
         'text!../html/choice_per_page_template.html',
@@ -11,6 +12,8 @@ define('pagination', [
     ],
     function(event_core,
              ajax_core,
+             template_core,
+
              pagination_template,
              choice_per_page_template,
              triple_element_template,
@@ -24,15 +27,23 @@ define('pagination', [
 
         pagination.prototype = {
 
-            pagination_template: _.template(pagination_template),
+/*            pagination_template: _.template(pagination_template),
             choice_per_page_template: _.template(choice_per_page_template),
             triple_element_template: _.template(triple_element_template),
             button_template: _.template(button_template),
             label_template: _.template(label_template),
-            input_template: _.template(input_template),
+            input_template: _.template(input_template),*/
 
             initialize: function(options, callback) {
                 var _this = this;
+
+                _this.pagination_template = _this.template(pagination_template);
+                    _this.choice_per_page_template = _this.template(choice_per_page_template);
+                    _this.triple_element_template =_this.template(triple_element_template);
+                    _this.button_template = _this.template(button_template);
+                    _this.label_template = _this.template(label_template);
+                    _this.input_template = _this.template(input_template);
+
                 _this.data = {
                     options: options,
                     collection: {
@@ -241,7 +252,7 @@ define('pagination', [
                         }
                     })
                 }*/
-                if (_this.choice_per_page_container.innerHTML === "") {
+                if (_this.choice_per_page_container.innerHTML === "" ) {
 
                     _this.sendRequest("/mock/choice_per_page_config.json", function(err, res) {
                         if (err) {
@@ -320,6 +331,7 @@ define('pagination', [
         }
         extend(pagination, event_core);
         extend(pagination, ajax_core);
+        extend(pagination, template_core);
 
         return pagination;
     })

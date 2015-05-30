@@ -23,9 +23,12 @@ define('async_core', ['Underscore'],
                     return callback();
                 }
                 var completed = 0;
-                _.each(arr, function (x) {
+                arr.forEach(function (x) {
                     iterator(x, _this.only_once(_this, done) );
                 });
+                /*_.each(arr, function (x) {
+                    iterator(x, _this.only_once(_this, done) );
+                });*/
                 function done(err) {
                     if (err) {
                         callback(err);
