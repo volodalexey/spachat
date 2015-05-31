@@ -85,7 +85,7 @@ define('login', [
                             if (_user.userName === userName && _user.userPassword === userPassword) {
                                 user = _user;
                             }
-                            return !_user;
+                            return !user;
                         });
 
                         if (user) {
@@ -94,8 +94,7 @@ define('login', [
                             _this.navigator.navigate();
                         } else {
                             _this.navigator.userId = null;
-                            _this.loginForm.elements.userName.value = "";
-                            _this.loginForm.elements.userPassword.value = "";
+                            _this.loginForm.reset();
                             console.error(new Error('User with such username or password not found!'));
                         }
                     });

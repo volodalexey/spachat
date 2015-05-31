@@ -84,36 +84,21 @@ define('panel', [
 
             bindContextsMain: function() {
                 var _this = this;
-                _this.bindedWorkRightPanel = _this.workRightPanel.bind(_this);
-                _this.bindedWorkLeftPanel = _this.workLeftPanel.bind(_this);
+                _this.bindedTogglePanelWorkflow = _this.togglePanelWorkflow.bind(_this);
                 _this.bindedInutUserInfo = _this.inputUserInfo.bind(_this);
             },
 
             addMainEventListener: function() {
                 var _this = this;
                 _this.removeMainEventListeners();
-                if (_this.btnRightPanel) {
-                    _this.btnRightPanel.addEventListener('click', _this.bindedWorkRightPanel, false);
-                }
-                if (_this.btnLeftPanel) {
-                    _this.btnLeftPanel.addEventListener('click', _this.bindedWorkLeftPanel, false);
-                }
-                if (_this.bodyRightPanel) {
-                    _this.bodyRightPanel.addEventListener("input", _this.bindedInutUserInfo, false);
-                }
+                _this.addRemoveListener(_this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
+                _this.addRemoveListener(_this.panel_body, 'input', _this.bindedInutUserInfo, false);
             },
 
             removeMainEventListeners: function() {
                 var _this = this;
-                if (_this.btnRightPanel) {
-                    _this.btnRightPanel.removeEventListener('click', _this.bindedWorkRightPanel, false);
-                }
-                if (_this.btnLeftPanel) {
-                    _this.btnLeftPanel.removeEventListener('click', _this.bindedWorkLeftPanel, false);
-                }
-                if (_this.bodyRightPanel) {
-                    _this.bodyRightPanel.removeEventListener("input", _this.bindedInutUserInfo, false);
-                }
+                _this.addRemoveListener(_this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
+                _this.addRemoveListener(_this.panel_body, 'input', _this.bindedInutUserInfo, false);
             },
 
             bindContextsContent: function() {
@@ -123,31 +108,44 @@ define('panel', [
                 _this.bindedDownloadUserInfo = _this.downloadUserInfo.bind(_this);
             },
 
+            addRemoveListener: function(element, eventName, listener, phase) {
+                if (!element || !listener || !eventName) {
+                    return;
+                }
+                if (this.addRemoveListener.caller === this.addContentEventListener ||
+                    this.addRemoveListener.caller === this.addMainEventListener) {
+                    element.addEventListener(eventName, listener, phase);
+                } else if (this.addRemoveListener.caller === this.removeContentEventListeners ||
+                    this.addRemoveListener.caller === this.removeMainEventListeners) {
+                    element.removeEventListener(eventName, listener, phase);
+                }
+            },
+
             addContentEventListener: function() {
                 var _this = this;
                 _this.removeContentEventListeners();
-                if (_this.addChat) {
-                    _this.addChat.addEventListener('click', _this.bindedThrowEventAddNewChat, false);
-                }
-                if (_this.clearStory) {
-                    _this.clearStory.addEventListener('click', _this.bindedThrowEventClearStory, false);
-                }
-                if (_this.userInfo) {
-                    _this.userInfo.addEventListener('click', _this.bindedDownloadUserInfo, false);
-                }
+                //if (_this.addChat) {
+                //    _this.addChat.addEventListener('click', _this.bindedThrowEventAddNewChat, false);
+                //}
+                //if (_this.clearStory) {
+                //    _this.clearStory.addEventListener('click', _this.bindedThrowEventClearStory, false);
+                //}
+                //if (_this.userInfo) {
+                //    _this.userInfo.addEventListener('click', _this.bindedDownloadUserInfo, false);
+                //}
             },
 
             removeContentEventListeners: function() {
                 var _this = this;
-                if (_this.addChat) {
-                    _this.addChat.removeEventListener('click', _this.bindedThrowEventAddNewChat, false);
-                }
-                if (_this.clearStory) {
-                    _this.clearStory.removeEventListener('click', _this.bindedThrowEventClearStory, false);
-                }
-                if (_this.userInfo) {
-                    _this.userInfo.removeEventListener('click', _this.bindedDownloadUserInfo, false);
-                }
+                //if (_this.addChat) {
+                //    _this.addChat.removeEventListener('click', _this.bindedThrowEventAddNewChat, false);
+                //}
+                //if (_this.clearStory) {
+                //    _this.clearStory.removeEventListener('click', _this.bindedThrowEventClearStory, false);
+                //}
+                //if (_this.userInfo) {
+                //    _this.userInfo.removeEventListener('click', _this.bindedDownloadUserInfo, false);
+                //}
             },
 
             throwEvent: function(name) {
@@ -155,60 +153,63 @@ define('panel', [
                 _this.trigger(name);
             },
 
-            workLeftPanel: function() {
+            openOrClosePanel: function(bigMode) {
                 var _this = this;
-                _this.sendRequest("/mock/panel_config.json", function(err, res) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        _this.panel_config = JSON.parse(res);
-                        if (_this.left_panel_outer_container.clientWidth + _this.btnLeftPanel.clientWidth > document.body.clientWidth) {
-                            if (_this.left_panel_outer_container.style.left !== '0px') {
-                                _this.data.z_index = _this.data.z_index + 1;
-                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.left_panel_outer_container.style.left = "0px";
-                                _this.fillingTemplateBodyLeftPanel();
-                                _this.resizePanel();
-                            } else {
-                                _this.data.z_index = _this.data.z_index - 1;
-                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.left_panel_outer_container.style.left = -_this.left_panel_outer_container.offsetWidth + 'px';
-                                _this.btnLeftPanel.classList.remove("floatR");
-                                _this.left_panel_inner_container.classList.remove("clear");
-                                _this.btnLeftPanel.classList.add("btnPanel");
-                                _this.bodyLeftPanel.innerHTML = "";
-                            }
-                        } else {
-                            if (_this.left_panel_outer_container.style.left !== '0px') {
-                                _this.data.z_index = _this.data.z_index + 1;
-                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.left_panel_outer_container.style.left = "0px";
-                                _this.fillingTemplateBodyLeftPanel();
-                            } else {
-                                _this.data.z_index = _this.data.z_index - 1;
-                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.left_panel_outer_container.style.left = -_this.left_panel_outer_container.offsetWidth + 'px';
-                                _this.bodyLeftPanel.innerHTML = "";
-                            }
-                        }
+                if (_this.outer_container.style[_this.type] !== '0px') {
+                    _this.previous_z_index = _this.outer_container.style.zIndex;
+                    _this.outer_container.style.zIndex = ++_this.z_index;
+                    _this.outer_container.style[_this.type] = "0px";
+                    _this.fillPanelBody();
+                    if (bigMode === true) {
+                        //_this.resizePanel();
                     }
-                })
+                } else {
+                    _this.z_index--;
+                    _this.outer_container.style.zIndex = _this.previous_z_index;
+                    _this.outer_container.style[_this.type] = (-_this.outer_container.offsetWidth) + 'px';
+                    if (bigMode === true) {
+                        _this.togglePanelElement.classList.remove("pull-" + _this.type);
+                        _this.togglePanelElement.classList.add("panel-button");
+                    }
+                    // TODO remove innner listeners before
+                    _this.panel_body.innerHTML = "";
+                }
             },
 
-            fillingTemplateBodyLeftPanel: function() {
+            togglePanel: function() {
                 var _this = this;
-                _this.leftPanel.style.left = 0 + 'px';
-                _this.toolbarLeftPanel.innerHTML = _this.left_panel_template({
+                _this.openOrClosePanel(_this.outer_container.clientWidth + _this.togglePanelElement.clientWidth > document.body.clientWidth);
+            },
+
+            togglePanelWorkflow: function() {
+                var _this = this;
+                if (_this.panel_config) {
+                    _this.togglePanel();
+                } else {
+                    _this.sendRequest("/mock/panel_config.json", function(err, res) {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
+
+                        _this.panel_config = JSON.parse(res);
+                        _this.togglePanel();
+                    });
+                }
+            },
+
+            fillPanelBody: function() {
+                var _this = this;
+                //_this.leftPanel.style.left = 0 + 'px';
+                _this.panel_toolbar.innerHTML = _this['panel_' + _this.type + '_template']({
                     config: _this.panel_config,
                     triple_element_template: _this.triple_element_template,
                     button_template: _this.button_template,
                     input_template: _this.input_template,
                     label_template: _this.label_template
                 });
-                _this.addChat = _this.toolbarLeftPanel.querySelector('button[data-action="addChat"]');
-                _this.clearStory = _this.toolbarLeftPanel.querySelector('[data-action="btnClearListMessage"]');
+                //_this.addChat = _this.toolbarLeftPanel.querySelector('button[data-action="addChat"]');
+                //_this.clearStory = _this.toolbarLeftPanel.querySelector('[data-action="btnClearListMessage"]');
                 _this.addContentEventListener();
             },
 
@@ -221,56 +222,28 @@ define('panel', [
                         _this.panel_config = JSON.parse(res);
                         if (_this.right_panel_outer_container.clientWidth + _this.btnRightPanel.clientWidth > document.body.clientWidth) {
                             if (_this.right_panel_outer_container.style.right !== '0px') {
-                                _this.data.z_index = _this.data.z_index + 1;
-                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.right_panel_outer_container.style.right = '0px';
+
                                 _this.fillingTemplateToolbarRightPanel();
                                 if (_this.data.mode === _this.userInfo.getAttribute("data-mode")) {
                                     _this.downloadUserInfo();
                                 }
                                 _this.resizePanel();
                             } else {
-                                _this.data.z_index = _this.data.z_index - 1;
-                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.right_panel_outer_container.style.right = -_this.right_panel_outer_container.offsetWidth + 'px';
-                                _this.right_panel_inner_container.classList.remove("clear");
-                                _this.btnRightPanel.classList.add("btnPanel");
-                                _this.bodyRightPanel.innerHTML = "";
+
                             }
                         } else {
                             if (_this.right_panel_outer_container.style.right !== '0px') {
-                                _this.data.z_index = _this.data.z_index + 1;
-                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.right_panel_outer_container.style.right = '0px';
+
                                 _this.fillingTemplateToolbarRightPanel();
                                 if (_this.data.mode === _this.userInfo.getAttribute("data-mode")) {
                                     _this.downloadUserInfo();
                                 }
                             } else {
-                                _this.data.z_index = _this.data.z_index - 1;
-                                _this.right_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.left_panel_outer_container.style.zIndex = _this.data.z_index;
-                                _this.right_panel_outer_container.style.right = -_this.right_panel_outer_container.offsetWidth + 'px';
-                                _this.bodyRightPanel.innerHTML = "";
+
                             }
                         }
                     }
                 })
-            },
-
-            fillingTemplateToolbarRightPanel: function() {
-                var _this = this;
-                _this.rightPanel.style.right = 0 + 'px';
-                _this.toolbarRightPanel.innerHTML = _this.right_panel_template({
-                    config: _this.panel_config,
-                    triple_element_template: _this.triple_element_template,
-                    button_template: _this.button_template,
-                    input_template: _this.input_template,
-                    label_template: _this.label_template
-                });
-                _this.userInfo = _this.toolbarRightPanel.querySelector('[data-action="btn_user_info"]');
-                _this.addContentEventListener();
             },
 
             downloadUserInfo: function(event, update) {

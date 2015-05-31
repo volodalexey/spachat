@@ -115,20 +115,20 @@
     </svg>
 </div>
 
-<div data-role="left_panel_outer_container" class="p-fx panel left-panel animate hide">
-    <div class="p-rel c-pink">
+<div data-role="left_panel_outer_container" class="p-fx panel left-panel animate hide c-pink">
+    <div class="p-rel">
         <button type="button" data-action="togglePanel" class="panel-button left-panel-button">LeftPanel</button>
-        <div data-role="left_panel_inner_container">
+        <div data-role="left_panel_inner_container" class="clear">
             <div data-role="panel_toolbar"></div>
             <div data-role="panel_body" class="panel-body"></div>
         </div>
     </div>
 </div>
 
-<div data-role="right_panel_outer_container" class="p-fx panel right-panel animate hide">
-    <div class="p-rel c-mist">
+<div data-role="right_panel_outer_container" class="p-fx panel right-panel animate hide c-mist">
+    <div class="p-rel">
         <button type="button" data-action="togglePanel" class="panel-button right-panel-button">RightPanel</button>
-        <div data-role="right_panel_inner_container">
+        <div data-role="right_panel_inner_container" class="clear">
             <div data-role="panel_toolbar"></div>
             <div data-role="panel_body" class="panel-body"></div>
         </div>
@@ -138,7 +138,7 @@
 <div data-role="main_container"></div>
 
 <div data-role="login_outer_container" class="flex-outer-container p-fx login-outer-container hidden">
-    <form class="flex-inner-container form-small" data-role="loginForm">
+    <form class="flex-inner-container form-small" data-role="loginForm" >
         <div class="w-100p p-t-b flex-sp-around">
             <button data-action="clickRedirectToRegister" class="button_login" type="button">Register new user</button>
         </div>

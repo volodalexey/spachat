@@ -74,7 +74,7 @@ define('register', [
                 _this.addRemoveListener(_this.redirectToLogin, 'click', _this.navigator.bindedRedirectToLogin, false);
             },
 
-            registerWorkflow: function(){
+            registerWorkflow: function(event){
                 var _this = this;
                 event.preventDefault();
                 var userName = _this.registerForm.elements.userName.value;
@@ -88,14 +88,14 @@ define('register', [
                                 userName: userName,
                                 userPassword: userPassword
                             },
-                            function(regErr) {
+                            function(regErr, account) {
                                 if (regErr) {
                                     _this.toggleWaiter();
                                     console.error(regErr);
                                     return;
                                 }
                                 
-                                _this.navigatorData.userId =_this.account.userId;
+                                _this.navigator.userId = account.userId;
                                 history.pushState(null, null, 'chat');
                                 _this.navigator.navigate();
                             }
