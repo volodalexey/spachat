@@ -24,13 +24,15 @@ define('panel_platform', [
                     type: this.PANEL_TYPES.LEFT,
                     outer_container: _this.left_panel_outer_container,
                     inner_container: _this.left_panel_inner_container,
-                    panel_platform: this
+                    panel_platform: this,
+                    panel_mode: panel.prototype.MODE.ROOM_CREATE
                 },
                 {
                     type: this.PANEL_TYPES.RIGHT,
                     outer_container: _this.right_panel_outer_container,
                     inner_container: _this.right_panel_inner_container,
-                    panel_platform: this
+                    panel_platform: this,
+                    panel_mode: panel.prototype.MODE.USER_INFO_SHOW
                 }
             ];
             this.panelsDescriptions.forEach(function(panelDescription) {
@@ -44,7 +46,7 @@ define('panel_platform', [
 
             bindContexts: function() {
                 var _this = this;
-                _this.bindedResizePanel = _this.throttle(_this.resizePanels.bind(_this), 300, _this);
+                _this.bindedResizePanel = _this.throttle(_this.resizePanels.bind(_this), 300);
             },
 
             renderPanels: function(options) {
@@ -58,6 +60,9 @@ define('panel_platform', [
             disposePanels: function() {
                 var _this = this;
                 _this.removeEventListeners();
+                panel.prototype.panelArray.forEach(function(_panel) {
+                    _panel.dispose();
+                });
             },
 
             addEventListeners: function() {

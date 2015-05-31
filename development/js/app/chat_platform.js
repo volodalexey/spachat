@@ -66,7 +66,7 @@ define('chat_platform', [
             clearStory: function() {
                 chat.prototype.chatsArray.forEach(function(chat) {
                     chat.querySelector('[data-role="messages_container"]').innerHTML = "";
-                })
+                });
             }
 
         };

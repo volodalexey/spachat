@@ -121,7 +121,7 @@ define('register', [
                         if (_user.userName === options.userName) {
                             user = _user;
                         }
-                        return !_user;
+                        return !user;
                     });
 
                     if (user) {

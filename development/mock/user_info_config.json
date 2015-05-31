@@ -11,7 +11,7 @@
     "value": null,
     "sort": 1,
     "disable": false,
-    "mode": "reading",
+    "mode": "USER_INFO_SHOW",
     "data_location": "user_id"
   },
   {
@@ -27,7 +27,7 @@
     "id": "user_id",
     "disabled" : true,
     "sort": 2,
-    "mode": "reading",
+    "mode": "USER_INFO_SHOW",
     "data_location": "user_id"
   },
   {
@@ -42,7 +42,7 @@
     "value": null,
     "sort": 3,
     "disable": false,
-    "mode": "reading",
+    "mode": "USER_INFO_SHOW",
     "data_location": "user_name"
   },
   {
@@ -58,7 +58,7 @@
     "id": "user_name",
     "disabled" : true,
     "sort": 4,
-    "mode": "reading",
+    "mode": "USER_INFO_SHOW",
     "data_location": "user_name"
   },
   {
@@ -73,7 +73,7 @@
     "value": null,
     "disable": false,
     "sort": 5,
-    "mode": "reading",
+    "mode": "USER_INFO_SHOW",
     "data_location": "navbar"
   },
   {
@@ -88,7 +88,7 @@
     "value": null,
     "disable": false,
     "sort": 6,
-    "mode": "reading",
+    "mode": "USER_INFO_SHOW",
     "data_location": "navbar"
   },
   {
@@ -103,7 +103,7 @@
     "value": null,
     "sort": 1,
     "disable": false,
-    "mode": "editing",
+    "mode": "USER_INFO_EDIT",
     "data_location": "user_name"
   },
   {
@@ -119,7 +119,7 @@
     "id": "user_name",
     "disabled" : false,
     "sort": 2,
-    "mode": "editing",
+    "mode": "USER_INFO_EDIT",
     "data_location": "user_name"
   },
   {
@@ -134,7 +134,7 @@
     "value": null,
     "sort": 3,
     "disable": false,
-    "mode": "editing",
+    "mode": "USER_INFO_EDIT",
     "data_location": "old_password"
   },
   {
@@ -150,7 +150,7 @@
     "id": "user_old_password",
     "disabled" : false,
     "sort": 4,
-    "mode": "editing",
+    "mode": "USER_INFO_EDIT",
     "data_location": "old_password"
   },
   {
@@ -165,7 +165,7 @@
     "value": null,
     "sort": 5,
     "disable": false,
-    "mode": "editing",
+    "mode": "USER_INFO_EDIT",
     "data_location": "new_password"
   },
   {
@@ -181,7 +181,7 @@
     "id": "user_new_password",
     "disabled" : false,
     "sort": 6,
-    "mode": "editing",
+    "mode": "USER_INFO_EDIT",
     "data_location": "new_password"
   },
   {
@@ -196,7 +196,7 @@
     "value": null,
     "sort": 7,
     "disable": false,
-    "mode": "editing",
+    "mode": "USER_INFO_EDIT",
     "data_location": "confirm_password"
   },
   {
@@ -212,7 +212,7 @@
     "id": "user_confirm_password",
     "disabled" : false,
     "sort": 8,
-    "mode": "editing",
+    "mode": "USER_INFO_EDIT",
     "data_location": "confirm_password"
   },
   {
@@ -227,7 +227,7 @@
     "value": null,
     "disable": false,
     "sort": 9,
-    "mode": "editing",
+    "mode": "USER_INFO_EDIT",
     "data_location": "navbar"
   },
   {
@@ -242,7 +242,7 @@
     "value": null,
     "disable": false,
     "sort": 10,
-    "mode": "editing",
+    "mode": "USER_INFO_EDIT",
     "data_location": "navbar"
   }
 ]
