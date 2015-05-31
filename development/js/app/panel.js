@@ -72,7 +72,7 @@ define('panel', [
                 _this.outer_container.classList.remove("hide");
                 _this.outer_container.style.maxWidth = window.innerWidth + 'px';
                 _this.outer_container.style[_this.type] = (-_this.outer_container.offsetWidth) + 'px';
-                _this.outer_container.style.zIndex = _this.z_index;
+                _this.outer_container.style.zIndex = panel.prototype.z_index;
             },
 
             dispose: function() {
@@ -189,7 +189,7 @@ define('panel', [
                 var _this = this;
                 if (!forceClose && _this.outer_container.style[_this.type] !== '0px') {
                     _this.previous_z_index = _this.outer_container.style.zIndex;
-                    _this.outer_container.style.zIndex = ++_this.z_index;
+                    _this.outer_container.style.zIndex = ++panel.prototype.z_index;
                     _this.outer_container.style[_this.type] = "0px";
                     _this.fillPanelToolbar();
                     if (_this.panel_mode === _this.MODE.USER_INFO_EDIT ||
@@ -200,7 +200,7 @@ define('panel', [
                         _this.resizePanel();
                     }
                 } else {
-                    _this.z_index--;
+                    panel.prototype.z_index--;
                     _this.outer_container.style.zIndex = _this.previous_z_index;
                     _this.outer_container.style[_this.type] = (-_this.outer_container.offsetWidth) + 'px';
                     if (bigMode === true) {
