@@ -48,13 +48,11 @@ define('panel_platform', [
             },
 
             renderPanels: function(options) {
-                var _this = this;
-                options.panel_platform = _this;
+                options.panel_platform = this;
                 panel.prototype.panelArray.forEach(function(_panel) {
                     _panel.render(options);
-                    _panel.on('clearStory', _this.throwEvent.bind(_this, 'clearStory'), _this);
-                    _panel.on('addNewRoom', _this.throwEvent.bind(_this, 'addNewRoom'), _this);
                 });
+                this.addEventListeners();
             },
 
             disposePanels: function() {
@@ -67,8 +65,7 @@ define('panel_platform', [
                 _this.removeEventListeners();
                 _this.on('resize', _this.bindedResizePanel, _this);
                 panel.prototype.panelArray.forEach(function(_panel) {
-                    _panel.on('clearStory', _this.throwEvent.bind(_this, 'clearStory'), _this);
-                    _panel.on('addNewRoom', _this.throwEvent.bind(_this, 'addNewRoom'), _this);
+                    _panel.on('throw', _this.throwEvent.bind(_this), _this);
                 });
             },
 
@@ -76,14 +73,8 @@ define('panel_platform', [
                 var _this = this;
                 _this.off('resize');
                 panel.prototype.panelArray.forEach(function(_panel) {
-                    _panel.off('clearStory');
-                    _panel.off('addNewRoom');
+                    _panel.off('throw');
                 });
-            },
-
-            throwEvent: function(name) {
-                var _this = this;
-                _this.trigger(name);
             },
 
             resizePanels: function(){

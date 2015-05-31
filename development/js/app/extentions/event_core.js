@@ -67,6 +67,26 @@ define('event_core', ['Underscore'],
                 } else if (this.addRemoveListener.caller === this.removeEventListeners) {
                     element.removeEventListener(eventName, listener, phase);
                 }
+            },
+
+            throwEvent: function(name) {
+                this.trigger('throw', name);
+            },
+
+            eventRouter: function(event) {
+                var _this = this;
+                var action = event.target.getAttribute('data-action');
+                if (_this[action]) {
+                    _this[action](event);
+                }
+            },
+
+            throwEventRouter: function(event) {
+                var _this = this;
+                var action = event.target.getAttribute('data-action');
+                if (_this.throwEvent) {
+                    _this.throwEvent(action);
+                }
             }
         };
 

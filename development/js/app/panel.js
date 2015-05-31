@@ -88,24 +88,24 @@ define('panel', [
                 _this.bindedInutUserInfo = _this.inputUserInfo.bind(_this);
             },
 
+            bindContextsContent: function() {
+                var _this = this;
+                _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
+                //_this.bindedThrowEventClearStory = _this.throwEvent.bind(_this, 'clearStory');
+                //_this.bindedDownloadUserInfo = _this.downloadUserInfo.bind(_this);
+            },
+
             addMainEventListener: function() {
                 var _this = this;
                 _this.removeMainEventListeners();
                 _this.addRemoveListener(_this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
-                _this.addRemoveListener(_this.panel_body, 'input', _this.bindedInutUserInfo, false);
+                //_this.addRemoveListener(_this.panel_body, 'input', _this.bindedInutUserInfo, false);
             },
 
             removeMainEventListeners: function() {
                 var _this = this;
                 _this.addRemoveListener(_this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
-                _this.addRemoveListener(_this.panel_body, 'input', _this.bindedInutUserInfo, false);
-            },
-
-            bindContextsContent: function() {
-                var _this = this;
-                _this.bindedThrowEventAddNewChat = _this.throwEvent.bind(_this, 'addNewChat');
-                _this.bindedThrowEventClearStory = _this.throwEvent.bind(_this, 'clearStory');
-                _this.bindedDownloadUserInfo = _this.downloadUserInfo.bind(_this);
+                //_this.addRemoveListener(_this.panel_body, 'input', _this.bindedInutUserInfo, false);
             },
 
             addRemoveListener: function(element, eventName, listener, phase) {
@@ -124,6 +124,7 @@ define('panel', [
             addContentEventListener: function() {
                 var _this = this;
                 _this.removeContentEventListeners();
+                _this.addRemoveListener(_this.panel_toolbar, 'click', _this.bindedThrowEventRouter, false);
                 //if (_this.addChat) {
                 //    _this.addChat.addEventListener('click', _this.bindedThrowEventAddNewChat, false);
                 //}
@@ -137,6 +138,7 @@ define('panel', [
 
             removeContentEventListeners: function() {
                 var _this = this;
+                _this.addRemoveListener(_this.panel_toolbar, 'click', _this.bindedThrowEventRouter, false);
                 //if (_this.addChat) {
                 //    _this.addChat.removeEventListener('click', _this.bindedThrowEventAddNewChat, false);
                 //}
@@ -146,11 +148,6 @@ define('panel', [
                 //if (_this.userInfo) {
                 //    _this.userInfo.removeEventListener('click', _this.bindedDownloadUserInfo, false);
                 //}
-            },
-
-            throwEvent: function(name) {
-                var _this = this;
-                _this.trigger(name);
             },
 
             openOrClosePanel: function(bigMode) {
@@ -458,7 +455,7 @@ define('panel', [
                 }
             }
 
-        }
+        };
         extend(panel, event_core);
         extend(panel, ajax_core);
         extend(panel, template_core);

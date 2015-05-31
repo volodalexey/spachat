@@ -17,16 +17,11 @@ define('chat_platform', [
 
         chat_platform.prototype = {
 
-            initialize: function() {
-                var _this = this;
-                _this.addEventListeners();
-                _this.login_container = document.querySelector('[data-role="login_container_global"]');
-                _this.messages_container_Array = document.querySelectorAll('[data-role="messages_container"]');
-                return _this;
-            },
-
             render: function() {
                 var _this = this;
+                _this.addEventListeners();
+                //_this.login_container = document.querySelector('[data-role="login_container_global"]');
+                //_this.messages_container_Array = document.querySelectorAll('[data-role="messages_container"]');
             },
 
             dispose: function() {
@@ -37,19 +32,17 @@ define('chat_platform', [
             bindContexts: function() {
                 var _this = this;
                 _this.bindedOnresizeWindow = _this.onresizeWindow.bind(_this);
-                _this.bindedClearStory = _this.clearStory.bind(_this);
-                _this.bindedAddNewChat = _this.addNewChat.bind(_this);
             },
 
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                window.addEventListener('resize', _this.bindedOnresizeWindow, false);
+                _this.on('addNewRoom', _this.addNewRoom, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
-                window.removeEventListener('resize', _this.bindedOnresizeWindow, false);
+                _this.off('addNewRoom');
             },
 
             onresizeWindow: function() {
@@ -59,7 +52,7 @@ define('chat_platform', [
                 });
             },
 
-            addNewChat: function() {
+            addNewRoom: function() {
                 var _this = this, newChat = new chat();
                 _this.mainConteiner = document.querySelector('[data-role="main_container"]');
                 if (!_this.mainConteiner) {

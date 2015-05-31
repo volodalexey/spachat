@@ -72,7 +72,7 @@ define('chat', [
                 _this.newSettings = new settings();
                 _this.newContact_list = new contact_list();
                 _this.newMessages = new messages();
-                _this.indexeddb = new indexeddb();
+                _this.indexeddb = indexeddb;
                 _this.webrtc = new webrtc().initialize({chat: _this});
                 _this.addEventListeners();
 

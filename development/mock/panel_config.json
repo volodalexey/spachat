@@ -2,12 +2,12 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Add new chat",
+    "text": "Add new room",
     "class": "",
-    "title": "Panel_btn",
+    "title": "",
     "data_role": "",
     "data_location": "left_panel",
-    "data_action": "addChat",
+    "data_action": "addNewRoom",
     "name": "",
     "value": null,
     "disable": false

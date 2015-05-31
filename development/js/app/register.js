@@ -102,8 +102,7 @@ define('register', [
                         );
                     } else {
                         _this.navigator.userId = null;
-                        _this.registerForm.elements.userPassword.value = "";
-                        _this.registerForm.elements.userPasswordConfirm.value = "";
+                        _this.registerForm.reset();
                         console.error(new Error('Passwords don\'t match!'));
                     }
                 }

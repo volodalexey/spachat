@@ -34,17 +34,14 @@ define('navigator',
                 _this.removeEventListeners();
                 window.addEventListener('popstate', _this.bindedNavigate, false);
                 window.addEventListener('resize', _this.bindedNotifyCurrentPage, false);
+                panel_platform.on('throw', _this.bindedNotifyCurrentPage, false);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 window.removeEventListener('popstate', _this.bindedNavigate, false);
-                chat_platform.off('addNewPanel');
-            },
-
-            renderPanels: function() {
-                var _this = this;
-                panel_platform.renderPanels({ navigator: _this });
+                window.removeEventListener('resize', _this.bindedNotifyCurrentPage, false);
+                panel_platform.off('addNewPanel');
             },
 
             getCurrentPage: function(href) {
@@ -92,9 +89,13 @@ define('navigator',
             },
 
             notifyCurrentPage: function(event) {
-                this.currentPage.trigger(event.type);
+                var eventName = event;
+                if (typeof event === 'object') {
+                    eventName = event.type;
+                }
+                this.currentPage.trigger(eventName);
                 if (this.currentPage.withPanels) {
-                    panel_platform.trigger(event.type);
+                    panel_platform.trigger(eventName);
                 }
             }
         };
