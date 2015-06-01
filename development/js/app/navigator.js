@@ -1,11 +1,11 @@
 define('navigator',
     [
-        'room_platform',
+        'chat_platform',
         'panel_platform',
         'login',
         'register'
     ],
-    function(room_platform,
+    function(chat_platform,
              panel_platform,
              login,
              register) {
@@ -16,7 +16,7 @@ define('navigator',
             this.main_container = document.querySelector('[data-role="main_container"]');
             this.addEventListeners();
             this.userId = null;
-            this.pages = [room_platform, login, register];
+            this.pages = [chat_platform, login, register];
             this.currentPage = null;
         };
 

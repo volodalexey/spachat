@@ -58,13 +58,21 @@ define('event_core',
                 return this;
             },
 
-            addRemoveListener: function(element, eventName, listener, phase) {
+            /**
+             * Adds or removes event listener
+             * defines from which place this function was called
+             * @param element
+             * @param eventName
+             * @param listener
+             * @param phase
+             */
+            addRemoveListener: function(action, element, eventName, listener, phase) {
                 if (!element || !listener || !eventName) {
                     return;
                 }
-                if (this.addRemoveListener.caller === this.addEventListeners) {
+                if (action === 'add') {
                     element.addEventListener(eventName, listener, phase);
-                } else if (this.addRemoveListener.caller === this.removeEventListeners) {
+                } else if (action === 'remove') {
                     element.removeEventListener(eventName, listener, phase);
                 }
             },

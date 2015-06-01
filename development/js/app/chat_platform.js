@@ -1,27 +1,29 @@
-define('room_platform', [
+define('chat_platform', [
         'chat',
+        'websocket',
 
         'overlay_core',
         'event_core',
         'template_core',
 
-        'text!../html/room_platform_template.html'
+        'text!../html/chat_platform_template.html'
     ],
     function(chat,
+             websocket,
 
              overlay_core,
              event_core,
              template_core,
 
-             room_platform_template) {
+             chat_platform_template) {
 
-        var room_platform = function() {
+        var chat_platform = function() {
             this.link = /chat/;
             this.withPanels = true;
             this.mainConteiner = document.querySelector('[data-role="main_container"]');
         };
 
-        room_platform.prototype = {
+        chat_platform.prototype = {
 
             collectionDescription: {
                 "db_name": 'rooms',
@@ -30,12 +32,17 @@ define('room_platform', [
                 "keyPath": "roomId"
             },
 
-            render: function() {
+            render: function(options) {
+                if (!options || !options.navigator) {
+                    console.error(new Error('Invalid input options for render'));
+                    return;
+                }
                 var _this = this;
+                _this.navigator = options.navigator;
                 if (!_this.mainConteiner) {
                     return;
                 }
-                _this.mainConteiner.innerHTML = _this.room_platform_template({});
+                _this.mainConteiner.innerHTML = _this.chat_platform_template({});
                 _this.cashElements();
                 _this.addEventListeners();
                 _this.toggleWaiter();
@@ -48,45 +55,50 @@ define('room_platform', [
 
             cashElements: function() {
                 var _this = this;
-                _this.room_wrapper = _this.mainConteiner.querySelector('[data-role="room_wrapper"]');
+                _this.chat_wrapper = _this.mainConteiner.querySelector('[data-role="chat_wrapper"]');
             },
 
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                _this.on('addNewRoom', _this.addNewRoom, _this);
-                _this.on('resize', _this.resizeRooms, _this);
+                _this.on('addNewChat', _this.addNewChat, _this);
+                _this.on('resize', _this.resizeChats, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
-                _this.off('addNewRoom');
+                _this.off('addNewChat');
                 _this.off('resize');
             },
 
-            resizeRooms: function() {
+            resizeChats: function() {
                 chat.prototype.chatsArray.forEach(function(_chat) {
                     _chat.calcMessagesContainerHeight();
                 });
             },
 
-            addNewRoom: function() {
+            addNewChat: function() {
                 var _this = this;
                 if (!_this.mainConteiner) {
                     return;
                 }
-                var newChat = new chat();
+                var newChat = new chat(_this.navigator.userId);
+                websocket.sendMessage({
+                    "type": "create",
+                    "userId": _this.navigator.userId,
+                    "chatId": newChat.chatId
+                });
                 var newChatElem = document.createElement('div');
                 chat.prototype.chatsArray.push(newChat);
-                newChat.initialize(newChatElem, _this.room_wrapper);
+                newChat.initialize(newChatElem, _this.chat_wrapper);
             }
 
         };
-        extend(room_platform, overlay_core);
-        extend(room_platform, event_core);
-        extend(room_platform, template_core);
+        extend(chat_platform, overlay_core);
+        extend(chat_platform, event_core);
+        extend(chat_platform, template_core);
 
-        room_platform.prototype.room_platform_template = room_platform.prototype.template(room_platform_template);
+        chat_platform.prototype.chat_platform_template = chat_platform.prototype.template(chat_platform_template);
 
-        return new room_platform();
+        return new chat_platform();
     });

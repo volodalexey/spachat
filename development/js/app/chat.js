@@ -5,11 +5,12 @@ define('chat', [
         'settings',
         'contact_list',
         'messages',
+        'indexeddb',
+        'webrtc',
 
         'ajax_core',
-        'indexeddb',
         'template_core',
-        'webrtc',
+        'id_core',
 
         'text!../html/chat_template.html',
         'text!../html/outer_container_template.html'
@@ -20,18 +21,26 @@ define('chat', [
              settings,
              contact_list,
              messages,
+             indexeddb,
+             webrtc,
 
              ajax_core,
-             indexeddb,
              template_core,
-             webrtc,
+             id_core,
 
              chat_template,
              outer_container_template) {
-        var chat = function() {
+        var chat = function(userId) {
+            this.userId = userId;
+            this.chatId = this.generateId();
         };
 
         chat.prototype = {
+
+            toString: function() {
+                //Object.defineProperties()
+                // TODO define enumerable properties for iterating and serializing into string
+            },
 
             chatsArray: [],
 
@@ -53,7 +62,7 @@ define('chat', [
                     valueEnablePagination: false,
                     showChoicePerPage: false
                 };
-                // TODO replcae with template
+                // TODO replace with template
                 _this.chatElem = chatElem;
                 _this.chatElem.className = "modal";
                 mainContainer.appendChild(_this.chatElem);
@@ -225,6 +234,7 @@ define('chat', [
         };
         extend(chat, ajax_core);
         extend(chat, template_core);
+        extend(chat, id_core);
 
         chat.prototype.chat_template = chat.prototype.template(chat_template);
         chat.prototype.outer_container_template = chat.prototype.template(outer_container_template);

@@ -56,14 +56,14 @@ define('login', [
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                _this.addRemoveListener(_this.loginForm, 'submit', _this.bindedOnSubmit, false);
-                _this.addRemoveListener(_this.redirectToRegisterElement, 'click', _this.bindedRedirectToRegister, false);
+                _this.addRemoveListener('add', _this.loginForm, 'submit', _this.bindedOnSubmit, false);
+                _this.addRemoveListener('add', _this.redirectToRegisterElement, 'click', _this.bindedRedirectToRegister, false);
             },
 
             removeEventListeners: function() {
                 var _this = this;
-                _this.addRemoveListener(_this.loginForm, 'submit', _this.bindedOnSubmit, false);
-                _this.addRemoveListener(_this.redirectToRegisterElement, 'click', _this.bindedRedirectToRegister, false);
+                _this.addRemoveListener('remove', _this.loginForm, 'submit', _this.bindedOnSubmit, false);
+                _this.addRemoveListener('remove', _this.redirectToRegisterElement, 'click', _this.bindedRedirectToRegister, false);
             },
 
             onSubmit: function(event) {

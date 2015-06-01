@@ -120,35 +120,20 @@ define('panel', [
             addMainEventListener: function() {
                 var _this = this;
                 _this.removeMainEventListeners();
-                _this.addRemoveListener(_this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
-                _this.addRemoveListener(_this.panel_body, 'input', _this.bindedInutUserInfo, false);
+                _this.addRemoveListener('add', _this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
+                _this.addRemoveListener('add', _this.panel_body, 'input', _this.bindedInutUserInfo, false);
             },
 
             removeMainEventListeners: function() {
                 var _this = this;
-                _this.addRemoveListener(_this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
-                _this.addRemoveListener(_this.panel_body, 'input', _this.bindedInutUserInfo, false);
-            },
-
-            addRemoveListener: function(element, eventName, listener, phase) {
-                if (!element || !listener || !eventName) {
-                    return;
-                }
-                if (this.addRemoveListener.caller === this.addToolbarEventListener ||
-                    this.addRemoveListener.caller === this.addContentEventListener ||
-                    this.addRemoveListener.caller === this.addMainEventListener) {
-                    element.addEventListener(eventName, listener, phase);
-                } else if (this.addRemoveListener.caller === this.removeToolbarEventListeners ||
-                    this.addRemoveListener.caller === this.removeContentEventListeners ||
-                    this.addRemoveListener.caller === this.removeMainEventListeners) {
-                    element.removeEventListener(eventName, listener, phase);
-                }
+                _this.addRemoveListener('remove', _this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
+                _this.addRemoveListener('remove', _this.panel_body, 'input', _this.bindedInutUserInfo, false);
             },
 
             addToolbarEventListener: function() {
                 var _this = this;
                 _this.removeContentEventListeners();
-                _this.addRemoveListener(_this.panel_toolbar, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('add', _this.panel_toolbar, 'click', _this.bindedThrowEventRouter, false);
                 //if (_this.userInfo) {
                 //    _this.userInfo.addEventListener('click', _this.bindedDownloadUserInfo, false);
                 //}
@@ -156,7 +141,7 @@ define('panel', [
 
             removeToolbarEventListeners: function() {
                 var _this = this;
-                _this.addRemoveListener(_this.panel_toolbar, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('remove', _this.panel_toolbar, 'click', _this.bindedThrowEventRouter, false);
                 //if (_this.userInfo) {
                 //    _this.userInfo.removeEventListener('click', _this.bindedDownloadUserInfo, false);
                 //}
@@ -166,22 +151,22 @@ define('panel', [
                 var _this = this;
                 _this.removeContentEventListeners();
                 if (_this.panel_mode === _this.MODE.USER_INFO_SHOW) {
-                    _this.addRemoveListener(_this.change_user_info, 'click', _this.bindedChangeUserInfo, false);
-                    _this.addRemoveListener(_this.logout_user, 'click', _this.bindedLogout, false);
+                    _this.addRemoveListener('add', _this.change_user_info, 'click', _this.bindedChangeUserInfo, false);
+                    _this.addRemoveListener('add', _this.logout_user, 'click', _this.bindedLogout, false);
                 } else if (_this.panel_mode === _this.MODE.USER_INFO_EDIT) {
-                    _this.addRemoveListener(_this.cancel_change_user_info, 'click', _this.bindedCancelChangeUserInfo, false);
-                    _this.addRemoveListener(_this.save_change_user_info, 'click', _this.bindedSaveChangeUserInfo, false);
+                    _this.addRemoveListener('add', _this.cancel_change_user_info, 'click', _this.bindedCancelChangeUserInfo, false);
+                    _this.addRemoveListener('add', _this.save_change_user_info, 'click', _this.bindedSaveChangeUserInfo, false);
                 }
             },
 
             removeContentEventListeners: function() {
                 var _this = this;
                 if (_this.panel_mode === _this.MODE.USER_INFO_SHOW) {
-                    _this.addRemoveListener(_this.change_user_info, 'click', _this.bindedChangeUserInfo, false);
-                    _this.addRemoveListener(_this.logout_user, 'click', _this.bindedLogout, false);
+                    _this.addRemoveListener('remove', _this.change_user_info, 'click', _this.bindedChangeUserInfo, false);
+                    _this.addRemoveListener('remove', _this.logout_user, 'click', _this.bindedLogout, false);
                 } else if (_this.panel_mode === _this.MODE.USER_INFO_EDIT) {
-                    _this.addRemoveListener(_this.cancel_change_user_info, 'click', _this.bindedCancelChangeUserInfo, false);
-                    _this.addRemoveListener(_this.save_change_user_info, 'click', _this.bindedSaveChangeUserInfo, false);
+                    _this.addRemoveListener('remove', _this.cancel_change_user_info, 'click', _this.bindedCancelChangeUserInfo, false);
+                    _this.addRemoveListener('remove', _this.save_change_user_info, 'click', _this.bindedSaveChangeUserInfo, false);
                 }
             },
 

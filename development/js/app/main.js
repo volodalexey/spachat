@@ -13,7 +13,7 @@ require.config({
         "id_core": "app/extentions/id_core",
 
         "chat": "app/chat",
-        "room_platform": "app/room_platform",
+        "chat_platform": "app/chat_platform",
         "panel_platform": "app/panel_platform",
         "panel": "app/panel",
         "header": "app/header",
@@ -27,7 +27,8 @@ require.config({
         "webrtc": "app/webrtc",
         "login": "app/login",
         "register": "app/register",
-        "navigator": "app/navigator"
+        "navigator": "app/navigator",
+        "websocket": "app/websocket"
     }
 });
 
