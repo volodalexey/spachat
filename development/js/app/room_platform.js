@@ -2,17 +2,23 @@ define('room_platform', [
         'chat',
 
         'overlay_core',
-        'event_core'
+        'event_core',
+        'template_core',
+
+        'text!../html/room_platform_template.html'
     ],
     function(chat,
 
              overlay_core,
-             event_core) {
+             event_core,
+             template_core,
+
+             room_platform_template) {
 
         var room_platform = function() {
             this.link = /chat/;
             this.withPanels = true;
-            this.bindContexts();
+            this.mainConteiner = document.querySelector('[data-role="main_container"]');
         };
 
         room_platform.prototype = {
@@ -26,9 +32,13 @@ define('room_platform', [
 
             render: function() {
                 var _this = this;
+                if (!_this.mainConteiner) {
+                    return;
+                }
+                _this.mainConteiner.innerHTML = _this.room_platform_template({});
+                _this.cashElements();
                 _this.addEventListeners();
-                //_this.login_container = document.querySelector('[data-role="login_container_global"]');
-                //_this.messages_container_Array = document.querySelectorAll('[data-role="messages_container"]');
+                _this.toggleWaiter();
             },
 
             dispose: function() {
@@ -36,8 +46,9 @@ define('room_platform', [
                 _this.removeEventListeners();
             },
 
-            bindContexts: function() {
+            cashElements: function() {
                 var _this = this;
+                _this.room_wrapper = _this.mainConteiner.querySelector('[data-role="room_wrapper"]');
             },
 
             addEventListeners: function() {
@@ -50,35 +61,32 @@ define('room_platform', [
             removeEventListeners: function() {
                 var _this = this;
                 _this.off('addNewRoom');
+                _this.off('resize');
             },
 
             resizeRooms: function() {
-                var _this = this;
                 chat.prototype.chatsArray.forEach(function(_chat) {
                     _chat.calcMessagesContainerHeight();
                 });
             },
 
             addNewRoom: function() {
-                var _this = this, newChat = new chat();
-                _this.mainConteiner = document.querySelector('[data-role="main_container"]');
+                var _this = this;
                 if (!_this.mainConteiner) {
                     return;
                 }
+                var newChat = new chat();
                 var newChatElem = document.createElement('div');
                 chat.prototype.chatsArray.push(newChat);
-                newChat.initialize(newChatElem, _this.mainConteiner);
-            },
-
-            clearStory: function() {
-                chat.prototype.chatsArray.forEach(function(chat) {
-                    chat.querySelector('[data-role="messages_container"]').innerHTML = "";
-                });
+                newChat.initialize(newChatElem, _this.room_wrapper);
             }
 
         };
         extend(room_platform, overlay_core);
         extend(room_platform, event_core);
+        extend(room_platform, template_core);
+
+        room_platform.prototype.room_platform_template = room_platform.prototype.template(room_platform_template);
 
         return new room_platform();
     });

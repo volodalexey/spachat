@@ -239,37 +239,6 @@ define('header', [
                 }
             }
 
-            /* addToolbarListeners: function() {
-             var _this = this;
-             _this.removeToolbarListeners();
-             if (!_this.header_container || !_this.header_navbar_config) {
-             return;
-             }
-             _.each(_this.header_navbar_config, function(_configItem) {
-             if (_configItem.element === _this.toolbarElement) {
-             _this.header_container.addEventListener('click', _this.toolbarEventRouter.bind(_this), false);
-             }
-             });
-             },
-
-             removeToolbarListeners: function() {
-             var _this = this;
-             if (!_this.header_container || !_this.header_navbar_config) {
-             return;
-             }
-             _.each(_this.header_navbar_config, function(_configItem) {
-             if (_configItem.element === _this.toolbarElement) {
-             _this.header_container.removeEventListener('click', _this.toolbarEventRouter.bind(_this), false);
-             }
-             });
-             },
-
-             toolbarEventRouter: function(event) {
-             var _this = this;
-             var action = event.target.getAttribute('data-action');
-             _this[action](event);
-             },*/
-
         };
         extend(header, event_core);
         extend(header, async_core);

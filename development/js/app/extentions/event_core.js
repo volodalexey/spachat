@@ -1,4 +1,4 @@
-define('event_core', ['Underscore'],
+define('event_core',
     function () {
 
         var event_core = function() {};

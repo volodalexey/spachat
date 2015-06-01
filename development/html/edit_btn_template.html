@@ -3,31 +3,17 @@
 
 <% if(btn.element === "button") { %>
 <button class="<%= btn.class%>" <% if(btn.param){ %> param <%}%> name="<%= btn.name%>" data-role="<%= btn.data_role%>" >
+    <% var icon;
+        array.icons.every(function(_icon) {
+            if (_icon.icon === btn.icon) {
+                icon = _icon;
+            }
+        return !icon;
+    } ); %>
 
-<% if (btn.icon === "aling_left_icon" ) { %>
-<%= _.findWhere(array.icons, {icon: "aling_left_icon"}).svg%>
-<% } %>
-
-<% if (btn.icon === "aling_center_icon" ) { %>
-<%= _.findWhere(array.icons, {icon: "aling_center_icon"}).svg%>
-<% } %>
-
-<% if (btn.icon === "aling_right_icon" ) { %>
-<%= _.findWhere(array.icons, {icon: "aling_right_icon"}).svg%>
-<% } %>
-
-<% if (btn.icon === "bold_icon" ) { %>
-<%= _.findWhere(array.icons, {icon: "bold_icon"}).svg%>
-<% } %>
-
-<% if (btn.icon === "italic_icon" ) { %>
-<%= _.findWhere(array.icons, {icon: "italic_icon"}).svg%>
-<% } %>
-
-<% if (btn.icon === "color_text_icon" ) { %>
-<%= _.findWhere(array.icons, {icon: "color_text_icon"}).svg%>
-<% } %>
-
+    <% if (icon) { %>
+        <%= icon.svg %>
+    <% } %>
 </button>
 <% } %>
 

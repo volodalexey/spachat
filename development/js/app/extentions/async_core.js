@@ -1,4 +1,4 @@
-define('async_core', ['Underscore'],
+define('async_core',
     function () {
 
         var async_core = function() {};
