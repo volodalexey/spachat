@@ -2,6 +2,7 @@ define('register', [
         'overlay_core',
         'event_core',
         'template_core',
+        'id_core',
 
         'indexeddb',
 
@@ -10,6 +11,7 @@ define('register', [
     function(overlay_core,
              event_core,
              template_core,
+             id_core,
 
              indexeddb,
 
@@ -150,21 +152,13 @@ define('register', [
                         }
                     );
                 });
-            },
-
-            s4: function() {
-                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-            },
-
-            generateId: function() {
-                return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
-                    this.s4() + '-' + this.s4() + this.s4() + this.s4();
             }
         };
 
         extend(register, overlay_core);
         extend(register, event_core);
         extend(register, template_core);
+        extend(register, id_core);
 
         return new register();
 

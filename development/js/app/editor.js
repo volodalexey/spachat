@@ -28,22 +28,8 @@ define('editor', [
 
         editor.prototype = {
 
-            /*            editor_template: _.template(editor_template),
-             edit_btn_template: _.template(edit_btn_template),
-             triple_element_template: _.template(triple_element_template),
-             button_template: _.template(button_template),
-             label_template: _.template(label_template),
-             input_template: _.template(input_template),*/
-
             initialize: function(options) {
                 var _this = this;
-
-                _this.editor_template = _this.template(editor_template);
-                _this.edit_btn_template = _this.template(edit_btn_template);
-                _this.triple_element_template = _this.template(triple_element_template);
-                _this.button_template = _this.template(button_template);
-                _this.label_template = _this.template(label_template);
-                _this.input_template = _this.template(input_template);
 
                 _this.chat = options.chat;
 
@@ -83,7 +69,7 @@ define('editor', [
                             _this.bindContexts();
                             _this.addEventListeners();
 
-                            _this.edit_navbar_config_Filter = _.filter(_this.edit_navbar_config, function(btn) {
+                            _this.edit_navbar_config_Filter = _this.edit_navbar_config.filter(function(btn) {
                                 return btn.icon
                             });
                             _this.edit_btn_icon = _this.edit_navbar_config_Filter.map(function(btn) {
@@ -186,13 +172,6 @@ define('editor', [
                         elem.classList.add(className);
                     }
                 });
-                /*_.each(arElem, function(elem) {
-                    if (elem.classList.contains(className)) {
-                        elem.classList.remove(className);
-                    } else {
-                        elem.classList.add(className);
-                    }
-                })*/
             },
 
             loadEditNavbarConfig: function(callback) {
@@ -259,6 +238,13 @@ define('editor', [
         extend(editor, async_core);
         extend(editor, ajax_core);
         extend(editor, template_core);
+
+        editor.prototype.editor_template = editor.prototype.template(editor_template);
+        editor.prototype.edit_btn_template = editor.prototype.template(edit_btn_template);
+        editor.prototype.triple_element_template = editor.prototype.template(triple_element_template);
+        editor.prototype.button_template = editor.prototype.template(button_template);
+        editor.prototype.label_template = editor.prototype.template(label_template);
+        editor.prototype.input_template = editor.prototype.template(input_template);
 
         return editor;
     });

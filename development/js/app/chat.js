@@ -33,16 +33,10 @@ define('chat', [
 
         chat.prototype = {
 
-            //chat_template: _.template(chat_template),
-            //outer_container_template: _.template(outer_container_template),
-
             chatsArray: [],
 
             initialize: function(chatElem, mainContainer) {
                 var _this = this;
-
-                _this.chat_template = _this.template(chat_template);
-                _this.outer_container_template = _this.template(outer_container_template);
 
                 _this.data = {
                     mode: "messages", //webrtc
@@ -217,18 +211,6 @@ define('chat', [
                     var paddingMessages = parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-top')) + parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-bottom'));
                     var marginMessages = parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-top'));
                     var borderEditor = parseInt(window.getComputedStyle(_this.message, null).getPropertyValue('border-top-width')) + parseInt(window.getComputedStyle(_this.message, null).getPropertyValue('border-bottom-width'));
-                    /*console.log(
-                     "window.innerHeight =" , window.innerHeight,
-                     "_this.header_container.clientHeight=" , _this.header_container.clientHeight,
-                     "_this.pagination_container.clientHeight=", _this.pagination_container.clientHeight,
-                     "_this.controls_container.clientHeight=", _this.controls_container.clientHeight,
-                     "_this.messageElem.clientHeight=", _this.messageElem.clientHeight,
-                     "paddingMessages=", paddingMessages,
-                     "marginMessages=", marginMessages,
-                     "borderEditor=", borderEditor,
-                     //"marginEditPanel", marginEditPanel,
-                     "maxHeight=", height - paddingMessages - borderEditor - marginMessages
-                     );*/
                     _this.messages_container.style.maxHeight = height - paddingMessages - borderEditor - marginMessages + "px";
                 }
             },
@@ -243,6 +225,9 @@ define('chat', [
         };
         extend(chat, ajax_core);
         extend(chat, template_core);
+
+        chat.prototype.chat_template = chat.prototype.template(chat_template);
+        chat.prototype.outer_container_template = chat.prototype.template(outer_container_template);
 
         return chat;
     });

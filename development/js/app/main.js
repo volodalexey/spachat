@@ -2,7 +2,6 @@ require.config({
     "baseUrl": "js",
     "waitSeconds": 10,
     "paths": {
-        "Underscore": "lib/underscore",
         "text": "lib/text",
 
         "async_core": "app/extentions/async_core",
@@ -11,9 +10,10 @@ require.config({
         "event_core": "app/extentions/event_core",
         "template_core": "app/extentions/template_core",
         "ping_core": "app/extentions/ping_core",
+        "id_core": "app/extentions/id_core",
 
         "chat": "app/chat",
-        "chat_platform": "app/chat_platform",
+        "room_platform": "app/room_platform",
         "panel_platform": "app/panel_platform",
         "panel": "app/panel",
         "header": "app/header",
@@ -28,11 +28,6 @@ require.config({
         "login": "app/login",
         "register": "app/register",
         "navigator": "app/navigator"
-    },
-    "shim": {
-        "chat_platform": ["Underscore"],
-        "chat": ["Underscore"],
-        "navigator": ["Underscore"]
     }
 });
 

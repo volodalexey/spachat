@@ -13,13 +13,13 @@ define('ping_core', [],
                 var previous = 0;
                 if (!options) options = {};
                 var later = function() {
-                    previous = options.leading === false ? 0 : _.now();
+                    previous = options.leading === false ? 0 : Date.now();
                     timeout = null;
                     result = func.apply(context, args);
                     if (!timeout) context = args = null;
                 };
                 return function() {
-                    var now = _.now();
+                    var now = Date.now();
                     if (!previous && options.leading === false) previous = now;
                     var remaining = wait - (now - previous);
                     context = this;

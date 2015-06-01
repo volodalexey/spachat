@@ -41,7 +41,7 @@ define('event_core', ['Underscore'],
                 if (!handler) {
                     delete this.listeners[event];
                 } else {
-                    idx = _.map(this.listeners[event], function(listener) { return listener.handler }).indexOf(handler);
+                    idx = this.listeners[event].map(function(listener) { return listener.handler }).indexOf(handler);
                     if (idx !== -1) {
                         this.listeners[event].splice(idx, 1);
                     }

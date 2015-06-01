@@ -16,14 +16,8 @@ define('webrtc', [
 
         webrtc.prototype = {
 
-            /*            webrtc_template: _.template(webrtc_template),
-             waiter_template: _.template(waiter_template),*/
-
             initialize: function(options) {
                 var _this = this;
-
-                _this.webrtc_template = _this.template(webrtc_template);
-                _this.waiter_template = _this.template(waiter_template);
 
                 _this.configuration = {
                     RTC: {
@@ -231,6 +225,9 @@ define('webrtc', [
         };
         extend(webrtc, event_core);
         extend(webrtc, template_core);
+
+        webrtc.prototype.webrtc_template = webrtc.prototype.template(webrtc_template);
+        webrtc.prototype.waiter_template = webrtc.prototype.template(waiter_template);
 
         return webrtc;
     }

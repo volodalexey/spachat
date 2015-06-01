@@ -1,4 +1,4 @@
-define('chat_platform', [
+define('room_platform', [
         'chat',
 
         'overlay_core',
@@ -9,13 +9,20 @@ define('chat_platform', [
              overlay_core,
              event_core) {
 
-        var chat_platform = function() {
+        var room_platform = function() {
             this.link = /chat/;
             this.withPanels = true;
             this.bindContexts();
         };
 
-        chat_platform.prototype = {
+        room_platform.prototype = {
+
+            collectionDescription: {
+                "db_name": 'rooms',
+                "table_name": 'rooms',
+                "db_version": 1,
+                "keyPath": "roomId"
+            },
 
             render: function() {
                 var _this = this;
@@ -31,13 +38,13 @@ define('chat_platform', [
 
             bindContexts: function() {
                 var _this = this;
-                _this.bindedOnresizeWindow = _this.onresizeWindow.bind(_this);
             },
 
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
                 _this.on('addNewRoom', _this.addNewRoom, _this);
+                _this.on('resize', _this.resizeRooms, _this);
             },
 
             removeEventListeners: function() {
@@ -45,7 +52,7 @@ define('chat_platform', [
                 _this.off('addNewRoom');
             },
 
-            onresizeWindow: function() {
+            resizeRooms: function() {
                 var _this = this;
                 chat.prototype.chatsArray.forEach(function(_chat) {
                     _chat.calcMessagesContainerHeight();
@@ -70,8 +77,8 @@ define('chat_platform', [
             }
 
         };
-        extend(chat_platform, overlay_core);
-        extend(chat_platform, event_core);
+        extend(room_platform, overlay_core);
+        extend(room_platform, event_core);
 
-        return new chat_platform();
+        return new room_platform();
     });

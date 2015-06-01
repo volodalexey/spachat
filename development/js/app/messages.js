@@ -16,12 +16,8 @@ define('messages', [
 
         messages.prototype = {
 
-            //message_template: _.template(message_template),
-
             initialize: function(options) {
                 var _this = this;
-
-                _this.message_template = _this.template(message_template);
 
                 _this.chat = options.chat;
                 _this.data = {
@@ -128,6 +124,8 @@ define('messages', [
         };
         extend(messages, event_core);
         extend(messages, template_core);
+
+        messages.prototype.message_template = messages.prototype.template(message_template);
 
         return messages;
     });

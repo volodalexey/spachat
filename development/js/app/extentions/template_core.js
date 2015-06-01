@@ -34,7 +34,7 @@ define('template_core', [],
                 };
 
                 if (!settings && oldSettings) settings = oldSettings;
-                settings = _.defaults({}, settings, templateSettings);
+                settings = templateSettings;
 
                 // Combine delimiters into one regular expression via alternation.
                 var matcher = RegExp([
@@ -78,7 +78,7 @@ define('template_core', [],
                 }
 
                 var template = function(data) {
-                    return render.call(this, data, _);
+                    return render.call(this, data);
                 };
 
                 // Provide the compiled source as a convenience for precompilation.

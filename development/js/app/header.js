@@ -32,22 +32,8 @@ define('header', [
 
         header.prototype = {
 
-            /*header_template: _.template(header_template),
-             filter_template: _.template(filter_template),
-             triple_element_template: _.template(triple_element_template),
-             button_template: _.template(button_template),
-             label_template: _.template(label_template),
-             input_template: _.template(input_template),*/
-
             initialize: function(options) {
                 var _this = this;
-
-                _this.header_template = _this.template(header_template);
-                _this.filter_template = _this.template(filter_template);
-                _this.triple_element_template = _this.template(triple_element_template);
-                _this.button_template = _this.template(button_template);
-                _this.label_template = _this.template(label_template);
-                _this.input_template = _this.template(input_template);
 
                 _this.chat = options.chat;
 
@@ -284,12 +270,18 @@ define('header', [
              _this[action](event);
              },*/
 
-        }
-
+        };
         extend(header, event_core);
         extend(header, async_core);
         extend(header, ajax_core);
         extend(header, template_core);
+
+        header.prototype.header_template = header.prototype.template(header_template);
+        header.prototype.filter_template = header.prototype.template(filter_template);
+        header.prototype.triple_element_template = header.prototype.template(triple_element_template);
+        header.prototype.button_template = header.prototype.template(button_template);
+        header.prototype.label_template = header.prototype.template(label_template);
+        header.prototype.input_template = header.prototype.template(input_template);
 
         return header;
     });
