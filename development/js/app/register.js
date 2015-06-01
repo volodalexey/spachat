@@ -66,14 +66,14 @@ define('register', [
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                _this.addRemoveListener(_this.registerForm, 'submit', _this.bindedRegisterWorkflow, false);
-                _this.addRemoveListener(_this.redirectToLogin, 'click', _this.navigator.bindedRedirectToLogin, false);
+                _this.addRemoveListener('add', _this.registerForm, 'submit', _this.bindedRegisterWorkflow, false);
+                _this.addRemoveListener('add', _this.redirectToLogin, 'click', _this.navigator.bindedRedirectToLogin, false);
             },
 
             removeEventListeners: function() {
                 var _this = this;
-                _this.addRemoveListener(_this.registerForm, 'submit', _this.bindedRegisterWorkflow, false);
-                _this.addRemoveListener(_this.redirectToLogin, 'click', _this.navigator.bindedRedirectToLogin, false);
+                _this.addRemoveListener('remove', _this.registerForm, 'submit', _this.bindedRegisterWorkflow, false);
+                _this.addRemoveListener('remove', _this.redirectToLogin, 'click', _this.navigator.bindedRedirectToLogin, false);
             },
 
             registerWorkflow: function(event){

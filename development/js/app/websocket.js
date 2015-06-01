@@ -1,6 +1,7 @@
 define('websocket', [
+        'event_core'
     ],
-    function() {
+    function(event_core) {
 
         var websocket = function() {
             this.create();
@@ -66,6 +67,7 @@ define('websocket', [
 
             onMessage: function(event) {
                 console.log('Received message data: ' + event.data);
+                this.trigger('message', event.data);
             },
 
             onError: function(error) {
@@ -79,8 +81,8 @@ define('websocket', [
                 }
                 this.socket.send(senddata);
             }
-
         };
+        extend(websocket, event_core);
 
         return new websocket();
     }

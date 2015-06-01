@@ -26,8 +26,8 @@ define('chat_platform', [
         chat_platform.prototype = {
 
             collectionDescription: {
-                "db_name": 'rooms',
-                "table_name": 'rooms',
+                "db_name": 'chats',
+                "table_name": 'chats',
                 "db_version": 1,
                 "keyPath": "roomId"
             },

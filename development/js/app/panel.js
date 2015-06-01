@@ -53,8 +53,8 @@ define('panel', [
             MODE: {
                 USER_INFO_EDIT: 'USER_INFO_EDIT',
                 USER_INFO_SHOW: 'USER_INFO_SHOW',
-                ROOM_CREATE: 'ROOM_CREATE',
-                ROOM_JOIN: 'ROOM_JOIN'
+                CREATE_CHAT_AUTO: 'CREATE_CHAT_AUTO',
+                CREATE_CHAT_MANUAL: 'CREATE_CHAT_MANUAL'
             },
 
             z_index: 80,
