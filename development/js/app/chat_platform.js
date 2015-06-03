@@ -5,6 +5,7 @@ define('chat_platform', [
         'overlay_core',
         'event_core',
         'template_core',
+        'indexeddb',
 
         'text!../html/chat_platform_template.html'
     ],
@@ -14,6 +15,7 @@ define('chat_platform', [
              overlay_core,
              event_core,
              template_core,
+             indexeddb,
 
              chat_platform_template) {
 
@@ -26,10 +28,11 @@ define('chat_platform', [
         chat_platform.prototype = {
 
             collectionDescription: {
+                "id": 'chats',
                 "db_name": 'chats',
                 "table_name": 'chats',
                 "db_version": 1,
-                "keyPath": "roomId"
+                "keyPath": "chatId"
             },
 
             render: function(options) {
@@ -83,11 +86,32 @@ define('chat_platform', [
                     return;
                 }
                 var newChat = new chat(_this.navigator.userId);
-                websocket.sendMessage({
-                    "type": "create",
+                var chat_item = {
                     "userId": _this.navigator.userId,
                     "chatId": newChat.chatId
+                };
+
+                websocket.sendMessage({
+                    "type": "create",
+                    "chat_item": chat_item
                 });
+
+
+                indexeddb.addOrUpdateAll(
+                    _this.collectionDescription,
+                    [
+                        chat_item
+                    ],
+                    function(error) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
+                        //callback();
+                    }
+                );
+
+
                 var newChatElem = document.createElement('div');
                 chat.prototype.chatsArray.push(newChat);
                 newChat.initialize(newChatElem, _this.chat_wrapper);

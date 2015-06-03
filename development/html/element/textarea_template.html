@@ -1,0 +1,7 @@
+<% var textarea = arguments[0]; %>
+<textarea data-role="<%=textarea.data_role%>" class="<%=textarea.class%>"
+<% if(textarea.rows){ %> rows="<%= textarea.rows%>" <%}%>
+<% if(textarea.value !== ""){ %> value="<%=textarea.value%>" <%}%>
+<% if(textarea.data_location){ %> data-location="<%= textarea.data_location%>" <%}%>
+
+><%=textarea.text%></textarea>

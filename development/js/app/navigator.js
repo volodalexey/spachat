@@ -89,6 +89,10 @@ define('navigator',
             },
 
             notifyCurrentPage: function(event) {
+                if (!event) {
+                    return;
+                }
+
                 var eventName = event;
                 if (typeof event === 'object') {
                     eventName = event.type;

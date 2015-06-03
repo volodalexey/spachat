@@ -1,0 +1,126 @@
+[
+  {
+    "element": "button",
+    "icon": "",
+    "text": "Auto handshake",
+    "class": "",
+    "title": "",
+    "data_role": "",
+    "data_action": "addNewChat",
+    "data_mode": "CREATE_CHAT",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "Manual handshake",
+    "class": "",
+    "title": "",
+    "data_role": "",
+    "data_action": "addNewChatManual",
+    "data_mode": "CREATE_CHAT",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+
+  {
+    "element": "label",
+    "icon": "",
+    "text": "Chat id",
+    "class": "",
+    "title": "",
+    "data_role": "chat_id_label",
+    "data_mode": "JOIN_CHAT",
+    "for": "chat_id",
+    "name": "",
+    "value": null,
+    "disable": false,
+    "data_location": ""
+  },
+  {
+    "element": "input",
+    "type": "text",
+    "icon": "",
+    "text": "",
+    "class": "",
+    "title": "",
+    "data_role": "chat_id_input",
+    "data_mode": "JOIN_CHAT",
+    "name": "",
+    "value": "",
+    "id": "chat_id",
+    "disabled" : false,
+    "data_location": ""
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "Join chat by chat id",
+    "class": "",
+    "title": "",
+    "data_role": "",
+    "data_action": "joinChatByChatId",
+    "data_mode": "JOIN_CHAT",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+  {
+    "element": "label",
+    "icon": "",
+    "text": "Remote offer",
+    "class": "",
+    "title": "",
+    "data_role": "remote_offer_label",
+    "data_mode": "JOIN_CHAT",
+    "name": "",
+    "value": null,
+    "disable": false,
+    "data_location": ""
+  },
+  {
+    "element": "textarea",
+    "rows": "5",
+    "text": "",
+    "class": "",
+    "title": "",
+    "data_role": "remote_offer_textarea",
+    "data_mode": "JOIN_CHAT",
+    "value": "",
+    "disabled" : false,
+    "data_location": ""
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "Join chat by sdp",
+    "class": "",
+    "title": "",
+    "data_role": "",
+    "data_action": "joinChatByChatSdp",
+    "data_mode": "JOIN_CHAT",
+    "name": "",
+    "value": null,
+    "disable": false
+  },
+
+  {
+    "element": "input",
+    "type": "text",
+    "icon": "",
+    "text": "",
+    "class": "",
+    "title": "",
+    "data_role": "my_chat_id_input",
+    "data_mode": "MY_CHATS",
+    "name": "",
+    "value": "",
+    "id": "chat_id",
+    "disabled" : true,
+    "data_location": ""
+  }
+
+]

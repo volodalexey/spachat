@@ -25,7 +25,7 @@ define('panel_platform', [
                     outer_container: _this.left_panel_outer_container,
                     inner_container: _this.left_panel_inner_container,
                     panel_platform: this,
-                    panel_mode: panel.prototype.MODE.CREATE_CHAT_AUTO
+                    panel_mode: panel.prototype.MODE.CREATE_CHAT
                 },
                 {
                     type: this.PANEL_TYPES.RIGHT,
