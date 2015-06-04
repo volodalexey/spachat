@@ -1,8 +1,17 @@
-<% var label = arguments[0]; %>
-<label data-role="<%=label.data_role%>" class="<%=label.class%>"
-<% if(label.name !== ""){ %> name="<%= label.name%>" <%}%>
-<% if(label.value !== null){ %> value="<%=label.value%>" <%}%>
-<% if(label.for){ %> for="<%= label.for%>" <%}%>
-<% if(label.data_location){ %> data-location="<%= label.data_location%>" <%}%>
+<% var _in = arguments[0]; %>
+<label data-role="<%=_in.config.data_role%>" class="<%=_in.config.class%>"
+<% if(_in.config.name !== ""){ %> name="<%= _in.config.name%>" <%}%>
 
-><%=label.text%></label>
+<% if(_in.for){ %> for="<%= _in.for%>" <%}%>
+<% if(_in.data_location){ %> data-location="<%= _in.data_location%>" <%}%>
+
+<% if(_in.value !== null){ %> value="<%=_in.value%>" <%}%>
+
+
+
+><%=_in.config.text%>
+<% if(_in.config.data_key) { %>
+<%= _in.data[_in.config.data_key] %>
+<%} %>
+
+</label>

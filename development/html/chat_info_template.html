@@ -1,41 +1,118 @@
 <% var array = arguments[0]; %>
 
-<% var array_create_chat = array.config.filter( function(obj){ return obj.data_mode === "CREATE_CHAT" } ) %>
-<% var array_join_chat = array.config.filter( function(obj){ return obj.data_mode === "JOIN_CHAT" } ) %>
-<% var array_my_chats = array.config.filter( function(obj){ return obj.data_mode === "MY_CHATS" } ) %>
+<% var array_create_chat = array.config.filter( function(config){ return config.data_mode === "CREATE_CHAT" } ) %>
+<% var array_join_chat = array.config.filter( function(config){ return config.data_mode === "JOIN_CHAT" } ) %>
+<% var array_my_chats = array.config.filter( function(config){ return config.data_mode === "MY_CHATS" } ) %>
 
+
+<% if (array.mode === 'CREATE_CHAT') { %>
+
+<% array_create_chat.forEach(function (config) { %>
+<div class="w-100p p-t-b flex-sp-around">
+    <%= array.triple_element_template({
+    config: config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+</div>
+<% }) %>
+<% } %>
+
+<% if (array.mode === 'JOIN_CHAT') { %>
+
+<% var byDataLocation = {}; %>
+<% array_join_chat.forEach(function(_config) { %>
+<%  if (!byDataLocation[_config.data_location]) { %>
+<%  byDataLocation[_config.data_location] = []; %>
+<% }%>
+<%  byDataLocation[_config.data_location].push(_config); %>
+<% }); %>
+
+
+<% if (byDataLocation['chat_id'].length) { %>
+<div class="w-100p flex-sp-between">
+    <% byDataLocation['chat_id'].forEach(function (config) { %>
+    <%= array.triple_element_template({
+    config: config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+    <% }) %>
+</div>
+<%} %>
+
+<% if (byDataLocation['chat_id_btn'].length) { %>
+<div class="w-100p flex-sp-around">
+    <% byDataLocation['chat_id_btn'].forEach(function (config) { %>
+    <%= array.triple_element_template({
+    config: config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+    <% }) %>
+</div>
+<%} %>
+
+
+<% if (byDataLocation['remote_offer'].length) { %>
+<% byDataLocation['remote_offer'].forEach(function (config) { %>
+<div class="w-100p flex-sp-between">
+    <%= array.triple_element_template({
+    config: config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template,
+    textarea_template: array.textarea_template,
+    }) %>
+</div>
+<% }) %>
+
+<% if (byDataLocation['remote_offer_btn'].length) { %>
+<div class="w-100p flex-sp-around">
+    <% byDataLocation['remote_offer_btn'].forEach(function (config) { %>
+    <%= array.triple_element_template({
+    config: config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+    <% }) %>
+</div>
+<%} %>
+
+<%} %>
+<% } %>
+
+<% if (array.mode === 'MY_CHATS') { %>
 <div>
-    <% if (array.mode === 'CREATE_CHAT') { %>
-        <% array_create_chat.forEach(function (obj) { %>
+    <% array.data.forEach(function (chat) { %>
+
+
+
+    <div >
+        <% array_my_chats.forEach(function (config) { %>
             <%= array.triple_element_template({
-            element: obj,
+            config: config,
             button_template: array.button_template,
             input_template: array.input_template,
-            label_template: array.label_template
+            label_template: array.label_template,
+            data: chat
             }) %>
         <% }) %>
-    <% } %>
+        <div data-role="detail_view_container" style="background: mistyrose" class=""></div>
+    </div>
 
-    <% if (array.mode === 'JOIN_CHAT') { %>
-        <% array_join_chat.forEach(function (obj) { %>
-        <%= array.triple_element_template({
-        element: obj,
-        button_template: array.button_template,
-        input_template: array.input_template,
-        label_template: array.label_template,
-        textarea_template: array.textarea_template,
-        }) %>
-        <% }) %>
-    <% } %>
 
-    <% if (array.mode === 'MY_CHATS') { %>
-    <ul>
-        <% array_my_chats.forEach(function (obj) { %>
-        <li>
-            1152
-        </li>
-        <% }) %>
-    </ul>
-    <% } %>
+
+
+
+
+
+
+    <% }) %>
 </div>
+<% } %>
 

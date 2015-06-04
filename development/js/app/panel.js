@@ -33,7 +33,6 @@ define('panel', [
         var panel = function(description) {
             this.bindToolbarContext();
             this.bindMainContexts();
-            //this.bindContentContexts();
 
             this.type = description.type;
             this.panel_platform = description.panel_platform;
@@ -52,6 +51,14 @@ define('panel', [
                 "table_name": 'authentication',
                 "db_version": 1,
                 "keyPath": "userId"
+            },
+
+            collectionDescriptionChats: {
+                "id": 'chats',
+                "db_name": 'chats',
+                "table_name": 'chats',
+                "db_version": 1,
+                "keyPath": "chatId"
             },
 
             MODE: {
@@ -428,6 +435,13 @@ define('panel', [
                 _this.renderPanelBody();
             },
 
+            expand_li: function(event) {
+                var elem = event.target.querySelector('[data-role="content"]');
+                if (elem) {
+                    elem.classList.remove("hide");
+                }
+            },
+
             resizePanel: function() {
                 var _this = this;
                 if (_this.outer_container.style[_this.type] === '0px') {
@@ -462,7 +476,7 @@ define('panel', [
             "USER_INFO_SHOW": panel.prototype.collectionDescription,
             "CREATE_CHAT": '',
             'JOIN_CHAT': '',
-            "MY_CHATS": ''
+            "MY_CHATS": panel.prototype.collectionDescriptionChats
         };
 
         panel.prototype.templateMap = {

@@ -1,1 +1,7 @@
-<div  data-role="contact_body"></div>
+<% var array = arguments[0]; %>
+
+<% array.config.forEach(function (_config) { %>
+<div class="w-100p flex-sp-between">
+    <%= _config.id%> ; <%= _config.name%> ; <%= _config.surname%> ; age: <%= _config.age%>
+</div>
+<% }) %>

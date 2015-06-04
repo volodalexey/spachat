@@ -3,6 +3,7 @@ define('header', [
         'ajax_core',
         'async_core',
         'template_core',
+        'indexeddb',
 
         'pagination',
 
@@ -17,9 +18,8 @@ define('header', [
              ajax_core,
              async_core,
              template_core,
-
+             indexeddb,
              pagination,
-
              filter_template,
              header_template,
              triple_element_template,
@@ -27,63 +27,137 @@ define('header', [
              label_template,
              input_template) {
 
-        var header = function() {
+        var header = function(options) {
+            this.body_outer_container = options.chat.body_outer_container;
+            this.header_container = options.chat.chatElem.querySelector('[data-role="header_outer_container"]');
         };
 
         header.prototype = {
 
-            initialize: function(options) {
-                var _this = this;
-
-                _this.chat = options.chat;
-
-                _this.header_container = _this.chat.chatElem.querySelector('[data-role="header_outer_container"]');
-                _this.body_outer_container = _this.chat.chatElem.querySelector('[data-role="body_outer_container"]');
-                _this.renderByMode();
+            MODE: {
+                WEBRTC: 'WEBRTC',
+                MESSAGES: 'MESSAGES'
             },
 
-            renderByMode: function() {
+            configMap: {
+                "WEBRTC": '',
+                "MESSAGES": '/mock/header_navbar_config.json'
+            },
+
+            MODE_DESCRIPTION: {
+                WEBRTC: 'Web RTC Initialization',
+                MESSAGES: 'Chat Messages'
+            },
+
+            renderByMode: function(options) {
                 var _this = this;
+                _this.chat = options.chat;
+
                 switch (_this.chat.data.mode) {
-                    case "webrtc":
-                        _this.header_container.innerHTML = _this.header_template({
-                            description: 'Web RTC Initialization'
-                        });
+                    case "WEBRTC":
+                        _this.fillHeader(null, null, null);
                         break;
-                    case "messages":
-                        _this.sendRequest("/mock/header_navbar_config.json", function(err, config) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                _this.header_navbar_config = JSON.parse(config);
-                                _this.header_container.innerHTML = _this.header_template({
-                                    header_btn: _this.header_navbar_config,
-                                    description: 'Chat Messages'
+                    case "MESSAGES":
+                        _this.loadHeaderConfig(null, function(confErr) {
+                            _this.loadHeaderData(confErr, function(dataErr, data) {
+                                _this.fillHeader(dataErr, data, function(templErr) {
+                                    if (templErr) {
+                                        console.error(templErr);
+                                        return;
+                                    }
+                                    var btnsHeader = _this.header_container.querySelectorAll('[data-role="btnHeader"]');
+                                    for (var i = 0, l = btnsHeader.length; i < l; i++) {
+                                        var name = btnsHeader[i].getAttribute('data-action');
+                                        btnsHeader[i].addEventListener('click', _this[name].bind(_this), false);
+                                    }
+                                    _this.filter_container = _this.header_container.querySelector('[data-role="filter_container"]');
                                 });
-                                _this.trigger('resizeMessagesContainer');
-                                var btnsHeader = _this.header_container.querySelectorAll('[data-role="btnHeader"]');
-                                for (var i = 0, l = btnsHeader.length; i < l; i++) {
-                                    var name = btnsHeader[i].getAttribute('data-action');
-                                    btnsHeader[i].addEventListener('click', _this[name].bind(_this), false);
-                                }
-                                //_this.addToolbarListeners();
-                            }
+                            });
                         });
-                        _this.filter_container = _this.chat.chatElem.querySelector('[data-role="filter_container"]');
-                        break;
                 }
             },
 
-            addEventListeners: function() {
+            loadHeaderConfig: function(_err, callback) {
                 var _this = this;
-                _this.removeEventListeners();
+                if (_err) {
+                    callback(_err);
+                    return;
+                }
+
+                if (_this.configMap[_this.chat.data.body_mode]) {
+                    _this.sendRequest(_this.configMap[_this.chat.data.body_mode], function(err, res) {
+                        if (err) {
+                            callback(err);
+                            return;
+                        }
+                        _this.header_config = JSON.parse(res);
+                        callback();
+                    });
+                } else {
+                    callback();
+                }
             },
 
-            removeEventListeners: function() {
+            loadHeaderData: function(_err, callback) {
                 var _this = this;
-                _this.labeltPerPage.removeEventListener('input', _this.changePerPage.bind(_this), false);
+                if (_err) {
+                    callback(_err);
+                    return;
+                }
+
+                if (_this.dataMap[_this.chat.data.body_mode]) {
+                    var collectionDescription = _this.dataMap[_this.chat.data.body_mode];
+                    indexeddb.getAll(collectionDescription, function(getAllErr, data) {
+                        if (getAllErr) {
+                            callback(getAllErr);
+                        } else {
+                            if (_this.dataHandlerMap[_this.chat.data.body_mode]) {
+                                callback(null, _this.dataHandlerMap[_this.chat.data.body_mode].call(_this, data));
+                            } else {
+                                callback(null, data);
+                            }
+                        }
+                    });
+                } else {
+                    callback();
+                }
             },
 
+            fillHeader: function(_err, data, callback) {
+                var _this = this;
+                if (_err) {
+                    callback(_err);
+                    return;
+                }
+                var currentTemplate = _this.templateMap[_this.chat.data.body_mode];
+                if (currentTemplate) {
+                    _this.header_container.innerHTML = currentTemplate({
+                        header_btn: _this.header_config,
+                        triple_element_template: _this.triple_element_template,
+                        button_template: _this.button_template,
+                        input_template: _this.input_template,
+                        label_template: _this.label_template,
+                        mode: _this.chat.data.body_mode,
+                        data: data,
+                        description: _this.MODE_DESCRIPTION[_this.chat.data.body_mode]
+                    });
+                }
+                callback();
+            },
+
+            renderContactList: function() {
+                var _this = this;
+                _this.trigger("renderContactList");
+                //_this.throwEvent('renderContactList');
+            },
+
+            renderSettings: function() {
+                var _this = this;
+                //_this.throwEvent('renderSettings');
+                _this.trigger("renderSettings");
+            },
+
+            // --------------------- Filter
             forceRenderMessages: function(callback) {
                 var _this = this;
                 if (_this.chat.data.body_mode !== "messages") {
@@ -198,16 +272,6 @@ define('header', [
 
             },
 
-            renderContactList: function() {
-                var _this = this;
-                _this.trigger("renderContactList");
-            },
-
-            renderSettings: function() {
-                var _this = this;
-                _this.trigger("renderSettings");
-            },
-
             renderPagination: function() {
                 var _this = this;
                 _this.trigger("renderPagination");
@@ -251,6 +315,16 @@ define('header', [
         header.prototype.button_template = header.prototype.template(button_template);
         header.prototype.label_template = header.prototype.template(label_template);
         header.prototype.input_template = header.prototype.template(input_template);
+
+        header.prototype.dataMap = {
+            "WEBRTC": '',
+            "MESSAGES": ""
+        };
+
+        header.prototype.templateMap = {
+            "WEBRTC": header.prototype.header_template,
+            "MESSAGES": header.prototype.header_template
+        };
 
         return header;
     });

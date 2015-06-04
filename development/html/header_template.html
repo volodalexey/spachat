@@ -2,11 +2,13 @@
     <% var _in = arguments[0]; %>
     <h3><%= _in.description %></h3>
     <hr/>
+    <% if (_in.header_btn) { %>
     <div data-role="btnHeaderPanel">
         <% _in.header_btn.forEach(function (btn) { %>
         <button class="<%= btn.class%>" name="<%= btn.name%>" data-role="<%= btn.data_role%>" data-action="<%= btn.data_action%>"> <%= btn.text%></button>
         <%})%>
     </div>
+    <% } %>
     <div data-role="filter_container" class="background hide flex wrap"></div>
 </div>
 

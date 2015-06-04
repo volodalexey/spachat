@@ -44,12 +44,19 @@ define('chat', [
 
             chatsArray: [],
 
+            MODE: {
+                SETTING: 'SETTING',
+                MESSAGES: 'MESSAGES',
+                CONTACT_LIST: 'CONTACT_LIST',
+                WEBRTC: 'WEBRTC'
+            },
+
             initialize: function(chatElem, mainContainer) {
                 var _this = this;
 
                 _this.data = {
-                    mode: "messages", //webrtc
-                    body_mode: "messages",
+                    mode: _this.MODE.MESSAGES, //webrtc
+                    body_mode: _this.MODE.MESSAGES,
                     redraw_mode: "rte",
                     redraw_choice_page_mode: "rte",
                     curPage: null,
@@ -69,11 +76,11 @@ define('chat', [
                 _this.chatElem.innerHTML = _this.chat_template();
                 _this.body_outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
 
-                _this.newHeader = new header();
+                _this.newHeader = new header({chat: _this});
                 _this.newEditor = new editor().initialize({chat: _this});
                 _this.newPagination = new pagination();
-                _this.newSettings = new settings();
-                _this.newContact_list = new contact_list();
+                _this.newSettings = new settings({chat: _this});
+                _this.newContact_list = new contact_list({chat: _this});
                 _this.newMessages = new messages();
                 _this.indexeddb = indexeddb;
                 _this.webrtc = new webrtc().initialize({chat: _this});
@@ -86,14 +93,14 @@ define('chat', [
             renderByMode: function() {
                 var _this = this;
                 switch (_this.data.mode) {
-                    case "webrtc":
-                        _this.newHeader.initialize({chat: _this});
+                    case "WEBRTC":
+                        _this.newHeader.renderByMode({chat: _this});
                         _this.webrtc.renderHanshake();
                         break;
-                    case "messages":
+                    case "MESSAGES":
                         _this.body_outer_container.innerHTML = _this.outer_container_template();
                         _this.newEditor.renderEditorPanel(function() {
-                            _this.newHeader.initialize({chat: _this});
+                            _this.newHeader.renderByMode({chat: _this});
                             _this.newMessages.initialize({start: 0, chat: _this});
                             _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
                             _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
@@ -189,12 +196,12 @@ define('chat', [
 
             renderSettings: function() {
                 var _this = this;
-                _this.newSettings.initialize({chat: _this});
+                _this.newSettings.renderSettings({chat: _this});
             },
 
             renderContactList: function() {
                 var _this = this;
-                _this.newContact_list.initialize({chat: _this});
+                _this.newContact_list.renderContactList({chat: _this});
             },
 
             resizeMessagesContainer: function() {

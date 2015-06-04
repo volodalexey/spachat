@@ -1,10 +1,10 @@
-<% var input = arguments[0]; %>
-<input data-role="<%= input.data_role%>" type="<%= input.type%>" class="<%= input.class%>"
-<% if(input.value !== null){ %>  value="<%= input.value%>" <%}%>
-<% if(input.id){ %> id="<%= input.id%>" <%}%>
-<% if(input.disabled){ %> disabled="<%= disabled %>" <%}%>
-<% if(input.onkeypress){ %> onkeypress="<%= input.onkeypress %>" <%}%>
-<% if(input.data_location){ %> data-location="<%= input.data_location%>" <%}%>
+<% var _in = arguments[0]; %>
+<input data-role="<%= _in.config.data_role%>" type="<%= _in.config.type%>" class="<%= _in.config.class%>"
+<% if(_in.config.value !== null){ %>  value="<%= _in.config.value%>" <%}%>
+<% if(_in.config.id){ %> id="<%= _in.config.id%>" <%}%>
+<% if(_in.config.disabled === true){ %> disabled <%}%>
+<% if(_in.config.onkeypress){ %> onkeypress="<%= _in.config.onkeypress %>" <%}%>
+<% if(_in.config.data_location){ %> data-location="<%= _in.config.data_location%>" <%}%>
  >
-<%= input.text%>
+<%= _in.config.text%>
 </input>

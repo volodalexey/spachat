@@ -3,6 +3,8 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Project</title>
+    <link rel="shortcut icon" href="img/app/favico_me.ico" type="image/x-icon">
+
     <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
     <link rel="stylesheet/less" type="text/css" href="less/total.less"/>
     <script src="js/lib/less.min.js"></script>
@@ -116,21 +118,21 @@
 </div>
 
 <div data-role="left_panel_outer_container" class="p-fx panel left-panel animate hide c-pink">
-    <div class="p-rel">
+    <div class="p-rel h-100p">
         <button type="button" data-action="togglePanel" class="panel-button left-panel-button">LeftPanel</button>
-        <div data-role="left_panel_inner_container" class="clear">
-            <div data-role="panel_toolbar" class=""></div>
-            <div data-role="panel_body" class="panel-body"></div>
+        <div data-role="left_panel_inner_container" class="clear flex-dir-col h-inherit">
+            <div data-role="panel_toolbar" class="w-100p flex-sp-around"></div>
+            <div data-role="panel_body" class="panel-body overflow-a flex-item-w50p"></div>
         </div>
     </div>
 </div>
 
 <div data-role="right_panel_outer_container" class="p-fx panel right-panel animate hide c-mist">
-    <div class="p-rel">
+    <div class="p-rel h-100p">
         <button type="button" data-action="togglePanel" class="panel-button right-panel-button">RightPanel</button>
-        <div data-role="right_panel_inner_container" class="clear">
-            <div data-role="panel_toolbar" class="flex-sp-between"></div>
-            <div data-role="panel_body" class="panel-body"></div>
+        <div data-role="right_panel_inner_container" class="clear flex-dir-col h-inherit">
+            <div data-role="panel_toolbar" class="w-100p flex-sp-around"></div>
+            <div data-role="panel_body" class="panel-body overflow-a flex-item-w50p"></div>
         </div>
     </div>
 </div>

@@ -7,9 +7,9 @@
     <% if(array.mode === 'nrte') { %>
 
 
-        <% array_choice_nrte.forEach( function (obj) { %>
+        <% array_choice_nrte.forEach( function (_config) { %>
             <%= array.triple_element_template({
-            element: obj,
+            config: _config,
             button_template: array.button_template,
             input_template: array.input_template,
             label_template: array.label_template
@@ -18,9 +18,9 @@
 
 
     <% } else { %>
-        <% array_choice_rte.forEach( function (obj) { %>
+        <% array_choice_rte.forEach( function (_config) { %>
             <%= array.triple_element_template({
-            element: obj,
+            config: _config,
             button_template: array.button_template,
             input_template: array.input_template,
             label_template: array.label_template

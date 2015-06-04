@@ -1,123 +1,146 @@
 <% var array = arguments[0]; %>
 
 <% array.config.forEach(function(element) { %>
-    <% if (element.data_role === "user_name_input" || element.data_role === "user_name") { %>
-        <% if (element.value === "") { %>
-        <% element.value = data.userName %>
-        <% } %>
-    <% } %>
-    <% if (element.data_role === "user_id_input") { %>
-    <%  element.value = data.userId %>
-    <% } %>
+<% if (element.data_role === "user_name_input" || element.data_role === "user_name") { %>
+<% if (element.value === "") { %>
+<% element.value = data.userName %>
+<% } %>
+<% } %>
+<% if (element.data_role === "user_id_input") { %>
+<%  element.value = data.userId %>
+<% } %>
 <% }) %>
 
-var byDataLocation = {};
-
-_this.panel_body_config.forEach(function(_config) {
-if (!byDataLocation[_config.data_location]) {
-byDataLocation[_config.data_location] = [];
-}
-byDataLocation[_config.data_location].push(_config);
-});
-
-
-<% var array_reading = array.config.filter( function(obj){ return obj.mode === "USER_INFO_SHOW" } ) %>
-<% var array_user_id_location_r = array_reading.filter( function(obj){ return obj.data_location === "user_id" } ) %>
-<% var array_user_name_location_r = array_reading.filter( function(obj){ return obj.data_location === "user_name" } ) %>
-<% var array_navbar_location_r = array_reading.filter( function(obj){ return obj.data_location === "navbar" } ) %>
-
+<% var array_show = array.config.filter( function(obj){ return obj.mode === "USER_INFO_SHOW" } ) %>
 <% var array_editing = array.config.filter( function(obj){ return obj.mode === "USER_INFO_EDIT" } ) %>
-<% var array_user_name_location_e = array_editing.filter( function(obj){ return obj.data_location === "user_name" } ) %>
-<% var array_old_password_location_e = array_editing.filter( function(obj){ return obj.data_location === "old_password" } ) %>
-<% var array_new_password_location_e = array_editing.filter( function(obj){ return obj.data_location === "new_password" } ) %>
-<% var array_confirm_password_location_e = array_editing.filter( function(obj){ return obj.data_location === "confirm_password" } ) %>
-<% var array_navbar_location_e = array_editing.filter( function(obj){ return obj.data_location === "navbar" } ) %>
 
-if (byDataLocation['user_id'].length) {}
-    <% if(array.mode === 'USER_INFO_SHOW') { %>
-        <div class="flex justContSB marginT">
-            <% array_user_id_location_r.forEach(function (obj) { %>
-            <%= array.triple_element_template({
-            element: obj,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template
-            }) %>
-            <% }) %>
-        </div>
-        <div class="flex justContSB marginT">
-            <% array_user_name_location_r.forEach(function (obj) { %>
-            <%= array.triple_element_template({
-            element: obj,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template
-            }) %>
-            <% }) %>
-        </div>
-        <div class="flex justContSA marginT">
-            <% array_navbar_location_r.forEach(function (obj) { %>
-            <%= array.triple_element_template({
-            element: obj,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template
-            }) %>
-            <% }) %>
-        </div>
-    <% } else if (array.mode === 'USER_INFO_EDIT') { %>
-        <div class="flex justContSB marginT">
-            <% array_user_name_location_e.forEach(function (obj) { %>
-            <%= array.triple_element_template({
-            element: obj,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template
-            }) %>
-            <% }) %>
-        </div>
-        <div class="flex justContSB marginT">
-            <% array_old_password_location_e.forEach(function (obj) { %>
-            <%= array.triple_element_template({
-            element: obj,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template
-            }) %>
-            <% }) %>
-        </div>
-        <div class="flex justContSB marginT">
-            <% array_new_password_location_e.forEach(function (obj) { %>
-            <%= array.triple_element_template({
-            element: obj,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template
-            }) %>
-            <% }) %>
-        </div>
-        <div class="flex justContSB marginT">
-            <% array_confirm_password_location_e.forEach(function (obj) { %>
-            <%= array.triple_element_template({
-            element: obj,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template
-            }) %>
-            <% }) %>
-        </div>
-        <div class="flex justContSA marginT">
-            <% array_navbar_location_e.forEach(function (obj) { %>
-            <%= array.triple_element_template({
-            element: obj,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template
-            }) %>
-            <% }) %>
-        </div>
-    <%} %>
+<% var byDataLocationShow = {}; %>
+<% array_show.forEach(function(_config) { %>
+<%  if (!byDataLocationShow[_config.data_location]) { %>
+<%  byDataLocationShow[_config.data_location] = []; %>
+<% }%>
+<%  byDataLocationShow[_config.data_location].push(_config); %>
+<% }); %>
 
+
+<% var byDataLocationReading = {};%>
+<% array_editing.forEach(function(_config) { %>
+<% if (!byDataLocationReading[_config.data_location]) { %>
+<% byDataLocationReading[_config.data_location] = []; %>
+<% } %>
+<% byDataLocationReading[_config.data_location].push(_config); %>
+<% }); %>
+
+
+<% if(array.mode === 'USER_INFO_SHOW') { %>
+<% if (byDataLocationShow['user_id'].length) { %>
+<div class="w-100p p-t-b flex-sp-between">
+    <% byDataLocationShow['user_id'].forEach(function (_config) { %>
+    <%= array.triple_element_template({
+    config: _config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+    <% }) %>
+</div>
+<%} %>
+
+<% if (byDataLocationShow['user_name'].length) { %>
+<div class="w-100p p-t-b flex-sp-between">
+    <% byDataLocationShow['user_name'].forEach(function (_config) { %>
+    <%= array.triple_element_template({
+    config: _config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+    <% }) %>
+</div>
+<%} %>
+
+<% if (byDataLocationShow['navbar'].length) { %>
+<div class="w-100p p-t-b flex-sp-around">
+    <% byDataLocationShow['navbar'].forEach(function (_config) { %>
+    <%= array.triple_element_template({
+    config: _config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+    <% }) %>
+</div>
+<%} %>
+
+
+<% } else if (array.mode === 'USER_INFO_EDIT') { %>
+<% if (byDataLocationReading['user_name'].length) { %>
+<div class="w-100p p-t-b flex-sp-between">
+    <% byDataLocationReading['user_name'].forEach(function (_config) { %>
+    <%= array.triple_element_template({
+    config: _config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+    <% }) %>
+</div>
+<%} %>
+
+<% if (byDataLocationReading['old_password'].length) { %>
+<div class="w-100p p-t-b flex-sp-between">
+    <% byDataLocationReading['old_password'].forEach(function (_config) { %>
+    <%= array.triple_element_template({
+    config: _config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+    <% }) %>
+</div>
+<%} %>
+
+<% if (byDataLocationReading['new_password'].length) { %>
+<div class="w-100p p-t-b flex-sp-between">
+    <% byDataLocationReading['new_password'].forEach(function (_config) { %>
+    <%= array.triple_element_template({
+    config: _config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+    <% }) %>
+</div>
+<%} %>
+
+<% if (byDataLocationReading['confirm_password'].length) { %>
+<div class="w-100p p-t-b flex-sp-between">
+    <% byDataLocationReading['confirm_password'].forEach(function (_config) { %>
+    <%= array.triple_element_template({
+    config: _config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+    <% }) %>
+</div>
+<%} %>
+
+
+<% if (byDataLocationReading['navbar'].length) { %>
+<div class="w-100p p-t-b flex-sp-around">
+    <% byDataLocationReading['navbar'].forEach(function (_config) { %>
+    <%= array.triple_element_template({
+    config: _config,
+    button_template: array.button_template,
+    input_template: array.input_template,
+    label_template: array.label_template
+    }) %>
+    <% }) %>
+</div>
+<%} %>
+
+<% }%>
 
 
 

@@ -38,14 +38,14 @@
     "name": "",
     "value": null,
     "disable": false,
-    "data_location": ""
+    "data_location": "chat_id"
   },
   {
     "element": "input",
     "type": "text",
     "icon": "",
     "text": "",
-    "class": "",
+    "class": "flex-item-w50p",
     "title": "",
     "data_role": "chat_id_input",
     "data_mode": "JOIN_CHAT",
@@ -53,7 +53,7 @@
     "value": "",
     "id": "chat_id",
     "disabled" : false,
-    "data_location": ""
+    "data_location": "chat_id"
   },
   {
     "element": "button",
@@ -66,7 +66,8 @@
     "data_mode": "JOIN_CHAT",
     "name": "",
     "value": null,
-    "disable": false
+    "disable": false,
+    "data_location": "chat_id_btn"
   },
   {
     "element": "label",
@@ -79,19 +80,19 @@
     "name": "",
     "value": null,
     "disable": false,
-    "data_location": ""
+    "data_location": "remote_offer"
   },
   {
     "element": "textarea",
     "rows": "5",
     "text": "",
-    "class": "",
+    "class": "w-100p",
     "title": "",
     "data_role": "remote_offer_textarea",
     "data_mode": "JOIN_CHAT",
     "value": "",
     "disabled" : false,
-    "data_location": ""
+    "data_location": "remote_offer"
   },
   {
     "element": "button",
@@ -104,22 +105,37 @@
     "data_mode": "JOIN_CHAT",
     "name": "",
     "value": null,
-    "disable": false
+    "disable": false,
+    "data_location": "remote_offer_btn"
   },
 
   {
-    "element": "input",
+    "element": "label",
+    "type": "",
+    "icon": "",
+    "text": "icon",
+    "class": "",
+    "title": "",
+    "data_role": "my_chat_id_icon",
+    "data_mode": "MY_CHATS",
+    "name": "",
+    "value": "",
+    "disabled" : false,
+    "data_location": ""
+  },
+  {
+    "element": "label",
     "type": "text",
     "icon": "",
     "text": "",
     "class": "",
     "title": "",
-    "data_role": "my_chat_id_input",
+    "data_role": "my_chat_id_label",
     "data_mode": "MY_CHATS",
+    "data_key": "chatId",
     "name": "",
     "value": "",
-    "id": "chat_id",
-    "disabled" : true,
+    "disabled" : false,
     "data_location": ""
   }
 

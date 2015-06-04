@@ -4,9 +4,9 @@
 <div class="modal-controls" data-role="controls_container">
     <div class="modal-main-btn">
         <% var array = arguments[0]; %>
-        <% array.editor_navbar_config.forEach(function (obj) { %>
+        <% array.editor_navbar_config.forEach(function (_config) { %>
             <%= array.triple_element_template({
-            element: obj,
+            config: _config,
             button_template: array.button_template,
             input_template: array.input_template,
             label_template: array.label_template

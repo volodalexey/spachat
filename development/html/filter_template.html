@@ -8,17 +8,17 @@
 
 <div class="flex-item flex">
     <div class="elements">
-        <% array_date_from.forEach(function (obj) { %>
+        <% array_date_from.forEach(function (_config) { %>
         <%= array.triple_element_template({
-        element: obj,
+        config: _config,
         button_template: array.button_template,
         input_template: array.input_template,
         label_template: array.label_template
         }) %>
         <% }) %>
-        <% array_date_to.forEach(function (obj) { %>
+        <% array_date_to.forEach(function (_config) { %>
         <%= array.triple_element_template({
-        element: obj,
+        config: _config,
         button_template: array.button_template,
         input_template: array.input_template,
         label_template: array.label_template
@@ -29,9 +29,9 @@
 
 <div class="flex-item flex">
     <div class="elements">
-        <% array_pagination.forEach(function (obj) { %>
+        <% array_pagination.forEach(function (_config) { %>
         <%= array.triple_element_template({
-        element: obj,
+        config: _config,
         button_template: array.button_template,
         input_template: array.input_template,
         label_template: array.label_template
@@ -40,18 +40,18 @@
     </div>
     <div class="elements">
         <% if(array.mode === 'nrte') { %>
-            <% array_per_page_nrte.forEach(function (obj) { %>
+            <% array_per_page_nrte.forEach(function (_config) { %>
                 <%= array.triple_element_template({
-                element: obj,
+                config: _config,
                 button_template: array.button_template,
                 input_template: array.input_template,
                 label_template: array.label_template
                 }) %>
             <% }) %>
         <% } else { %>
-            <% array_per_page_rte.forEach(function (obj) { %>
+            <% array_per_page_rte.forEach(function (_config) { %>
             <%= array.triple_element_template({
-            element: obj,
+            config: _config,
             button_template: array.button_template,
             input_template: array.input_template,
             label_template: array.label_template

@@ -1,16 +1,16 @@
-<% var obj = arguments[0]; %>
-<% if(obj.element.element === "button") { %>
-<%= obj.button_template(obj.element) %>
+<% var _in = arguments[0]; %>
+<% if(_in.config.element === "button") { %>
+<%= _in.button_template(_in) %>
 <% } %>
 
-<% if(obj.element.element === "label") { %>
-<%= obj.label_template(obj.element) %>
+<% if(_in.config.element === "label") { %>
+<%= _in.label_template(_in) %>
 <% } %>
 
-<% if(obj.element.element === "input") { %>
-<%= obj.input_template(obj.element) %>
+<% if(_in.config.element === "input") { %>
+<%= _in.input_template(_in) %>
 <% } %>
 
-<% if(obj.element.element === "textarea") { %>
-<%= obj.textarea_template(obj.element) %>
+<% if(_in.config.element === "textarea") { %>
+<%= _in.textarea_template(_in) %>
 <% } %>

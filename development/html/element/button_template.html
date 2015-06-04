@@ -1,11 +1,11 @@
-<% var btn = arguments[0]; %>
-<button data-role="<%= btn.data_role%>" class="<%= btn.class%>"
-<% if(btn.name !== ""){ %> name="<%= btn.name%>" <%}%>
-<% if(btn.disable === true){ %> disabled <%}%>
-<% if(btn.data_location){ %> data-location="<%= btn.data_location%>" <%}%>
-<% if(btn.value !== null){ %> value="<%= btn.value%>" <%}%>
-<% if(btn.data_action){ %> data-action="<%= btn.data_action%>" <%}%>
-<% if(btn.data_mode){ %> data-mode="<%= btn.data_mode%>" <%}%>
+<% var _in = arguments[0]; %>
+<button data-role="<%= _in.config.data_role%>" class="<%= _in.config.class%>"
+<% if(_in.config.name !== ""){ %> name="<%= _in.config.name%>" <%}%>
+<% if(_in.config.disable === true){ %> disabled <%}%>
+<% if(_in.config.data_location){ %> data-location="<%= _in.config.data_location%>" <%}%>
+<% if(_in.config.value !== null){ %> value="<%= _in.config.value%>" <%}%>
+<% if(_in.config.data_action){ %> data-action="<%= _in.config.data_action%>" <%}%>
+<% if(_in.config.data_mode){ %> data-mode="<%= _in.config.data_mode%>" <%}%>
 >
-<%= btn.text%>
+<%= _in.config.text%>
 </button>
