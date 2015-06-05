@@ -77,7 +77,7 @@ define('chat', [
                 _this.body_outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
 
                 _this.newHeader = new header({chat: _this});
-                _this.newEditor = new editor().initialize({chat: _this});
+                _this.newEditor = new editor({chat: _this});
                 _this.newPagination = new pagination();
                 _this.newSettings = new settings({chat: _this});
                 _this.newContact_list = new contact_list({chat: _this});
@@ -138,7 +138,12 @@ define('chat', [
                 _this.newPagination.on('calcMessagesContainerHeight', _this.calcMessagesContainerHeight.bind(_this), _this);
 
                 _this.newMessages.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
+
+
+                //_this.on('throw', _this.ff.bind(_this), false)
             },
+
+
 
             removeEventListeners: function() {
                 var _this = this;

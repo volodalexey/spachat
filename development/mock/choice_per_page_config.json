@@ -7,7 +7,6 @@
     "title": "",
     "data_role": "go_to_page",
     "name": "",
-    "value": null,
     "for": "per_page",
     "sort": 1,
     "redraw_mode": "nrte"
@@ -21,7 +20,6 @@
     "title": "",
     "data_role": "choice_per_page",
     "name": "",
-    "value": null,
     "id": "per_page",
     "sort": 2,
     "redraw_mode": "nrte"
@@ -35,7 +33,6 @@
     "title": "",
     "data_role": "rte_choice_per_page",
     "name": "",
-    "value": null,
     "id": "",
     "sort": 3,
     "redraw_mode": "nrte"
@@ -48,7 +45,6 @@
     "title": "",
     "data_role": "go_to_page",
     "name": "",
-    "value": null,
     "for": "per_page",
     "sort": 1,
     "redraw_mode": "rte"
@@ -62,7 +58,6 @@
     "title": "",
     "data_role": "choice_per_page",
     "name": "",
-    "value": null,
     "id": "per_page",
     "sort": 2,
     "redraw_mode": "rte"
@@ -76,7 +71,6 @@
     "title": "",
     "data_role": "rte_choice_per_page",
     "name": "",
-    "value": null,
     "id": "",
     "sort": 3,
     "redraw_mode": "rte"

@@ -112,7 +112,7 @@ define('chat_platform', [
                 );
 
 
-                var newChatElem = document.createElement('div');
+                var newChatElem = document.createElement('section');
                 chat.prototype.chatsArray.push(newChat);
                 newChat.initialize(newChatElem, _this.chat_wrapper);
             }

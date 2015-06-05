@@ -11,6 +11,7 @@
 <div class="w-100p p-t-b flex-sp-around">
     <%= array.triple_element_template({
     config: config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template
@@ -35,6 +36,7 @@
     <% byDataLocation['chat_id'].forEach(function (config) { %>
     <%= array.triple_element_template({
     config: config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template
@@ -48,6 +50,7 @@
     <% byDataLocation['chat_id_btn'].forEach(function (config) { %>
     <%= array.triple_element_template({
     config: config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template
@@ -62,6 +65,7 @@
 <div class="w-100p flex-sp-between">
     <%= array.triple_element_template({
     config: config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template,
@@ -75,6 +79,7 @@
     <% byDataLocation['remote_offer_btn'].forEach(function (config) { %>
     <%= array.triple_element_template({
     config: config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template
@@ -89,10 +94,8 @@
 <% if (array.mode === 'MY_CHATS') { %>
 <div>
     <% array.data.forEach(function (chat) { %>
-
-
-
-    <div >
+    <div data-action="show_more_info" value="<%= chat.chatId%>" >
+        <%= array.icon_config %>
         <% array_my_chats.forEach(function (config) { %>
             <%= array.triple_element_template({
             config: config,
@@ -102,16 +105,8 @@
             data: chat
             }) %>
         <% }) %>
-        <div data-role="detail_view_container" style="background: mistyrose" class=""></div>
+        <div data-role="detail_view_container" style="max-height: 0;" class=" max-height-0"></div>
     </div>
-
-
-
-
-
-
-
-
     <% }) %>
 </div>
 <% } %>

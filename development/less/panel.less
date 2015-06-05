@@ -33,3 +33,25 @@
 .animate{
   transition: left  0.2s ease, right  0.2s ease;
 }
+
+.max-height-0{
+  overflow: hidden;
+  background: mistyrose;
+  transition: max-height  0.2s ease-out;
+&:hover{
+
+}
+  &.max-height-auto{
+    //max-height: 15em;
+    transition: max-height 0.5s ease-in;
+  }
+}
+
+
+
+.transition-all{
+  transition: all  0.2s ease;
+  &.rotate-90{
+    transform: rotate(90deg);
+  }
+}

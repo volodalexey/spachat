@@ -18,7 +18,6 @@
     "title": "",
     "data_role": "",
     "name": "",
-    "value": null,
     "service_id": "date_from",
     "sort": 2
   },
@@ -31,7 +30,6 @@
     "title": "",
     "data_role": "",
     "name": "",
-    "value": null,
     "service_id": "date_from",
     "sort": 3
   },
@@ -43,7 +41,6 @@
     "title": "",
     "data_role": "",
     "name": "",
-    "value": null,
     "service_id": "date_from",
     "sort": 4
   },
@@ -66,7 +63,6 @@
     "title": "",
     "data_role": "",
     "name": "",
-    "value": null,
     "service_id": "date_to",
     "sort": 2
   },
@@ -79,7 +75,6 @@
     "title": "",
     "data_role": "",
     "name": "",
-    "value": null,
     "service_id": "date_to",
     "sort": 3
   },
@@ -91,7 +86,6 @@
     "title": "",
     "data_role": "",
     "name": "",
-    "value": null,
     "service_id": "date_to",
     "sort": 4
   },
@@ -103,7 +97,6 @@
     "title": "",
     "data_role": "icon_enable_pagination",
     "name": "",
-    "value": null,
     "service_id": "pagination",
     "sort": 1
   },
@@ -115,7 +108,6 @@
     "title": "",
     "data_role": "",
     "name": "",
-    "value": null,
     "for": "enable_pagination",
     "service_id": "pagination",
     "sort": 2
@@ -129,7 +121,6 @@
     "title": "",
     "data_role": "enable_pagination",
     "name": "",
-    "value": null,
     "id": "enable_pagination",
     "service_id": "pagination",
     "sort": 3
@@ -142,7 +133,6 @@
     "title": "",
     "data_role": "icon_show_per_page",
     "name": "",
-    "value": null,
     "service_id": "per_page",
     "sort": 1,
     "redraw_mode": "rte"
@@ -155,7 +145,6 @@
     "title": "",
     "data_role": "",
     "name": "",
-    "value": null,
     "for": "show_per_page",
     "service_id": "per_page",
     "sort": 2,
@@ -170,7 +159,6 @@
     "title": "",
     "data_role": "per_page",
     "name": "",
-    "value": 10,
     "id": "show_per_page",
     "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
     "service_id": "per_page",
@@ -186,7 +174,6 @@
     "title": "",
     "data_role": "real_time_editing",
     "name": "",
-    "value": null,
     "id": "",
     "service_id": "per_page",
     "sort": 4,
@@ -200,7 +187,6 @@
     "title": "",
     "data_role": "icon_show_per_page",
     "name": "",
-    "value": null,
     "service_id": "per_page",
     "sort": 1,
     "redraw_mode": "nrte"
@@ -213,7 +199,6 @@
     "title": "",
     "data_role": "per_page",
     "name": "",
-    "value": null,
     "for": "show_per_page",
     "service_id": "per_page",
     "sort": 2,
@@ -228,7 +213,6 @@
     "title": "",
     "data_role": "per_page",
     "name": "",
-    "value": 10,
     "id": "show_per_page",
     "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
     "service_id": "per_page",
@@ -244,7 +228,6 @@
     "title": "",
     "data_role": "real_time_editing",
     "name": "",
-    "value": null,
     "id": "",
     "service_id": "per_page",
     "sort": 4,

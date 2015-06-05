@@ -2,10 +2,12 @@
 <label data-role="<%=_in.config.data_role%>" class="<%=_in.config.class%>"
 <% if(_in.config.name !== ""){ %> name="<%= _in.config.name%>" <%}%>
 
-<% if(_in.for){ %> for="<%= _in.for%>" <%}%>
-<% if(_in.data_location){ %> data-location="<%= _in.data_location%>" <%}%>
-
-<% if(_in.value !== null){ %> value="<%=_in.value%>" <%}%>
+<% if(_in.config.for){ %> for="<%= _in.config.for%>" <%}%>
+<% if(_in.config.data_location){ %> data-location="<%= _in.config.data_location%>" <%}%>
+<% if(_in.config.data_action){ %> data-action="<%= _in.config.data_action%>" <%}%>
+<% if(_in.config.data_key) { %>
+value = "<%= _in.data[_in.config.data_key] %>"
+ <%}%>
 
 
 

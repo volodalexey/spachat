@@ -1,15 +1,5 @@
 <% var array = arguments[0]; %>
 
-<% array.config.forEach(function(element) { %>
-<% if (element.data_role === "user_name_input" || element.data_role === "user_name") { %>
-<% if (element.value === "") { %>
-<% element.value = data.userName %>
-<% } %>
-<% } %>
-<% if (element.data_role === "user_id_input") { %>
-<%  element.value = data.userId %>
-<% } %>
-<% }) %>
 
 <% var array_show = array.config.filter( function(obj){ return obj.mode === "USER_INFO_SHOW" } ) %>
 <% var array_editing = array.config.filter( function(obj){ return obj.mode === "USER_INFO_EDIT" } ) %>
@@ -38,6 +28,7 @@
     <% byDataLocationShow['user_id'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template
@@ -51,6 +42,7 @@
     <% byDataLocationShow['user_name'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template
@@ -64,6 +56,7 @@
     <% byDataLocationShow['navbar'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template
@@ -79,6 +72,7 @@
     <% byDataLocationReading['user_name'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template
@@ -92,6 +86,7 @@
     <% byDataLocationReading['old_password'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template
@@ -105,6 +100,7 @@
     <% byDataLocationReading['new_password'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template
@@ -118,6 +114,7 @@
     <% byDataLocationReading['confirm_password'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template
@@ -132,6 +129,7 @@
     <% byDataLocationReading['navbar'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template

@@ -77,23 +77,43 @@ define('event_core',
                 }
             },
 
-            throwEvent: function(name) {
-                this.trigger('throw', name);
-            },
-
-            eventRouter: function(event) {
-                var _this = this;
-                var action = event.target.getAttribute('data-action');
+            dataActionRouter: function(event) {
+                var _this = this, action, n = 3, parent;
+                var element = event.target;
+                var getDataAction =  function(element, n) {
+                    action = element.getAttribute('data-action');
+                    if (!action && n > 0) {
+                        parent = element.parentNode;
+                        getDataAction(parent, n-1);
+                    }
+                };
+                getDataAction(element, n);
                 if (_this[action]) {
-                    _this[action](event);
+                    if(!parent){
+                        _this[action](event);
+                    } else {
+                        _this[action]({'target': parent});
+                    }
                 }
             },
 
             throwEventRouter: function(event) {
                 var _this = this;
                 var action = event.target.getAttribute('data-action');
+                var data_throw_to = event.target.getAttribute('data-throw_to');
                 if (_this.throwEvent) {
-                    _this.throwEvent(action);
+                    _this.throwEvent(action, data_throw_to);
+                }
+            },
+
+            throwEvent: function(name, data) {
+                this.trigger('throw', name, data);
+            },
+
+            triggerRouter: function(event) {
+                var action = event.target.getAttribute('data-action');
+                if (action) {
+                    this.trigger(action);
                 }
             }
         };

@@ -30,6 +30,7 @@ define('header', [
         var header = function(options) {
             this.body_outer_container = options.chat.body_outer_container;
             this.header_container = options.chat.chatElem.querySelector('[data-role="header_outer_container"]');
+            this.bindMainContexts();
         };
 
         header.prototype = {
@@ -49,6 +50,27 @@ define('header', [
                 MESSAGES: 'Chat Messages'
             },
 
+            bindMainContexts: function() {
+                var _this = this;
+                _this.bindedTriggerRouter = _this.triggerRouter.bind(_this);
+                _this.bindedRenderFilter = _this.renderFilter.bind(_this);
+            },
+
+            addMainEventListener: function() {
+                var _this = this;
+                _this.removeMainEventListeners();
+                _this.addRemoveListener('add', _this.header_container, 'click', _this.bindedTriggerRouter, false);
+                _this.on('renderFilter', _this.bindedRenderFilter, _this);
+            },
+
+            removeMainEventListeners: function() {
+                var _this = this;
+                _this.addRemoveListener('remove', _this.header_container, 'click', _this.bindedTriggerRouter, false);
+                _this.off('renderFilter', _this.bindedRenderFilter, _this);
+
+            },
+
+
             renderByMode: function(options) {
                 var _this = this;
                 _this.chat = options.chat;
@@ -65,12 +87,13 @@ define('header', [
                                         console.error(templErr);
                                         return;
                                     }
-                                    var btnsHeader = _this.header_container.querySelectorAll('[data-role="btnHeader"]');
-                                    for (var i = 0, l = btnsHeader.length; i < l; i++) {
-                                        var name = btnsHeader[i].getAttribute('data-action');
-                                        btnsHeader[i].addEventListener('click', _this[name].bind(_this), false);
-                                    }
+                                    //var btnsHeader = _this.header_container.querySelectorAll('[data-role="btnHeader"]');
+                                    //for (var i = 0, l = btnsHeader.length; i < l; i++) {
+                                    //    var name = btnsHeader[i].getAttribute('data-action');
+                                    //    btnsHeader[i].addEventListener('click', _this[name].bind(_this), false);
+                                    //}
                                     _this.filter_container = _this.header_container.querySelector('[data-role="filter_container"]');
+                                    _this.addMainEventListener();
                                 });
                             });
                         });
@@ -145,17 +168,7 @@ define('header', [
                 callback();
             },
 
-            renderContactList: function() {
-                var _this = this;
-                _this.trigger("renderContactList");
-                //_this.throwEvent('renderContactList');
-            },
 
-            renderSettings: function() {
-                var _this = this;
-                //_this.throwEvent('renderSettings');
-                _this.trigger("renderSettings");
-            },
 
             // --------------------- Filter
             forceRenderMessages: function(callback) {
@@ -173,7 +186,16 @@ define('header', [
 
             renderFilter: function() {
                 var _this = this;
-                _this.filter_container = _this.chat.chatElem.querySelector('[data-role="filter_container"]');
+
+                if (_this.chat.data.body_mode !== _this.chat.MODE.MESSAGES) {
+                    _this.chat.data.body_mode = _this.chat.MODE.MESSAGES;
+                    _this.body_outer_container.classList.remove('background');
+                    _this.trigger('renderMassagesEditor');
+                }
+
+
+
+
                 _this.sendRequest("/mock/filter_navbar_config.json", function(err, res) {
                     if (err) {
                         console.log(err);

@@ -3,6 +3,7 @@ define('editor', [
         'async_core',
         'ajax_core',
         'template_core',
+        'indexeddb',
 
         'text!../html/editor_template.html',
         'text!../html/edit_btn_template.html',
@@ -15,6 +16,7 @@ define('editor', [
              async_core,
              ajax_core,
              template_core,
+             indexeddb,
 
              editor_template,
              edit_btn_template,
@@ -23,25 +25,74 @@ define('editor', [
              label_template,
              input_template) {
 
-        var editor = function() {
+        var editor = function(options) {
+            this.chatElem = options.chat.chatElem;
+            this.editor_mode = "MAIN_PANEL";
+            this.bindMainContexts();
         };
 
         editor.prototype = {
 
-            initialize: function(options) {
+            MODE: {
+                "MAIN_PANEL": 'MAIN_PANEL',
+                "EDITOR_PANEL": 'EDITOR_PANEL'
+            },
+
+            configMap: {
+                "MAIN_PANEL": '/mock/editor_navbar_config.json',
+                "EDITOR_PANEL": '/mock/edit_navbar_config.json'
+            },
+
+            bindMainContexts: function() {
                 var _this = this;
+                _this.bindedTriggerRouter = _this.triggerRouter.bind(_this);
+                _this.bindedRenderEditPanel = _this.renderEditPanel.bind(_this);
+                _this.bindedSendMessage = _this.sendMessage.bind(_this);
+            },
 
-                _this.chat = options.chat;
+            addMainEventListener: function() {
+                var _this = this;
+                _this.removeMainEventListeners();
+                _this.addRemoveListener('add', _this.controls_container, 'click', _this.bindedTriggerRouter, false);
+                _this.on('renderEditPanel', _this.bindedRenderEditPanel, _this);
+                _this.on('sendMessage', _this.bindedRenderEditPanel, _this);
+            },
 
-                return _this;
+            removeMainEventListeners: function() {
+                var _this = this;
+                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedTriggerRouter, false);
+                _this.off('renderEditPanel', _this.bindedRenderEditPanel, _this);
+                _this.off('sendMessage', _this.bindedRenderEditPanel, _this);
+            },
+
+            cashElements: function() {
+                var _this = this;
+                _this.controls_container = _this.editor_container.querySelector('[data-role="controls_container"]');
+                //_this.messageElem = _this.editor_container.querySelector('[data-role="message_container"]');
+                _this.btnEditPanel = _this.controls_container.querySelector('[data-action="btnEditPanel"]');
             },
 
             renderEditorPanel: function(callback) {
                 var _this = this;
+                _this.editor_container = _this.chatElem.querySelector('[data-role="editor_container"]');
 
-                _this.editor_container = _this.chat.chatElem.querySelector('[data-role="editor_container"]');
+                _this.loadConfig(null, function(confErr) {
+                    _this.loadData(confErr, function(dataErr, data) {
+                        _this.fillTemplate(dataErr, data, function(templErr) {
+                            if (templErr) {
+                                console.error(templErr);
+                                return;
+                            }
+                            _this.cashElements();
+                            _this.addMainEventListener();
+                            callback();
+                            // success
+                        });
+                    });
+                });
 
-                _this.sendRequest("/mock/editor_navbar_config.json", function(err, res) {
+
+                /*_this.sendRequest("/mock/editor_navbar_config.json", function(err, res) {
                     if (err) {
                         console.log(err);
                     } else {
@@ -55,12 +106,12 @@ define('editor', [
                             label_template: _this.label_template
                         });
 
-                        _this.submit = _this.chat.chatElem.querySelector('[data-role="submit"]');
-                        _this.format = _this.chat.chatElem.querySelector('[data-role="format"]');
+                        _this.submit = _this.chatElem.querySelector('[data-role="submit"]');
+                        _this.format = _this.chatElem.querySelector('[data-role="format"]');
                         if (_this.format) {
-                            _this.btnEditPanel = _this.chat.chatElem.querySelector('[data-action="btnEditPanel"]');
+                            _this.btnEditPanel = _this.chatElem.querySelector('[data-action="btnEditPanel"]');
                         }
-                        _this.messageElem = _this.chat.chatElem.querySelector('[data-role="message_container"]');
+                        _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
                         _this.loadEditNavbarConfig(function(err) {
                             if (err) {
                                 console.log(err);
@@ -84,46 +135,116 @@ define('editor', [
                             callback();
                         });
                     }
-                })
+                })*/
             },
 
-            bindContexts: function() {
+            loadConfig: function(_err, callback) {
                 var _this = this;
-                _this.bindedSendMessage = _this.sendMessage.bind(_this, 'sendMessage');
-                _this.bindedRenderEditPanel = _this.renderEditPanel.bind(_this);
+                if (_err) {
+                    callback(_err);
+                    return;
+                }
+
+                if (_this.configMap[_this.editor_mode]) {
+                    _this.sendRequest(_this.configMap[_this.editor_mode], function(err, res) {
+                        if (err) {
+                            callback(err);
+                            return;
+                        }
+                        _this.edit_navbar_config = JSON.parse(res);
+                        callback();
+                    });
+                } else {
+                    callback();
+                }
             },
 
-            addEventListeners: function() {
+            loadData: function(_err, callback) {
                 var _this = this;
-                _this.removeEventListeners();
+                if (_err) {
+                    callback(_err);
+                    return;
+                }
 
-                _this.submit.addEventListener('click', _this.bindedSendMessage, false);
-                _this.format.addEventListener('click', _this.bindedRenderEditPanel, false);
+                if (_this.dataMap[_this.editor_mode]) {
+                    var collectionDescription = _this.dataMap[_this.editor_mode];
+                    if (_this.data) {
+                        callback(null, _this.data);
+                        return;
+                    }
+
+                    indexeddb.getAll(collectionDescription, function(getAllErr, data) {
+                        if (getAllErr) {
+                            callback(getAllErr);
+                        } else {
+                            _this.data = data;
+                            if (_this.dataHandlerMap[_this.editor_mode]) {
+                                callback(null, _this.dataHandlerMap[_this.editor_mode].call(_this, data));
+                            } else {
+                                callback(null, data);
+                            }
+                        }
+                    });
+                } else {
+                    callback();
+                }
             },
 
-            removeEventListeners: function() {
+            fillTemplate: function(_err, data, callback) {
                 var _this = this;
+                if (_err) {
+                    callback(_err);
+                    return;
+                }
 
-                _this.submit.removeEventListener('click', _this.bindedSendMessage, false);
-                _this.format.removeEventListener('click', _this.bindedRenderEditPanel, false);
-            },
-
-            throwEvent: function(name) {
-                var _this = this;
-                _this.trigger(name);
+                var currentTemplate = _this.templateMap[_this.editor_mode];
+                if (currentTemplate) {
+                    _this.editor_container.innerHTML += currentTemplate({
+                        config: _this.edit_navbar_config,
+                        triple_element_template: _this.triple_element_template,
+                        button_template: _this.button_template,
+                        input_template: _this.input_template,
+                        label_template: _this.label_template,
+                        textarea_template: _this.textarea_template,
+                        mode: _this.editor_mode,
+                        data: data
+                    });
+                    callback();
+                }
             },
 
             renderEditPanel: function() {
                 var _this = this;
                 if (_this.btnEditPanel) {
                     if (_this.btnEditPanel.innerHTML !== "") {
+
                         _this.btnEditPanel.innerHTML = "";
-                    } else {
+                        return;
+                    }
+
+                    _this.editor_mode = _this.MODE.EDITOR_PANEL;
+
+                    _this.loadConfig(null, function(confErr) {
+                        _this.loadData(confErr, function(dataErr, data) {
+                            _this.fillTemplate(dataErr, data, function(templErr) {
+                                if (templErr) {
+                                    console.error(templErr);
+                                    return;
+                                }
+                                _this.cashElements();
+                                _this.addMainEventListener();
+                                callback();
+                                // success
+                            });
+                        });
+                    });
+
+                    {
                         _this.btnEditPanel.innerHTML = _this.edit_btn_template({
                             config: _this.edit_navbar_config,
                             icons: _this.edit_btn_icon_config
                         });
-                        var btnPanel = _this.chat.chatElem.querySelectorAll('[data-role="btnEdit"]');
+                        var btnPanel = _this.chatElem.querySelectorAll('[data-role="btnEdit"]');
                         for (var i = 0, l = btnPanel.length; i < l; i++) {
                             if (btnPanel[i].localName === "button") {
                                 btnPanel[i].addEventListener('click', _this.addEdit(btnPanel[i]), false);
@@ -133,7 +254,7 @@ define('editor', [
                             }
                         }
                     }
-                    _this.messages_container = _this.chat.chatElem.querySelector('[data-role="messages_container"]');
+                    _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
                     _this.container = _this.messageElem.querySelector(".container");
                     _this.trigger('calcMessagesContainerHeight');
                     if (_this.messages_container) {
@@ -245,6 +366,16 @@ define('editor', [
         editor.prototype.button_template = editor.prototype.template(button_template);
         editor.prototype.label_template = editor.prototype.template(label_template);
         editor.prototype.input_template = editor.prototype.template(input_template);
+
+        editor.prototype.dataMap = {
+            "MAIN_PANEL": "",
+            "EDITOR_PANEL": ""
+        };
+
+        editor.prototype.templateMap = {
+            "MAIN_PANEL": editor.prototype.editor_template,
+            "EDITOR_PANEL": ''
+        };
 
         return editor;
     });

@@ -10,7 +10,6 @@
     "data_action": "switchPanelMode",
     "data_mode": "CREATE_CHAT",
     "name": "",
-    "value": null,
     "disable": false
   },
   {
@@ -24,7 +23,6 @@
     "data_action": "switchPanelMode",
     "data_mode": "JOIN_CHAT",
     "name": "",
-    "value": null,
     "disable": false
   },
   {
@@ -38,7 +36,6 @@
     "data_action": "switchPanelMode",
     "data_mode": "MY_CHATS",
     "name": "",
-    "value": null,
     "disable": false
   },
   {
@@ -51,7 +48,6 @@
     "data_location": "right_panel",
     "data_action": "",
     "name": "",
-    "value": null,
     "disable": false
   },
   {
@@ -65,7 +61,6 @@
     "data_action": "btn_user_info",
     "data_mode": "user_info",
     "name": "",
-    "value": null,
     "disable": false
   }
 ]
