@@ -7,5 +7,19 @@
 <% if(_in.config.data_action){ %> data-action="<%= _in.config.data_action%>" <%}%>
 <% if(_in.config.data_mode){ %> data-mode="<%= _in.config.data_mode%>" <%}%>
 >
+
+<% if (_in.config.icon) { %>
+    <% var icon;
+        _in.icon_config.every(function(_icon) {
+            if (_icon.name === _in.config.icon) {
+            icon = _icon;
+            }
+            return !icon;
+        } ); %>
+
+        <% if (icon) { %>
+          <%= icon.svg %>
+        <% } %>
+<% } %>
 <%= _in.config.text%>
 </button>

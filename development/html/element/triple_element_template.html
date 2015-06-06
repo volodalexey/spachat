@@ -1,4 +1,5 @@
 <% var _in = arguments[0]; %>
+
 <% if(_in.config.element === "button") { %>
 <%= _in.button_template(_in) %>
 <% } %>
@@ -13,4 +14,20 @@
 
 <% if(_in.config.element === "textarea") { %>
 <%= _in.textarea_template(_in) %>
+<% } %>
+
+<% if(_in.config.element === "svg") { %>
+
+    <% var icon;
+    _in.icon_config.every(function(_icon) {
+        if (_icon.name === _in.config.icon) {
+        icon = _icon;
+        }
+        return !icon;
+    } ); %>
+
+    <% if (icon) { %>
+    <%= icon.svg %>
+    <% } %>
+
 <% } %>

@@ -210,7 +210,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "cancel_icon",
     "text": "Cancel",
     "class": "",
     "title": "",
@@ -224,7 +224,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "ok_icon",
     "text": "Save",
     "class": "",
     "title": "",

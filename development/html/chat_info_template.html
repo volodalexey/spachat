@@ -95,10 +95,10 @@
 <div>
     <% array.data.forEach(function (chat) { %>
     <div data-action="show_more_info" value="<%= chat.chatId%>" >
-        <%= array.icon_config %>
         <% array_my_chats.forEach(function (config) { %>
             <%= array.triple_element_template({
             config: config,
+            icon_config: array.icon_config,
             button_template: array.button_template,
             input_template: array.input_template,
             label_template: array.label_template,

@@ -2,6 +2,7 @@ define('panel', [
         'event_core',
         'ajax_core',
         'template_core',
+        'render_layout_core',
 
         'indexeddb',
 
@@ -20,7 +21,9 @@ define('panel', [
     function(event_core,
              ajax_core,
              template_core,
+             render_layout_core,
              indexeddb,
+
              panel_left_template,
              panel_right_template,
              user_info_template,
@@ -40,7 +43,7 @@ define('panel', [
             this.panel_platform = description.panel_platform;
             this.outer_container = description.outer_container;
             this.inner_container = description.inner_container;
-            this.panel_mode = description.panel_mode;
+            this.body_mode = description.body_mode;
         };
 
         panel.prototype = {
@@ -82,11 +85,12 @@ define('panel', [
             },
 
             configIconMap: {
-                "USER_INFO_EDIT": '',
+                "USER_INFO_EDIT": [{icon: '/html/icon/cancel_icon.html', name: "cancel_icon"},
+                    {icon: '/html/icon/ok_icon.html', name: "ok_icon"}],
                 "USER_INFO_SHOW": '',
                 "CREATE_CHAT": '',
                 "JOIN_CHAT": '',
-                "MY_CHATS": '/html/icon/pointer_icon.html',
+                "MY_CHATS": [{icon: '/html/icon/pointer_icon.html', name: "pointer_icon"}],
                 "DETAIL_VIEW": ''
             },
 
@@ -102,6 +106,14 @@ define('panel', [
                 _this.navigator = options.navigator;
 
                 _this.cashElements();
+                _this.elementMap = {
+                    "USER_INFO_EDIT": _this.panel_body,
+                    "USER_INFO_SHOW": _this.panel_body,
+                    "CREATE_CHAT":  _this.panel_body,
+                    "JOIN_CHAT":  _this.panel_body,
+                    "MY_CHATS":  _this.panel_body,
+                    "DETAIL_VIEW": null
+                };
                 _this.addMainEventListener();
                 _this.outer_container.classList.remove("hide");
                 _this.outer_container.style.maxWidth = window.innerWidth + 'px';
@@ -131,9 +143,9 @@ define('panel', [
                 _this.panel_toolbar = _this.outer_container.querySelector('[data-role="panel_toolbar"]');
             },
 
-            cashBodyPanelElement: function() {
+            cashBodyElement: function() {
                 var _this = this;
-                if (_this.panel_mode === _this.MODE.USER_INFO_EDIT) {
+                if (_this.body_mode === _this.MODE.USER_INFO_EDIT) {
                     _this.user_name = _this.panel_body.querySelector('[data-main="user_name"]');
                     _this.old_password = _this.panel_body.querySelector('[data-role="passwordOld"]');
                     _this.new_password = _this.panel_body.querySelector('[data-role="passwordNew"]');
@@ -163,7 +175,6 @@ define('panel', [
                 _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('add', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
-
             },
 
             removeMainEventListeners: function() {
@@ -173,7 +184,6 @@ define('panel', [
                 _this.addRemoveListener('remove', _this.panel_body, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
-
             },
 
             addToolbarEventListener: function() {
@@ -195,7 +205,8 @@ define('panel', [
                     _this.outer_container.style.zIndex = ++panel.prototype.z_index;
                     _this.outer_container.style[_this.type] = "0px";
                     _this.fillPanelToolbar();
-                    _this.renderPanelBody();
+                    //_this.renderPanelBody();
+                    _this.renderLayout(null);
                     if (bigMode === true) {
                         _this.resizePanel();
                     }
@@ -245,132 +256,22 @@ define('panel', [
                 _this.addToolbarEventListener();
             },
 
-            renderPanelBody: function() {
+            usersFilter: function(options, users) {
                 var _this = this;
-                _this.loadBodyConfig(null, function(confErr) {
-                    _this.loadBodyData(confErr, function(dataErr, data) {
-                        _this.fillPanelBodyTemplate(dataErr, data, function(templErr) {
-                            if (templErr) {
-                                console.error(templErr);
-                                return;
-                            }
-
-                            // success
-                        });
-                    });
-                });
-            },
-
-            loadBodyConfig: function(_err, callback) {
-                var _this = this;
-                if (_err) {
-                    callback(_err);
-                    return;
-                }
-
-                if (_this.configMap[_this.panel_mode]) {
-                    if (_this.panel_mode === _this.MODE.USER_INFO_SHOW || _this.panel_mode === _this.MODE.USER_INFO_EDIT) {
-                        if (_this.panel_body_config) {
-                            callback();
-                            return;
-                        }
-                    }
-                    _this.sendRequest(_this.configMap[_this.panel_mode], function(err, res) {
-                        if (err) {
-                            callback(err);
-                            return;
-                        }
-                        _this.panel_body_config = JSON.parse(res);
-                        callback();
-                    });
-                } else {
-                    if (_this.configIconMap[_this.panel_mode]) {
-                        _this.sendRequest(_this.configIconMap[_this.panel_mode], function(err, res) {
-                            if (err) {
-                                callback(err);
-                                return;
-                            }
-                            _this.panel_icon_config = res;
-                            callback();
-                            return;
-                        });
-                    }
-                    callback();
-                }
-            },
-
-            loadBodyData: function(_err, callback) {
-                var _this = this;
-                if (_err) {
-                    callback(_err);
-                    return;
-                }
-
-                if (_this.dataMap[_this.panel_mode]) {
-                    var collectionDescription = _this.dataMap[_this.panel_mode];
-                    if (_this.data) {
-                        callback(null, _this.data);
-                        return;
-                    }
-
-                    indexeddb.getAll(collectionDescription, function(getAllErr, data) {
-                        if (getAllErr) {
-                            callback(getAllErr);
-                        } else {
-                            _this.data = data;
-                            if (_this.dataHandlerMap[_this.panel_mode]) {
-                                callback(null, _this.dataHandlerMap[_this.panel_mode].call(_this, data));
-                            } else {
-                                callback(null, data);
-                            }
-                        }
-                    });
-                } else {
-                    callback();
-                }
-            },
-
-            fillPanelBodyTemplate: function(_err, data, callback) {
-                var _this = this;
-                if (_err) {
-                    callback(_err);
-                    return;
-                }
-
-                var currentTemplate = _this.templateMap[_this.panel_mode];
-                if (currentTemplate) {
-                    _this.panel_body.innerHTML = currentTemplate({
-                        config: _this.panel_body_config,
-                        triple_element_template: _this.triple_element_template,
-                        button_template: _this.button_template,
-                        input_template: _this.input_template,
-                        label_template: _this.label_template,
-                        textarea_template: _this.textarea_template,
-                        mode: _this.panel_mode,
-                        data: data,
-                        icon_config: _this.panel_icon_config
-                    });
-                    _this.cashBodyPanelElement();
-                }
-            },
-
-            usersFilter: function(users) {
-                var _this = this;
-                _this.data = null;
+                //_this.user = null;
                 users.every(function(_user) {
                     if (_user.userId === _this.navigator.userId) {
-                        _this.data = _user;
+                       _this.user = _user;
                     }
-                    return !_this.data;
+                    return !_this.user;
                 });
-                return _this.data;
+                return _this.user;
             },
 
-            chatsFilter: function(chats, chat_id_value) {
-                var _this = this, chat_info;
-                _this.data = null;
+            chatsFilter: function(options, chats) {
+                var chat_info;
                 chats.every(function(_chat) {
-                    if (_chat.chatId === chat_id_value) {
+                    if (_chat.chatId === options.chat_id_value) {
                         chat_info = _chat;
                     }
                     return !chat_info;
@@ -380,28 +281,29 @@ define('panel', [
 
             inputUserInfo: function(event) {
                 var _this = this;
-                if (_this.panel_body_config) {
+                if (_this.config) {
                     var param = event.target.getAttribute("data-role");
-                    _this.data[param] = event.target.value;
+                    _this.user[param] = event.target.value;
                 }
             },
 
             cancelChangeUserInfo: function() {
                 var _this = this;
-                _this.panel_mode = _this.MODE.USER_INFO_SHOW;
-                _this.data = null;
-                _this.renderPanelBody();
+                _this.body_mode = _this.MODE.USER_INFO_SHOW;
+                _this.user = null;
+                //_this.renderPanelBody();
+                _this.renderLayout(null);
             },
 
             saveChangeUserInfo: function() {
                 var _this = this;
                 if (_this.user_name.value && _this.old_password.value && _this.new_password.value && _this.confirm_password.value) {
-                    if (_this.old_password.value === _this.data.userPassword) {
+                    if (_this.old_password.value === _this.user.userPassword) {
                         if (_this.new_password.value === _this.confirm_password.value) {
                             _this.updateUserInfo(function() {
-                                _this.panel_mode = _this.MODE.USER_INFO_SHOW;
-                                _this.data = null;
-                                _this.renderPanelBody();
+                                _this.body_mode = _this.MODE.USER_INFO_SHOW;
+                                _this.user = null;
+                                _this.renderLayout(null);
                             })
                         } else {
                             console.error(new Error("New password and confirm password do not match"));
@@ -443,14 +345,16 @@ define('panel', [
 
             changeUserInfo: function() {
                 var _this = this;
-                _this.panel_mode = _this.MODE.USER_INFO_EDIT;
-                _this.fillPanelBodyTemplate(null, _this.data);
+                _this.body_mode = _this.MODE.USER_INFO_EDIT;
+                _this.loadBodyConfig(null, null, function (dataErr){
+                    _this.fillBody(dataErr, _this.user);
+                });
             },
 
             logout: function() {
                 var _this = this;
                 _this.navigator.userId = null;
-                _this.panel_mode = _this.MODE.USER_INFO_SHOW;
+                _this.body_mode = _this.MODE.USER_INFO_SHOW;
                 _this.removeMainEventListeners();
                 _this.removeToolbarEventListeners();
                 history.pushState(null, null, 'login');
@@ -459,23 +363,12 @@ define('panel', [
 
             switchPanelMode: function(event) {
                 var _this = this;
-                _this.panel_mode = event.target.getAttribute("data-mode");
-                _this.renderPanelBody();
+                _this.body_mode = event.target.getAttribute("data-mode");
+                _this.renderLayout(null);
             },
 
             show_more_info: function(event) {
                 var _this = this, chat_id_value, element;
-                //if (event.localName !== "div") {
-                //    element = event.target;
-                //    chat_id_value = event.target.getAttribute("value");
-                //} else {
-                //    chat_id_value = event.getAttribute("value");
-                //    element = event;
-                //}
-                //_this.panel_mode = _this.MODE.DETAIL_VIEW;
-
-                //var chat_info_element = event.target.parentNode;
-
                 element = event.target;
                 chat_id_value = event.target.getAttribute("value");
                 var detail_view = element.querySelector('[data-role="detail_view_container"]');
@@ -488,23 +381,20 @@ define('panel', [
                 }
 
                 if (element) {
-                    _this.data = null;
-                    _this.loadBodyData(null, function() {
-                        var chat_info = _this.chatsFilter(_this.data, chat_id_value);
-                        detail_view.innerHTML = _this.detail_view_container_template({
-                            config: _this.panel_body_config,
-                            triple_element_template: _this.triple_element_template,
-                            button_template: _this.button_template,
-                            input_template: _this.input_template,
-                            label_template: _this.label_template,
-                            textarea_template: _this.textarea_template,
-                            data: chat_info
+                    _this.body_mode = _this.MODE.DETAIL_VIEW;
+                    _this.elementMap.DETAIL_VIEW = detail_view;
+                    _this.loadBodyData(null, {chat_id_value: chat_id_value}, function(dataErr, data) {
+                        _this.fillBody(dataErr, data, function(templErr) {
+                            if (templErr) {
+                                console.error(templErr);
+                                return;
+                            }
+                            detail_view.dataset.state = "expanded";
+                            detail_view.classList.add("max-height-auto");
+                            detail_view.style.maxHeight = '15em';
+                            pointer.classList.add("rotate-90");
                         });
-                        detail_view.dataset.state = "expanded";
-                        detail_view.classList.add("max-height-auto");
-                        detail_view.style.maxHeight = '15em';
-                        pointer.classList.add("rotate-90");
-                    })
+                    });
                 }
             },
 
@@ -536,6 +426,7 @@ define('panel', [
         extend(panel, event_core);
         extend(panel, ajax_core);
         extend(panel, template_core);
+        extend(panel, render_layout_core);
 
         panel.prototype.panel_left_template = panel.prototype.template(panel_left_template);
         panel.prototype.panel_right_template = panel.prototype.template(panel_right_template);
@@ -554,7 +445,7 @@ define('panel', [
             "CREATE_CHAT": '',
             'JOIN_CHAT': '',
             "MY_CHATS": panel.prototype.collectionDescriptionChats,
-            "DETAIL_VIEW": ''
+            "DETAIL_VIEW": panel.prototype.collectionDescriptionChats
         };
 
         panel.prototype.templateMap = {
@@ -572,7 +463,7 @@ define('panel', [
             "CREATE_CHAT": null,
             "JOIN_CHAT": null,
             "MY_CHATS": null,
-            "DETAIL_VIEW": null
+            "DETAIL_VIEW": panel.prototype.chatsFilter
         };
 
         return panel;

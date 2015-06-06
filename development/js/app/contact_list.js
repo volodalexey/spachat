@@ -3,6 +3,7 @@ define('contact_list', [
         'ajax_core',
         'template_core',
         'indexeddb',
+        'render_layout_core',
 
         'text!../html/contact_list_template.html',
         'text!../html/element/triple_element_template.html',
@@ -14,6 +15,7 @@ define('contact_list', [
              ajax_core,
              template_core,
              indexeddb,
+             render_layout_core,
              contact_list_template,
              triple_element_template,
              button_template,
@@ -53,85 +55,11 @@ define('contact_list', [
                 } else {
                     _this.chat.data.body_mode = _this.chat.MODE.CONTACT_LIST;
                     _this.body_outer_container.classList.add('background');
-                    _this.loadBodyConfig(null, function(confErr) {
-                        _this.loadBodyData(confErr, function(dataErr, data) {
-                            _this.fillChatBody(dataErr, data, function(templErr) {
-                                if (templErr) {
-                                    console.error(templErr);
-                                    return;
-                                }
-
-                                // success
-                            });
-                        });
-                    });
-                }
-
-            },
-
-            loadBodyConfig: function(_err, callback) {
-                var _this = this;
-                if (_err) {
-                    callback(_err);
-                    return;
-                }
-
-                if (_this.configMap[_this.chat.data.body_mode]) {
-                    _this.sendRequest(_this.configMap[_this.chat.data.body_mode], function(err, res) {
-                        if (err) {
-                            callback(err);
-                            return;
-                        }
-                        _this.chat_body_config = JSON.parse(res);
-                        callback();
-                    });
-                } else {
-                    callback();
-                }
-            },
-
-            loadBodyData: function(_err, callback) {
-                var _this = this;
-                if (_err) {
-                    callback(_err);
-                    return;
-                }
-
-                if (_this.dataMap[_this.chat.data.body_mode]) {
-                    var collectionDescription = _this.dataMap[_this.chat.data.body_mode];
-                    indexeddb.getAll(collectionDescription, function(getAllErr, data) {
-                        if (getAllErr) {
-                            callback(getAllErr);
-                        } else {
-                            if (_this.dataHandlerMap[_this.chat.data.body_mode]) {
-                                callback(null, _this.dataHandlerMap[_this.chat.data.body_mode].call(_this, data));
-                            } else {
-                                callback(null, data);
-                            }
-                        }
-                    });
-                } else {
-                    callback();
-                }
-            },
-
-            fillChatBody: function(_err, data, callback) {
-                var _this = this;
-                if (_err) {
-                    callback(_err);
-                    return;
-                }
-                var currentTemplate = _this.templateMap[_this.chat.data.body_mode];
-                if (currentTemplate) {
-                    _this.body_outer_container.innerHTML = currentTemplate({
-                        config: _this.chat_body_config,
-                        triple_element_template: _this.triple_element_template,
-                        button_template: _this.button_template,
-                        input_template: _this.input_template,
-                        label_template: _this.label_template,
-                        mode: _this.chat.data.body_mode,
-                        data: data
-                    });
+                    _this.body_mode = _this.chat.data.body_mode;
+                    _this.elementMap = {
+                        "CONTACT_LIST": _this.body_outer_container
+                    };
+                    _this.renderLayout(null);
                 }
             }
         }
@@ -139,6 +67,7 @@ define('contact_list', [
         extend(contact_list, event_core);
         extend(contact_list, ajax_core);
         extend(contact_list, template_core);
+        extend(contact_list, render_layout_core);
 
         contact_list.prototype.contact_list_template = contact_list.prototype.template(contact_list_template);
         contact_list.prototype.triple_element_template = contact_list.prototype.template(triple_element_template);

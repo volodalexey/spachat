@@ -21,14 +21,14 @@ define('panel_platform', [
                     outer_container: _this.left_panel_outer_container,
                     inner_container: _this.left_panel_inner_container,
                     panel_platform: this,
-                    panel_mode: panel.prototype.MODE.CREATE_CHAT
+                    body_mode: panel.prototype.MODE.CREATE_CHAT
                 },
                 {
                     type: this.PANEL_TYPES.RIGHT,
                     outer_container: _this.right_panel_outer_container,
                     inner_container: _this.right_panel_inner_container,
                     panel_platform: this,
-                    panel_mode: panel.prototype.MODE.USER_INFO_SHOW
+                    body_mode: panel.prototype.MODE.USER_INFO_SHOW
                 }
             ];
             this.panelsDescriptions.forEach(function(panelDescription) {
