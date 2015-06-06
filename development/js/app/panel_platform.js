@@ -15,10 +15,6 @@ define('panel_platform', [
             _this.right_panel_outer_container = document.querySelector('[data-role="right_panel_outer_container"]');
             _this.left_panel_inner_container = document.querySelector('[data-role="left_panel_inner_container"]');
             _this.right_panel_inner_container = document.querySelector('[data-role="right_panel_inner_container"]');
-            this.PANEL_TYPES = {
-                LEFT: "left",
-                RIGHT: "right"
-            };
             this.panelsDescriptions = [
                 {
                     type: this.PANEL_TYPES.LEFT,
@@ -43,6 +39,11 @@ define('panel_platform', [
         };
 
         panel_platform.prototype = {
+
+            PANEL_TYPES: {
+                LEFT: "left",
+                RIGHT: "right"
+            },
 
             bindContexts: function() {
                 var _this = this;

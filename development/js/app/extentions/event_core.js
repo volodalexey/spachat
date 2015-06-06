@@ -102,7 +102,8 @@ define('event_core',
                 var action = event.target.getAttribute('data-action');
                 var data_throw_to = event.target.getAttribute('data-throw_to');
                 if (_this.throwEvent) {
-                    _this.throwEvent(action, data_throw_to);
+                    event.data_throw_to = data_throw_to;
+                    _this.throwEvent(action, event);
                 }
             },
 

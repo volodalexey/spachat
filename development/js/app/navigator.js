@@ -88,18 +88,18 @@ define('navigator',
                 }
             },
 
-            notifyCurrentPage: function(event) {
-                if (!event) {
+            notifyCurrentPage: function(eventName, eventData) {
+                if (!eventName) {
                     return;
                 }
 
-                var eventName = event;
-                if (typeof event === 'object') {
-                    eventName = event.type;
+                var eventName = eventName;
+                if (typeof eventName === 'object') {
+                    eventName = eventName.type;
                 }
-                this.currentPage.trigger(eventName);
+                this.currentPage.trigger(eventName, eventData);
                 if (this.currentPage.withPanels) {
-                    panel_platform.trigger(eventName);
+                    panel_platform.trigger(eventName, eventData);
                 }
             }
         };

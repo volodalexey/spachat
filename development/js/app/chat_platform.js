@@ -64,14 +64,16 @@ define('chat_platform', [
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                _this.on('addNewChat', _this.addNewChat, _this);
+                _this.on('addNewChatAuto', _this.addNewChatAuto, _this);
                 _this.on('resize', _this.resizeChats, _this);
+                websocket.on('message', _this.onMessageRouter, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
-                _this.off('addNewChat');
+                _this.off('addNewChatAuto');
                 _this.off('resize');
+                websocket.off('message');
             },
 
             resizeChats: function() {
@@ -80,38 +82,67 @@ define('chat_platform', [
                 });
             },
 
-            addNewChat: function() {
+            onMessageRouter: function(event) {
+                var _this = this, parsedData = JSON.parse(event);
+                switch (parsedData.type) {
+                    case 'created':
+                        _this.chatCreateApproved(parsedData);
+                        break;
+                }
+            },
+
+            /**
+             * sends future chat description to the server to check if such chat is already exist
+             */
+            addNewChatAuto: function(event) {
                 var _this = this;
-                if (!_this.mainConteiner) {
+                if (!_this.mainConteiner || !websocket) {
                     return;
                 }
-                var newChat = new chat(_this.navigator.userId);
-                var chat_item = {
+
+                _this['addNewChatAuto__'] = event.target;
+                event.target.disabled = true;
+
+                var chat_description = {
                     "userId": _this.navigator.userId,
-                    "chatId": newChat.chatId
+                    "chatId": chat.prototype.generateId()
                 };
 
                 websocket.sendMessage({
                     "type": "create",
-                    "chat_item": chat_item
+                    "chat_description": chat_description
                 });
+            },
 
-
+            /**
+             * received confirmation from server
+             * save into indexedDB
+             * @param event - server approved chat description
+             */
+            chatCreateApproved: function(event) {
+                var _this = this;
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
                     [
-                        chat_item
+                        event.chat_description
                     ],
                     function(error) {
+                        if (_this['addNewChatAuto__']) {
+                            _this['addNewChatAuto__'].disabled = false;
+                            _this['addNewChatAuto__'] = null;
+                        }
                         if (error) {
                             console.error(error);
                             return;
                         }
-                        //callback();
+                        _this.createChatLayout(event.chat_description);
                     }
                 );
+            },
 
-
+            createChatLayout: function(chat_description) {
+                var _this = this;
+                var newChat = new chat(chat_description);
                 var newChatElem = document.createElement('section');
                 chat.prototype.chatsArray.push(newChat);
                 newChat.initialize(newChatElem, _this.chat_wrapper);

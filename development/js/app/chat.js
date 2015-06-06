@@ -30,9 +30,9 @@ define('chat', [
 
              chat_template,
              outer_container_template) {
-        var chat = function(userId) {
-            this.userId = userId;
-            this.chatId = this.generateId();
+        var chat = function(options) {
+            this.userId = options.userId;
+            this.chatId = options.chatId;
         };
 
         chat.prototype = {

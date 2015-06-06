@@ -36,7 +36,7 @@ define('webrtc', [
                     channel: "test"
                 };
                 _this.chat = options.chat;
-
+                _this.bindContexts();
                 return _this;
             },
 
@@ -51,10 +51,14 @@ define('webrtc', [
                 _this.chat.body_outer_container.innerHTML = _this.waiter_template();
             },
 
+            bindContexts: function() {
+                var _this = this;
+                _this.bindedEventRouter = _this.clickEventRouter.bind(_this);
+            },
+
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                _this.bindedEventRouter = _this.clickEventRouter.bind(_this);
                 _this.chat.body_outer_container.addEventListener('click', _this.bindedEventRouter, false);
             },
 

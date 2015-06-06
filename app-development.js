@@ -1,4 +1,5 @@
 var express = require('express')
+    , uuid = require('uuid')
     , expressApp      = express()
     , port            = 8888
     , dirPath = '/development'
@@ -14,28 +15,50 @@ var readMainFile = function() {
   return fs.readFileSync(fullPath + '/index.html', 'utf8');
 };
 
-var onCreateChat = function(data) {
+var checkIfExist = function(newChat) {
     var oldChat;
     chats.every(function(_chat) {
-        if (_chat.chatId === data.chatId) {
+        if (_chat.chatId === newChat.chatId) {
             oldChat = _chat;
         }
         return !oldChat;
     });
+    return oldChat;
+};
 
-    if (oldChat) {
-        var err = new Error('Chat is already registered!');
-        console.error(err);
+var checkOrGenerateChatId = function(oldChat, currentAttempt, totalAttempts) {
+    if (checkIfExist(oldChat)) {
+        if (currentAttempt < generateAttempts) {
+            console.log('Try to generate chat new id, old chat id : ', oldChat.chatId);
+            oldChat.chatId = uuid.v1();
+            console.log('New chat id : ', oldChat.chatId);
+            currentAttempt++;
+            return generateChatId(oldChat, currentAttempt, totalAttempts);
+        }
+
+        return new Error('Unable to generate new chat id!');
+    }
+
+    return oldChat;
+};
+
+var generateAttempts = 100;
+var onCreateChat = function(data) {
+    var generated = checkOrGenerateChatId(data.chat_description, 0, generateAttempts);
+
+    if (generated && generated instanceof Error) {
+        console.error(generated);
         var strErr = JSON.stringify({
-            message: err.toString(),
-            type: "error"
+            message: generated.toString(),
+            type: "error",
+            chat_description: data.chat_description
         });
         _ws.send(strErr);
         return;
     }
 
     data.type = 'created';
-    chats.push(data);
+    chats.push(data.chat_description);
     _ws.send(JSON.stringify(data));
 };
 
