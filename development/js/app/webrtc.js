@@ -12,32 +12,52 @@ define('webrtc', [
              waiter_template) {
 
         var webrtc = function() {
+            var _this = this;
+            _this.configuration = {
+                RTC: {
+                    "iceServers": [
+                        {"url": "stun:23.21.150.121"}
+                    ]
+                },
+                constraints: {
+                    "optional": [
+                        {"DtlsSrtpKeyAgreement": true}
+                    ]
+                }
+            };
+            _this.data = {
+                mode: "start",
+                channel: "test"
+            };
+            _this.bindContexts();
         };
 
         webrtc.prototype = {
 
-            initialize: function(options) {
-                var _this = this;
+            MODE: {
+                LOCAL_OFFER: 'LOCAL_OFFER'
+            },
 
-                _this.configuration = {
-                    RTC: {
-                        "iceServers": [
-                            {"url": "stun:23.21.150.121"}
-                        ]
-                    },
-                    constraints: {
-                        "optional": [
-                            {"DtlsSrtpKeyAgreement": true}
-                        ]
-                    }
-                };
-                _this.data = {
-                    mode: "start",
-                    channel: "test"
-                };
-                _this.chat = options.chat;
-                _this.bindContexts();
-                return _this;
+            render: function(chat) {
+                var _this = this;
+                switch (chat.mode) {
+                    case chat.MODE.CREATED_AUTO:
+                        _this.createLocalOfferAuto(
+                            {},
+                            function(createError) {
+                                if (createError) {
+                                    _this.trigger('error', { message: createError });
+                                    return;
+                                }
+
+                                _this.trigger('sendToWebSocket', {
+                                    type: 'localOffer',
+                                    localOfferDescription: _this.data.localOfferDescription
+                                });
+                            }
+                        );
+                        break;
+                }
             },
 
             renderHanshake: function() {
@@ -75,12 +95,27 @@ define('webrtc', [
                 }
             },
 
-            clickCreateLocalOffer: function(event) {
+            createLocalOfferManual: function(event) {
                 var _this = this;
                 _this.removeEventListeners();
                 _this.renderWaiter();
-                _this.createRTCPeerConnection({mode: "localOffer"});
+                _this.createRTCPeerConnection({mode: _this.MODE.LOCAL_OFFER});
                 _this.createLocalOffer();
+            },
+
+            createLocalOfferAuto: function(options, callback) {
+                var _this = this;
+                _this.createRTCPeerConnection(
+                    {mode: _this.MODE.LOCAL_OFFER},
+                    function(createError) {
+                        if (createError) {
+                            callback(createError);
+                            return;
+                        }
+
+                        _this.createLocalOffer(options, callback);
+                    }
+                );
             },
 
             clickAnswerRemoteOffer: function(event) {
@@ -90,14 +125,22 @@ define('webrtc', [
                 _this.renderHanshake();
             },
 
-            createRTCPeerConnection: function(options) {
+            createRTCPeerConnection: function(options, callback) {
                 var _this = this;
-                _this.data.peerConnection = new webkitRTCPeerConnection(_this.configuration.RTC, _this.configuration.constraints);
+                _this.trigger('log', { message: 'try: createRTCPeerConnection' });
+                try {
+                    _this.data.peerConnection = new webkitRTCPeerConnection(_this.configuration.RTC, _this.configuration.constraints);
+                } catch (error) {
+                    if (callback) {
+                        callback(error);
+                    }
+                    return;
+                }
 
                 _this.data.peerConnection.onicecandidate = function(e) {
                     if (e.candidate == null) {
-                        _this.data.mode = options.mode;
-                        _this.renderHanshake();
+                        _this.mode = options.mode;
+                        //_this.renderHanshake();
                     }
                 };
 
@@ -105,6 +148,11 @@ define('webrtc', [
                     _this.data.dataChannel = event.channel;
                     _this.addDataChannelListeners();
                 };
+
+                _this.trigger('log', { message: 'done: createRTCPeerConnection' });
+                if (callback) {
+                    callback(null);
+                }
             },
 
             addDataChannelListeners: function() {
@@ -147,17 +195,23 @@ define('webrtc', [
                 callback(null);
             },
 
-            createLocalOffer: function() {
+            createLocalOffer: function(options, callback) {
                 var _this = this;
+                _this.trigger('log', { message: 'try: createLocalOffer' });
                 if (!_this.data.peerConnection) {
                     return;
                 }
 
                 _this.setupDataChannel({}, function(setupError) {
                     if (setupError) {
-                        console.error(setupError);
+                        _this.trigger('log', setupError);
+                        if (callback) {
+                            callback(setupError);
+                        }
                         return;
                     }
+                    _this.trigger('log', { message: 'done: createLocalOffer' });
+                    _this.trigger('log', { message: 'try: createOffer' });
 
                     _this.data.peerConnection.createOffer(
                         function(desc) {
@@ -165,15 +219,22 @@ define('webrtc', [
                             _this.data.peerConnection.setLocalDescription(
                                 _this.data.localOfferDescription,
                                 function() {
-                                    console.log('createLocalOffer / setLocalDescription - DONE');
+                                    _this.trigger('log', { message: 'done: createOffer' });
+                                    if (callback) {
+                                        callback();
+                                    }
                                 },
-                                function() {
-                                    console.error('createLocalOffer / setLocalDescription - ERROR');
+                                function(error) {
+                                    if (callback) {
+                                        callback(error);
+                                    }
                                 }
                             );
                         },
-                        function() {
-                            console.error('createLocalOffer / setLocalDescription - createOffer');
+                        function(error) {
+                            if (callback) {
+                                callback(error);
+                            }
                         }
                     );
                 });

@@ -25,8 +25,7 @@ define('settings', [
              input_template) {
 
         var settings = function(options) {
-            this.body_outer_container = options.chat.body_outer_container;
-            this.header_container = options.chat.chatElem.querySelector('[data-role="header_outer_container"]');
+
         };
 
         settings.prototype = {
@@ -38,6 +37,8 @@ define('settings', [
             renderSettings: function(options) {
                 var _this = this;
                 _this.chat = options.chat;
+                this.body_outer_container = options.chat.body_outer_container;
+                this.header_container = options.chat.chatElem.querySelector('[data-role="header_outer_container"]');
                 _this.filter_container = _this.header_container.querySelector('[data-role="filter_container"]');
 
                 if (!_this.filter_container.classList.contains('hide')) {

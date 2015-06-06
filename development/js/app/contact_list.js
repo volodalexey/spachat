@@ -23,8 +23,6 @@ define('contact_list', [
              input_template) {
 
         var contact_list = function(options) {
-            this.body_outer_container = options.chat.body_outer_container;
-            this.header_container = options.chat.chatElem.querySelector('[data-role="header_outer_container"]');
 
         };
 
@@ -41,6 +39,8 @@ define('contact_list', [
 
             renderContactList: function(options) {
                 var _this = this;
+                this.body_outer_container = options.chat.body_outer_container;
+                this.header_container = options.chat.chatElem.querySelector('[data-role="header_outer_container"]');
                 _this.chat = options.chat;
                 _this.filter_container = _this.header_container.querySelector('[data-role="filter_container"]');
 
@@ -62,7 +62,7 @@ define('contact_list', [
                     _this.renderLayout(null);
                 }
             }
-        }
+        };
 
         extend(contact_list, event_core);
         extend(contact_list, ajax_core);

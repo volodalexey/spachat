@@ -23,6 +23,6 @@ define('ajax_core', [],
                 };
                 xhr.send();
             }
-        }
+        };
         return ajax_core;
     });

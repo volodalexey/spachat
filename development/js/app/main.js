@@ -12,6 +12,7 @@ require.config({
         "ping_core": "app/extentions/ping_core",
         "id_core": "app/extentions/id_core",
         "render_layout_core": "app/extentions/render_layout_core",
+        "extend_core": "app/extentions/extend_core",
 
         "chat": "app/chat",
         "chat_platform": "app/chat_platform",
