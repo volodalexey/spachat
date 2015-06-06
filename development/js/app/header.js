@@ -28,26 +28,19 @@ define('header', [
              input_template) {
 
         var header = function(options) {
-            this.body_outer_container = options.chat.body_outer_container;
-            this.header_container = options.chat.chatElem.querySelector('[data-role="header_outer_container"]');
             this.bindMainContexts();
         };
 
         header.prototype = {
 
-            MODE: {
-                WEBRTC: 'WEBRTC',
-                MESSAGES: 'MESSAGES'
-            },
-
             configMap: {
                 "WEBRTC": '',
-                "MESSAGES": '/mock/header_navbar_config.json'
+                MESSAGES_DISCONNECTED: '/mock/header_navbar_config.json'
             },
 
             MODE_DESCRIPTION: {
                 WEBRTC: 'Web RTC Initialization',
-                MESSAGES: 'Chat Messages'
+                MESSAGES_DISCONNECTED: 'Chat Messages'
             },
 
             bindMainContexts: function() {
@@ -59,27 +52,23 @@ define('header', [
             addMainEventListener: function() {
                 var _this = this;
                 _this.removeMainEventListeners();
-                _this.addRemoveListener('add', _this.header_container, 'click', _this.bindedTriggerRouter, false);
+                _this.addRemoveListener('add', _this.header_outer_container, 'click', _this.bindedTriggerRouter, false);
                 _this.on('renderFilter', _this.bindedRenderFilter, _this);
             },
 
             removeMainEventListeners: function() {
                 var _this = this;
-                _this.addRemoveListener('remove', _this.header_container, 'click', _this.bindedTriggerRouter, false);
+                _this.addRemoveListener('remove', _this.header_outer_container, 'click', _this.bindedTriggerRouter, false);
                 _this.off('renderFilter', _this.bindedRenderFilter, _this);
 
             },
 
-
-            renderByMode: function(options) {
+            render: function(chat) {
                 var _this = this;
-                _this.chat = options.chat;
+                _this.chat = chat;
 
-                switch (_this.chat.data.mode) {
-                    case "WEBRTC":
-                        _this.fillHeader(null, null, null);
-                        break;
-                    case "MESSAGES":
+                switch (_this.chat.mode) {
+                    case _this.chat.MODE.MESSAGES_DISCONNECTED:
                         _this.loadHeaderConfig(null, function(confErr) {
                             _this.loadHeaderData(confErr, function(dataErr, data) {
                                 _this.fillHeader(dataErr, data, function(templErr) {
@@ -87,16 +76,15 @@ define('header', [
                                         console.error(templErr);
                                         return;
                                     }
-                                    //var btnsHeader = _this.header_container.querySelectorAll('[data-role="btnHeader"]');
-                                    //for (var i = 0, l = btnsHeader.length; i < l; i++) {
-                                    //    var name = btnsHeader[i].getAttribute('data-action');
-                                    //    btnsHeader[i].addEventListener('click', _this[name].bind(_this), false);
-                                    //}
-                                    _this.filter_container = _this.header_container.querySelector('[data-role="filter_container"]');
+                                    _this.filter_container = _this.chat.header_outer_container.querySelector('[data-role="filter_container"]');
                                     _this.addMainEventListener();
                                 });
                             });
                         });
+                        break;
+                    case "WEBRTC":
+                        _this.fillHeader(null, null, null);
+                        break;
                 }
             },
 
@@ -107,8 +95,8 @@ define('header', [
                     return;
                 }
 
-                if (_this.configMap[_this.chat.data.body_mode]) {
-                    _this.sendRequest(_this.configMap[_this.chat.data.body_mode], function(err, res) {
+                if (_this.configMap[_this.chat.mode]) {
+                    _this.sendRequest(_this.configMap[_this.chat.mode], function(err, res) {
                         if (err) {
                             callback(err);
                             return;
@@ -128,14 +116,14 @@ define('header', [
                     return;
                 }
 
-                if (_this.dataMap[_this.chat.data.body_mode]) {
-                    var collectionDescription = _this.dataMap[_this.chat.data.body_mode];
+                if (_this.dataMap[_this.chat.mode]) {
+                    var collectionDescription = _this.dataMap[_this.chat.mode];
                     indexeddb.getAll(collectionDescription, function(getAllErr, data) {
                         if (getAllErr) {
                             callback(getAllErr);
                         } else {
-                            if (_this.dataHandlerMap[_this.chat.data.body_mode]) {
-                                callback(null, _this.dataHandlerMap[_this.chat.data.body_mode].call(_this, data));
+                            if (_this.dataHandlerMap[_this.chat.mode]) {
+                                callback(null, _this.dataHandlerMap[_this.chat.mode].call(_this, data));
                             } else {
                                 callback(null, data);
                             }
@@ -152,17 +140,17 @@ define('header', [
                     callback(_err);
                     return;
                 }
-                var currentTemplate = _this.templateMap[_this.chat.data.body_mode];
+                var currentTemplate = _this.templateMap[_this.chat.mode];
                 if (currentTemplate) {
-                    _this.header_container.innerHTML = currentTemplate({
+                    _this.chat.header_outer_container.innerHTML = currentTemplate({
                         header_btn: _this.header_config,
                         triple_element_template: _this.triple_element_template,
                         button_template: _this.button_template,
                         input_template: _this.input_template,
                         label_template: _this.label_template,
-                        mode: _this.chat.data.body_mode,
+                        mode: _this.chat.mode,
                         data: data,
-                        description: _this.MODE_DESCRIPTION[_this.chat.data.body_mode]
+                        description: _this.MODE_DESCRIPTION[_this.chat.mode]
                     });
                 }
                 callback();
@@ -237,8 +225,8 @@ define('header', [
                                     _this.real_time_editing.checked = false;
                                 }
                             } else {
-                                _this.valueEnablePagination = _this.chat.chatElem.querySelector('[data-role="enable_pagination"]').checked;
-                                _this.per_page = _this.chat.chatElem.querySelector('[data-role="per_page"]');
+                                _this.valueEnablePagination = _this.chat.chat_element.querySelector('[data-role="enable_pagination"]').checked;
+                                _this.per_page = _this.chat.chat_element.querySelector('[data-role="per_page"]');
                                 _this.per_page_value = parseInt(_this.per_page.value);
                                 _this.filter_container.innerHTML = "";
                                 _this.filter_container.classList.add('hide');
@@ -255,10 +243,10 @@ define('header', [
                 var _this = this;
                 var array_per_page_nrte = _this.filter_navbar_config.filter(function(obj) {
                     return obj.service_id === "per_page" && obj.redraw_mode === "nrte"
-                })
+                });
                 var array_per_page_rte = _this.filter_navbar_config.filter(function(obj) {
                     return obj.service_id === "per_page" && obj.redraw_mode === "rte"
-                })
+                });
 
                 if (_this.real_time_editing.checked) {
                     _this.chat.data.redraw_mode = "rte";
@@ -340,12 +328,12 @@ define('header', [
 
         header.prototype.dataMap = {
             "WEBRTC": '',
-            "MESSAGES": ""
+            MESSAGES_DISCONNECTED: ''
         };
 
         header.prototype.templateMap = {
             "WEBRTC": header.prototype.header_template,
-            "MESSAGES": header.prototype.header_template
+            MESSAGES_DISCONNECTED: header.prototype.header_template
         };
 
         return header;

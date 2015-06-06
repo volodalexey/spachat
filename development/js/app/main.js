@@ -11,6 +11,7 @@ require.config({
         "template_core": "app/extentions/template_core",
         "ping_core": "app/extentions/ping_core",
         "id_core": "app/extentions/id_core",
+        "extend_core": "app/extentions/extend_core",
 
         "chat": "app/chat",
         "chat_platform": "app/chat_platform",

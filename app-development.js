@@ -62,8 +62,33 @@ var onCreateChat = function(data) {
     _ws.send(JSON.stringify(data));
 };
 
+var onLocalOffer = function(data) {
+    var oldChat = checkIfExist(data.chat_description);
+    if (!oldChat) {
+        var strErr = JSON.stringify({
+            message: (new Error('Chat with requested id not found!')).toString(),
+            type: "error",
+            chat_description: data.chat_description
+        });
+        _ws.send(strErr);
+        return;
+    }
+
+    if (!oldChat['peers']) {
+        oldChat['peers'] = {};
+    }
+    if (!oldChat['peers'][data.chat_description.userId]) {
+        oldChat['peers'][data.chat_description.userId] = {};
+    }
+    oldChat['peers'][data.chat_description.userId]['localOfferDescription'] = data.localOfferDescription;
+    data.type = 'notifyChat';
+    data.notify_data = 'localOfferStored';
+    _ws.send(JSON.stringify(data));
+};
+
 var msgMap = {
-    "create": onCreateChat
+    "create": onCreateChat,
+    "localOffer": onLocalOffer
 };
 
 var onMessage = function(data) {

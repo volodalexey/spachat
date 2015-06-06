@@ -9,7 +9,7 @@ define('chat_platform', [
 
         'text!../html/chat_platform_template.html'
     ],
-    function(chat,
+    function(Chat,
              websocket,
 
              overlay_core,
@@ -88,6 +88,15 @@ define('chat_platform', [
                     case 'created':
                         _this.chatCreateApproved(parsedData);
                         break;
+                    case 'notifyChat':
+                        Chat.prototype.chatsArray.forEach(function(_chat) {
+                            if (parsedData.chat_description.chatId === _chat.chatId) {
+                                if (_chat[parsedData.notify_data]) {
+                                    _chat[parsedData.notify_data](parsedData);
+                                }
+                            }
+                        });
+                        break;
                 }
             },
 
@@ -105,7 +114,7 @@ define('chat_platform', [
 
                 var chat_description = {
                     "userId": _this.navigator.userId,
-                    "chatId": chat.prototype.generateId()
+                    "chatId": Chat.prototype.generateId()
                 };
 
                 websocket.sendMessage({
@@ -142,10 +151,12 @@ define('chat_platform', [
 
             createChatLayout: function(chat_description) {
                 var _this = this;
-                var newChat = new chat(chat_description);
-                var newChatElem = document.createElement('section');
-                chat.prototype.chatsArray.push(newChat);
-                newChat.initialize(newChatElem, _this.chat_wrapper);
+                chat_description.mode = Chat.prototype.MODE.CREATED_AUTO;
+                var newChat = new Chat(chat_description);
+                Chat.prototype.chatsArray.push(newChat);
+                newChat.render({
+                    chat_wrapper: _this.chat_wrapper
+                });
             }
 
         };

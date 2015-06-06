@@ -1,10 +1,8 @@
 {
   "name": "spachat",
   "version": "0.0.1",
-  "devDependencies": {
-    "express": "^4.12.3"
-  },
   "dependencies": {
+    "express": "^4.12.3",
     "express-ws": "^0.2.6",
     "uuid": "^2.0.1"
   }
