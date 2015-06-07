@@ -54,7 +54,8 @@ define('webrtc', [
 
                                 _this.trigger('sendToWebSocket', {
                                     type: 'localOffer',
-                                    localOfferDescription: _this.data.localOfferDescription
+                                    userId: chat.userId,
+                                    offerDescription: _this.data.localOfferDescription
                                 });
                             }
                         );
@@ -70,13 +71,14 @@ define('webrtc', [
 
                                 _this.trigger('sendToWebSocket', {
                                     type: 'localAnswer',
-                                    localAnswerDescription: _this.data.localAnswerDescription
+                                    userId: chat.userId,
+                                    answerDescription: _this.data.localAnswerDescription
                                 });
                             }
                         );
                         break;
                     case chat.MODE.JOINED_AUTO_ACCEPT:
-                        _this.createLocalOfferAuto(
+                        _this.acceptRemoteAnswerAuto(
                             options,
                             function(createError) {
                                 if (createError) {
@@ -86,6 +88,7 @@ define('webrtc', [
 
                                 _this.trigger('sendToWebSocket', {
                                     type: 'localOffer',
+                                    userId: chat.userId,
                                     localOfferDescription: _this.data.localOfferDescription
                                 });
                             }

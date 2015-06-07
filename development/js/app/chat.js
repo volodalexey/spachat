@@ -67,12 +67,12 @@ define('chat', [
 
         chat.prototype = {
 
-            toStringKeys: ['chatId', 'userId'],
+            valueOfKeys: ['chatId', 'userId'],
 
             valueOf: function() {
                 var toStringObject = {};
                 var _this = this;
-                _this.toStringKeys.forEach(function(key) {
+                _this.valueOfKeys.forEach(function(key) {
                     toStringObject[key] = _this[key];
                 });
                 return toStringObject;

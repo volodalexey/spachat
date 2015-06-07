@@ -1,139 +1,229 @@
-var express = require('express')
-    , uuid = require('uuid')
-    , expressApp      = express()
-    , port            = 8888
-    , dirPath = '/development'
-    , path = require('path')
-    , fullPath = path.join(__dirname, dirPath)
-    , fs = require('fs')
-    , expressWs = require('express-ws')(expressApp);
+var express = require('express'),
+    uuid = require('uuid'),
+    expressApp      = express(),
+    port            = 8888,
+    dirPath = '/development',
+    path = require('path'),
+    fullPath = path.join(__dirname, dirPath),
+    fs = require('fs'),
+    websocketPath = '/websocket',
+    expressWs = require('express-ws')(expressApp);
 
 var chats = [];
-var _ws;
+
+var broadcast = function(data) {
+    var wss = expressWs.getWss(websocketPath);
+    if (!wss || data === undefined || data === null) {
+        console.error(new Error('Error broadcasting data'));
+        return;
+    }
+    var strData = data;
+    if (typeof data !== 'string') {
+        strData = JSON.stringify(data);
+    }
+    wss.clients.forEach(function each(client) {
+        client.send(strData);
+    });
+};
 
 var readMainFile = function() {
   return fs.readFileSync(fullPath + '/index.html', 'utf8');
 };
 
-var checkIfExist = function(newChat) {
-    var oldChat;
-    chats.every(function(_chat) {
-        if (_chat.chatId === newChat.chatId) {
-            oldChat = _chat;
+var checkIfExist = function(newChatData) {
+    var oldChatData;
+    chats.every(function(_chatData) {
+        if (_chatData.chat_description.chatId === newChatData.chat_description.chatId) {
+            oldChatData = _chatData;
         }
-        return !oldChat;
+        return !oldChatData;
     });
-    return oldChat;
+    return oldChatData;
 };
 
-var checkOrGenerateChatId = function(oldChat, currentAttempt, totalAttempts) {
-    if (checkIfExist(oldChat)) {
+//var valueOfKeys = ['chat_description', 'offer', 'answer', 'userId', 'type', 'notify_data'];
+//var prepareDataChatToSend = function(chatData) {
+//    var toStringObject = {};
+//    valueOfKeys.forEach(function(key) {
+//        toStringObject[key] = chatData[key];
+//    });
+//    return toStringObject;
+//};
+
+var checkOrGenerateChatId = function(oldChatData, currentAttempt, totalAttempts) {
+    if (checkIfExist(oldChatData)) {
         if (currentAttempt < generateAttempts) {
-            console.log('Try to generate chat new id, old chat id : ', oldChat.chatId);
-            oldChat.chatId = uuid.v1();
-            console.log('New chat id : ', oldChat.chatId);
+            console.log('Try to generate chat new id, old chat id : ', oldChatData.chat_description.chatId);
+            oldChatData.chat_description.chatId = uuid.v1();
+            console.log('New chat id : ', oldChatData.chat_description.chatId);
             currentAttempt++;
-            return generateChatId(oldChat, currentAttempt, totalAttempts);
+            return checkOrGenerateChatId(oldChatData, currentAttempt, totalAttempts);
         }
 
         return new Error('Unable to generate new chat id!');
     }
 
-    return oldChat;
+    return oldChatData;
+};
+
+var storeWebSocketInChatData = function(webSocket, chatData) {
+    if (!chatData['clients']) {
+        chatData['clients'] = [];
+        chatData['clients'].push(webSocket);
+    } else {
+        var oldWebSocket;
+        chatData['clients'].every(function(_webSocket) {
+            if (_webSocket === webSocket) {
+                oldWebSocket = _webSocket;
+            }
+            return !oldWebSocket;
+        });
+        if (!oldWebSocket) {
+            chatData['clients'].push(webSocket);
+        }
+    }
 };
 
 var generateAttempts = 100;
-var onCreateChat = function(data) {
-    var generated = checkOrGenerateChatId(data.chat_description, 0, generateAttempts);
+var onCreateChat = function(curWS, data) {
+    var correctedClientChatData = checkOrGenerateChatId(data, 0, generateAttempts);
 
-    if (generated && generated instanceof Error) {
-        console.error(generated);
+    if (correctedClientChatData && correctedClientChatData instanceof Error) {
+        console.error(correctedClientChatData);
         var strErr = JSON.stringify({
-            message: generated.toString(),
+            message: correctedClientChatData.toString(),
             type: "error",
             chat_description: data.chat_description
         });
-        _ws.send(strErr);
+        curWS.send(JSON.stringify(strErr));
         return;
     }
 
-    data.type = 'created';
-    chats.push(data.chat_description);
-    _ws.send(JSON.stringify(data));
+    var responseData = {
+        type: 'created',
+        userId: data.userId,
+        chat_description: correctedClientChatData.chat_description
+    };
+    storeWebSocketInChatData(curWS, correctedClientChatData);
+    chats.push(correctedClientChatData);
+
+    //curWS.send(JSON.stringify(prepareDataChatToSend(correctedClientChatData)));
+    curWS.send(JSON.stringify(responseData));
+
+    console.log('Create chat from', 'userId = ' + correctedClientChatData.userId, 'chatId = ' + correctedClientChatData.chat_description.chatId);
 };
 
-var onOffer = function(data) {
-    var oldChat = checkIfExist(data.chat_description);
-    if (!oldChat) {
-        var strErr = JSON.stringify({
-            message: (new Error('Chat with requested id not found!')).toString(),
-            type: "error",
-            chat_description: data.chat_description
-        });
-        _ws.send(strErr);
-        return;
-    }
-
-    if (!oldChat['offer']) {
-        oldChat['offer'] = {
-            localOfferDescription: data.localOfferDescription,
-            userId: data.userId
-        };
-    } else {
-        // somebody created offer before you...
-
-    }
-    data.type = 'notifyChat';
-    data.notify_data = 'serverStoredOffer';
-    data.chat_description = oldChat;
-    _ws.send(JSON.stringify(data));
-};
-
-var onAnswer = function(data) {
-    var oldChat = checkIfExist(data.chat_description);
-    if (!oldChat) {
-        var strErr = JSON.stringify({
-            message: (new Error('Chat with requested id not found!')).toString(),
-            type: "error",
-            chat_description: data.chat_description
-        });
-        _ws.send(strErr);
-        return;
-    }
-
-    if (!oldChat['offer']) {
-        var strErr = JSON.stringify({
-            message: (new Error('Chat with requested id does not have offer!')).toString(),
-            type: "error",
-            chat_description: data.chat_description
-        });
-        _ws.send(strErr);
-        return;
-    }
-
-    if (oldChat['answer']) {
-        var strErr = JSON.stringify({
-            message: (new Error('Chat with requested id already has answer!')).toString(),
-            type: "error",
-            chat_description: data.chat_description
-        });
-        _ws.send(strErr);
-        return;
-    }
-
-    oldChat['answer'] = {
-        localAnswerDescription: data.localAnswerDescription,
+var onJoinChat = function(curWS, data) {
+    var serverChatData = checkIfExist(data);
+    var responseData = {
+        type: 'joined',
         userId: data.userId
     };
 
-    data.type = 'notifyChat';
-    data.notify_data = 'serverStoredAnswer';
-    data.chat_description = oldChat;
-    _ws.send(JSON.stringify(data));
+    if (serverChatData) {
+        responseData.chat_description = serverChatData.chat_description;
+    } else {
+        // chat is not exist on the server
+        serverChatData = {
+            chat_description: data.chat_description
+        };
+        responseData.chat_description = serverChatData.chat_description;
+        chats.push(serverChatData);
+    }
+
+    storeWebSocketInChatData(curWS, serverChatData);
+
+    broadcast(responseData);
+
+    console.log('Join chat from', 'userId = ' + responseData.userId, 'chatId = ' + serverChatData.chat_description.chatId);
+};
+
+var onOffer = function(curWS, data) {
+    var serverChatData = checkIfExist(data);
+    if (!serverChatData) {
+        var strErr = JSON.stringify({
+            message: (new Error('Chat with requested id not found!')).toString(),
+            type: "error",
+            chat_description: data.chat_description
+        });
+        curWS.send(JSON.stringify(strErr));
+        return;
+    }
+
+    var responseData = {
+        type: 'notifyChat',
+        notify_data: 'serverStoredOffer'
+    };
+
+    if (!serverChatData.chat_description.offer) {
+        serverChatData.chat_description.offer = {
+            offerDescription: data.offerDescription,
+            userId: data.userId
+        };
+        responseData.userId = data.userId;
+    } else {
+        // somebody created offer before this request...
+    }
+    responseData.chat_description = serverChatData.chat_description;
+
+    storeWebSocketInChatData(curWS, serverChatData);
+    broadcast(responseData);
+
+    console.log('Offer from', 'userId = ' + responseData.userId, 'chatId = ' + serverChatData.chat_description.chatId);
+};
+
+var onAnswer = function(curWS, data) {
+    var serverChatData = checkIfExist(data);
+    if (!serverChatData) {
+        var strErr = JSON.stringify({
+            message: (new Error('Chat with requested id not found!')).toString(),
+            type: "error",
+            chat_description: data.chat_description
+        });
+        curWS.send(JSON.stringify(strErr));
+        return;
+    }
+
+    if (!serverChatData.chat_description.offer) {
+        var strErr = JSON.stringify({
+            message: (new Error('Chat with requested id does not have offer!')).toString(),
+            type: "error",
+            chat_description: serverChatData.chat_description
+        });
+        curWS.send(JSON.stringify(strErr));
+        return;
+    }
+
+    if (serverChatData.chat_description.answer) {
+        var strErr = JSON.stringify({
+            message: (new Error('Chat with requested id already has answer!')).toString(),
+            type: "error",
+            chat_description: serverChatData.chat_description
+        });
+        curWS.send(JSON.stringify(strErr));
+        return;
+    } else {
+        serverChatData.chat_description.answer = {
+            answerDescription: data.answerDescription,
+            userId: data.userId
+        };
+    }
+
+    var responseData = {
+        type: 'notifyChat',
+        notify_data: 'serverStoredAnswer',
+        userId: data.userId
+    };
+
+    storeWebSocketInChatData(curWS, serverChatData);
+    broadcast(responseData);
+
+    console.log('Answer from', 'userId = ' + responseData.userId, 'chatId = ' + serverChatData.chat_description.chatId);
 };
 
 var msgMap = {
     create: onCreateChat,
+    join: onJoinChat,
     localOffer: onOffer,
     localAnswer: onAnswer
 };
@@ -143,7 +233,7 @@ var onMessage = function(data) {
         var parsedData = JSON.parse(data);
         var handler = msgMap[parsedData.type];
         if (handler) {
-            handler(parsedData);
+            handler(this, parsedData);
         }
     } catch (e) {
         console.log(e);
@@ -152,10 +242,9 @@ var onMessage = function(data) {
 
 expressApp.use(express.static(fullPath));
 
-expressApp.ws('/websocket', function(ws, req) {
-    _ws = ws;
+expressApp.ws(websocketPath, function(ws, req) {
     ws.on('message', onMessage);
-    console.log('socket', req.method + ' ' + req.originalUrl);
+    console.log('WebSocket request type', req.method + ' from ' + req.originalUrl);
 });
 
 expressApp.get('/', function(req, res) {

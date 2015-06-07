@@ -118,13 +118,13 @@ define('chat_platform', [
                 event.target.disabled = true;
 
                 var chat_description = {
-                    "userId": _this.navigator.userId,
-                    "chatId": Chat.prototype.generateId()
+                    chatId: Chat.prototype.generateId()
                 };
 
                 websocket.sendMessage({
-                    "type": "create",
-                    "chat_description": chat_description
+                    type: "create",
+                    userId: _this.navigator.userId,
+                    chat_description: chat_description
                 });
             },
 
@@ -135,6 +135,7 @@ define('chat_platform', [
              */
             chatCreateApproved: function(event) {
                 var _this = this;
+                event.chat_description.userId = _this.navigator.userId;
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
                     [
@@ -150,27 +151,27 @@ define('chat_platform', [
                             return;
                         }
                         event.chat_description.mode = Chat.prototype.MODE.CREATED_AUTO;
-                        _this.createChatLayout(event.chat_description);
+                        _this.createChatLayout(event.chat_description, { chat_wrapper: _this.chat_wrapper});
                     }
                 );
             },
 
-            createChatLayout: function(chat_description) {
+            createChatLayout: function(chat_description, renderOptions) {
                 var _this = this;
                 var newChat = new Chat(chat_description);
                 Chat.prototype.chatsArray.push(newChat);
-                newChat.render({
-                    chat_wrapper: _this.chat_wrapper
-                });
+                newChat.render(renderOptions);
             },
 
             /**
              * sends current chat description to the server to retrieve waitForOffer/waitForAnswer state
              * @param event - click event
              */
-            joinByChatIdAuto: function(event, data) {
+            joinByChatIdAuto: function(event) {
                 var _this = this;
-                if (!_this.mainConteiner || !websocket) {
+                var wrapper = event.target.parentNode.parentNode;
+                var input = wrapper.querySelector('[data-role="chat_id_input"]');
+                if (!_this.mainConteiner || !websocket || !wrapper || !input || !input.value) {
                     return;
                 }
 
@@ -178,27 +179,36 @@ define('chat_platform', [
                 event.target.disabled = true;
 
                 var chat_description = {
-                    "userId": _this.navigator.userId,
-                    "chatId": data.chatId
+                    "chatId": input.value
                 };
 
                 websocket.sendMessage({
-                    "type": "join",
-                    "chat_description": chat_description
+                    type: "join",
+                    userId: _this.navigator.userId,
+                    chat_description: chat_description
                 });
             },
 
             chatJoinApproved: function(event) {
                 var _this = this;
                 var defineBehaviour = function() {
-                    if (event.server_chat_state === 'waitForAnswer') {
+                    if (event.chat_description.offer) {
                         event.chat_description.mode = Chat.prototype.MODE.JOINED_AUTO_ANSWER;
-                        _this.createChatLayout(event.chat_description);
-                    } else if (event.server_chat_state === 'waitForOffer') {
-                        event.chat_description.mode = Chat.prototype.MODE.JOINED_AUTO_OFFER;
-                        _this.createChatLayout(event.chat_description);
+                        _this.createChatLayout(
+                            event.chat_description,
+                            {
+                                chat_wrapper: _this.chat_wrapper,
+                                remoteOfferDescription: event.chat_description.offer ? event.chat_description.offer.offerDescription : null
+                            }
+                        );
                     } else {
-                        console.error(new Error('Invalid server chat state!'));
+                        event.chat_description.mode = Chat.prototype.MODE.JOINED_AUTO_OFFER;
+                        _this.createChatLayout(
+                            event.chat_description,
+                            {
+                                chat_wrapper: _this.chat_wrapper
+                            }
+                        );
                     }
                 };
 
@@ -223,6 +233,7 @@ define('chat_platform', [
                         });
 
                         if (!chat) {
+                            event.chat_description.userId = _this.navigator.userId; // since now this is user's chat too
                             indexeddb.addOrUpdateAll(
                                 _this.collectionDescription,
                                 [
