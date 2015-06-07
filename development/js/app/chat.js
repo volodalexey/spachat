@@ -279,24 +279,24 @@ define('chat', [
              */
             serverStoredOffer: function(event) {
                 var _this = this;
-                if (event.localOffer.userId === _this.userId) {
+                if (event.chat_description.offer.userId === _this.userId) {
                     _this.console.log.call(_this, { message: 'waiting for connection' });
                     _this.mode = _this.MODE.MESSAGES_DISCONNECTED;
                     _this.render();
                 } else {
                     _this.mode = _this.MODE.JOINED_AUTO_ANSWER;
                     _this.render({
-                        remoteOfferDescription: event.offer.localOfferDescription
+                        remoteOfferDescription: event.chat_description.offer.localOfferDescription
                     });
                 }
             },
 
             serverStoredAnswer: function(event) {
                 var _this = this;
-                if (event.localOffer.userId === _this.userId) {
+                if (event.chat_description.answer.userId === _this.userId) {
                     _this.mode = _this.MODE.JOINED_AUTO_ACCEPT;
                     _this.render({
-                        remoteAnswerDescription: event.answer.localAnswerDescription
+                        remoteAnswerDescription: event.chat_description.answer.localAnswerDescription
                     });
                 } else {
                     _this.console.log.call(_this, { message: 'waiting for connection' });

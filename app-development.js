@@ -62,7 +62,7 @@ var onCreateChat = function(data) {
     _ws.send(JSON.stringify(data));
 };
 
-var onLocalOffer = function(data) {
+var onOffer = function(data) {
     var oldChat = checkIfExist(data.chat_description);
     if (!oldChat) {
         var strErr = JSON.stringify({
@@ -89,7 +89,7 @@ var onLocalOffer = function(data) {
     _ws.send(JSON.stringify(data));
 };
 
-var onLocalAnswer = function(data) {
+var onAnswer = function(data) {
     var oldChat = checkIfExist(data.chat_description);
     if (!oldChat) {
         var strErr = JSON.stringify({
@@ -134,8 +134,8 @@ var onLocalAnswer = function(data) {
 
 var msgMap = {
     create: onCreateChat,
-    localOffer: onLocalOffer,
-    localAnswer: onLocalAnswer
+    localOffer: onOffer,
+    localAnswer: onAnswer
 };
 
 var onMessage = function(data) {
