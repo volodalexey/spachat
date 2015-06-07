@@ -85,7 +85,9 @@ define('chat', [
                 MESSAGES: 'MESSAGES',
                 CONTACT_LIST: 'CONTACT_LIST',
                 MESSAGES_DISCONNECTED: 'MESSAGES_DISCONNECTED',
-                CREATED_AUTO: 'CREATED_AUTO'
+                CREATED_AUTO: 'CREATED_AUTO',
+                JOINED_AUTO_OFFER: 'JOINED_AUTO_OFFER',
+                JOINED_AUTO_ANSWER: 'JOINED_AUTO_ANSWER'
             },
 
             cashElements: function() {
@@ -118,8 +120,8 @@ define('chat', [
                 _this.header_outer_container.innerHTML = _this.waiter_template();
 
                 _this.addEventListeners();
-                _this.webrtc.render(this);
-                _this.header.render(this);
+                _this.webrtc.render(options, this);
+                _this.header.render(options, this);
 
                 switch (_this.mode) {
                     case "MESSAGES":
@@ -270,11 +272,23 @@ define('chat', [
                 websocket.sendMessage(sendData);
             },
 
-            localOfferStored: function() {
+            /**
+             * server stored local offer for current chat
+             * need to join this offer of wait for connections if current user is creator
+             */
+            serverStoredLocalOffer: function(event) {
                 var _this = this;
-                _this.console.log.call(_this, { message: 'waiting for connection' });
-                _this.mode = _this.MODE.MESSAGES_DISCONNECTED;
-                _this.render();
+                if (event.localOffer.userId === _this.userId) {
+                    _this.console.log.call(_this, { message: 'waiting for connection' });
+                    _this.mode = _this.MODE.MESSAGES_DISCONNECTED;
+                    _this.render();
+                } else {
+                    _this.console.log.call(_this, { message: 'waiting for connection' });
+                    _this.mode = _this.MODE.JOINED_AUTO_ANSWER;
+                    _this.render({
+                        remoteOfferDescription: event.localOffer.localOfferDescription
+                    });
+                }
             }
         };
         extend(chat, ajax_core);

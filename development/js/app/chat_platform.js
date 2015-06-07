@@ -67,6 +67,7 @@ define('chat_platform', [
                 _this.on('addNewChatAuto', _this.addNewChatAuto, _this);
                 _this.on('resize', _this.resizeChats, _this);
                 websocket.on('message', _this.onMessageRouter, _this);
+                _this.on('joinByChatIdAuto', _this.joinByChatIdAuto, _this);
             },
 
             removeEventListeners: function() {
@@ -77,7 +78,7 @@ define('chat_platform', [
             },
 
             resizeChats: function() {
-                chat.prototype.chatsArray.forEach(function(_chat) {
+                Chat.prototype.chatsArray.forEach(function(_chat) {
                     _chat.calcMessagesContainerHeight();
                 });
             },
@@ -97,11 +98,15 @@ define('chat_platform', [
                             }
                         });
                         break;
+                    case 'joined':
+                        _this.chatJoinApproved(parsedData);
+                        break;
                 }
             },
 
             /**
              * sends future chat description to the server to check if such chat is already exist
+             * @param event - click event
              */
             addNewChatAuto: function(event) {
                 var _this = this;
@@ -144,6 +149,7 @@ define('chat_platform', [
                             console.error(error);
                             return;
                         }
+                        event.chat_description.mode = Chat.prototype.MODE.CREATED_AUTO;
                         _this.createChatLayout(event.chat_description);
                     }
                 );
@@ -151,12 +157,94 @@ define('chat_platform', [
 
             createChatLayout: function(chat_description) {
                 var _this = this;
-                chat_description.mode = Chat.prototype.MODE.CREATED_AUTO;
                 var newChat = new Chat(chat_description);
                 Chat.prototype.chatsArray.push(newChat);
                 newChat.render({
                     chat_wrapper: _this.chat_wrapper
                 });
+            },
+
+            /**
+             * sends current chat description to the server to retrieve waitForOffer/waitForAnswer state
+             * @param event - click event
+             */
+            joinByChatIdAuto: function(event, data) {
+                var _this = this;
+                if (!_this.mainConteiner || !websocket) {
+                    return;
+                }
+
+                _this['joinByChatIdAuto__'] = event.target;
+                event.target.disabled = true;
+
+                var chat_description = {
+                    "userId": _this.navigator.userId,
+                    "chatId": data.chatId
+                };
+
+                websocket.sendMessage({
+                    "type": "join",
+                    "chat_description": chat_description
+                });
+            },
+
+            chatJoinApproved: function(event) {
+                var _this = this;
+                var defineBehaviour = function() {
+                    if (event.server_chat_state === 'waitForAnswer') {
+                        event.chat_description.mode = Chat.prototype.MODE.JOINED_AUTO_ANSWER;
+                        _this.createChatLayout(event.chat_description);
+                    } else if (event.server_chat_state === 'waitForOffer') {
+                        event.chat_description.mode = Chat.prototype.MODE.JOINED_AUTO_OFFER;
+                        _this.createChatLayout(event.chat_description);
+                    } else {
+                        console.error(new Error('Invalid server chat state!'));
+                    }
+                };
+
+                indexeddb.getAll(
+                    _this.collectionDescription,
+                    function(getError, chats) {
+                        if (getError) {
+                            if (_this['joinByChatIdAuto__']) {
+                                _this['joinByChatIdAuto__'].disabled = false;
+                                _this['joinByChatIdAuto__'] = null;
+                            }
+                            console.error(getError);
+                            return;
+                        }
+
+                        var chat;
+                        chats.every(function(_chat) {
+                            if (_chat.chatId === event.chat_description.chatId) {
+                                chat = _chat;
+                            }
+                            return !chat;
+                        });
+
+                        if (!chat) {
+                            indexeddb.addOrUpdateAll(
+                                _this.collectionDescription,
+                                [
+                                    event.chat_description
+                                ],
+                                function(error) {
+                                    if (_this['joinByChatIdAuto__']) {
+                                        _this['joinByChatIdAuto__'].disabled = false;
+                                        _this['joinByChatIdAuto__'] = null;
+                                    }
+                                    if (error) {
+                                        console.error(error);
+                                        return;
+                                    }
+                                    defineBehaviour();
+                                }
+                            );
+                        } else {
+                            defineBehaviour();
+                        }
+                    }
+                );
             }
 
         };

@@ -77,12 +77,18 @@ var onLocalOffer = function(data) {
     if (!oldChat['peers']) {
         oldChat['peers'] = {};
     }
-    if (!oldChat['peers'][data.chat_description.userId]) {
-        oldChat['peers'][data.chat_description.userId] = {};
+    if (!oldChat['peers']['localOffer']) {
+        oldChat['peers']['localOffer'] = {
+            localOfferDescription: data.localOfferDescription,
+            userId: data.userId
+        };
+    } else {
+        // somebody created offer before...
+
     }
-    oldChat['peers'][data.chat_description.userId]['localOfferDescription'] = data.localOfferDescription;
     data.type = 'notifyChat';
-    data.notify_data = 'localOfferStored';
+    data.notify_data = 'serverStoredLocalOffer';
+    data.chat_description = oldChat;
     _ws.send(JSON.stringify(data));
 };
 

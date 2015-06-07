@@ -63,7 +63,7 @@ define('header', [
 
             },
 
-            render: function(chat) {
+            render: function(options, chat) {
                 var _this = this;
                 _this.chat = chat;
 
