@@ -87,7 +87,8 @@ define('chat', [
                 MESSAGES_DISCONNECTED: 'MESSAGES_DISCONNECTED',
                 CREATED_AUTO: 'CREATED_AUTO',
                 JOINED_AUTO_OFFER: 'JOINED_AUTO_OFFER',
-                JOINED_AUTO_ANSWER: 'JOINED_AUTO_ANSWER'
+                JOINED_AUTO_ANSWER: 'JOINED_AUTO_ANSWER',
+                JOINED_AUTO_ACCEPT: 'JOINED_AUTO_ACCEPT'
             },
 
             cashElements: function() {
@@ -276,18 +277,31 @@ define('chat', [
              * server stored local offer for current chat
              * need to join this offer of wait for connections if current user is creator
              */
-            serverStoredLocalOffer: function(event) {
+            serverStoredOffer: function(event) {
                 var _this = this;
                 if (event.localOffer.userId === _this.userId) {
                     _this.console.log.call(_this, { message: 'waiting for connection' });
                     _this.mode = _this.MODE.MESSAGES_DISCONNECTED;
                     _this.render();
                 } else {
-                    _this.console.log.call(_this, { message: 'waiting for connection' });
                     _this.mode = _this.MODE.JOINED_AUTO_ANSWER;
                     _this.render({
-                        remoteOfferDescription: event.localOffer.localOfferDescription
+                        remoteOfferDescription: event.offer.localOfferDescription
                     });
+                }
+            },
+
+            serverStoredAnswer: function(event) {
+                var _this = this;
+                if (event.localOffer.userId === _this.userId) {
+                    _this.mode = _this.MODE.JOINED_AUTO_ACCEPT;
+                    _this.render({
+                        remoteAnswerDescription: event.answer.localAnswerDescription
+                    });
+                } else {
+                    _this.console.log.call(_this, { message: 'waiting for connection' });
+                    _this.mode = _this.MODE.MESSAGES_DISCONNECTED;
+                    _this.render();
                 }
             }
         };

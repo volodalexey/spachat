@@ -75,6 +75,22 @@ define('webrtc', [
                             }
                         );
                         break;
+                    case chat.MODE.JOINED_AUTO_ACCEPT:
+                        _this.createLocalOfferAuto(
+                            options,
+                            function(createError) {
+                                if (createError) {
+                                    _this.trigger('error', { message: createError });
+                                    return;
+                                }
+
+                                _this.trigger('sendToWebSocket', {
+                                    type: 'localOffer',
+                                    localOfferDescription: _this.data.localOfferDescription
+                                });
+                            }
+                        );
+                    break;
                 }
             },
 
@@ -149,6 +165,22 @@ define('webrtc', [
                         _this.createLocalAnswer(options, callback);
                     }
                 );
+            },
+
+            acceptRemoteAnswerAuto: function(options, callback) {
+                var _this = this;
+                _this.trigger('log', { message: 'try: acceptRemoteAnswerAuto' });
+                try {
+                    _this.data.remoteAnswerDescription = new RTCSessionDescription(options.remoteAnswerDescription);
+                    _this.data.peerConnection.setRemoteDescription(_this.data.remoteAnswerDescription);
+                } catch (error) {
+                    if (callback) {
+                        callback(error);
+                    }
+                    return;
+                }
+
+                _this.trigger('log', { message: 'done: acceptRemoteAnswerAuto' });
             },
 
             clickAnswerRemoteOffer: function(event) {

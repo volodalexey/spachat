@@ -74,27 +74,68 @@ var onLocalOffer = function(data) {
         return;
     }
 
-    if (!oldChat['peers']) {
-        oldChat['peers'] = {};
-    }
-    if (!oldChat['peers']['localOffer']) {
-        oldChat['peers']['localOffer'] = {
+    if (!oldChat['offer']) {
+        oldChat['offer'] = {
             localOfferDescription: data.localOfferDescription,
             userId: data.userId
         };
     } else {
-        // somebody created offer before...
+        // somebody created offer before you...
 
     }
     data.type = 'notifyChat';
-    data.notify_data = 'serverStoredLocalOffer';
+    data.notify_data = 'serverStoredOffer';
+    data.chat_description = oldChat;
+    _ws.send(JSON.stringify(data));
+};
+
+var onLocalAnswer = function(data) {
+    var oldChat = checkIfExist(data.chat_description);
+    if (!oldChat) {
+        var strErr = JSON.stringify({
+            message: (new Error('Chat with requested id not found!')).toString(),
+            type: "error",
+            chat_description: data.chat_description
+        });
+        _ws.send(strErr);
+        return;
+    }
+
+    if (!oldChat['offer']) {
+        var strErr = JSON.stringify({
+            message: (new Error('Chat with requested id does not have offer!')).toString(),
+            type: "error",
+            chat_description: data.chat_description
+        });
+        _ws.send(strErr);
+        return;
+    }
+
+    if (oldChat['answer']) {
+        var strErr = JSON.stringify({
+            message: (new Error('Chat with requested id already has answer!')).toString(),
+            type: "error",
+            chat_description: data.chat_description
+        });
+        _ws.send(strErr);
+        return;
+    }
+
+    oldChat['answer'] = {
+        localAnswerDescription: data.localAnswerDescription,
+        userId: data.userId
+    };
+
+    data.type = 'notifyChat';
+    data.notify_data = 'serverStoredAnswer';
     data.chat_description = oldChat;
     _ws.send(JSON.stringify(data));
 };
 
 var msgMap = {
-    "create": onCreateChat,
-    "localOffer": onLocalOffer
+    create: onCreateChat,
+    localOffer: onLocalOffer,
+    localAnswer: onLocalAnswer
 };
 
 var onMessage = function(data) {
