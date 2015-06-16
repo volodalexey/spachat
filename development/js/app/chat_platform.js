@@ -83,6 +83,10 @@ define('chat_platform', [
                 });
             },
 
+            /**
+             * route message from web-socket
+             * @param event
+             */
             onMessageRouter: function(event) {
                 var _this = this, parsedData = JSON.parse(event);
                 switch (parsedData.type) {
@@ -156,6 +160,11 @@ define('chat_platform', [
                 );
             },
 
+            /**
+             * create chat layout
+             * @param chat_description
+             * @param renderOptions
+             */
             createChatLayout: function(chat_description, renderOptions) {
                 var _this = this;
                 var newChat = new Chat(chat_description);

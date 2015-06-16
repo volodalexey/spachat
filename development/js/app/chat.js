@@ -279,6 +279,7 @@ define('chat', [
              */
             serverStoredOffer: function(event) {
                 var _this = this;
+                // I am the creator of server stored offer
                 if (event.chat_description.offer.userId === _this.userId) {
                     _this.console.log.call(_this, { message: 'waiting for connection' });
                     _this.mode = _this.MODE.MESSAGES_DISCONNECTED;

@@ -11,7 +11,7 @@ var express = require('express'),
 
 var chats = [];
 
-var broadcast = function(data) {
+var broadcastAll = function(data) {
     var wss = expressWs.getWss(websocketPath);
     if (!wss || data === undefined || data === null) {
         console.error(new Error('Error broadcasting data'));
@@ -23,6 +23,20 @@ var broadcast = function(data) {
     }
     wss.clients.forEach(function each(client) {
         client.send(strData);
+    });
+};
+
+var broadcastChat = function(serverChatData, broadcastData) {
+    if (!serverChatData || broadcastData === undefined || broadcastData === null) {
+        console.error(new Error('Error broadcasting data'));
+        return;
+    }
+    var strData = broadcastData;
+    if (typeof broadcastData !== 'string') {
+        strData = JSON.stringify(broadcastData);
+    }
+    serverChatData['clients'].forEach(function(_webSocket) {
+        _webSocket.send(strData);
     });
 };
 
@@ -40,15 +54,6 @@ var checkIfExist = function(newChatData) {
     });
     return oldChatData;
 };
-
-//var valueOfKeys = ['chat_description', 'offer', 'answer', 'userId', 'type', 'notify_data'];
-//var prepareDataChatToSend = function(chatData) {
-//    var toStringObject = {};
-//    valueOfKeys.forEach(function(key) {
-//        toStringObject[key] = chatData[key];
-//    });
-//    return toStringObject;
-//};
 
 var checkOrGenerateChatId = function(oldChatData, currentAttempt, totalAttempts) {
     if (checkIfExist(oldChatData)) {
@@ -133,7 +138,7 @@ var onJoinChat = function(curWS, data) {
 
     storeWebSocketInChatData(curWS, serverChatData);
 
-    broadcast(responseData);
+    broadcastChat(serverChatData, responseData);
 
     console.log('Join chat from', 'userId = ' + responseData.userId, 'chatId = ' + serverChatData.chat_description.chatId);
 };
@@ -167,7 +172,7 @@ var onOffer = function(curWS, data) {
     responseData.chat_description = serverChatData.chat_description;
 
     storeWebSocketInChatData(curWS, serverChatData);
-    broadcast(responseData);
+    broadcastChat(serverChatData, responseData);
 
     console.log('Offer from', 'userId = ' + responseData.userId, 'chatId = ' + serverChatData.chat_description.chatId);
 };
@@ -216,7 +221,7 @@ var onAnswer = function(curWS, data) {
     };
 
     storeWebSocketInChatData(curWS, serverChatData);
-    broadcast(responseData);
+    broadcastChat(serverChatData, responseData);
 
     console.log('Answer from', 'userId = ' + responseData.userId, 'chatId = ' + serverChatData.chat_description.chatId);
 };
