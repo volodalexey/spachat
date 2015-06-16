@@ -279,12 +279,17 @@ define('chat', [
              */
             serverStoredOffer: function(event) {
                 var _this = this;
-                // I am the creator of server stored offer
+
                 if (event.chat_description.offer.userId === _this.userId) {
+                    // I am the creator of server stored offer
+                    // Waiting for answer
                     _this.console.log.call(_this, { message: 'waiting for connection' });
                     _this.mode = _this.MODE.MESSAGES_DISCONNECTED;
                     _this.render();
                 } else {
+                    // I am NOT the creator of server stored offer
+                    // Somebody created offer while I was trying to create my offer
+                    // Create answer
                     _this.mode = _this.MODE.JOINED_AUTO_ANSWER;
                     _this.render({
                         remoteOfferDescription: event.chat_description.offer.localOfferDescription
@@ -295,14 +300,18 @@ define('chat', [
             serverStoredAnswer: function(event) {
                 var _this = this;
                 if (event.chat_description.answer.userId === _this.userId) {
+                    // I am the creator of server stored answer
+                    // Waiting for accept
+                    _this.console.log.call(_this, { message: 'waiting for accept connection' });
+                    _this.mode = _this.MODE.MESSAGES_DISCONNECTED;
+                    _this.render();
+                } else {
+                    // I am NOT the creator of server stored answer
+                    // Accept answer
                     _this.mode = _this.MODE.JOINED_AUTO_ACCEPT;
                     _this.render({
                         remoteAnswerDescription: event.chat_description.answer.localAnswerDescription
                     });
-                } else {
-                    _this.console.log.call(_this, { message: 'waiting for connection' });
-                    _this.mode = _this.MODE.MESSAGES_DISCONNECTED;
-                    _this.render();
                 }
             }
         };

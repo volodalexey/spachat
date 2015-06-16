@@ -202,6 +202,8 @@ define('chat_platform', [
                 var _this = this;
                 var defineBehaviour = function() {
                     if (event.chat_description.offer) {
+                        // Chat already has offer
+                        // Create answer
                         event.chat_description.mode = Chat.prototype.MODE.JOINED_AUTO_ANSWER;
                         _this.createChatLayout(
                             event.chat_description,
@@ -211,6 +213,8 @@ define('chat_platform', [
                             }
                         );
                     } else {
+                        // Chat does not have offer
+                        // Create offer
                         event.chat_description.mode = Chat.prototype.MODE.JOINED_AUTO_OFFER;
                         _this.createChatLayout(
                             event.chat_description,

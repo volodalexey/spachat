@@ -53,7 +53,7 @@ define('webrtc', [
                                 }
 
                                 _this.trigger('sendToWebSocket', {
-                                    type: 'localOffer',
+                                    type: 'offer',
                                     userId: chat.userId,
                                     offerDescription: _this.data.localOfferDescription
                                 });
@@ -70,7 +70,7 @@ define('webrtc', [
                                 }
 
                                 _this.trigger('sendToWebSocket', {
-                                    type: 'localAnswer',
+                                    type: 'answer',
                                     userId: chat.userId,
                                     answerDescription: _this.data.localAnswerDescription
                                 });
@@ -87,7 +87,7 @@ define('webrtc', [
                                 }
 
                                 _this.trigger('sendToWebSocket', {
-                                    type: 'localOffer',
+                                    type: 'accept',
                                     userId: chat.userId,
                                     localOfferDescription: _this.data.localOfferDescription
                                 });

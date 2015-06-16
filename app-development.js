@@ -229,8 +229,8 @@ var onAnswer = function(curWS, data) {
 var msgMap = {
     create: onCreateChat,
     join: onJoinChat,
-    localOffer: onOffer,
-    localAnswer: onAnswer
+    offer: onOffer,
+    answer: onAnswer
 };
 
 var onMessage = function(data) {
