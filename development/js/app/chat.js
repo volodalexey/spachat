@@ -39,30 +39,37 @@ define('chat', [
     ) {
 
         var defaultOptions = {
-            redraw_mode: "rte",
-            redraw_choice_page_mode: "rte",
-            curPage: null,
-            firstPage: 1,
-            lastPage: null,
             padding: {
                 bottom: 5
             },
-            per_page_value: 2,
-            valueEnablePagination: false,
-            showChoicePerPage: false
+            headerOptions: {
+                show: true
+            },
+            paginationOptions: {
+                curPage: null,
+                firstPage: 1,
+                lastPage: null,
+                showEnablePagination: false,
+                showChoicePerPage: false,
+                perPageValue: 2,
+                rtePerPage: true,
+                rteChoicePage: true
+            }
         };
 
         var chat = function(options) {
             this.extend(this, defaultOptions);
-            this.extend(this, options);
 
             this.header = new Header({chat: this});
+            //this.headerOptions.mode = this.header.MODE.DEFFFF;
             this.editor = new Editor({chat: this});
             this.pagination = new Pagination({chat: this});
             this.settings = new Settings({chat: this});
             this.contact_list = new Contact_list({chat: this});
             this.messages = new Messages({chat: this});
             this.webrtc = new Webrtc({chat: this});
+
+            this.extend(this, options);
         };
 
         chat.prototype = {
@@ -82,7 +89,7 @@ define('chat', [
 
             MODE: {
                 SETTING: 'SETTING',
-                MESSAGES: 'MESSAGES',
+                //MESSAGES: 'MESSAGES',
                 CONTACT_LIST: 'CONTACT_LIST',
                 MESSAGES_DISCONNECTED: 'MESSAGES_DISCONNECTED',
                 CREATED_AUTO: 'CREATED_AUTO',
@@ -119,12 +126,14 @@ define('chat', [
                 _this.chat_wrapper.innerHTML = _this.chat_template();
                 _this.cashElements();
                 _this.header_outer_container.innerHTML = _this.waiter_template();
+                _this.body_outer_container.innerHTML = _this.outer_container_template();
 
                 _this.addEventListeners();
                 _this.webrtc.render(options, this);
                 _this.header.render(options, this);
+               _this.renderChatContent();
 
-                switch (_this.mode) {
+                /*switch (_this.mode) {
                     case "MESSAGES":
                         _this.body_outer_container.innerHTML = _this.outer_container_template();
                         _this.editor.renderEditorPanel(function() {
@@ -134,7 +143,14 @@ define('chat', [
                             _this.messageElem = _this.chat_element.querySelector('[data-role="message_container"]');
                         });
                         break;
-                }
+                }*/
+            },
+
+            renderChatContent: function(options) {
+                var _this = this;
+                _this.messages.render({start: 0, scrollTop: true}, this);
+                _this.editor.renderEditorPanel(options, this);
+                _this.pagination.initialize(options, this);
             },
 
             addEventListeners: function() {

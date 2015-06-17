@@ -72,9 +72,10 @@ define('editor', [
                 _this.btnEditPanel = _this.controls_container.querySelector('[data-action="btnEditPanel"]');
             },
 
-            renderEditorPanel: function(callback) {
+            renderEditorPanel: function(options, chat) {
                 var _this = this;
-                _this.editor_container = _this.chatElem.querySelector('[data-role="editor_container"]');
+                _this.chat = chat;
+                _this.editor_container = _this.chat.chat_element.querySelector('[data-role="editor_container"]');
 
                 _this.loadConfig(null, function(confErr) {
                     _this.loadData(confErr, function(dataErr, data) {
@@ -85,7 +86,7 @@ define('editor', [
                             }
                             _this.cashElements();
                             _this.addMainEventListener();
-                            callback();
+                            //callback();
                             // success
                         });
                     });

@@ -1,12 +1,14 @@
 define('messages', [
         'event_core',
         'template_core',
+        'indexeddb',
 
         'text!../html/message_template.html'
     ],
     function(
         event_core,
         template_core,
+        indexeddb,
 
         message_template
     ) {
@@ -16,12 +18,12 @@ define('messages', [
 
         messages.prototype = {
 
-            initialize: function(options) {
+            render: function(options, chat) {
                 var _this = this;
 
-                _this.chat = options.chat;
+                _this.chat = chat;
                 _this.data = {
-                    options: options,
+                    //options: options,
                     collection: {
                         "id": _this.chat.chatsArray.length,
                         "db_name": _this.chat.chatsArray.length + '_chat_messages',
@@ -37,9 +39,14 @@ define('messages', [
                     //    "keyPath": "id"
                     //}
                 };
-                _this.addEventListeners();
-                _this.fillListMessage(options);
-                return _this;
+
+                switch (_this.chat.mode) {
+                    case _this.chat.MODE.MESSAGES_DISCONNECTED:
+                        _this.addEventListeners();
+                        _this.fillListMessage(options);
+                }
+
+                //return _this;
             },
 
             addEventListeners: function() {
@@ -64,15 +71,14 @@ define('messages', [
 
             fillListMessage: function(options) {
                 var _this = this;
-                _this.messages_container = _this.chat.chatElem.querySelector('[data-role="messages_container"]');
+                _this.messages_container = _this.chat.chat_element.querySelector('[data-role="messages_container"]');
 
                 if (!_this.messages_container) {
                     return;
                 }
 
                 _this.messages_container.innerHTML = "";
-                // TODO use trigger to chat ?
-                _this.chat.indexeddb.getAll(_this.data.collection, function(getAllErr, messages) {
+                indexeddb.getAll(_this.data.collection, function(getAllErr, messages) {
                     if (getAllErr) {
                         _this.messages_container.innerHTML = getAllErr.message || getAllErr;
                         return;
@@ -93,7 +99,7 @@ define('messages', [
                     if(options.callback){
                         options.callback();
                     }
-                    _this.trigger('resizeMessagesContainer');
+                    //_this.trigger('resizeMessagesContainer');
                 });
             },
 

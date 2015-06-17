@@ -206,7 +206,7 @@ define('panel', [
                     _this.outer_container.style[_this.type] = "0px";
                     _this.fillPanelToolbar();
                     //_this.renderPanelBody();
-                    _this.renderLayout(null);
+                    _this.renderLayout(null, null);
                     if (bigMode === true) {
                         _this.resizePanel();
                     }
@@ -292,7 +292,7 @@ define('panel', [
                 _this.body_mode = _this.MODE.USER_INFO_SHOW;
                 _this.user = null;
                 //_this.renderPanelBody();
-                _this.renderLayout(null);
+                _this.renderLayout(null, null);
             },
 
             saveChangeUserInfo: function() {
@@ -303,7 +303,7 @@ define('panel', [
                             _this.updateUserInfo(function() {
                                 _this.body_mode = _this.MODE.USER_INFO_SHOW;
                                 _this.user = null;
-                                _this.renderLayout(null);
+                                _this.renderLayout(null, null);
                             })
                         } else {
                             console.error(new Error("New password and confirm password do not match"));
@@ -364,7 +364,7 @@ define('panel', [
             switchPanelMode: function(event) {
                 var _this = this;
                 _this.body_mode = event.target.getAttribute("data-mode");
-                _this.renderLayout(null);
+                _this.renderLayout(null, null);
             },
 
             show_more_info: function(event) {

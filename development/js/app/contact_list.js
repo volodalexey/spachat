@@ -34,13 +34,13 @@ define('contact_list', [
             },
 
             configMap: {
-                "CONTACT_LIST": '/mock/contact_list_config.json'
+                CONTACT_LIST: '/mock/contact_list_config.json'
             },
 
             renderContactList: function(options) {
                 var _this = this;
                 this.body_outer_container = options.chat.body_outer_container;
-                this.header_container = options.chat.chatElem.querySelector('[data-role="header_outer_container"]');
+                this.header_container = options.chat.chat_element.querySelector('[data-role="header_outer_container"]');
                 _this.chat = options.chat;
                 _this.filter_container = _this.header_container.querySelector('[data-role="filter_container"]');
 
@@ -48,18 +48,20 @@ define('contact_list', [
                     _this.filter_container.classList.add('hide');
                 }
                 //_this.trigger('calcOuterContainerHeight');
-                if (_this.chat.data.body_mode === _this.chat.MODE.CONTACT_LIST) {
-                    _this.trigger('renderMassagesEditor');
-                    _this.chat.data.body_mode = _this.chat.MODE.MESSAGES;
+                if (_this.chat.mode === _this.chat.MODE.CONTACT_LIST) {
+                    //_this.trigger('renderMassagesEditor');
+                    _this.chat.mode = _this.chat.MODE.MESSAGES_DISCONNECTED;
+                    _this.body_outer_container.innerHTML = "";
                     _this.body_outer_container.classList.remove('background');
+                    _this.trigger('renderMassagesEditor');
                 } else {
-                    _this.chat.data.body_mode = _this.chat.MODE.CONTACT_LIST;
+                    _this.chat.mode = _this.chat.MODE.CONTACT_LIST;
                     _this.body_outer_container.classList.add('background');
-                    _this.body_mode = _this.chat.data.body_mode;
+                    _this.body_mode = _this.chat.mode;
                     _this.elementMap = {
                         "CONTACT_LIST": _this.body_outer_container
                     };
-                    _this.renderLayout(null);
+                    _this.renderLayout(null, null);
                 }
             }
         };

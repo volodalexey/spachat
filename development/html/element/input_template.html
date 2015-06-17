@@ -1,11 +1,25 @@
 <% var _in = arguments[0]; %>
-<input data-role="<%= _in.config.data_role%>" type="<%= _in.config.type%>" class="<%= _in.config.class%>"
-<% if(_in.config.data_key) { %> value= "<%= _in.data[_in.config.data_key] %>" <%} %>
+<input type="<%= _in.config.type%>"
+<% if(_in.config.class){ %> class="<%= _in.config.class%>" <%}%>
+<% if(_in.config.data_role){ %> data-role="<%= _in.config.data_role%>" <%}%>
+<% if(_in.config.data_action){ %> data-action="<%= _in.config.data_action%>" <%}%>
+
 <% if(_in.config.id){ %> id="<%= _in.config.id%>" <%}%>
 <% if(_in.config.data_main){ %> data-main="<%= _in.config.id%>" <%}%>
 <% if(_in.config.disabled === true){ %> disabled <%}%>
 <% if(_in.config.onkeypress){ %> onkeypress="<%= _in.config.onkeypress %>" <%}%>
 <% if(_in.config.data_location){ %> data-location="<%= _in.config.data_location%>" <%}%>
+
+<% if (_in.config.type === "checkbox") { %>
+ <% if(_in.data[_in.config.data_key]) { %>
+ checked
+ <%} %>
+<% } %>
+
+<% if (_in.config.type === "text") { %>
+<% if(_in.config.data_key) { %> value= "<%= _in.data[_in.config.data_key] %>" <%} %>
+<% } %>
+
  >
 <%= _in.config.text%>
 </input>

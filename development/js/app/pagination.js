@@ -63,10 +63,10 @@ define('pagination', [
                 _this.enable_pagination = _this.chatElem.querySelector('[data-role="enable_pagination"]');
                 _this.per_page = _this.chatElem.querySelector('[data-role="per_page"]');
                 if (_this.per_page) {
-                    _this.per_page.value = _this.chat.data.per_page_value;
+                    _this.per_page.value = _this.chat.data.perPageValue;
                     if (_this.per_page.value === "") {
                         _this.per_page.value = 2;
-                        _this.chat.data.per_page_value = 2;
+                        _this.chat.data.perPageValue = 2;
                     }
                 }
                 _this.showPagination(function() {
@@ -93,8 +93,8 @@ define('pagination', [
             showPagination: function(callback, _callback) {
                 var _this = this;
                 if (_this.enable_pagination) {
-                    _this.chat.data.valueEnablePagination = _this.enable_pagination.checked;
-                    _this.chat.data.per_page_value = parseInt(_this.per_page.value);
+                    _this.chat.data.showEnablePagination = _this.enable_pagination.checked;
+                    _this.chat.data.perPageValue = parseInt(_this.per_page.value);
                     if (_this.enable_pagination.checked) {
                         if(_this.chat.data.showChoicePerPage){
                             _this.showChoicePerPage();
@@ -111,7 +111,7 @@ define('pagination', [
                         _this.trigger('fillListMessage', {start: 0, callback: _callback});
                     }
                 } else {
-                    if (_this.chat.data.valueEnablePagination) {
+                    if (_this.chat.data.showEnablePagination) {
                         if(_this.chat.data.showChoicePerPage){
                             _this.showChoicePerPage();
                         }
@@ -130,14 +130,14 @@ define('pagination', [
                 var final;
                 _this.chat.indexeddb.getAll(_this.data.collection, function(getAllErr, messages) {
                     var quantityMes = messages.length;
-                    var quantityPages = Math.ceil(quantityMes / _this.chat.data.per_page_value);
+                    var quantityPages = Math.ceil(quantityMes / _this.chat.data.perPageValue);
                     if (_this.chat.data.curPage === null) {
-                        start = quantityPages * _this.chat.data.per_page_value - _this.chat.data.per_page_value;
-                        final = quantityPages * _this.chat.data.per_page_value;
+                        start = quantityPages * _this.chat.data.perPageValue - _this.chat.data.perPageValue;
+                        final = quantityPages * _this.chat.data.perPageValue;
                         _this.chat.data.curPage = quantityPages;
                     } else {
-                        start = (_this.chat.data.curPage - 1) * _this.chat.data.per_page_value;
-                        final = (_this.chat.data.curPage - 1) * _this.chat.data.per_page_value + _this.chat.data.per_page_value;
+                        start = (_this.chat.data.curPage - 1) * _this.chat.data.perPageValue;
+                        final = (_this.chat.data.curPage - 1) * _this.chat.data.perPageValue + _this.chat.data.perPageValue;
                     }
                     _this.trigger('fillListMessage', {start: start, final: final});
                     _this.chat.data.lastPage = quantityPages;

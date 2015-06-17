@@ -12,7 +12,7 @@ define('render_layout_core', [
 
             __class_name: "render_layout_core",
 
-            renderLayout: function(options) {
+            renderLayout: function(options, callback) {
                 var _this = this;
                 _this.loadBodyConfig(null, options, function(confErr) {
                     _this.loadBodyData(confErr, options, function(dataErr, data) {
@@ -23,6 +23,9 @@ define('render_layout_core', [
                             }
 
                             // success
+                            if (callback){
+                                callback();
+                            }
                         });
                     });
                 });
@@ -35,13 +38,14 @@ define('render_layout_core', [
                     return;
                 }
 
-                if (_this.configMap[_this.body_mode] || _this.configIconMap[_this.body_mode]) {
-                    if (_this.body_mode === _this.MODE.USER_INFO_SHOW) {
-                        if (_this.config) {
-                            callback();
-                            return;
+                if (_this.configMap[_this.body_mode] || _this.configIconMap && _this.configIconMap[_this.body_mode]) {
+
+                        if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW) {
+                            if (_this.config) {
+                                callback();
+                                return;
+                            }
                         }
-                    }
 
                     if (!_this.configMap[_this.body_mode]) {
                         _this.loadBodyIconConfig(callback);
@@ -116,6 +120,11 @@ define('render_layout_core', [
                         }
                     });
                 } else {
+                    if (_this.MODE_HEADER && _this.body_mode === _this.MODE_HEADER.FILTER) {
+                        callback(null, options);
+                        return;
+
+                    }
                     callback();
                 }
             },
@@ -134,6 +143,7 @@ define('render_layout_core', [
                         icon_config: _this.icon_config,
                         mode: _this.body_mode,
                         data: data,
+                        description: _this.description,
                         triple_element_template: _this.triple_element_template,
                         button_template: _this.button_template,
                         input_template: _this.input_template,
