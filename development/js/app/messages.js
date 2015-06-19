@@ -62,29 +62,29 @@ define('messages', [
                 var _this = this;
                 if (options.scrollTop) {
                     if (typeof options.scrollTop == 'number') {
-                        _this.messages_container.scrollTop = options.scrollTop;
+                        _this.chat.body_content_container.scrollTop = options.scrollTop;
                     } else {
-                        _this.messages_container.scrollTop = _this.messages_container.scrollHeight;
+                        _this.chat.body_content_container.scrollTop = _this.chat.body_content_container.scrollHeight;
                     }
                 }
             },
 
             fillListMessage: function(options) {
                 var _this = this;
-                _this.messages_container = _this.chat.chat_element.querySelector('[data-role="messages_container"]');
-
-                if (!_this.messages_container) {
+                //_this.chat.body_content_container = _this.chat.chat_element.querySelector('[data-role="chat.body_content_container"]');
+                //_this.chat.body_content_container
+                if (!_this.chat.body_content_container) {
                     return;
                 }
 
-                _this.messages_container.innerHTML = "";
+                _this.chat.body_content_container.innerHTML = "";
                 indexeddb.getAll(_this.data.collection, function(getAllErr, messages) {
                     if (getAllErr) {
-                        _this.messages_container.innerHTML = getAllErr.message || getAllErr;
+                        _this.chat.body_content_container.innerHTML = getAllErr.message || getAllErr;
                         return;
                     }
 
-                    _this.messages_container.innerHTML = "";
+                    _this.chat.body_content_container.innerHTML = "";
                     if (options.final > messages.length || !options.final) {
                         options.final = messages.length;
                     }
@@ -94,7 +94,7 @@ define('messages', [
                             innerHTML: messages[i].innerHTML
                         }));
                     }
-                    _this.messages_container.innerHTML = generatedMessages.join('');
+                    _this.chat.body_content_container.innerHTML = generatedMessages.join('');
                     _this.scrollTo(options);
                     if(options.callback){
                         options.callback();
@@ -127,7 +127,7 @@ define('messages', [
                         if (error) {
                             return;
                         }
-                        _this.messages_container.innerHTML = _this.messages_container.innerHTML + _this.message_template({
+                        _this.chat.body_content_container.innerHTML = _this.chat.body_content_container.innerHTML + _this.message_template({
                                 innerHTML: message.innerHTML
                             });
                         _this.scrollTo(options);

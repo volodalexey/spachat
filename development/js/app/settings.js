@@ -35,32 +35,21 @@ define('settings', [
                 SETTING: ''
             },
 
-            renderSettings: function(options) {
+            renderSettings: function(options, chat) {
                 var _this = this;
-                _this.chat = options.chat;
-                this.body_outer_container = options.chat.body_outer_container;
-                this.header_container = options.chat.chat_element.querySelector('[data-role="header_outer_container"]');
-                _this.filter_container = _this.header_container.querySelector('[data-role="filter_container"]');
+                _this.chat = chat;
 
-                if (!_this.filter_container.classList.contains('hide')) {
-                    _this.filter_container.classList.add('hide');
-                }
-                //_this.trigger('calcOuterContainerHeight');
-                if (_this.chat.mode === _this.chat.MODE.SETTING) {
-                    //_this.trigger('renderMassagesEditor');
-                    _this.chat.mode = _this.chat.MODE.MESSAGES_DISCONNECTED;
-                    _this.body_outer_container.innerHTML = "";
-                    _this.body_outer_container.classList.remove('background');
-                    _this.trigger('renderMassagesEditor');
-                } else {
-                    _this.chat.mode = _this.chat.MODE.SETTING;
-                    _this.body_outer_container.classList.add('background');
-                    _this.body_mode = _this.chat.mode;
+                if (!_this.previewMode || _this.previewMode !== _this.chat.contentOptions.mode) {
+                    _this.body_content_container = _this.chat.body_content_container;
+                    _this.body_content_container.classList.add('background');
+                    _this.body_mode = _this.chat.contentOptions.mode;
                     _this.elementMap = {
-                        "SETTING": _this.body_outer_container
+                        "SETTING": _this.body_content_container
                     };
                     _this.renderLayout(null, null);
                 }
+
+                _this.previewMode = _this.chat.contentOptions.mode;
             }
 
         };

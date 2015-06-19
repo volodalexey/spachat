@@ -255,12 +255,10 @@ define('editor', [
                             }
                         }
                     }
-                    _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
+                    //_this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
                     _this.container = _this.messageElem.querySelector(".container");
                     _this.trigger('calcMessagesContainerHeight');
-                    if (_this.messages_container) {
-                        _this.messages_container.scrollTop = 9999;
-                    }
+
                 }
             },
 

@@ -37,11 +37,22 @@ define('contact_list', [
                 CONTACT_LIST: '/mock/contact_list_config.json'
             },
 
-            renderContactList: function(options) {
+            renderContactList: function(options, chat) {
                 var _this = this;
-                this.body_outer_container = options.chat.body_outer_container;
-                this.header_container = options.chat.chat_element.querySelector('[data-role="header_outer_container"]');
-                _this.chat = options.chat;
+                _this.chat = chat;
+
+                this.body_content_container = _this.chat.body_content_container;
+                //this.header_container = _this.chat.chat_element.querySelector('[data-role="header_outer_container"]');
+
+
+
+                _this.body_content_container.classList.add('background');
+                _this.body_mode = _this.chat.contentOptions.mode;
+                _this.elementMap = {
+                    "CONTACT_LIST": _this.body_content_container
+                };
+                _this.renderLayout(null, null);
+                /*
                 _this.filter_container = _this.header_container.querySelector('[data-role="filter_container"]');
 
                 if (!_this.filter_container.classList.contains('hide')) {
@@ -51,18 +62,18 @@ define('contact_list', [
                 if (_this.chat.mode === _this.chat.MODE.CONTACT_LIST) {
                     //_this.trigger('renderMassagesEditor');
                     _this.chat.mode = _this.chat.MODE.MESSAGES_DISCONNECTED;
-                    _this.body_outer_container.innerHTML = "";
-                    _this.body_outer_container.classList.remove('background');
+                    _this.body_content_container.innerHTML = "";
+                    _this.body_content_container.classList.remove('background');
                     _this.trigger('renderMassagesEditor');
                 } else {
                     _this.chat.mode = _this.chat.MODE.CONTACT_LIST;
-                    _this.body_outer_container.classList.add('background');
+                    _this.body_content_container.classList.add('background');
                     _this.body_mode = _this.chat.mode;
                     _this.elementMap = {
-                        "CONTACT_LIST": _this.body_outer_container
+                        "CONTACT_LIST": _this.body_content_container
                     };
                     _this.renderLayout(null, null);
-                }
+                }*/
             }
         };
 

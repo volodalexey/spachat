@@ -42,10 +42,10 @@ define('pagination', [
                 };
                 _this.chat = options.chat;
                 _this.chatElem = _this.chat.chatElem;
-                _this.outer_container = _this.chatElem.querySelector('[data-role="body_outer_container"]');
+                _this.outer_container = _this.chatElem.querySelector('[data-role="body_content_container"]');
                 _this.pagination_container = _this.chatElem.querySelector('[data-role="pagination_container"]');
-                _this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
-                _this.choice_per_page_container = _this.outer_container.querySelector('[data-role="per_page_container"]');
+                //_this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
+                _this.choice_per_page_container = _this.outer_container.querySelector('[data-role="go_to_container"]');
                 _this.sendRequest("/mock/pagination_navbar_config.json", function(err, res) {
                     if (err) {
                         console.log(err);
@@ -106,7 +106,7 @@ define('pagination', [
                         }
                     } else {
                         _this.pagination_container.classList.add("hide");
-                        _this.choice_per_page_container = _this.outer_container.querySelector('[data-role="per_page_container"]');
+                        _this.choice_per_page_container = _this.outer_container.querySelector('[data-role="go_to_container"]');
                         _this.choice_per_page_container.innerHTML = "";
                         _this.trigger('fillListMessage', {start: 0, callback: _callback});
                     }

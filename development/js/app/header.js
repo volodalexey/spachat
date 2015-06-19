@@ -38,22 +38,28 @@ define('header', [
 
             configMap: {
                 WEBRTC: '',
-                MESSAGES_DISCONNECTED: '/mock/header_navbar_config.json',
-                FILTER: '/mock/filter_navbar_config.json'
+                TAB: '/mock/header_navbar_config.json',
+                FILTER: '/mock/filter_navbar_config.json',
+                WAITER: ''
             },
 
             MODE_DESCRIPTION: {
                 WEBRTC: 'Web RTC Initialization',
-                MESSAGES_DISCONNECTED: 'Chat Messages'
+                TAB: 'Chat Messages',
+                WAITER: ''
             },
 
-            MODE_HEADER: {
-                FILTER: 'FILTER'
+            MODE: {
+                FILTER: 'FILTER',
+                WEBRTC: 'WEBRTC',
+                WAITER: 'WAITER',
+                TAB: 'TAB'
             },
 
             bindToolbarContext: function() {
                 var _this = this;
-                _this.bindedTriggerRouter = _this.triggerRouter.bind(_this);
+                //_this.bindedTriggerRouter = _this.triggerRouter.bind(_this);
+                _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
                 _this.bindedRenderFilter = _this.renderFilter.bind(_this);
                 _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
             },
@@ -61,127 +67,115 @@ define('header', [
             addToolbarEventListener: function() {
                 var _this = this;
                 _this.removeToolbarEventListeners();
-                _this.addRemoveListener('add', _this.chat.header_outer_container, 'click', _this.bindedTriggerRouter, false);
-                _this.addRemoveListener('add', _this.chat.header_outer_container, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('add', _this.chat.header_outer_container, 'checked', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('add', _this.chat.header_outer_container, 'input', _this.bindedDataActionRouter, false);
+                //_this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedTriggerRouter, false);                _this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedTriggerRouter, false);
+                _this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedThrowEventRouter, false);
+
+                _this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.chat.header_container, 'checked', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.chat.header_container, 'input', _this.bindedDataActionRouter, false);
             },
 
             removeToolbarEventListeners: function() {
                 var _this = this;
-                _this.addRemoveListener('remove', _this.chat.header_outer_container, 'click', _this.bindedTriggerRouter, false);
-                _this.addRemoveListener('remove', _this.chat.header_outer_container, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('remove', _this.chat.header_outer_container, 'checked', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('remove', _this.chat.header_outer_container, 'input', _this.bindedDataActionRouter, false);
+                //_this.addRemoveListener('remove', _this.chat.header_container, 'click', _this.bindedTriggerRouter, false);
+                _this.addRemoveListener('remove', _this.chat.header_container, 'click', _this.bindedThrowEventRouter, false);
+
+                _this.addRemoveListener('remove', _this.chat.header_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.chat.header_container, 'checked', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.chat.header_container, 'input', _this.bindedDataActionRouter, false);
             },
 
             cashBodyElement: function() {
                 var _this = this;
 
-                if (_this.body_mode === _this.MODE_HEADER.FILTER) {
+                if (_this.body_mode === _this.MODE.FILTER) {
                     _this.enablePagination = _this.filter_container.querySelector('[data-role="enablePagination"]');
                     _this.perPageValue = _this.filter_container.querySelector('[data-role="perPageValue"]');
                     //_this.showPerPage = _this.filter_container.querySelector('[data-action="showPerPage"]');
                     _this.rteShowPerPage = _this.filter_container.querySelector('[data-role="rteShowPerPage"]');
                 }
-/*
-
-                if (_this.showEnablePagination) {
-                    _this.showEnablePagination.checked = _this.chat.data.showEnablePagination;
-                    _this.showEnablePagination.addEventListener('change', _this.renderPagination.bind(_this), false);
-                }
-
-                if (_this.labeltPerPage) {
-                    _this.labeltPerPage.addEventListener('input', _this.changePerPage.bind(_this), false);
-                    _this.labeltPerPage.value = _this.chat.data.perPageValue;
-                }
-
-                if (_this.showPerPage) {
-                    _this.showPerPage.addEventListener('click', _this._showPerPage.bind(_this), false);
-                }
-
-                if (_this.rteShowPerPage) {
-                    _this.rteShowPerPage.addEventListener('change', _this.changeRealTimeEditing.bind(_this), false);
-                }*/
             },
 
 
             render: function(options, chat) {
                 var _this = this;
                 _this.chat = chat;
-
-                switch (_this.chat.mode) {
-                    case _this.chat.MODE.MESSAGES_DISCONNECTED:
-                        _this.body_mode = _this.chat.mode;
-                        _this.description = _this.MODE_DESCRIPTION[_this.body_mode];
-                        _this.elementMap = {
-                            MESSAGES_DISCONNECTED: _this.chat.header_outer_container
-                        };
-                        _this.renderLayout(null, function(){
-                            _this.filter_container = _this.chat.header_outer_container.querySelector('[data-role="filter_container"]');
-                            _this.addToolbarEventListener();
-                        });
-
-                        /*_this.loadHeaderConfig(null, function(confErr) {
-                            _this.loadHeaderData(confErr, function(dataErr, data) {
-                                _this.fillHeader(dataErr, data, function(templErr) {
-                                    if (templErr) {
-                                        console.error(templErr);
-                                        return;
-                                    }
-                                    _this.filter_container = _this.chat.header_outer_container.querySelector('[data-role="filter_container"]');
-                                    _this.addToolbarEventListener();
-                                });
+                if (_this.chat.headerOptions.show) {
+                    _this.previewMode = _this.chat.headerOptions.mode;
+                    switch (_this.chat.headerOptions.mode) {
+                        case _this.MODE.TAB:
+                            _this.body_mode = _this.MODE.TAB;
+                            _this.description = _this.MODE_DESCRIPTION[_this.body_mode];
+                            _this.elementMap = {
+                                TAB: _this.chat.header_container
+                            };
+                            _this.renderLayout(null, function(){
+                                _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
+                                _this.addToolbarEventListener();
+                                _this.renderFilter();
                             });
-                        });*/
-                        break;
-                    case "WEBRTC":
-                        _this.description = _this.MODE_DESCRIPTION[_this.body_mode];
-                        _this.fillBody(null, null, null);
-                        break;
+                            break;
+                        case _this.MODE.WEBRTC:
+                            _this.body_mode = _this.MODE.WEBRTC;
+                            _this.description = _this.MODE_DESCRIPTION[_this.body_mode];
+                            _this.elementMap = {
+                                WEBRTC: _this.chat.header_container.querySelector('[data-role="webrtc_container"]')
+                            };
+                            _this.fillBody(null, null, function(){
+                                _this.renderFilter();
+                            });
+                            break;
+                        case _this.MODE.WAITER:
+                            _this.body_mode = _this.MODE.WAITER;
+                            break;
+                    }
                 }
             },
 
-            // --------------------- Filter
-/*            forceRenderMessages: function(callback) {
-                var _this = this;
-                if (_this.chat.mode !== _this.chat.MODE.MESSAGES_DISCONNECTED) {
-                    _this.trigger('renderMassagesEditor', callback);
-                    //_this.trigger('renderPagination');
-                    _this.chat.mode = _this.chat.MODE.MESSAGES_DISCONNECTED;
-                    _this.chat.body_outer_container.setAttribute("param-content", "message");
-                    _this.chat.body_outer_container.classList.remove('background');
-                } else {
-                    callback();
-                }
-            },*/
-
             renderFilter: function() {
                 var _this = this;
-
-                if (_this.filter_container.classList.contains('hide')){
+                if (_this.chat.filterOptions.show) {
+                    _this.body_mode = _this.MODE.FILTER;
                     _this.filter_container.classList.remove('hide');
                     _this.elementMap = {
                         FILTER: _this.filter_container
                     };
-                    _this.body_mode = _this.MODE_HEADER.FILTER;
+                    _this.body_mode = _this.MODE.FILTER;
                     var data = {
                         "perPageValue": _this.chat.paginationOptions.perPageValue,
                         "showEnablePagination": _this.chat.paginationOptions.showEnablePagination,
                         "rtePerPage": _this.chat.paginationOptions.rtePerPage
                     };
                     _this.renderLayout(data, null);
+
+
+                    /*if (_this.filter_container.classList.contains('hide')) {
+                        _this.filter_container.classList.remove('hide');
+                        _this.elementMap = {
+                            FILTER: _this.filter_container
+                        };
+                        _this.body_mode = _this.MODE.FILTER;
+                        var data = {
+                            "perPageValue": _this.chat.paginationOptions.perPageValue,
+                            "showEnablePagination": _this.chat.paginationOptions.showEnablePagination,
+                            "rtePerPage": _this.chat.paginationOptions.rtePerPage
+                        };
+                        _this.renderLayout(data, null);
+                    } else {
+                        _this.filter_container.innerHTML = "";
+                        _this.filter_container.classList.add('hide');
+                    }
+
+                    if (_this.chat.mode !== _this.chat.MODE.MESSAGES_DISCONNECTED) {
+                        _this.chat.mode = _this.chat.MODE.MESSAGES_DISCONNECTED;
+                        _this.chat.body_content_container.classList.remove('background');
+                        _this.trigger('renderMassagesEditor');
+                    }*/
                 } else {
                     _this.filter_container.innerHTML = "";
                     _this.filter_container.classList.add('hide');
                 }
-
-                if (_this.chat.mode !== _this.chat.MODE.MESSAGES_DISCONNECTED) {
-                    _this.chat.mode = _this.chat.MODE.MESSAGES_DISCONNECTED;
-                    _this.chat.body_outer_container.classList.remove('background');
-                    _this.trigger('renderMassagesEditor');
-                }
-
+            },
 
 /*
                 _this.sendRequest("/mock/filter_navbar_config.json", function(err, res) {
@@ -237,7 +231,7 @@ define('header', [
                         });
                     }
                 })*/
-            },
+
 
             changeRealTimeEditing: function() {
                 var _this = this;
@@ -330,14 +324,16 @@ define('header', [
 
         header.prototype.dataMap = {
             WEBRTC: '',
-            MESSAGES_DISCONNECTED: '',
-            FILTER: ''
+            TAB: '',
+            FILTER: '',
+            WAITER: ''
         };
 
         header.prototype.templateMap = {
             WEBRTC: header.prototype.header_template,
-            MESSAGES_DISCONNECTED: header.prototype.header_template,
-            FILTER: header.prototype.filter_template
+            TAB: header.prototype.header_template,
+            FILTER: header.prototype.filter_template,
+            WAITER: ''
         };
 
         return header;
