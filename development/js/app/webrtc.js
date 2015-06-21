@@ -138,7 +138,7 @@ define('webrtc', [
             },
 
             /**
-             * create session description protocol and send it to the server
+             * create offer session description protocol and send it to the server
              * @param options
              * @param callback
              */
@@ -157,6 +157,11 @@ define('webrtc', [
                 );
             },
 
+            /**
+             * create answer session description protocol and send it to the server
+             * @param options
+             * @param callback
+             */
             createLocalAnswerAuto: function(options, callback) {
                 var _this = this;
                 _this.createRTCPeerConnection(
@@ -186,6 +191,9 @@ define('webrtc', [
                 }
 
                 _this.trigger('log', { message: 'done: acceptRemoteAnswerAuto' });
+                if (callback) {
+                    callback();
+                }
             },
 
             clickAnswerRemoteOffer: function(event) {
@@ -215,6 +223,7 @@ define('webrtc', [
                 _this.peerConnection.onicecandidate = function(e) {
                     if (e.candidate == null) {
                         _this.mode = options.mode;
+                        console.log('ICE candidate', e.localDescription);
                         //_this.renderHanshake();
                     }
                 };
@@ -239,8 +248,9 @@ define('webrtc', [
                 _this.removeDataChannelListeners();
 
                 _this.dataChannel.onopen = function() {
-                    _this.chat.mode = "messages";
-                    _this.trigger('')
+                    //_this.chat.mode = "messages";
+                    //_this.trigger('')
+                    console.log('Data channel connection established!!!');
                     _this.chat.renderByMode();
                 };
                 _this.dataChannel.onmessage = function(e) {
@@ -263,7 +273,7 @@ define('webrtc', [
                 var _this = this;
 
                 try {
-                    _this.data.dataChannel = _this.data.peerConnection.createDataChannel(_this.data.channel, {reliable: true});
+                    _this.dataChannel = _this.peerConnection.createDataChannel(_this.channel, {reliable: true});
                 } catch (error) {
                     callback(error);
                 }

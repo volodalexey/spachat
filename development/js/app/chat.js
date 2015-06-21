@@ -13,6 +13,8 @@ define('chat', [
         'template_core',
         'id_core',
         'extend_core',
+        'message_core',
+        'event_core',
 
         'text!../html/chat_template.html',
         'text!../html/waiter_template.html',
@@ -32,6 +34,8 @@ define('chat', [
              template_core,
              id_core,
              extend_core,
+             message_core,
+             event_core,
 
              chat_template,
              waiter_template,
@@ -276,6 +280,7 @@ define('chat', [
                 _this.messages.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
                 _this.webrtc.on('log', _this.console.log, _this);
                 _this.webrtc.on('sendToWebSocket', _this.sendToWebSocket, _this);
+                _this.on('notifyChat', _this.onMessageRouter, _this);
             },
 
             removeEventListeners: function() {
@@ -301,6 +306,7 @@ define('chat', [
                 _this.pagination.off('fillListMessage');
                 _this.webrtc.off('log');
                 _this.webrtc.off('sendToWebSocket');
+                _this.off('notifyChat');
             },
 
             throwRouter: function(action, event) {
@@ -384,8 +390,10 @@ define('chat', [
             },
 
             sendToWebSocket: function(sendData) {
+                var _this = this;
                 sendData.chat_description = this.valueOf();
                 websocket.sendMessage(sendData);
+                _this.proceedNextMessage();
             },
 
             /**
@@ -421,7 +429,7 @@ define('chat', [
                     // Create answer
                     _this.mode = _this.MODE.JOINED_AUTO_ANSWER;
                     _this.render({
-                        remoteOfferDescription: event.chat_description.offer.localOfferDescription
+                        remoteOfferDescription: event.chat_description.offer.offerDescription
                     });
                 }
             },
@@ -450,11 +458,29 @@ define('chat', [
                     //_this.render();
                 } else {
                     // I am NOT the creator of server stored answer
-                    // Accept answer
-                    _this.mode = _this.MODE.JOINED_AUTO_ACCEPT;
-                    _this.render({
-                        remoteAnswerDescription: event.chat_description.answer.localAnswerDescription
-                    });
+                    // Accept answer if I am the offer creator
+                    if (event.chat_description.offer.userId === _this.userId) {
+                        _this.mode = _this.MODE.JOINED_AUTO_ACCEPT;
+                        _this.render({
+                            remoteAnswerDescription: event.chat_description.answer.answerDescription
+                        });
+                    } else {
+                        console.error(new Error('Offer and Answer do not make sense!'));
+                    }
+                }
+            },
+
+            onMessageRouter: function(eventData) {
+                var _this = this;
+                _this.initializeMessagesStack();
+                if (_this.messagesStack.length) {
+                    _this.messagesStack.push(eventData);
+                } else {
+                    if (_this[eventData.notify_data]) {
+                        _this[eventData.notify_data](eventData);
+                    } else {
+                        console.error(new Error('No message handler'));
+                    }
                 }
             }
         };
@@ -462,6 +488,8 @@ define('chat', [
         extend(chat, template_core);
         extend(chat, id_core);
         extend(chat, extend_core);
+        extend(chat, message_core);
+        extend(chat, event_core);
 
         chat.prototype.chat_template = chat.prototype.template(chat_template);
         chat.prototype.waiter_template = chat.prototype.template(waiter_template);

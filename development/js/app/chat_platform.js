@@ -6,6 +6,7 @@ define('chat_platform', [
         'event_core',
         'template_core',
         'indexeddb',
+        'message_core',
 
         'text!../html/chat_platform_template.html'
     ],
@@ -16,6 +17,7 @@ define('chat_platform', [
              event_core,
              template_core,
              indexeddb,
+             message_core,
 
              chat_platform_template) {
 
@@ -88,23 +90,34 @@ define('chat_platform', [
              * @param event
              */
             onMessageRouter: function(event) {
-                var _this = this, parsedData = JSON.parse(event);
-                switch (parsedData.type) {
-                    case 'created':
-                        _this.chatCreateApproved(parsedData);
-                        break;
-                    case 'notifyChat':
-                        Chat.prototype.chatsArray.forEach(function(_chat) {
-                            if (parsedData.chat_description.chatId === _chat.chatId) {
-                                if (_chat[parsedData.notify_data]) {
-                                    _chat[parsedData.notify_data](parsedData);
-                                }
-                            }
-                        });
-                        break;
-                    case 'joined':
-                        _this.chatJoinApproved(parsedData);
-                        break;
+                var _this = this,
+                    parsedMessageData = typeof event === 'string' ? JSON.parse(event) : event;
+
+                _this.initializeMessagesStack();
+                if (parsedMessageData.type === 'notifyChat') {
+                    Chat.prototype.chatsArray.forEach(function(_chat) {
+                        if (parsedMessageData.chat_description.chatId === _chat.chatId) {
+                            _chat.trigger('notifyChat', parsedMessageData);
+                            //if (_chat[parsedMessageData.notify_data]) {
+                            //    _chat[parsedMessageData.notify_data](parsedMessageData);
+                            //}
+                        }
+                    });
+                } else {
+                    if (_this.messagesStack.length) {
+                        _this.messagesStack.push(parsedMessageData);
+                    } else {
+                        switch (parsedMessageData.type) {
+                            case 'created':
+                                _this.chatCreateApproved(parsedMessageData);
+                            break;
+                            case 'joined':
+                                _this.chatJoinApproved(parsedMessageData);
+                            break;
+                            default :
+                                console.error(new Error('Message handler not found'));
+                        }
+                    }
                 }
             },
 
@@ -170,6 +183,9 @@ define('chat_platform', [
                 var newChat = new Chat(chat_description);
                 Chat.prototype.chatsArray.push(newChat);
                 newChat.initialization(renderOptions);
+                setTimeout(function() {
+                    _this.proceedNextMessage();
+                }, 0);
             },
 
             /**
@@ -275,6 +291,7 @@ define('chat_platform', [
         extend(chat_platform, overlay_core);
         extend(chat_platform, event_core);
         extend(chat_platform, template_core);
+        extend(chat_platform, message_core);
 
         chat_platform.prototype.chat_platform_template = chat_platform.prototype.template(chat_platform_template);
 
