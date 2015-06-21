@@ -90,11 +90,17 @@ define('chat', [
             this.bodyOptions.mode = this.body.MODE.MESSAGES;
 
             this.extend(this, options);
+            this.bindContexts();
         };
 
         chat.prototype = {
 
             valueOfKeys: ['chatId', 'userId'],
+
+            bindContexts: function() {
+                var _this = this;
+                //_this.bindedThrowRouter = _this.throwRouter.bind(_this);
+            },
 
             valueOf: function() {
                 var toStringObject = {};
@@ -140,7 +146,7 @@ define('chat', [
                 }
             },
 
-            preparing: function(options) {
+            initialization: function(options) {
                 var _this = this;
                 _this.chat_wrapper = options && options.chat_wrapper ? options.chat_wrapper : _this.chat_wrapper;
                 _this.chat_wrapper.innerHTML = _this.chat_template();
@@ -183,16 +189,12 @@ define('chat', [
                 }*/
             },
 
-            changeMode: function(options, event){
+            changeMode: function(event){
                 var _this = this;
-                var newMode = event.target.getAttribute('data-mode-to');
-                var chat_part = event.target.getAttribute('data-chat-part');
                 _this.switchModes([
                     {
-                        /*chat_part: event.target.getAttribute('data-chat-part'),
-                        newMode: event.target.getAttribute('data-mode-to')*/
-                        chat_part: event.target.dataset['chatPart'],
-                        newMode: event.target.dataset['modeTo']
+                        chat_part: event.target.dataset.chat_part,
+                        newMode: event.target.dataset.mode_to
                     }
                 ]);
             },
@@ -239,7 +241,7 @@ define('chat', [
                             }
                             break;
                     }
-                })
+                });
                 _this.render(null);
             },
 
@@ -251,7 +253,7 @@ define('chat', [
 
                 //_this.header.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
                 //_this.header.on('renderSettings', _this.changeMode.bind(_this), _this);
-                _this.header.on('throw', _this.changeMode.bind(_this), _this);
+                _this.header.on('throw', _this.throwRouter, _this);
                 //_this.header.on('renderContactList', _this.changeMode.bind(_this), _this);
 /*                _this.header.on('changePerPage', _this.renderPerPageMessages.bind(_this), _this);
                 _this.header.on('calcOuterContainerHeight', _this.calcOuterContainerHeight.bind(_this), _this);
@@ -301,7 +303,11 @@ define('chat', [
                 _this.webrtc.off('sendToWebSocket');
             },
 
-
+            throwRouter: function(action, event) {
+                if (this[action]) {
+                    this[action](event);
+                }
+            },
 
             renderPagination: function() {
                 var _this = this;

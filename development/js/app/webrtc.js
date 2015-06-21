@@ -25,10 +25,7 @@ define('webrtc', [
                     ]
                 }
             };
-            _this.data = {
-                mode: "start",
-                channel: "test"
-            };
+            _this.channel = 'test';
             _this.bindContexts();
         };
 
@@ -55,7 +52,7 @@ define('webrtc', [
                                 _this.trigger('sendToWebSocket', {
                                     type: 'offer',
                                     userId: chat.userId,
-                                    offerDescription: _this.data.localOfferDescription
+                                    offerDescription: _this.localOfferDescription
                                 });
                             }
                         );
@@ -72,7 +69,7 @@ define('webrtc', [
                                 _this.trigger('sendToWebSocket', {
                                     type: 'answer',
                                     userId: chat.userId,
-                                    answerDescription: _this.data.localAnswerDescription
+                                    answerDescription: _this.localAnswerDescription
                                 });
                             }
                         );
@@ -89,7 +86,7 @@ define('webrtc', [
                                 _this.trigger('sendToWebSocket', {
                                     type: 'accept',
                                     userId: chat.userId,
-                                    localOfferDescription: _this.data.localOfferDescription
+                                    localOfferDescription: _this.localOfferDescription
                                 });
                             }
                         );
@@ -99,7 +96,7 @@ define('webrtc', [
 
             renderHanshake: function() {
                 var _this = this;
-                _this.chat.body_container.innerHTML = _this.webrtc_template({data: _this.data});
+                _this.chat.body_container.innerHTML = _this.webrtc_template({data: _this});
                 _this.addEventListeners();
             },
 
@@ -140,6 +137,11 @@ define('webrtc', [
                 _this.createLocalOffer();
             },
 
+            /**
+             * create session description protocol and send it to the server
+             * @param options
+             * @param callback
+             */
             createLocalOfferAuto: function(options, callback) {
                 var _this = this;
                 _this.createRTCPeerConnection(
@@ -174,8 +176,8 @@ define('webrtc', [
                 var _this = this;
                 _this.trigger('log', { message: 'try: acceptRemoteAnswerAuto' });
                 try {
-                    _this.data.remoteAnswerDescription = new RTCSessionDescription(options.remoteAnswerDescription);
-                    _this.data.peerConnection.setRemoteDescription(_this.data.remoteAnswerDescription);
+                    _this.remoteAnswerDescription = new RTCSessionDescription(options.remoteAnswerDescription);
+                    _this.peerConnection.setRemoteDescription(_this.remoteAnswerDescription);
                 } catch (error) {
                     if (callback) {
                         callback(error);
@@ -189,15 +191,20 @@ define('webrtc', [
             clickAnswerRemoteOffer: function(event) {
                 var _this = this;
                 _this.removeEventListeners();
-                _this.data.mode = "remoteOffer";
+                _this.mode = "remoteOffer";
                 _this.renderHanshake();
             },
 
+            /**
+             * create real time communication
+             * @param options
+             * @param callback
+             */
             createRTCPeerConnection: function(options, callback) {
                 var _this = this;
                 _this.trigger('log', { message: 'try: createRTCPeerConnection' });
                 try {
-                    _this.data.peerConnection = new webkitRTCPeerConnection(_this.configuration.RTC, _this.configuration.constraints);
+                    _this.peerConnection = new webkitRTCPeerConnection(_this.configuration.RTC, _this.configuration.constraints);
                 } catch (error) {
                     if (callback) {
                         callback(error);
@@ -205,15 +212,16 @@ define('webrtc', [
                     return;
                 }
 
-                _this.data.peerConnection.onicecandidate = function(e) {
+                _this.peerConnection.onicecandidate = function(e) {
                     if (e.candidate == null) {
                         _this.mode = options.mode;
                         //_this.renderHanshake();
                     }
                 };
 
-                _this.data.peerConnection.ondatachannel = function(event) {
-                    _this.data.dataChannel = event.channel;
+                _this.peerConnection.ondatachannel = function(event) {
+                    console.log('Data Channel established');
+                    _this.dataChannel = event.channel;
                     _this.addDataChannelListeners();
                 };
 
@@ -225,16 +233,17 @@ define('webrtc', [
 
             addDataChannelListeners: function() {
                 var _this = this;
-                if (!_this.data.dataChannel) {
+                if (!_this.dataChannel) {
                     return;
                 }
                 _this.removeDataChannelListeners();
 
-                _this.data.dataChannel.onopen = function() {
-                    _this.chat.data.mode = "messages";
+                _this.dataChannel.onopen = function() {
+                    _this.chat.mode = "messages";
+                    _this.trigger('')
                     _this.chat.renderByMode();
                 };
-                _this.data.dataChannel.onmessage = function(e) {
+                _this.dataChannel.onmessage = function(e) {
                     var message = JSON.parse(e.data);
                     _this.chat.newMessages.addMessage({remote: true}, message);
                 };
@@ -242,12 +251,12 @@ define('webrtc', [
 
             removeDataChannelListeners: function() {
                 var _this = this;
-                if (!_this.data.dataChannel) {
+                if (!_this.dataChannel) {
                     return;
                 }
 
-                _this.data.dataChannel.onopen = undefined;
-                _this.data.dataChannel.onmessage = undefined;
+                _this.dataChannel.onopen = undefined;
+                _this.dataChannel.onmessage = undefined;
             },
 
             setupDataChannel: function(options, callback) {
@@ -266,7 +275,7 @@ define('webrtc', [
             createLocalOffer: function(options, callback) {
                 var _this = this;
                 _this.trigger('log', { message: 'try: createLocalOffer' });
-                if (!_this.data.peerConnection) {
+                if (!_this.peerConnection) {
                     if (callback) {
                         callback(new Error('No peer connection'));
                     }
@@ -285,11 +294,11 @@ define('webrtc', [
                     _this.trigger('log', { message: 'done: createLocalOffer:setupDataChannel' });
                     _this.trigger('log', { message: 'try: createLocalOffer:createOffer' });
 
-                    _this.data.peerConnection.createOffer(
+                    _this.peerConnection.createOffer(
                         function(desc) {
-                            _this.data.localOfferDescription = desc;
-                            _this.data.peerConnection.setLocalDescription(
-                                _this.data.localOfferDescription,
+                            _this.localOfferDescription = desc;
+                            _this.peerConnection.setLocalDescription(
+                                _this.localOfferDescription,
                                 function() {
                                     _this.trigger('log', { message: 'done: createLocalOffer:createOffer' });
                                     if (callback) {
@@ -328,7 +337,7 @@ define('webrtc', [
             createLocalAnswer: function(options, callback) {
                 var _this = this;
                 _this.trigger('log', { message: 'try: createLocalAnswer' });
-                if (!_this.data.peerConnection) {
+                if (!_this.peerConnection) {
                     if (callback) {
                         callback(new Error('No peer connection'));
                     }
@@ -337,8 +346,8 @@ define('webrtc', [
 
                 _this.trigger('log', { message: 'try: createLocalAnswer:setupDataChannel' });
                 try {
-                    _this.data.remoteOfferDescription = new RTCSessionDescription(options.remoteOfferDescription);
-                    _this.data.peerConnection.setRemoteDescription(_this.data.remoteOfferDescription);
+                    _this.remoteOfferDescription = new RTCSessionDescription(options.remoteOfferDescription);
+                    _this.peerConnection.setRemoteDescription(_this.remoteOfferDescription);
                 } catch (error) {
                     if (callback) {
                         callback(new Error('No peer connection'));
@@ -348,11 +357,11 @@ define('webrtc', [
                 _this.trigger('log', { message: 'done: createLocalAnswer:setupDataChannel' });
                 _this.trigger('log', { message: 'try: createLocalAnswer:createAnswer' });
 
-                _this.data.peerConnection.createAnswer(
+                _this.peerConnection.createAnswer(
                     function(desc) {
-                        _this.data.localAnswerDescription = desc;
-                        _this.data.peerConnection.setLocalDescription(
-                            _this.data.localAnswerDescription,
+                        _this.localAnswerDescription = desc;
+                        _this.peerConnection.setLocalDescription(
+                            _this.localAnswerDescription,
                             function() {
                                 _this.trigger('log', { message: 'done: createLocalAnswer:createAnswer' });
                                 if (callback) {
@@ -379,8 +388,8 @@ define('webrtc', [
                 var remoteAnswerDescription = _this.chat.body_container.querySelector('[data-role="remoteAnswerDescription"]');
 
                 if (remoteAnswerDescription) {
-                    _this.data.remoteAnswerDescription = new RTCSessionDescription(JSON.parse(remoteAnswerDescription.value));
-                    _this.data.peerConnection.setRemoteDescription(_this.data.remoteAnswerDescription);
+                    _this.remoteAnswerDescription = new RTCSessionDescription(JSON.parse(remoteAnswerDescription.value));
+                    _this.peerConnection.setRemoteDescription(_this.remoteAnswerDescription);
                     _this.renderWaiter();
                 }
             }

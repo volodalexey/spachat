@@ -10,8 +10,8 @@
         <div data-role="btnHeaderPanel">
             <% _in.config.forEach(function (btn) { %>
             <button class="<%= btn.class%>" name="<%= btn.name%>" data-role="<%= btn.data_role%>" data-action="<%= btn.data_action%>"
-            <% if(btn.data_mode_to){ %> data-mode-to="<%= btn.data_mode_to%>" <%}%>
-            <% if(btn.data_chat_part){ %> data-chat-part="<%= btn.data_chat_part%>" <%}%> > <%= btn.text%></button>
+            <% if(btn.data_mode_to){ %> data-mode_to="<%= btn.data_mode_to%>" <%}%>
+            <% if(btn.data_chat_part){ %> data-chat_part="<%= btn.data_chat_part%>" <%}%> > <%= btn.text%></button>
             <%})%>
         </div>
         <% } %>

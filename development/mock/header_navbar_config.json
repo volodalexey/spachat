@@ -7,7 +7,7 @@
     "data_chat_part": "body",
     "class": "btnEdit",
     "title": "Header_btn",
-    "data_action": "renderSettings",
+    "data_action": "changeMode",
     "data_role": "btnHeader",
     "name": "Setting"
   },
@@ -19,7 +19,7 @@
     "data_chat_part": "body",
     "class": "btnEdit",
     "title": "Header_btn",
-    "data_action": "renderContactList",
+    "data_action": "changeMode",
     "data_role": "btnHeader",
     "name": "ContactList"
   },
@@ -31,7 +31,7 @@
     "data_chat_part": "header",
     "class": "btnEdit",
     "title": "Header_btn",
-    "data_action": "renderFilter",
+    "data_action": "changeMode",
     "data_role": "btnHeader",
     "name": "Filter"
   }
