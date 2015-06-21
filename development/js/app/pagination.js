@@ -42,7 +42,7 @@ define('pagination', [
                 };
                 _this.chat = options.chat;
                 _this.chatElem = _this.chat.chatElem;
-                _this.outer_container = _this.chatElem.querySelector('[data-role="body_content_container"]');
+                _this.outer_container = _this.chatElem.querySelector('[data-role="body_container"]');
                 _this.pagination_container = _this.chatElem.querySelector('[data-role="pagination_container"]');
                 //_this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
                 _this.choice_per_page_container = _this.outer_container.querySelector('[data-role="go_to_container"]');

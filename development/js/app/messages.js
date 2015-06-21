@@ -23,7 +23,6 @@ define('messages', [
 
                 _this.chat = chat;
                 _this.data = {
-                    //options: options,
                     collection: {
                         "id": _this.chat.chatsArray.length,
                         "db_name": _this.chat.chatsArray.length + '_chat_messages',
@@ -39,52 +38,34 @@ define('messages', [
                     //    "keyPath": "id"
                     //}
                 };
-
-                switch (_this.chat.mode) {
-                    case _this.chat.MODE.MESSAGES_DISCONNECTED:
-                        _this.addEventListeners();
-                        _this.fillListMessage(options);
-                }
-
-                //return _this;
-            },
-
-            addEventListeners: function() {
-                var _this = this;
-                _this.removeEventListeners();
-            },
-
-            removeEventListeners: function() {
-                var _this = this;
+                    _this.fillListMessage(options);
             },
 
             scrollTo: function(options) {
                 var _this = this;
                 if (options.scrollTop) {
                     if (typeof options.scrollTop == 'number') {
-                        _this.chat.body_content_container.scrollTop = options.scrollTop;
+                        _this.chat.body_container.scrollTop = options.scrollTop;
                     } else {
-                        _this.chat.body_content_container.scrollTop = _this.chat.body_content_container.scrollHeight;
+                        _this.chat.body_container.scrollTop = _this.chat.body_container.scrollHeight;
                     }
                 }
             },
 
             fillListMessage: function(options) {
                 var _this = this;
-                //_this.chat.body_content_container = _this.chat.chat_element.querySelector('[data-role="chat.body_content_container"]');
-                //_this.chat.body_content_container
-                if (!_this.chat.body_content_container) {
+                if (!_this.chat.body_container) {
                     return;
                 }
 
-                _this.chat.body_content_container.innerHTML = "";
+                _this.chat.body_container.innerHTML = "";
                 indexeddb.getAll(_this.data.collection, function(getAllErr, messages) {
                     if (getAllErr) {
-                        _this.chat.body_content_container.innerHTML = getAllErr.message || getAllErr;
+                        _this.chat.body_container.innerHTML = getAllErr.message || getAllErr;
                         return;
                     }
 
-                    _this.chat.body_content_container.innerHTML = "";
+                    _this.chat.body_container.innerHTML = "";
                     if (options.final > messages.length || !options.final) {
                         options.final = messages.length;
                     }
@@ -94,12 +75,11 @@ define('messages', [
                             innerHTML: messages[i].innerHTML
                         }));
                     }
-                    _this.chat.body_content_container.innerHTML = generatedMessages.join('');
+                    _this.chat.body_container.innerHTML = generatedMessages.join('');
                     _this.scrollTo(options);
                     if(options.callback){
                         options.callback();
                     }
-                    //_this.trigger('resizeMessagesContainer');
                 });
             },
 
@@ -127,7 +107,7 @@ define('messages', [
                         if (error) {
                             return;
                         }
-                        _this.chat.body_content_container.innerHTML = _this.chat.body_content_container.innerHTML + _this.message_template({
+                        _this.chat.body_container.innerHTML = _this.chat.body_container.innerHTML + _this.message_template({
                                 innerHTML: message.innerHTML
                             });
                         _this.scrollTo(options);

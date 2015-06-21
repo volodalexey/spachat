@@ -39,17 +39,24 @@ define('settings', [
                 var _this = this;
                 _this.chat = chat;
 
-                if (!_this.previewMode || _this.previewMode !== _this.chat.contentOptions.mode) {
-                    _this.body_content_container = _this.chat.body_content_container;
-                    _this.body_content_container.classList.add('background');
-                    _this.body_mode = _this.chat.contentOptions.mode;
+                if (!_this.chat.body.previousMode || _this.chat.body.previousMode !== _this.chat.bodyOptions.mode) {
+                    _this.body_container = _this.chat.body_container;
+                    _this.body_container.classList.add('background');
+                    _this.body_mode = _this.chat.bodyOptions.mode;
                     _this.elementMap = {
-                        "SETTING": _this.body_content_container
+                        "SETTING": _this.body_container
                     };
                     _this.renderLayout(null, null);
+                } else {
+                    _this.chat.switchModes([
+                        {
+                            'chat_part':'body',
+                            'newMode': _this.chat.body.MODE.MESSAGES
+                        }
+                    ]);
                 }
 
-                _this.previewMode = _this.chat.contentOptions.mode;
+                //_this.previousMode = _this.chat.contentOptions.mode;
             }
 
         };

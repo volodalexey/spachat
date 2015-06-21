@@ -169,7 +169,7 @@ define('chat_platform', [
                 var _this = this;
                 var newChat = new Chat(chat_description);
                 Chat.prototype.chatsArray.push(newChat);
-                newChat.render(renderOptions);
+                newChat.preparing(renderOptions);
             },
 
             /**

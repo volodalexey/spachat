@@ -75,68 +75,39 @@ define('editor', [
             renderEditorPanel: function(options, chat) {
                 var _this = this;
                 _this.chat = chat;
+                var t = _this.previousShow;
+                var tt = _this.chat.editorOptions.show;
                 _this.editor_container = _this.chat.chat_element.querySelector('[data-role="editor_container"]');
 
-                _this.loadConfig(null, function(confErr) {
-                    _this.loadData(confErr, function(dataErr, data) {
-                        _this.fillTemplate(dataErr, data, function(templErr) {
-                            if (templErr) {
-                                console.error(templErr);
-                                return;
-                            }
-                            _this.cashElements();
-                            _this.addMainEventListener();
-                            //callback();
-                            // success
-                        });
-                    });
-                });
+                //if (!_this.previousShow ) {
+                    if (_this.chat.editorOptions.show) {
+                        if (!_this.previousShow ) {
+                            _this.previousShow = true;
 
-
-                /*_this.sendRequest("/mock/editor_navbar_config.json", function(err, res) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        _this.editor_navbar_config = JSON.parse(res);
-
-                        _this.editor_container.innerHTML += _this.editor_template({
-                            editor_navbar_config: _this.editor_navbar_config,
-                            triple_element_template: _this.triple_element_template,
-                            button_template: _this.button_template,
-                            input_template: _this.input_template,
-                            label_template: _this.label_template
-                        });
-
-                        _this.submit = _this.chatElem.querySelector('[data-role="submit"]');
-                        _this.format = _this.chatElem.querySelector('[data-role="format"]');
-                        if (_this.format) {
-                            _this.btnEditPanel = _this.chatElem.querySelector('[data-action="btnEditPanel"]');
+                            _this.loadConfig(null, function(confErr) {
+                                _this.loadData(confErr, function(dataErr, data) {
+                                    _this.fillTemplate(dataErr, data, function(templErr) {
+                                        if (templErr) {
+                                            console.error(templErr);
+                                            return;
+                                        }
+                                        _this.cashElements();
+                                        _this.addMainEventListener();
+                                        // success
+                                    });
+                                });
+                            });
                         }
-                        _this.messageElem = _this.chatElem.querySelector('[data-role="message_container"]');
-                        _this.loadEditNavbarConfig(function(err) {
-                            if (err) {
-                                console.log(err);
-                                return;
-                            }
-                            _this.bindContexts();
-                            _this.addEventListeners();
-
-                            _this.edit_navbar_config_Filter = _this.edit_navbar_config.filter(function(btn) {
-                                return btn.icon
-                            });
-                            _this.edit_btn_icon = _this.edit_navbar_config_Filter.map(function(btn) {
-                                return btn.icon;
-                            });
-                            _this.edit_btn_icon_config = _this.loadEditNavbarIcon(function(err) {
-                                if (err) {
-                                    console.log(err);
-                                    return;
-                                }
-                            });
-                            callback();
-                        });
+                        return;
                     }
-                })*/
+
+
+                //} else {
+                    _this.previousShow = false;
+                    _this.editor_container.innerHTML = "";
+                //}
+                //_this.previousShow = _this.chat.editorOptions.show;
+
             },
 
             loadConfig: function(_err, callback) {

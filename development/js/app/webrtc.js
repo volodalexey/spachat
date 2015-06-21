@@ -99,13 +99,13 @@ define('webrtc', [
 
             renderHanshake: function() {
                 var _this = this;
-                _this.chat.body_content_container.innerHTML = _this.webrtc_template({data: _this.data});
+                _this.chat.body_container.innerHTML = _this.webrtc_template({data: _this.data});
                 _this.addEventListeners();
             },
 
             renderWaiter: function() {
                 var _this = this;
-                _this.chat.body_content_container.innerHTML = _this.waiter_template();
+                _this.chat.body_container.innerHTML = _this.waiter_template();
             },
 
             bindContexts: function() {
@@ -116,12 +116,12 @@ define('webrtc', [
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                _this.chat.body_content_container.addEventListener('click', _this.bindedEventRouter, false);
+                _this.chat.body_container.addEventListener('click', _this.bindedEventRouter, false);
             },
 
             removeEventListeners: function() {
                 var _this = this;
-                _this.chat.body_content_container.removeEventListener('click', _this.bindedEventRouter, false);
+                _this.chat.body_container.removeEventListener('click', _this.bindedEventRouter, false);
             },
 
             clickEventRouter: function(event) {
@@ -314,7 +314,7 @@ define('webrtc', [
 
             clickSubmitRemoteOffer: function() {
                 var _this = this;
-                var remoteOfferDescription = _this.chat.body_content_container.querySelector('[data-role="remoteOfferDescription"]');
+                var remoteOfferDescription = _this.chat.body_container.querySelector('[data-role="remoteOfferDescription"]');
 
                 if (remoteOfferDescription) {
                     _this.createRTCPeerConnection({mode: "localAnswer"});
@@ -376,7 +376,7 @@ define('webrtc', [
 
             clickSubmitRemoteAnswer: function(event) {
                 var _this = this;
-                var remoteAnswerDescription = _this.chat.body_content_container.querySelector('[data-role="remoteAnswerDescription"]');
+                var remoteAnswerDescription = _this.chat.body_container.querySelector('[data-role="remoteAnswerDescription"]');
 
                 if (remoteAnswerDescription) {
                     _this.data.remoteAnswerDescription = new RTCSessionDescription(JSON.parse(remoteAnswerDescription.value));

@@ -7,7 +7,7 @@ define('chat', [
         'messages',
         'webrtc',
         'websocket',
-        'content',
+        'body',
 
         'ajax_core',
         'template_core',
@@ -26,7 +26,7 @@ define('chat', [
              Messages,
              Webrtc,
              websocket,
-             Content,
+             Body,
 
              ajax_core,
              template_core,
@@ -46,13 +46,14 @@ define('chat', [
                 show: true
             },
             filterOptions: {
+                show: false
+            },
+            bodyOptions: {
                 show: true
             },
-            contentOptions: {
-                show: true
-            },
-            footerOptions: {
-                show: true
+            //footerOptions: {
+            editorOptions: {
+                show: false
             },
             formatOptions: {
                 show: false
@@ -61,6 +62,7 @@ define('chat', [
                 show: false
             },
             paginationOptions: {
+                show:false,
                 curPage: null,
                 firstPage: 1,
                 lastPage: null,
@@ -78,13 +80,14 @@ define('chat', [
             this.header = new Header({chat: this});
             this.headerOptions.mode = this.header.MODE.TAB;
             this.editor = new Editor({chat: this});
+            this.editorOptions.mode = this.editor.MODE.MAIN_PANEL;
             this.pagination = new Pagination({chat: this});
             this.settings = new Settings({chat: this});
             this.contact_list = new Contact_list({chat: this});
             this.messages = new Messages({chat: this});
             this.webrtc = new Webrtc({chat: this});
-            this.content = new Content({chat: this});
-            this.contentOptions.mode = this.content.MODE.MESSAGES;
+            this.body = new Body({chat: this});
+            this.bodyOptions.mode = this.body.MODE.MESSAGES;
 
             this.extend(this, options);
         };
@@ -120,7 +123,7 @@ define('chat', [
                 _this.chat_element = _this.chat_wrapper.querySelector('section');
                 _this.header_container = _this.chat_element.querySelector('[data-role="header_container"]');
                 _this.header_waiter_container = _this.chat_element.querySelector('[data-role="waiter_container"]');
-                _this.body_content_container = _this.chat_element.querySelector('[data-role="body_content_container"]');
+                _this.body_container = _this.chat_element.querySelector('[data-role="body_container"]');
             },
 
             console: {
@@ -132,32 +135,44 @@ define('chat', [
                     var nodeArray = [];
                     nodeArray.push.apply(nodeArray, div.childNodes);
                     Array.prototype.forEach.call(nodeArray, function(node) {
-                        _this.body_content_container.appendChild(node);
+                        _this.body_container.appendChild(node);
                     });
                 }
+            },
+
+            preparing: function(options) {
+                var _this = this;
+                _this.chat_wrapper = options && options.chat_wrapper ? options.chat_wrapper : _this.chat_wrapper;
+                _this.chat_wrapper.innerHTML = _this.chat_template();
+                _this.cashElements();
+                _this.header_waiter_container.innerHTML = _this.waiter_template();
+                _this.addEventListeners();
+                _this.render(options);
+
             },
 
             render: function(options) {
                 var _this = this;
 
-                _this.chat_wrapper = options && options.chat_wrapper ? options.chat_wrapper : _this.chat_wrapper;
-                _this.chat_wrapper.innerHTML = _this.chat_template();
-                _this.cashElements();
-                _this.header_waiter_container.innerHTML = _this.waiter_template();
-                //_this.body_content_container.innerHTML = _this.outer_container_template();
+                //_this.chat_wrapper = options && options.chat_wrapper ? options.chat_wrapper : _this.chat_wrapper;
+                //_this.chat_wrapper.innerHTML = _this.chat_template();
+                //_this.cashElements();
+                //_this.header_waiter_container.innerHTML = _this.waiter_template();
+                //
+                //_this.addEventListeners();
+                _this.editor.renderEditorPanel(options, this);
 
-                _this.addEventListeners();
-                _this.webrtc.render(options, this);
                 _this.header.render(null, this);
-                _this.content.render({start: 0, scrollTop: true}, this);
+                _this.body.render({start: 0, scrollTop: true}, this);
+                _this.webrtc.render(options, this);
+
 
                 //_this.messages.render({start: 0, scrollTop: true}, this);
-                //_this.editor.renderEditorPanel(options, this);
                 //_this.pagination.initialize(options, this);
 
                 /*switch (_this.mode) {
                     case "MESSAGES":
-                        _this.body_content_container.innerHTML = _this.outer_container_template();
+                        _this.body_container.innerHTML = _this.outer_container_template();
                         _this.editor.renderEditorPanel(function() {
                             _this.header.renderByMode({chat: _this});
                             _this.messages.initialize({start: 0, chat: _this});
@@ -174,36 +189,54 @@ define('chat', [
                 var chat_part = event.target.getAttribute('data-chat-part');
                 _this.switchModes([
                     {
-                        chat_part: event.target.getAttribute('data-chat-part'),
-                        newMode: event.target.getAttribute('data-mode-to')
+                        /*chat_part: event.target.getAttribute('data-chat-part'),
+                        newMode: event.target.getAttribute('data-mode-to')*/
+                        chat_part: event.target.dataset['chatPart'],
+                        newMode: event.target.dataset['modeTo']
                     }
                 ]);
             },
 
             switchModes: function(obj) {
                 var _this = this;
-                console.log(obj);
                 obj.forEach(function (_obj){
                     switch (_obj.chat_part){
                         case "header":
+                            switch  (_obj.newMode) {
+                                case _this.header.MODE.FILTER:
+                                    _this.filterOptions.show = true;
+                                    _this.bodyOptions.mode = _this.body.MODE.MESSAGES;
+                                    _this.editorOptions.show = true;
+                                    break;
+                            }
                             break;
                         case "body":
                             switch (_obj.newMode) {
-                                case _this.content.MODE.SETTING:
-                                    _this.contentOptions.mode = _this.content.MODE.SETTING;
+                                case _this.body.MODE.SETTING:
+                                    _this.bodyOptions.mode = _this.body.MODE.SETTING;
                                     _this.filterOptions.show = false;
-                                    _this.footerOptions.show = false;
+                                    _this.editorOptions.show = false;
                                     _this.goToOptions.show = false;
                                     break;
-                                case _this.content.MODE.CONTACT_LIST:
-                                    _this.contentOptions.mode = _this.content.MODE.CONTACT_LIST;
+                                case _this.body.MODE.CONTACT_LIST:
+                                    _this.bodyOptions.mode = _this.body.MODE.CONTACT_LIST;
                                     _this.filterOptions.show = false;
-                                    _this.footerOptions.show = false;
+                                    _this.editorOptions.show = false;
+                                    _this.goToOptions.show = false;
+                                    break;
+                                case _this.body.MODE.MESSAGES:
+                                    _this.bodyOptions.mode = _this.body.MODE.MESSAGES;
+                                    _this.editorOptions.show = true;
                                     _this.goToOptions.show = false;
                                     break;
                             }
                             break;
-                        case "footer":
+                        case "editor":
+                            switch  (_obj.newMode) {
+                                case _this.editor.MODE.MAIN_PANEL:
+                                    _this.editorOptions.show = true;
+                                    break;
+                            }
                             break;
                     }
                 })
@@ -216,7 +249,7 @@ define('chat', [
 
                 _this.editor.on('calcMessagesContainerHeight', _this.calcMessagesContainerHeight.bind(_this), _this);
 
-                _this.header.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
+                //_this.header.on('resizeMessagesContainer', _this.resizeMessagesContainer.bind(_this), _this);
                 //_this.header.on('renderSettings', _this.changeMode.bind(_this), _this);
                 _this.header.on('throw', _this.changeMode.bind(_this), _this);
                 //_this.header.on('renderContactList', _this.changeMode.bind(_this), _this);
@@ -282,8 +315,8 @@ define('chat', [
 
             renderMassagesEditor: function(callback) {
                 var _this = this;
-               /* _this.body_content_container = _this.chat_element.querySelector('[data-role="body_content_container"]');
-                //_this.body_content_container.innerHTML = _this.outer_container_template();
+               /* _this.body_container = _this.chat_element.querySelector('[data-role="body_container"]');
+                //_this.body_container.innerHTML = _this.outer_container_template();
                 _this.editor.renderEditorPanel(function() {
                     _this.messages_container = _this.chat_element.querySelector('[data-role="messages_container"]');
                     _this.messageElem = _this.chat_element.querySelector('[data-role="message_container"]');
@@ -328,7 +361,7 @@ define('chat', [
                 _this.choice_per_page_container = _this.chat_element.querySelector('[data-role="go_to_container"]');
                 _this.message = _this.messageElem.firstElementChild;
                 if (!turnScrol || turnScrol && !turnScrol.checked) {
-                    var param = _this.body_content_container.getAttribute('param-content');
+                    var param = _this.body_container.getAttribute('param-content');
                     var height = window.innerHeight - _this.header_container.clientHeight - _this.choice_per_page_container.clientHeight - _this.pagination_container.clientHeight - _this.controls_container.clientHeight - _this.messageElem.clientHeight - _this.data.padding.bottom;
                     var paddingMessages = parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-top')) + parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-bottom'));
                     var marginMessages = parseInt(window.getComputedStyle(_this.messages_container, null).getPropertyValue('padding-top'));
@@ -341,7 +374,7 @@ define('chat', [
                 var _this = this;
                 var height = window.innerHeight - _this.header_container.clientHeight;
                 var marginHeader = parseInt(window.getComputedStyle(_this.header_container, null).getPropertyValue('margin-top'));
-                _this.body_content_container.style.height = height - marginHeader + "px";
+                _this.body_container.style.height = height - marginHeader + "px";
             },
 
             sendToWebSocket: function(sendData) {
@@ -368,7 +401,11 @@ define('chat', [
                         } ,
                         {
                             'chat_part':'body',
-                            'newMode': _this.content.MODE.MESSAGES
+                            'newMode': _this.body.MODE.MESSAGES
+                        },
+                        {
+                            'chat_part':'editor',
+                            'newMode': _this.editor.MODE.MAIN_PANEL
                         }
                     ]);
                     //_this.render();
@@ -390,7 +427,21 @@ define('chat', [
                     // Waiting for accept
                     _this.console.log.call(_this, { message: 'waiting for accept connection' });
                     _this.mode = _this.MODE.MESSAGES_DISCONNECTED;
-                    _this.render();
+                    _this.switchModes([
+                        {
+                            'chat_part':'header',
+                            'newMode':_this.header.MODE.TAB
+                        } ,
+                        {
+                            'chat_part':'body',
+                            'newMode': _this.body.MODE.MESSAGES
+                        },
+                        {
+                            'chat_part':'editor',
+                            'newMode': _this.editor.MODE.MAIN_PANEL
+                        }
+                    ]);
+                    //_this.render();
                 } else {
                     // I am NOT the creator of server stored answer
                     // Accept answer

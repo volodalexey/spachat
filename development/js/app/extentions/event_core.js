@@ -107,6 +107,11 @@ define('event_core',
                     event.data_throw_to = data_throw_to;
                     event.data_mode_to = data_mode_to;
                     event.data_chat_part = data_chat_part;
+                    if (!event.data_param) {
+                        event.data_param = true;
+                    } else {
+                        event.data_param = false;
+                    }
                     _this.throwEvent(action, event);
                 }
             },

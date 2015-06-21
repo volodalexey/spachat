@@ -1,4 +1,4 @@
-define('content', [
+define('body', [
         'chat',
         'event_core',
         'template_core',
@@ -10,10 +10,10 @@ define('content', [
              ajax_core,
              template_core) {
 
-        var content = function(options) {
+        var body = function(options) {
         };
 
-        content.prototype = {
+        body.prototype = {
 
             MODE: {
                 SETTING: 'SETTING',
@@ -24,9 +24,9 @@ define('content', [
             render: function(options, chat) {
                 var _this = this;
                 _this.chat = chat;
-                if (_this.chat.contentOptions.show) {
+                if (_this.chat.bodyOptions.show) {
 
-                    switch (_this.chat.contentOptions.mode) {
+                    switch (_this.chat.bodyOptions.mode) {
                         case _this.MODE.SETTING:
                             _this.chat.settings.renderSettings(options, chat);
                             break;
@@ -37,14 +37,14 @@ define('content', [
                             _this.chat.messages.render(options, chat);
                             break;
                     }
-
+                    _this.previousMode = _this.chat.bodyOptions.mode;
                 }
             }
 
         };
 
-        extend(content, event_core);
-        extend(content, template_core);
+        extend(body, event_core);
+        extend(body, template_core);
 
-        return content;
+        return body;
     });

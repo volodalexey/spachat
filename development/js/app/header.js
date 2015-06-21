@@ -70,7 +70,7 @@ define('header', [
                 //_this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedTriggerRouter, false);                _this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedTriggerRouter, false);
                 _this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedThrowEventRouter, false);
 
-                _this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedDataActionRouter, false);
+                //_this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.chat.header_container, 'checked', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.chat.header_container, 'input', _this.bindedDataActionRouter, false);
             },
@@ -101,7 +101,7 @@ define('header', [
                 var _this = this;
                 _this.chat = chat;
                 if (_this.chat.headerOptions.show) {
-                    _this.previewMode = _this.chat.headerOptions.mode;
+                    _this.previousMode = _this.chat.headerOptions.mode;
                     switch (_this.chat.headerOptions.mode) {
                         case _this.MODE.TAB:
                             _this.body_mode = _this.MODE.TAB;
@@ -112,7 +112,7 @@ define('header', [
                             _this.renderLayout(null, function(){
                                 _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
                                 _this.addToolbarEventListener();
-                                _this.renderFilter();
+                                _this.renderFilter(true);
                             });
                             break;
                         case _this.MODE.WEBRTC:
@@ -122,7 +122,7 @@ define('header', [
                                 WEBRTC: _this.chat.header_container.querySelector('[data-role="webrtc_container"]')
                             };
                             _this.fillBody(null, null, function(){
-                                _this.renderFilter();
+                                _this.renderFilter(true);
                             });
                             break;
                         case _this.MODE.WAITER:
@@ -132,24 +132,14 @@ define('header', [
                 }
             },
 
-            renderFilter: function() {
+            renderFilter: function(render) {
                 var _this = this;
-                if (_this.chat.filterOptions.show) {
-                    _this.body_mode = _this.MODE.FILTER;
-                    _this.filter_container.classList.remove('hide');
-                    _this.elementMap = {
-                        FILTER: _this.filter_container
-                    };
-                    _this.body_mode = _this.MODE.FILTER;
-                    var data = {
-                        "perPageValue": _this.chat.paginationOptions.perPageValue,
-                        "showEnablePagination": _this.chat.paginationOptions.showEnablePagination,
-                        "rtePerPage": _this.chat.paginationOptions.rtePerPage
-                    };
-                    _this.renderLayout(data, null);
-
-
-                    /*if (_this.filter_container.classList.contains('hide')) {
+               var t = _this.previousShow;
+               var f = _this.chat.filterOptions.show;
+                if (!_this.previousShow ){
+                    if (_this.chat.filterOptions.show) {
+                        _this.previousShow = true;
+                        _this.body_mode = _this.MODE.FILTER;
                         _this.filter_container.classList.remove('hide');
                         _this.elementMap = {
                             FILTER: _this.filter_container
@@ -161,19 +151,12 @@ define('header', [
                             "rtePerPage": _this.chat.paginationOptions.rtePerPage
                         };
                         _this.renderLayout(data, null);
-                    } else {
-                        _this.filter_container.innerHTML = "";
-                        _this.filter_container.classList.add('hide');
                     }
-
-                    if (_this.chat.mode !== _this.chat.MODE.MESSAGES_DISCONNECTED) {
-                        _this.chat.mode = _this.chat.MODE.MESSAGES_DISCONNECTED;
-                        _this.chat.body_content_container.classList.remove('background');
-                        _this.trigger('renderMassagesEditor');
-                    }*/
-                } else {
+                }
+                else {
                     _this.filter_container.innerHTML = "";
                     _this.filter_container.classList.add('hide');
+                    _this.previousShow = false;
                 }
             },
 
