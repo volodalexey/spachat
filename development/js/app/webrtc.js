@@ -41,6 +41,14 @@ define('webrtc', [
                 _this.chat = chat;
                 switch (chat.mode) {
                     case chat.MODE.CREATED_AUTO: case chat.MODE.JOINED_AUTO_OFFER:
+                        options.onicecandidate = function(description) {
+                            _this.localOfferDescription = description;
+                            _this.trigger('sendToWebSocket', {
+                                type: 'offer',
+                                userId: chat.userId,
+                                offerDescription: _this.localOfferDescription
+                            });
+                        };
                         _this.createLocalOfferAuto(
                             options,
                             function(createError) {
@@ -48,16 +56,18 @@ define('webrtc', [
                                     _this.trigger('error', { message: createError });
                                     return;
                                 }
-
-                                _this.trigger('sendToWebSocket', {
-                                    type: 'offer',
-                                    userId: chat.userId,
-                                    offerDescription: _this.localOfferDescription
-                                });
                             }
                         );
                         break;
                     case chat.MODE.JOINED_AUTO_ANSWER:
+                        options.onicecandidate = function(description) {
+                            _this.localAnswerDescription = description;
+                            _this.trigger('sendToWebSocket', {
+                                type: 'answer',
+                                userId: chat.userId,
+                                answerDescription: _this.localAnswerDescription
+                            });
+                        };
                         _this.createLocalAnswerAuto(
                             options,
                             function(createError) {
@@ -65,12 +75,6 @@ define('webrtc', [
                                     _this.trigger('error', { message: createError });
                                     return;
                                 }
-
-                                _this.trigger('sendToWebSocket', {
-                                    type: 'answer',
-                                    userId: chat.userId,
-                                    answerDescription: _this.localAnswerDescription
-                                });
                             }
                         );
                         break;
@@ -145,7 +149,10 @@ define('webrtc', [
             createLocalOfferAuto: function(options, callback) {
                 var _this = this;
                 _this.createRTCPeerConnection(
-                    {mode: _this.MODE.LOCAL_OFFER},
+                    {
+                        mode: _this.MODE.LOCAL_OFFER,
+                        onicecandidate: options.onicecandidate
+                    },
                     function(createError) {
                         if (createError) {
                             callback(createError);
@@ -165,7 +172,10 @@ define('webrtc', [
             createLocalAnswerAuto: function(options, callback) {
                 var _this = this;
                 _this.createRTCPeerConnection(
-                    {mode: _this.MODE.LOCAL_ANSWER},
+                    {
+                        mode: _this.MODE.LOCAL_ANSWER,
+                        onicecandidate: options.onicecandidate
+                    },
                     function(createError) {
                         if (createError) {
                             callback(createError);
@@ -179,7 +189,7 @@ define('webrtc', [
 
             acceptRemoteAnswerAuto: function(options, callback) {
                 var _this = this;
-                _this.trigger('log', { message: 'try: acceptRemoteAnswerAuto' });
+                _this.trigger('log', { message: 'try: acceptRemoteAnswerAuto:setRemoteDescription' });
                 try {
                     _this.remoteAnswerDescription = new RTCSessionDescription(options.remoteAnswerDescription);
                     _this.peerConnection.setRemoteDescription(_this.remoteAnswerDescription);
@@ -190,7 +200,7 @@ define('webrtc', [
                     return;
                 }
 
-                _this.trigger('log', { message: 'done: acceptRemoteAnswerAuto' });
+                _this.trigger('log', { message: 'done: acceptRemoteAnswerAuto:setRemoteDescription' });
                 if (callback) {
                     callback();
                 }
@@ -222,9 +232,10 @@ define('webrtc', [
 
                 _this.peerConnection.onicecandidate = function(e) {
                     if (e.candidate == null) {
-                        _this.mode = options.mode;
-                        console.log('ICE candidate', e.localDescription);
-                        //_this.renderHanshake();
+                        _this.trigger('log', { message: 'done: ICE candidate' });
+                        if (options.onicecandidate) {
+                            options.onicecandidate(_this.peerConnection.localDescription);
+                        }
                     }
                 };
 
@@ -233,7 +244,6 @@ define('webrtc', [
                     _this.dataChannel = event.channel;
                     _this.addDataChannelListeners();
                 };
-
                 _this.trigger('log', { message: 'done: createRTCPeerConnection' });
                 if (callback) {
                     callback(null);
@@ -251,11 +261,10 @@ define('webrtc', [
                     //_this.chat.mode = "messages";
                     //_this.trigger('')
                     console.log('Data channel connection established!!!');
-                    _this.chat.renderByMode();
                 };
                 _this.dataChannel.onmessage = function(e) {
                     var message = JSON.parse(e.data);
-                    _this.chat.newMessages.addMessage({remote: true}, message);
+                    _this.chat.messages.addMessage({remote: true}, message);
                 };
             },
 
@@ -306,11 +315,12 @@ define('webrtc', [
 
                     _this.peerConnection.createOffer(
                         function(desc) {
-                            _this.localOfferDescription = desc;
+                            _this.trigger('log', { message: 'done: createLocalOffer:createOffer' });
+                            _this.trigger('log', { message: 'try: createLocalOffer:setLocalDescription' });
                             _this.peerConnection.setLocalDescription(
-                                _this.localOfferDescription,
+                                desc,
                                 function() {
-                                    _this.trigger('log', { message: 'done: createLocalOffer:createOffer' });
+                                    _this.trigger('log', { message: 'done: createLocalOffer:setLocalDescription' });
                                     if (callback) {
                                         callback();
                                     }
@@ -354,7 +364,7 @@ define('webrtc', [
                     return;
                 }
 
-                _this.trigger('log', { message: 'try: createLocalAnswer:setupDataChannel' });
+                _this.trigger('log', { message: 'try: createLocalAnswer:setRemoteDescription' });
                 try {
                     _this.remoteOfferDescription = new RTCSessionDescription(options.remoteOfferDescription);
                     _this.peerConnection.setRemoteDescription(_this.remoteOfferDescription);
@@ -364,16 +374,17 @@ define('webrtc', [
                     }
                     return;
                 }
-                _this.trigger('log', { message: 'done: createLocalAnswer:setupDataChannel' });
+                _this.trigger('log', { message: 'done: createLocalAnswer:setRemoteDescription' });
                 _this.trigger('log', { message: 'try: createLocalAnswer:createAnswer' });
 
                 _this.peerConnection.createAnswer(
                     function(desc) {
-                        _this.localAnswerDescription = desc;
+                        _this.trigger('log', { message: 'done: createLocalAnswer:createAnswer' });
+                        _this.trigger('log', { message: 'try: createLocalAnswer:setLocalDescription' });
                         _this.peerConnection.setLocalDescription(
-                            _this.localAnswerDescription,
+                            desc,
                             function() {
-                                _this.trigger('log', { message: 'done: createLocalAnswer:createAnswer' });
+                                _this.trigger('log', { message: 'done: createLocalAnswer:setLocalDescription' });
                                 if (callback) {
                                     callback();
                                 }

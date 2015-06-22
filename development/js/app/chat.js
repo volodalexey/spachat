@@ -464,6 +464,14 @@ define('chat', [
                         console.error(new Error('No message handler'));
                     }
                 }
+            },
+
+            /**
+             * both peers are notified with this function
+             * if all server side steps were made
+             */
+            chatConnectionEstablished: function() {
+                console.log('chatConnectionEstablished');
             }
         };
         extend(chat, ajax_core);

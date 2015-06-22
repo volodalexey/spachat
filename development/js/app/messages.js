@@ -92,8 +92,8 @@ define('messages', [
                         id: new Date().getTime(),
                         innerHTML: newMessage
                     };
-                    if (_this.chat.webrtc && _this.chat.webrtc.data && _this.chat.webrtc.data.dataChannel) {
-                        _this.chat.webrtc.data.dataChannel.send(JSON.stringify(message));
+                    if (_this.chat.webrtc && _this.chat.webrtc.dataChannel) {
+                        _this.chat.webrtc.dataChannel.send(JSON.stringify(message));
                     }
                 }
 
