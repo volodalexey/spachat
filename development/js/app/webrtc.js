@@ -258,8 +258,6 @@ define('webrtc', [
                 _this.removeDataChannelListeners();
 
                 _this.dataChannel.onopen = function() {
-                    //_this.chat.mode = "messages";
-                    //_this.trigger('')
                     console.log('Data channel connection established!!!');
                 };
                 _this.dataChannel.onmessage = function(e) {
