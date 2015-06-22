@@ -101,43 +101,48 @@ define('header', [
                 var _this = this;
                 _this.chat = chat;
                 if (_this.chat.headerOptions.show) {
-                    _this.previousMode = _this.chat.headerOptions.mode;
+                    //_this.previousMode = _this.chat.headerOptions.mode;
                     switch (_this.chat.headerOptions.mode) {
+
                         case _this.MODE.TAB:
-                            _this.body_mode = _this.MODE.TAB;
-                            _this.description = _this.MODE_DESCRIPTION[_this.body_mode];
-                            _this.elementMap = {
-                                TAB: _this.chat.header_container
-                            };
-                            _this.renderLayout(null, function(){
-                                _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
-                                _this.addToolbarEventListener();
-                                _this.renderFilter(true);
-                            });
+                                _this.body_mode = _this.MODE.TAB;
+                                _this.previousMode =_this.MODE.TAB;
+
+                                _this.description = _this.MODE_DESCRIPTION[_this.body_mode];
+                                _this.elementMap = {
+                                    TAB: _this.chat.header_container
+                                };
+                                _this.renderLayout(null, function(){
+                                    _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
+                                    _this.addToolbarEventListener();
+                                    _this.renderFilter();
+                                });
                             break;
                         case _this.MODE.WEBRTC:
                             _this.body_mode = _this.MODE.WEBRTC;
+                            _this.previousMode = _this.MODE.WEBRTC;
                             _this.description = _this.MODE_DESCRIPTION[_this.body_mode];
                             _this.elementMap = {
                                 WEBRTC: _this.chat.header_container.querySelector('[data-role="webrtc_container"]')
                             };
                             _this.fillBody(null, null, function(){
-                                _this.renderFilter(true);
+                                _this.renderFilter();
                             });
                             break;
                         case _this.MODE.WAITER:
                             _this.body_mode = _this.MODE.WAITER;
+                            _this.previousMode = this.MODE.WAITER;
                             break;
                     }
                 }
             },
 
-            renderFilter: function(render) {
+            renderFilter: function() {
                 var _this = this;
                var t = _this.previousShow;
                var f = _this.chat.filterOptions.show;
-                if (!_this.previousShow ){
-                    if (_this.chat.filterOptions.show) {
+                //if (!_this.previousShow ){
+                    if (!_this.previousShow && _this.chat.filterOptions.show) {
                         _this.previousShow = true;
                         _this.body_mode = _this.MODE.FILTER;
                         _this.filter_container.classList.remove('hide');
@@ -152,69 +157,13 @@ define('header', [
                         };
                         _this.renderLayout(data, null);
                     }
-                }
+                //}
                 else {
                     _this.filter_container.innerHTML = "";
                     _this.filter_container.classList.add('hide');
                     _this.previousShow = false;
                 }
             },
-
-/*
-                _this.sendRequest("/mock/filter_navbar_config.json", function(err, res) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        _this.filter_navbar_config = JSON.parse(res);
-
-                        _this.forceRenderMessages(function() {
-                            if (_this.filter_container.classList.contains('hide')) {
-                                _this.filter_container.classList.remove('hide');
-                                _this.filter_container.innerHTML = _this.filter_template({
-                                    filter_navbar_config: _this.filter_navbar_config,
-                                    triple_element_template: _this.triple_element_template,
-                                    button_template: _this.button_template,
-                                    input_template: _this.input_template,
-                                    label_template: _this.label_template,
-                                    mode: _this.chat.redraw_mode
-                                });
-                                _this.showEnablePagination = _this.filter_container.querySelector('input[data-role="enable_pagination"]');
-                                if (_this.showEnablePagination) {
-                                    _this.showEnablePagination.checked = _this.chat.data.showEnablePagination;
-                                    _this.showEnablePagination.addEventListener('change', _this.renderPagination.bind(_this), false);
-                                }
-                                _this.labeltPerPage = _this.filter_container.querySelector('input[data-role="per_page"]');
-                                if (_this.labeltPerPage) {
-                                    _this.labeltPerPage.addEventListener('input', _this.changePerPage.bind(_this), false);
-                                    _this.labeltPerPage.value = _this.chat.data.perPageValue;
-                                }
-                                _this.showPerPage = _this.filter_container.querySelector('button[data-role="per_page"]');
-                                if (_this.showPerPage) {
-                                    _this.showPerPage.addEventListener('click', _this.showPerPage.bind(_this), false);
-                                }
-                                _this.rteShowPerPage = _this.filter_container.querySelector('input[data-role="rteShowPerPage"]');
-                                if (_this.rteShowPerPage) {
-                                    _this.rteShowPerPage.addEventListener('change', _this.changeRealTimeEditing.bind(_this), false);
-                                }
-                                if (_this.chat.data.redraw_mode === "rte") {
-                                    _this.rteShowPerPage.checked = true;
-                                } else {
-                                    _this.rteShowPerPage.checked = false;
-                                }
-                            } else {
-                                _this.showshowEnablePagination = _this.chat.chat_element.querySelector('[data-role="enable_pagination"]').checked;
-                                _this.per_page = _this.chat.chat_element.querySelector('[data-role="per_page"]');
-                                _this.perPageValue = parseInt(_this.per_page.value);
-                                _this.filter_container.innerHTML = "";
-                                _this.filter_container.classList.add('hide');
-                            }
-                            _this.trigger('resizeMessagesContainer');
-                            _this.trigger('calcOuterContainerHeight');
-
-                        });
-                    }
-                })*/
-
 
             changeRealTimeEditing: function() {
                 var _this = this;
@@ -256,7 +205,6 @@ define('header', [
                 if (_this.rteShowPerPage) {
                     _this.rteShowPerPage.addEventListener('change', _this.changeRealTimeEditing.bind(_this), false);
                 }
-
             },
 
             showEnablePagination: function() {

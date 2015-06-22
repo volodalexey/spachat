@@ -1,5 +1,5 @@
 <div data-role="message_container" class="modal-controls message_conteiner">
-    <div class="container" contenteditable="true"></div>
+    <div data-role="message_inner_container" class="container" contenteditable="true"></div>
 </div>
 <div class="modal-controls" data-role="controls_container">
     <div class="modal-main-btn">
@@ -9,7 +9,8 @@
             config: _config,
             button_template: _in.button_template,
             input_template: _in.input_template,
-            label_template: _in.label_template
+            label_template: _in.label_template,
+            data: _in.data
             }) %>
         <% }) %>
     </div>

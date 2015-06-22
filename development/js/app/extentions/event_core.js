@@ -99,10 +99,15 @@ define('event_core',
 
             throwEventRouter: function(event) {
                 var _this = this;
-                var action = event.target.getAttribute('data-action');
+                var action = event.target.dataset.action;
+                var data_throw_to = event.target.dataset.throw_to;
+                var data_mode_to = event.target.dataset.mode_to;
+                var data_chat_part = event.target.dataset.chat_part;
+
+/*                var action = event.target.getAttribute('data-action');
                 var data_throw_to = event.target.getAttribute('data-throw_to');
-                var data_mode_to = event.target.getAttribute('data-mode-to');
-                var data_chat_part = event.target.getAttribute('data-chat-part');
+                var data_mode_to = event.target.getAttribute('data-mode_to');
+                var data_chat_part = event.target.getAttribute('data-chat_part');*/
                 if (_this.throwEvent) {
                     event.data_throw_to = data_throw_to;
                     event.data_mode_to = data_mode_to;

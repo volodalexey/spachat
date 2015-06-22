@@ -2,6 +2,7 @@ define('pagination', [
         'event_core',
         'ajax_core',
         'template_core',
+        'render_layout_core',
 
         'text!../html/pagination_template.html',
         'text!../html/choice_per_page_template.html',
@@ -13,6 +14,7 @@ define('pagination', [
     function(event_core,
              ajax_core,
              template_core,
+             render_layout_core,
 
              pagination_template,
              choice_per_page_template,
@@ -27,12 +29,47 @@ define('pagination', [
 
         pagination.prototype = {
 
-            initialize: function(options, callback) {
+            MODE: {
+                "PAGINATION": 'PAGINATION',
+                "GO_TO": 'GO_TO'
+            },
+
+            configMap: {
+                "PAGINATION": '/mock/pagination_navbar_config.json',
+                "GO_TO": '/mock/choice_per_page_config.json'
+            },
+
+            configIconMap: {
+                "PAGINATION": '',
+                "GO_TO": ''
+            },
+
+            bindMainContexts: function() {
+                var _this = this;
+            },
+
+            addMainEventListener: function() {
+                var _this = this;
+                _this.removeMainEventListeners();
+            },
+
+            removeMainEventListeners: function() {
+                var _this = this;
+            },
+
+            cashElements: function() {
+                var _this = this;
+            },
+
+
+
+
+/*            initialize: function(options, callback) {
                 var _this = this;
 
                 _this.data = {
                     options: options,
-                    collection: {
+                    collectionDescription: {
                         "id": options.chat.chatsArray.length,
                         "db_name": options.chat.chatsArray.length + '_chat_messages',
                         "table_name": options.chat.chatsArray.length + '_chat_messages',
@@ -53,15 +90,36 @@ define('pagination', [
                         _this.pagination_navbar_config = JSON.parse(res);
                     }
 
-                    _this.renderPagination(callback);
+                    _this.render(callback);
                 });
                 return _this;
-            },
+            },*/
 
-            renderPagination: function(callback) {
+            render: function(options, chat) {
                 var _this = this;
-                _this.enable_pagination = _this.chatElem.querySelector('[data-role="enable_pagination"]');
-                _this.per_page = _this.chatElem.querySelector('[data-role="per_page"]');
+                _this.chat = chat;
+
+                 _this.collectionDescription= {
+                     "id": _this.chat.chatsArray.length,
+                     "db_name": _this.chat.chatsArray.length + '_chat_messages',
+                     "table_name": _this.chat.chatsArray.length + '_chat_messages',
+                     "db_version": 1,
+                     "keyPath": "id"
+                 };
+                _this.pagination_container = _this.chat.chat_element.querySelector('[data-role="pagination_container"]');
+                _this.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
+                if (_this.chat.paginationOptions.show){
+                    _this.elementMap = {
+                        PAGINATION: _this.pagination_container
+                    };
+                    _this.body_mode = _this.MODE.PAGINATION;
+                    _this.renderLayout(null,null);
+                } else {
+                    _this.pagination_container.innerHTML = "";
+                }
+
+
+               /* _this.per_page = _this.chatElem.querySelector('[data-role="per_page"]');
                 if (_this.per_page) {
                     _this.per_page.value = _this.chat.data.perPageValue;
                     if (_this.per_page.value === "") {
@@ -87,7 +145,7 @@ define('pagination', [
                     _this.btnChoiceRight = _this.pagination_container.querySelector('[data-location="right"]');
                     _this.btnChoiceRight.addEventListener('click', _this.showChoicePerPage.bind(_this), false);
                     //_this.trigger('resizeMessagesContainer');
-                }, callback);
+                }, callback);*/
             },
 
             showPagination: function(callback, _callback) {
@@ -128,7 +186,7 @@ define('pagination', [
                 var _this = this;
                 var start;
                 var final;
-                _this.chat.indexeddb.getAll(_this.data.collection, function(getAllErr, messages) {
+                _this.chat.indexeddb.getAll(_this.data.collectionDescription, function(getAllErr, messages) {
                     var quantityMes = messages.length;
                     var quantityPages = Math.ceil(quantityMes / _this.chat.data.perPageValue);
                     if (_this.chat.data.curPage === null) {
@@ -198,46 +256,30 @@ define('pagination', [
             selectFirst: function() {
                 var _this = this;
                 _this.chat.data.curPage = parseInt(_this.btnFirst.value);
-                _this.renderPagination();
+                _this.render();
             }
             ,
 
             selectLast: function() {
                 var _this = this;
                 _this.chat.data.curPage = parseInt(_this.btnLast.value);
-                _this.renderPagination();
+                _this.render();
             },
 
             selectBack: function() {
                 var _this = this;
                 _this.chat.data.curPage = parseInt(_this.chat.data.curPage) - 1;
-                _this.renderPagination();
+                _this.render();
             },
 
             selectForward: function() {
                 var _this = this;
                 _this.chat.data.curPage = parseInt(_this.chat.data.curPage) + 1;
-                _this.renderPagination();
+                _this.render();
             },
 
             showChoicePerPage: function() {
                 var _this = this;
-                /*if(_this.chat.data.showChoicePerPage){
-                    _this.chat.data.showChoicePerPage = false;
-                    _this.choice_per_page_container.innerHTML = "";
-                    _this.trigger('calcMessagesContainerHeight');
-                } else {
-                    _this.chat.data.showChoicePerPage = true;
-                    _this.sendRequest("/mock/choice_per_page_config.json", function(err, res) {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            _this.choice_per_page_config = JSON.parse(res);
-                            _this.renderChoicePerPage();
-                            _this.trigger('calcMessagesContainerHeight');
-                        }
-                    })
-                }*/
                 if (_this.choice_per_page_container.innerHTML === "" ) {
 
                     _this.sendRequest("/mock/choice_per_page_config.json", function(err, res) {
@@ -292,7 +334,7 @@ define('pagination', [
                 var _this = this;
                 _this.chat.data.curPage = _this.inp_choise_per_page.value;
                 if (_this.chat.data.redraw_choice_page_mode === "rte") {
-                    _this.renderPagination();
+                    _this.render();
                 }
             },
 
@@ -300,7 +342,7 @@ define('pagination', [
                 var _this = this;
                 _this.chat.data.curPage = _this.inp_choise_per_page.value;
                 //_this.choice_per_page_container.innerHTML = "";
-                _this.renderPagination();
+                _this.render();
             },
 
             changeRTE: function() {
@@ -318,6 +360,8 @@ define('pagination', [
         extend(pagination, event_core);
         extend(pagination, ajax_core);
         extend(pagination, template_core);
+        extend(pagination, render_layout_core);
+
 
         pagination.prototype.pagination_template = pagination.prototype.template(pagination_template);
         pagination.prototype.choice_per_page_template = pagination.prototype.template(choice_per_page_template);
@@ -325,6 +369,16 @@ define('pagination', [
         pagination.prototype.button_template = pagination.prototype.template(button_template);
         pagination.prototype.label_template = pagination.prototype.template(label_template);
         pagination.prototype.input_template = pagination.prototype.template(input_template);
+
+        pagination.prototype.dataMap = {
+            "PAGINATION": "",
+            "GO_TO": ""
+        };
+
+        pagination.prototype.templateMap = {
+            "PAGINATION": pagination.prototype.pagination_template,
+            "GO_TO": pagination.prototype.choice_per_page_template
+        };
 
         return pagination;
     })

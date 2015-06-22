@@ -1,26 +1,34 @@
 <% var _in = arguments[0]; %>
 <button data-role="<%= _in.config.data_role%>" class="<%= _in.config.class%>"
-<% if(_in.config.name !== ""){ %> name="<%= _in.config.name%>" <%}%>
+<% if(_in.config.data_name !== ""){ %> data-name="<%= _in.config.data_name%>" <%}%>
 <% if(_in.config.disable === true){ %> disabled <%}%>
 <% if(_in.config.data_location){ %> data-location="<%= _in.config.data_location%>" <%}%>
-<% if(_in.config.data_mode_to){ %> data-mode-to="<%= _in.config.data_mode_to%>" <%}%>
 <% if(_in.config.value !== null){ %> value="<%= _in.config.value%>" <%}%>
 <% if(_in.config.data_action){ %> data-action="<%= _in.config.data_action%>" <%}%>
 <% if(_in.config.data_mode){ %> data-mode="<%= _in.config.data_mode%>" <%}%>
->
+<% if(_in.config.data_mode_to){ %> data-mode_to="<%= _in.config.data_mode_to%>" <%}%>
+<% if(_in.config.data_param){ %> data-param="<%= true%>" <%}%>
 
+<% if(_in.config.data_chat_part){ %> data-chat_part="<%= _in.config.data_chat_part%>" <%}%> >
+
+<%= _in.text%>
 <% if (_in.config.icon) { %>
-    <% var icon;
+        <% if (_in.icon_config) { %>
+        <% var icon;
         _in.icon_config.every(function(_icon) {
-            if (_icon.name === _in.config.icon) {
-            icon = _icon;
-            }
-            return !icon;
+        if (_icon.name === _in.config.icon) {
+        icon = _icon;
+        }
+        return !icon;
         } ); %>
 
         <% if (icon) { %>
-          <%= icon.svg %>
+        <%= icon.svg %>
         <% } %>
+<% } %>
+
+
 <% } %>
 <%= _in.config.text%>
 </button>
+

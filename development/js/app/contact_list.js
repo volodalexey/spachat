@@ -16,6 +16,7 @@ define('contact_list', [
              template_core,
              indexeddb,
              render_layout_core,
+
              contact_list_template,
              triple_element_template,
              button_template,

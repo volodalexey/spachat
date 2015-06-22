@@ -1,15 +1,13 @@
-<% var array = arguments[0]; %>
-<% array.config.forEach(function (btn) { %>
+<% var _in = arguments[0]; %>
+<% _in.config.forEach(function (_config) { %>
 
-<% if(btn.element === "button") { %>
-<button class="<%= btn.class%>" name="<%= btn.name%>" <% if(btn.disable === true){ %> disabled <%}%> 
-<% if(btn.data_location){ %> data-location="<%= btn.data_location%>" <%}%>
-data-role="<%= btn.data_role%>" value="<%= btn.value%>"><%= btn.text%>
-</button>
-<% } %>
-
-<% if(btn.element === "label") { %>
-<label data-role="<%= btn.data_role%>" class="<%= btn.class%>" value="<%= btn.value%>" ><%= btn.text%></label>
-<% } %>
+    <%= _in.triple_element_template({
+        config: _config,
+        icon_config: _in.icon_config,
+        button_template: _in.button_template,
+        input_template: _in.input_template,
+        label_template: _in.label_template,
+        data: _in.data
+    }) %>
 
 <% }) %>

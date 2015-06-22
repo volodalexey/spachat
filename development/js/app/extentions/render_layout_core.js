@@ -120,7 +120,7 @@ define('render_layout_core', [
                         }
                     });
                 } else {
-                    if (_this.MODE && _this.body_mode === _this.MODE.FILTER) {
+                    if (_this.MODE && (_this.body_mode === _this.MODE.FILTER || _this.body_mode === _this.MODE.FORMAT_PANEL)) {
                         callback(null, options);
                         return;
 

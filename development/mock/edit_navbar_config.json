@@ -6,7 +6,8 @@
     "class": "btnEdit",
     "title": "Edit_btn",
     "data_role": "btnEdit",
-    "name": "JustifyLeft"
+    "data_action": "addEdit",
+    "data_name": "JustifyLeft"
   },
   {
     "element": "button",
@@ -15,7 +16,8 @@
     "class": "btnEdit",
     "title": "Edit_btn",
     "data_role": "btnEdit",
-    "name": "JustifyCenter"
+    "data_action": "addEdit",
+    "data_name": "JustifyCenter"
   },
 
   {
@@ -25,7 +27,8 @@
     "class": "btnEdit",
     "title": "Edit_btn",
     "data_role": "btnEdit",
-    "name": "JustifyRight"
+    "data_action": "addEdit",
+    "data_name": "JustifyRight"
   },
   {
     "element": "button",
@@ -34,7 +37,8 @@
     "class": "btnEdit",
     "title": "Edit_btn",
     "data_role": "btnEdit",
-    "name": "Bold"
+    "data_action": "addEdit",
+    "data_name": "Bold"
   },
   {
     "element": "button",
@@ -43,7 +47,8 @@
     "class": "btnEdit",
     "title": "Edit_btn",
     "data_role": "btnEdit",
-    "name": "Italic"
+    "data_action": "addEdit",
+    "data_name": "Italic"
   },
   {
     "element": "button",
@@ -52,16 +57,19 @@
     "class": "btnEdit",
     "title": "Edit_btn",
     "data_role": "btnEdit",
-    "name": "ForeColor",
-    "param": true
+    "data_name": "ForeColor",
+    "data_action": "addEdit",
+    "data_param": true
   },
   {
     "element": "input",
     "type": "checkbox",
+    "data_key": "offScroll",
     "text": "Off Scroll",
     "class": "btnEdit",
     "title": "Edit_btn",
     "data_role": "btnEdit",
-    "name": "ControlScrollMessage"
+    "data_action": "changeEdit",
+    "data_name": "ControlScrollMessage"
   }
 ]

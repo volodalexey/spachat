@@ -8,11 +8,18 @@
         </div>
         <% if (_in.config) { %>
         <div data-role="btnHeaderPanel">
-            <% _in.config.forEach(function (btn) { %>
-            <button class="<%= btn.class%>" name="<%= btn.name%>" data-role="<%= btn.data_role%>" data-action="<%= btn.data_action%>"
-            <% if(btn.data_mode_to){ %> data-mode_to="<%= btn.data_mode_to%>" <%}%>
-            <% if(btn.data_chat_part){ %> data-chat_part="<%= btn.data_chat_part%>" <%}%> > <%= btn.text%></button>
+            <% _in.config.forEach(function (config) { %>
+
+            <%= _in.triple_element_template({
+            config: config,
+            icon_config: _in.icon_config,
+            button_template: _in.button_template,
+            input_template: _in.input_template,
+            label_template: _in.label_template,
+            }) %>
+
             <%})%>
+
         </div>
         <% } %>
         <div data-role="filter_container" class="background hide flex wrap"></div>
