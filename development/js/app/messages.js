@@ -92,7 +92,8 @@ define('messages', [
                         id: new Date().getTime(),
                         innerHTML: newMessage
                     };
-                    if (_this.chat.webrtc && _this.chat.webrtc.dataChannel) {
+                    if (_this.chat.webrtc && _this.chat.webrtc.dataChannel &&
+                        _this.chat.webrtc.dataChannel.readyState === "open") {
                         _this.chat.webrtc.dataChannel.send(JSON.stringify(message));
                     }
                 }
