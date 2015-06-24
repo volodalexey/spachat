@@ -80,9 +80,9 @@ define('chat_platform', [
             },
 
             resizeChats: function() {
-                Chat.prototype.chatsArray.forEach(function(_chat) {
-                    _chat.calcMessagesContainerHeight();
-                });
+                //Chat.prototype.chatsArray.forEach(function(_chat) {
+                //    _chat.calcMessagesContainerHeight();
+                //});
             },
 
             /**

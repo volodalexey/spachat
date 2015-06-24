@@ -119,7 +119,7 @@ define('header', [
                                 };
                                 _this.renderLayout(null, function(){
                                     _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
-                                    _this.buttons_toggle_reset = _this.chat.header_container.querySelectorAll('[data-toggle_reset]');
+                                    //_this.buttons_toggle_reset = _this.chat.header_container.querySelectorAll('[data-toggle_reset]');
                                     _this.button_filter = _this.chat.header_container.querySelector('[data-toggle]');
                                     _this.addToolbarEventListener();
                                     _this.renderFilter();

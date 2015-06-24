@@ -26,7 +26,7 @@ define('pagination', [
              input_template) {
 
         var pagination = function() {
-
+            this.bindMainContexts();
         };
 
         pagination.prototype = {
@@ -43,11 +43,13 @@ define('pagination', [
 
             bindMainContexts: function() {
                 var _this = this;
+                _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
             },
 
             addMainEventListener: function() {
                 var _this = this;
                 _this.removeMainEventListeners();
+                _this.addRemoveListener('add', _this.pagination_container, 'click', _this.bindedThrowEventRouter, false);
             },
 
             removeMainEventListeners: function() {
@@ -56,41 +58,8 @@ define('pagination', [
 
             cashElements: function() {
                 var _this = this;
+                _this.buttons_show_choice = Array.prototype.slice.call(_this.pagination_container.querySelectorAll('[data-role="choice"]'));
             },
-
-
-
-
-/*            initialize: function(options, callback) {
-                var _this = this;
-
-                _this.data = {
-                    options: options,
-                    collectionDescription: {
-                        "id": options.chat.chatsArray.length,
-                        "db_name": options.chat.chatsArray.length + '_chat_messages',
-                        "table_name": options.chat.chatsArray.length + '_chat_messages',
-                        "db_version": 1,
-                        "keyPath": "id"
-                    }
-                };
-                _this.chat = options.chat;
-                _this.chatElem = _this.chat.chatElem;
-                _this.outer_container = _this.chatElem.querySelector('[data-role="body_container"]');
-                _this.pagination_container = _this.chatElem.querySelector('[data-role="pagination_container"]');
-                //_this.messages_container = _this.chatElem.querySelector('[data-role="messages_container"]');
-                _this.choice_per_page_container = _this.outer_container.querySelector('[data-role="go_to_container"]');
-                _this.sendRequest("/mock/pagination_navbar_config.json", function(err, res) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        _this.pagination_navbar_config = JSON.parse(res);
-                    }
-
-                    _this.render(callback);
-                });
-                return _this;
-            },*/
 
             render: function(options, chat) {
                 var _this = this;
@@ -105,21 +74,49 @@ define('pagination', [
                 _this.pagination_container = _this.chat.chat_element.querySelector('[data-role="pagination_container"]');
                 _this.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
                 if (_this.chat.paginationOptions.show) {
-                    if (!_this.chat.previousShow) {
                         _this.elementMap = {
                             PAGINATION: _this.pagination_container
                         };
                         _this.body_mode = _this.MODE.PAGINATION;
-                        _this.renderLayout(null, null);
-                    } else {
-                        _this.pagination_container.innerHTML = "";
-                    }
+                        _this.renderLayout(null, function(){
+                            _this.addMainEventListener();
+                            _this.cashElements();
+                            _this.renderGoTo();
+                        });
                 } else {
-                _this.pagination_container.innerHTML = "";
+                    _this.pagination_container.innerHTML = "";
+                    _this.go_to_container.innerHTML = "";
+                    if (_this.buttons_show_choice) {
+                        _this.buttons_show_choice.forEach(function(btn){
+                            btn.dataset.toggle = true;
+                        });
+                    }
                 }
             },
 
-
+            renderGoTo: function() {
+                var _this = this;
+                if (_this.chat.goToOptions.show){
+                    _this.buttons_show_choice.forEach(function(btn){
+                        btn.dataset.toggle = false;
+                    });
+                    _this.elementMap = {
+                        GO_TO: _this.go_to_container
+                    };
+                    var data = {
+                        choice_mode: "nrte"
+                    };
+                    _this.body_mode = _this.MODE.GO_TO;
+                    _this.renderLayout(data, null);
+                } else {
+                    _this.go_to_container.innerHTML = "";
+                    if (_this.buttons_show_choice) {
+                        _this.buttons_show_choice.forEach(function(btn){
+                            btn.dataset.toggle = true;
+                        });
+                    }
+                }
+            },
 
                /* _this.per_page = _this.chatElem.querySelector('[data-role="per_page"]');
                 if (_this.per_page) {
@@ -290,7 +287,7 @@ define('pagination', [
                         } else {
                             _this.choice_per_page_config = JSON.parse(res);
                             _this.chat.data.showChoicePerPage = true;
-                            _this.renderChoicePerPage();
+                            _this.renderGoTo();
                             _this.trigger('calcMessagesContainerHeight');
                         }
                     })
@@ -301,8 +298,8 @@ define('pagination', [
                 }
             },
 
-            renderChoicePerPage: function() {
-                var _this = this;
+
+/*
                 _this.choice_per_page_container.innerHTML = _this.choice_per_page_template({
                     choice_per_page_config: _this.choice_per_page_config,
                     triple_element_template: _this.triple_element_template,
@@ -329,8 +326,8 @@ define('pagination', [
                 _this.label_go_to_page = _this.chatElem.querySelector('label[data-role="go_to_page"]');
                 if (_this.label_go_to_page) {
                     _this.rte_go_to_page.checked = true;
-                }
-            },
+                }*/
+
 
             selectCurrent: function() {
                 var _this = this;
@@ -354,7 +351,7 @@ define('pagination', [
                 } else {
                     _this.chat.data.redraw_choice_page_mode = "nrte";
                 }
-                _this.renderChoicePerPage();
+                _this.renderGoTo();
 
             }
 

@@ -26,9 +26,13 @@
     "class": "",
     "title": "Pagination_btn",
     "data_role": "choice",
+    "data_action": "changeMode",
+    "data_mode_to": "GO_TO",
+    "data_chat_part": "pagination",
     "data_location": "left",
     "name": "",
-    "disable": false
+    "disable": false,
+    "data_toggle": true
   },
   {
     "element": "label",
@@ -47,9 +51,13 @@
     "class": "",
     "title": "Pagination_btn",
     "data_role": "choice",
+    "data_action": "changeMode",
+    "data_mode_to": "GO_TO",
+    "data_chat_part": "pagination",
     "data_location": "right",
     "name": "",
-    "disable": false
+    "disable": false,
+    "data_toggle": true
   },
   {
     "element": "button",

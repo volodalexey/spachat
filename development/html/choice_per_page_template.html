@@ -1,7 +1,7 @@
 
 <% var array = arguments[0]; %>
-<% var array_choice_nrte = array.choice_per_page_config.filter( function(obj){ return obj.redraw_mode === "nrte" } ) %>
-<% var array_choice_rte = array.choice_per_page_config.filter( function(obj){ return obj.redraw_mode === "rte" } ) %>
+<% var array_choice_nrte = array.config.filter( function(obj){ return obj.redraw_mode === "nrte" } ) %>
+<% var array_choice_rte = array.config.filter( function(obj){ return obj.redraw_mode === "rte" } ) %>
 
 <div>
     <% if(array.mode === 'nrte') { %>

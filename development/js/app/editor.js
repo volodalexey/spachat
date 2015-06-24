@@ -76,22 +76,22 @@ define('editor', [
                 _this.chat = chat;
                 _this.editor_container = _this.chat.chat_element.querySelector('[data-role="editor_container"]');
                 if (_this.chat.editorOptions.show) {
-                        if (!_this.previousEditorShow){
-                            _this.previousEditorShow = true;
-                            _this.body_mode = _this.MODE.MAIN_PANEL;
-                            _this.elementMap = {
-                                MAIN_PANEL: _this.editor_container
-                            };
-                            _this.renderLayout(null, function() {
-                                _this.cashElements();
-                                _this.addMainEventListener();
-                                _this.renderFormatPanel();
-                            });
-                        } else {
+                    if (!_this.previousEditorShow) {
+                        _this.previousEditorShow = true;
+                        _this.body_mode = _this.MODE.MAIN_PANEL;
+                        _this.elementMap = {
+                            MAIN_PANEL: _this.editor_container
+                        };
+                        _this.renderLayout(null, function() {
+                            _this.cashElements();
+                            _this.addMainEventListener();
                             _this.renderFormatPanel();
-                        }
-
+                        });
+                    } else {
+                        _this.renderFormatPanel();
+                    }
                     return;
+
                 }
                 _this.previousEditorShow = false;
                 _this.editor_container.innerHTML = "";
@@ -100,25 +100,7 @@ define('editor', [
             renderFormatPanel: function() {
                 var _this = this;
                 if (_this.chat.formatOptions.show) {
-                    if (!_this.chat.previousShow) {
-                        _this.buttonFormat.dataset.toggle = false;
-                        _this.body_mode = _this.MODE.FORMAT_PANEL;
-                        _this.elementMap = {
-                            FORMAT_PANEL: _this.btnEditPanel
-                        };
-                        var data = {
-                            "offScroll": _this.chat.formatOptions.offScroll
-                        };
-                        _this.renderLayout(data, null);
-                    } else {
-                        _this.btnEditPanel.innerHTML = "";
-                    }
-                } else {
-                    _this.btnEditPanel.innerHTML = "";
-
-                }
-                /*if ((!_this.previousShow || _this.previousShow !== _this.chat.formatOptions.show) && _this.chat.formatOptions.show) {
-                    _this.previousShow = true;
+                    _this.buttonFormat.dataset.toggle = false;
                     _this.body_mode = _this.MODE.FORMAT_PANEL;
                     _this.elementMap = {
                         FORMAT_PANEL: _this.btnEditPanel
@@ -129,8 +111,8 @@ define('editor', [
                     _this.renderLayout(data, null);
                 } else {
                     _this.btnEditPanel.innerHTML = "";
-                    _this.previousShow = false;
-                }*/
+
+                }
             },
 
             addEdit: function(event) {

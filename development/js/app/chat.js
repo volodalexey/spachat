@@ -72,6 +72,10 @@ define('chat', [
                 perPageValue: 2,
                 rtePerPage: true,
                 rteChoicePage: true
+            },
+            messagesOptions: {
+                start: 0,
+                last: null
             }
         };
 
@@ -129,7 +133,6 @@ define('chat', [
                 var _this = this;
                 _this.chat_element = _this.chat_wrapper.querySelector('section');
                 _this.header_container = _this.chat_element.querySelector('[data-role="header_container"]');
-                _this.editor_container = _this.chat_element.querySelector('[data-role="editor_container"]');
                 _this.header_waiter_container = _this.chat_element.querySelector('[data-role="waiter_container"]');
                 _this.body_container = _this.chat_element.querySelector('[data-role="body_container"]');
             },
@@ -200,8 +203,13 @@ define('chat', [
                                     _this.toggleShowState({
                                         key: 'show',
                                         restore: true,
-                                        toggle: false
+                                        toggle: true
                                     }, _this.formatOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        restore: true,
+                                        toggle: true
+                                    }, _this.goToOptions, _obj);
                                     _this.editorOptions.show = true;
                                     break;
                             }
@@ -222,6 +230,11 @@ define('chat', [
                                         save: true,
                                         toggle: false
                                     }, _this.formatOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.goToOptions, _obj);
                                     break;
                                 case _this.body.MODE.CONTACT_LIST:
                                     _this.bodyOptions.mode = _this.body.MODE.CONTACT_LIST;
@@ -236,8 +249,12 @@ define('chat', [
                                             key: 'show',
                                             save: true,
                                             toggle: false
-                                        },
-                                        _this.formatOptions, _obj);
+                                    }, _this.formatOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.goToOptions, _obj);
                                     break;
                                 case _this.body.MODE.MESSAGES:
                                     _this.bodyOptions.mode = _this.body.MODE.MESSAGES;
@@ -250,9 +267,13 @@ define('chat', [
                                     _this.toggleShowState({
                                         key: 'show',
                                         restore: true,
-                                        toggle: false
+                                        toggle: true
                                     }, _this.formatOptions, _obj);
-
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        restore: true,
+                                        toggle: true
+                                    }, _this.goToOptions, _obj);
                                     break;
                             }
                             break;
@@ -274,11 +295,16 @@ define('chat', [
                         case "pagination":
                             switch (_obj.newMode) {
                                 case _this.pagination.MODE.PAGINATION:
-                                    _this.toggleShowState({key: 'show', toggle: false}, _this.paginationOptions, _obj);
                                     if (_obj.target) {
                                         _this.paginationOptions.show = _obj.target.checked;
                                         _this.paginationOptions.showEnablePagination = _obj.target.checked;
                                     }
+                                    _this.toggleShowState({key: 'show', toggle: false}, _this.paginationOptions, _obj);
+                                    //_this.toggleShowState({key: 'show', toggle: false}, _this.goToOptions, _obj);
+                                    break;
+                                case _this.pagination.MODE.GO_TO:
+                                    //_this.goToOptions.show = true;
+                                    _this.toggleShowState({key: 'show', toggle: false}, _this.goToOptions, _obj);
                                     break;
                             }
                     }
@@ -291,6 +317,7 @@ define('chat', [
                 _this.removeEventListeners();
                 _this.header.on('throw', _this.throwRouter, _this);
                 _this.editor.on('throw', _this.throwRouter, _this);
+                _this.pagination.on('throw', _this.throwRouter, _this);
                 //_this.pagination.on('fillListMessage', function(obj) {
                 //    _this.fillMessages(obj);
                 //}, _this);
@@ -303,6 +330,7 @@ define('chat', [
                 var _this = this;
                 _this.header.off('throw');
                 _this.editor.off('throw');
+                _this.pagination.off('throw');
                 _this.webrtc.off('log');
                 _this.webrtc.off('sendToWebSocket');
                 _this.off('notifyChat');
@@ -362,7 +390,6 @@ define('chat', [
                             'newMode': _this.pagination.MODE.PAGINATION
                         }
                     ]);
-                    //_this.render();
                 } else {
                     // I am NOT the creator of server stored offer
                     // Somebody created offer while I was trying to create my offer
@@ -394,13 +421,7 @@ define('chat', [
                             'chat_part': 'editor',
                             'newMode': _this.editor.MODE.MAIN_PANEL
                         }
-                        //,
-                        //{
-                        //    'chat_part':'pagination',
-                        //    'newMode': _this.pagination.MODE.PAGINATION
-                        //}
                     ]);
-                    //_this.render();
                 } else {
                     // I am NOT the creator of server stored answer
                     // Accept answer if I am the offer creator
@@ -442,21 +463,30 @@ define('chat', [
                     toggleObject[_options.key] = _obj.target.checked;
                     return;
 
-                } else {
-                    if (!toggleObject.previousSave) {
-                        if (_options.save && _options.save === true) {
-                            toggleObject.previousSave = true;
-                            toggleObject.previousShow = toggleObject[_options.key];
-                        }
-                    }
-                    if (_options.restore) {
-                        toggleObject[_options.key] = toggleObject.previousShow;
-                        toggleObject.previousSave = false;
-                        return;
-
-                    }
-                    toggleObject[_options.key] = _options.toggle;
                 }
+                if (_obj.target && _obj.target.dataset.role === 'choice') {
+                    toggleObject[_options.key] = _obj.target.dataset.toggle === "true";
+                    return;
+
+                }
+                if (!toggleObject.previousSave) {
+                    if (_options.save && _options.save === true) {
+                        toggleObject.previousSave = true;
+                        toggleObject.previousShow = toggleObject[_options.key];
+                    }
+                }
+                if (_options.restore) {
+                    if (toggleObject.previousSave) {
+                        toggleObject[_options.key] = toggleObject.previousShow;
+
+                    } else {
+                        toggleObject[_options.key] = toggleObject.show;
+                    }
+                    toggleObject.previousSave = false;
+                    return;
+
+                }
+                toggleObject[_options.key] = _options.toggle;
             }
 
         };
