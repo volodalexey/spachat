@@ -84,16 +84,6 @@ define('panel', [
                 "DETAIL_VIEW": ''
             },
 
-            configIconMap: {
-                "USER_INFO_EDIT": [{icon: '/html/icon/cancel_icon.html', name: "cancel_icon"},
-                    {icon: '/html/icon/ok_icon.html', name: "ok_icon"}],
-                "USER_INFO_SHOW": '',
-                "CREATE_CHAT": '',
-                "JOIN_CHAT": '',
-                "MY_CHATS": [{icon: '/html/icon/pointer_icon.html', name: "pointer_icon"}],
-                "DETAIL_VIEW": ''
-            },
-
             z_index: 80,
 
             render: function(options) {

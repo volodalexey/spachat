@@ -1,7 +1,7 @@
 [
   {
     "element": "button",
-    "icon": "setting_icon",
+    "icon": "",
     "text": "Setting",
     "data_mode_to": "SETTING",
     "data_chat_part": "body",
@@ -9,11 +9,12 @@
     "title": "Header_btn",
     "data_action": "changeMode",
     "data_role": "btnHeader",
-    "name": "Setting"
+    "name": "Setting",
+    "data_toggle_reset_header": true
   },
   {
     "element": "button",
-    "icon": "contact_list_icon",
+    "icon": "",
     "text": "ContactList",
     "data_mode_to": "CONTACT_LIST",
     "data_chat_part": "body",
@@ -21,11 +22,12 @@
     "title": "Header_btn",
     "data_action": "changeMode",
     "data_role": "btnHeader",
-    "name": "ContactList"
+    "name": "ContactList",
+    "data_toggle_reset_header": true
   },
   {
     "element": "button",
-    "icon": "filter_icon",
+    "icon": "",
     "text": "Filter",
     "data_mode_to": "FILTER",
     "data_chat_part": "header",
@@ -33,6 +35,7 @@
     "title": "Header_btn",
     "data_action": "changeMode",
     "data_role": "btnHeader",
-    "name": "Filter"
+    "name": "Filter",
+    "data_toggle": true
   }
 ]

@@ -55,8 +55,6 @@ define('settings', [
                         }
                     ]);
                 }
-
-                //_this.previousMode = _this.chat.contentOptions.mode;
             }
 
         };

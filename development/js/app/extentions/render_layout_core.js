@@ -14,6 +14,7 @@ define('render_layout_core', [
 
             renderLayout: function(options, callback) {
                 var _this = this;
+                _this.iconsArray = [];
                 _this.loadBodyConfig(null, options, function(confErr) {
                     _this.loadBodyData(confErr, options, function(dataErr, data) {
                         _this.fillBody(dataErr, data, function(templErr) {
@@ -67,8 +68,16 @@ define('render_layout_core', [
 
             loadBodyIconConfig: function(callback) {
                 var _this = this;
-                if (_this.configIconMap && _this.configIconMap[_this.body_mode]) {
-                    _this.async_eachSeries(_this.configIconMap[_this.body_mode],
+                _this.config.forEach(function(_config){
+                    if(_config.icon && _config.icon !== ""){
+                        _this.iconsArray.push(
+                            {icon:'/html/icon/' + _config.icon + '.html', name: _config.icon}
+                        );
+                    }
+                });
+
+                if (_this.iconsArray.length) {
+                    _this.async_eachSeries(_this.iconsArray,
                         function(obj, _callback) {
                             _this.sendRequest(obj.icon, function(err, res) {
                                 if (err) {
@@ -83,7 +92,7 @@ define('render_layout_core', [
                             if (allError) {
                                 callback(allError);
                             } else {
-                                _this.icon_config = _this.configIconMap[_this.body_mode];
+                                _this.icon_config = _this.iconsArray;
                                 callback();
                             }
                         }

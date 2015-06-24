@@ -97,26 +97,37 @@ define('header', [
             },
 
 
-            render: function(options, chat) {
+            render: function(options, _array, chat) {
                 var _this = this;
                 _this.chat = chat;
                 if (_this.chat.headerOptions.show) {
-                    //_this.previousMode = _this.chat.headerOptions.mode;
                     switch (_this.chat.headerOptions.mode) {
-
                         case _this.MODE.TAB:
-                                _this.body_mode = _this.MODE.TAB;
+                            if (_array){
+                                _array.forEach(function(_obj){
+                                    if (_obj.target && _obj.target.dataset.toggle_reset_header){
+                                        _this.button_filter.dataset.toggle = true;
+                                    }
+                                });
+                            }
+                            if (!_this.previousMode || _this.previousMode !== _this.chat.headerOptions.mode){
                                 _this.previousMode =_this.MODE.TAB;
-
+                                _this.body_mode = _this.MODE.TAB;
                                 _this.description = _this.MODE_DESCRIPTION[_this.body_mode];
                                 _this.elementMap = {
                                     TAB: _this.chat.header_container
                                 };
                                 _this.renderLayout(null, function(){
                                     _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
+                                    _this.buttons_toggle_reset = _this.chat.header_container.querySelectorAll('[data-toggle_reset]');
+                                    _this.button_filter = _this.chat.header_container.querySelector('[data-toggle]');
                                     _this.addToolbarEventListener();
                                     _this.renderFilter();
                                 });
+                            } else {
+                                _this.previousMode =_this.MODE.TAB;
+                                _this.renderFilter();
+                            }
                             break;
                         case _this.MODE.WEBRTC:
                             _this.body_mode = _this.MODE.WEBRTC;
@@ -139,29 +150,23 @@ define('header', [
 
             renderFilter: function() {
                 var _this = this;
-               var t = _this.previousShow;
                var f = _this.chat.filterOptions.show;
-                //if (!_this.previousShow ){
-                    if (!_this.previousShow && _this.chat.filterOptions.show) {
-                        _this.previousShow = true;
-                        _this.body_mode = _this.MODE.FILTER;
-                        _this.filter_container.classList.remove('hide');
-                        _this.elementMap = {
-                            FILTER: _this.filter_container
-                        };
-                        _this.body_mode = _this.MODE.FILTER;
-                        var data = {
-                            "perPageValue": _this.chat.paginationOptions.perPageValue,
-                            "showEnablePagination": _this.chat.paginationOptions.showEnablePagination,
-                            "rtePerPage": _this.chat.paginationOptions.rtePerPage
-                        };
-                        _this.renderLayout(data, null);
-                    }
-                //}
+                if (_this.chat.filterOptions.show){
+                    _this.body_mode = _this.MODE.FILTER;
+                    _this.elementMap = {
+                        FILTER: _this.filter_container
+                    };
+                    _this.body_mode = _this.MODE.FILTER;
+                    var data = {
+                        "perPageValue": _this.chat.paginationOptions.perPageValue,
+                        "showEnablePagination": _this.chat.paginationOptions.showEnablePagination,
+                        "rtePerPage": _this.chat.paginationOptions.rtePerPage
+                    };
+                    _this.renderLayout(data, null);
+                }
                 else {
                     _this.filter_container.innerHTML = "";
-                    _this.filter_container.classList.add('hide');
-                    _this.previousShow = false;
+                    _this.chat.filterOptions.show = false;
                 }
             },
 

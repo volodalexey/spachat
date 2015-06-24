@@ -25,7 +25,6 @@ define('body', [
                 var _this = this;
                 _this.chat = chat;
                 if (_this.chat.bodyOptions.show) {
-
                     switch (_this.chat.bodyOptions.mode) {
                         case _this.MODE.SETTING:
                             _this.chat.settings.renderSettings(options, chat);
@@ -37,6 +36,7 @@ define('body', [
                             _this.chat.messages.render(options, chat);
                             break;
                     }
+
                     _this.previousMode = _this.chat.bodyOptions.mode;
                 }
             }

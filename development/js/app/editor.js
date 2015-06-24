@@ -43,18 +43,6 @@ define('editor', [
                 "FORMAT_PANEL": '/mock/edit_navbar_config.json'
             },
 
-            configIconMap: {
-                "MAIN_PANEL": '',
-                "FORMAT_PANEL": [
-                    {icon: '/html/icon/aling_left_icon.html', name: "aling_left_icon"},
-                    {icon: '/html/icon/aling_center_icon.html', name: "aling_center_icon"},
-                    {icon: '/html/icon/aling_right_icon.html', name: "aling_right_icon"},
-                    {icon: '/html/icon/bold_icon.html', name: "bold_icon"},
-                    {icon: '/html/icon/italic_icon.html', name: "italic_icon"},
-                    {icon: '/html/icon/color_text_icon.html', name: "color_text_icon"}
-                ]
-            },
-
             bindMainContexts: function() {
                 var _this = this;
                 _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
@@ -79,6 +67,8 @@ define('editor', [
                 _this.controls_container = _this.editor_container.querySelector('[data-role="controls_container"]');
                 _this.message_inner_container = _this.editor_container.querySelector('[data-role="message_inner_container"]');
                 _this.btnEditPanel = _this.controls_container.querySelector('[data-action="btnEditPanel"]');
+                _this.buttonFormat = _this.editor_container.querySelector('[data-toggle]');
+
             },
 
             render: function(options, chat) {
@@ -86,32 +76,49 @@ define('editor', [
                 _this.chat = chat;
                 _this.editor_container = _this.chat.chat_element.querySelector('[data-role="editor_container"]');
                 if (_this.chat.editorOptions.show) {
-                    if (!_this.previousShow) {
-                        _this.previousShow = true;
-                        _this.body_mode = _this.MODE.MAIN_PANEL;
-                        _this.elementMap = {
-                            MAIN_PANEL: _this.editor_container
-                        };
-                        _this.renderLayout(null, function() {
-                            _this.cashElements();
-                            _this.addMainEventListener();
-                            _this.renderFormatPanel();
-                        });
-                    } else {
-                        if (_this.chat.formatOptions.show) {
+                        if (!_this.previousEditorShow){
+                            _this.previousEditorShow = true;
+                            _this.body_mode = _this.MODE.MAIN_PANEL;
+                            _this.elementMap = {
+                                MAIN_PANEL: _this.editor_container
+                            };
+                            _this.renderLayout(null, function() {
+                                _this.cashElements();
+                                _this.addMainEventListener();
+                                _this.renderFormatPanel();
+                            });
+                        } else {
                             _this.renderFormatPanel();
                         }
-                    }
+
                     return;
                 }
-                _this.previousShow = false;
+                _this.previousEditorShow = false;
                 _this.editor_container.innerHTML = "";
             },
 
             renderFormatPanel: function() {
                 var _this = this;
-                if ((!_this.previousFormatShow || _this.previousFormatShow !== _this.chat.formatOptions.show) && _this.chat.formatOptions.show) {
-                    _this.previousFormatShow = true;
+                if (_this.chat.formatOptions.show) {
+                    if (!_this.chat.previousShow) {
+                        _this.buttonFormat.dataset.toggle = false;
+                        _this.body_mode = _this.MODE.FORMAT_PANEL;
+                        _this.elementMap = {
+                            FORMAT_PANEL: _this.btnEditPanel
+                        };
+                        var data = {
+                            "offScroll": _this.chat.formatOptions.offScroll
+                        };
+                        _this.renderLayout(data, null);
+                    } else {
+                        _this.btnEditPanel.innerHTML = "";
+                    }
+                } else {
+                    _this.btnEditPanel.innerHTML = "";
+
+                }
+                /*if ((!_this.previousShow || _this.previousShow !== _this.chat.formatOptions.show) && _this.chat.formatOptions.show) {
+                    _this.previousShow = true;
                     _this.body_mode = _this.MODE.FORMAT_PANEL;
                     _this.elementMap = {
                         FORMAT_PANEL: _this.btnEditPanel
@@ -122,8 +129,8 @@ define('editor', [
                     _this.renderLayout(data, null);
                 } else {
                     _this.btnEditPanel.innerHTML = "";
-                    _this.previousFormatShow = false;
-                }
+                    _this.previousShow = false;
+                }*/
             },
 
             addEdit: function(event) {

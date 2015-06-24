@@ -33,6 +33,7 @@ define('contact_list', [
                 CONTACT_LIST: '/mock/contact_list_config.json'
             },
 
+
             renderContactList: function(options, chat) {
                 var _this = this;
                 _this.chat = chat;

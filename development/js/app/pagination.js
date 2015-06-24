@@ -3,6 +3,7 @@ define('pagination', [
         'ajax_core',
         'template_core',
         'render_layout_core',
+        'indexeddb',
 
         'text!../html/pagination_template.html',
         'text!../html/choice_per_page_template.html',
@@ -15,6 +16,7 @@ define('pagination', [
              ajax_core,
              template_core,
              render_layout_core,
+             indexeddb,
 
              pagination_template,
              choice_per_page_template,
@@ -37,11 +39,6 @@ define('pagination', [
             configMap: {
                 "PAGINATION": '/mock/pagination_navbar_config.json',
                 "GO_TO": '/mock/choice_per_page_config.json'
-            },
-
-            configIconMap: {
-                "PAGINATION": '',
-                "GO_TO": ''
             },
 
             bindMainContexts: function() {
@@ -98,7 +95,6 @@ define('pagination', [
             render: function(options, chat) {
                 var _this = this;
                 _this.chat = chat;
-
                  _this.collectionDescription= {
                      "id": _this.chat.chatsArray.length,
                      "db_name": _this.chat.chatsArray.length + '_chat_messages',
@@ -108,15 +104,21 @@ define('pagination', [
                  };
                 _this.pagination_container = _this.chat.chat_element.querySelector('[data-role="pagination_container"]');
                 _this.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
-                if (_this.chat.paginationOptions.show){
-                    _this.elementMap = {
-                        PAGINATION: _this.pagination_container
-                    };
-                    _this.body_mode = _this.MODE.PAGINATION;
-                    _this.renderLayout(null,null);
+                if (_this.chat.paginationOptions.show) {
+                    if (!_this.chat.previousShow) {
+                        _this.elementMap = {
+                            PAGINATION: _this.pagination_container
+                        };
+                        _this.body_mode = _this.MODE.PAGINATION;
+                        _this.renderLayout(null, null);
+                    } else {
+                        _this.pagination_container.innerHTML = "";
+                    }
                 } else {
-                    _this.pagination_container.innerHTML = "";
+                _this.pagination_container.innerHTML = "";
                 }
+            },
+
 
 
                /* _this.per_page = _this.chatElem.querySelector('[data-role="per_page"]');
@@ -146,7 +148,7 @@ define('pagination', [
                     _this.btnChoiceRight.addEventListener('click', _this.showChoicePerPage.bind(_this), false);
                     //_this.trigger('resizeMessagesContainer');
                 }, callback);*/
-            },
+
 
             showPagination: function(callback, _callback) {
                 var _this = this;
@@ -186,7 +188,7 @@ define('pagination', [
                 var _this = this;
                 var start;
                 var final;
-                _this.chat.indexeddb.getAll(_this.data.collectionDescription, function(getAllErr, messages) {
+                indexeddb.getAll(_this.data.collectionDescription, function(getAllErr, messages) {
                     var quantityMes = messages.length;
                     var quantityPages = Math.ceil(quantityMes / _this.chat.data.perPageValue);
                     if (_this.chat.data.curPage === null) {

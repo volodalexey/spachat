@@ -12,7 +12,8 @@
     "for": "",
     "service_id": "",
     "sort": 1,
-    "redraw_mode": ""
+    "redraw_mode": "",
+    "data_toggle": true
   },
   {
     "element": "button",
