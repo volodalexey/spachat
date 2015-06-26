@@ -6,6 +6,7 @@
 <% var array_per_page_nrte = array_per_page.filter( function(obj){ return obj.redraw_mode === "nrte" } ) %>
 <% var array_per_page_rte = array_per_page.filter( function(obj){ return obj.redraw_mode === "rte" } ) %>
 
+
 <div class="flex-item flex">
     <div class="elements">
         <% array_date_from.forEach(function (_config) { %>
@@ -42,7 +43,8 @@
         <% }) %>
     </div>
     <div class="elements">
-        <% if(array.mode === 'nrte') { %>
+
+        <% if(array.data.mode_change === 'nrte') { %>
             <% array_per_page_nrte.forEach(function (_config) { %>
                 <%= array.triple_element_template({
                 config: _config,

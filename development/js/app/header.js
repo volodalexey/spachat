@@ -22,7 +22,6 @@ define('header', [
              indexeddb,
              render_layout_core,
              pagination,
-
              filter_template,
              header_template,
              triple_element_template,
@@ -70,8 +69,8 @@ define('header', [
                 //_this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedTriggerRouter, false);                _this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedTriggerRouter, false);
                 _this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedThrowEventRouter, false);
 
-                //_this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('add', _this.chat.header_container, 'checked', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.chat.header_container, 'change', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.chat.header_container, 'input', _this.bindedDataActionRouter, false);
             },
 
@@ -81,7 +80,7 @@ define('header', [
                 _this.addRemoveListener('remove', _this.chat.header_container, 'click', _this.bindedThrowEventRouter, false);
 
                 _this.addRemoveListener('remove', _this.chat.header_container, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('remove', _this.chat.header_container, 'checked', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.chat.header_container, 'change', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.chat.header_container, 'input', _this.bindedDataActionRouter, false);
             },
 
@@ -102,21 +101,21 @@ define('header', [
                 if (_this.chat.headerOptions.show) {
                     switch (_this.chat.headerOptions.mode) {
                         case _this.MODE.TAB:
-                            if (_array){
-                                _array.forEach(function(_obj){
-                                    if (_obj.target && _obj.target.dataset.toggle_reset_header){
+                            if (_array) {
+                                _array.forEach(function(_obj) {
+                                    if (_obj.target && _obj.target.dataset.toggle_reset_header) {
                                         _this.button_filter.dataset.toggle = true;
                                     }
                                 });
                             }
-                            if (!_this.previousMode || _this.previousMode !== _this.chat.headerOptions.mode){
-                                _this.previousMode =_this.MODE.TAB;
+                            if (!_this.previousMode || _this.previousMode !== _this.chat.headerOptions.mode) {
+                                _this.previousMode = _this.MODE.TAB;
                                 _this.body_mode = _this.MODE.TAB;
                                 _this.description = _this.MODE_DESCRIPTION[_this.body_mode];
                                 _this.elementMap = {
                                     TAB: _this.chat.header_container
                                 };
-                                _this.renderLayout(null, function(){
+                                _this.renderLayout(null, function() {
                                     _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
                                     //_this.buttons_toggle_reset = _this.chat.header_container.querySelectorAll('[data-toggle_reset]');
                                     _this.button_filter = _this.chat.header_container.querySelector('[data-toggle]');
@@ -124,7 +123,7 @@ define('header', [
                                     _this.renderFilter();
                                 });
                             } else {
-                                _this.previousMode =_this.MODE.TAB;
+                                _this.previousMode = _this.MODE.TAB;
                                 _this.renderFilter();
                             }
                             break;
@@ -135,7 +134,7 @@ define('header', [
                             _this.elementMap = {
                                 WEBRTC: _this.chat.header_container.querySelector('[data-role="webrtc_container"]')
                             };
-                            _this.fillBody(null, null, function(){
+                            _this.fillBody(null, null, function() {
                                 _this.renderFilter();
                             });
                             break;
@@ -149,8 +148,8 @@ define('header', [
 
             renderFilter: function() {
                 var _this = this;
-               var f = _this.chat.filterOptions.show;
-                if (_this.chat.filterOptions.show){
+                var f = _this.chat.filterOptions.show;
+                if (_this.chat.filterOptions.show) {
                     _this.body_mode = _this.MODE.FILTER;
                     _this.elementMap = {
                         FILTER: _this.filter_container
@@ -159,7 +158,8 @@ define('header', [
                     var data = {
                         "perPageValue": _this.chat.paginationOptions.perPageValue,
                         "showEnablePagination": _this.chat.paginationOptions.showEnablePagination,
-                        "rtePerPage": _this.chat.paginationOptions.rtePerPage
+                        "rtePerPage": _this.chat.paginationOptions.rtePerPage,
+                        "mode_change": _this.chat.paginationOptions.mode_change
                     };
                     _this.renderLayout(data, null);
                 }
@@ -169,77 +169,47 @@ define('header', [
                 }
             },
 
-            changeRealTimeEditing: function() {
+            changePerPage: function(event) {
                 var _this = this;
-                var array_per_page_nrte = _this.filter_navbar_config.filter(function(obj) {
-                    return obj.service_id === "per_page" && obj.redraw_mode === "nrte"
-                });
-                var array_per_page_rte = _this.filter_navbar_config.filter(function(obj) {
-                    return obj.service_id === "per_page" && obj.redraw_mode === "rte"
-                });
+                var value = parseInt(event.target.value);
 
-                if (_this.rteShowPerPage.checked) {
-                    _this.chat.data.redraw_mode = "rte";
-                    _this.array_per_page = array_per_page_rte;
-                } else {
-                    _this.chat.data.redraw_mode = "nrte";
-                    _this.array_per_page = array_per_page_nrte;
-                }
-                var parentDiv = _this.rteShowPerPage.parentNode;
-                parentDiv.innerHTML = "";
-                _this.array_per_page.forEach(function(obj) {
-                    //console.log(obj);
-                    parentDiv.innerHTML += _this.triple_element_template({
-                        element: obj,
-                        button_template: _this.button_template,
-                        input_template: _this.input_template,
-                        label_template: _this.label_template
-                    });
-                });
-                _this.labeltPerPage = _this.filter_container.querySelector('input[data-role="per_page"]');
-                if (_this.labeltPerPage) {
-                    _this.labeltPerPage.addEventListener('input', _this.changePerPage.bind(_this), false);
-                    _this.labeltPerPage.value = _this.chat.data.perPageValue;
-                }
-                _this.showPerPage = _this.filter_container.querySelector('button[data-role="per_page"]');
-                if (_this.showPerPage) {
-                    _this.showPerPage.addEventListener('click', _this.showPerPage.bind(_this), false);
-                }
-                _this.rteShowPerPage = _this.filter_container.querySelector('input[data-role="rteShowPerPage"]');
-                if (_this.rteShowPerPage) {
-                    _this.rteShowPerPage.addEventListener('change', _this.changeRealTimeEditing.bind(_this), false);
-                }
-            },
+                if (event.target.value !== "" && event.target.value !== "0" && event.type !== "click") {
+                    if (!_this.chat.paginationOptions.rtePerPage) {
+                        _this.chat.paginationOptions.currentPage = null;
+                        _this.chat.paginationOptions.perPageValue = value;
+                        event.target.focus();
+                        return;
 
-            showEnablePagination: function() {
-                var _this = this;
-                console.log("renderPagination");
-                _this.trigger("renderPagination");
-            },
-
-            changePerPage: function() {
-                var _this = this;
-                _this.chat.data.perPageValue = parseInt(_this.labeltPerPage.value);
-
-                if (_this.chat.data.redraw_mode === "rte") {
-                    _this.chat.data.currentPage = null;
-                    if (_this.chat.data.showEnablePagination) {
-                        if (_this.labeltPerPage.value !== "") {
-                            _this.trigger("changePerPage");
-                        }
+                    }
+                    _this.chat.paginationOptions.perPageValue = value;
+                    if (_this.chat.paginationOptions.showEnablePagination) {
+                        _this.chat.paginationOptions.currentPage = null;
+                        _this.chat.pagination.countQuantityPages(function() {
+                            _this.chat.render(null, null);
+                        });
                     }
                 }
+            },
+
+            changeRTE: function(event) {
+                var _this = this;
+                if (event.target.checked) {
+                    _this.chat.paginationOptions.mode_change = "rte";
+                    _this.chat.paginationOptions.rtePerPage = true;
+                } else {
+                    _this.chat.paginationOptions.mode_change = "nrte";
+                    _this.chat.paginationOptions.rtePerPage = false;
+                }
+                _this.chat.render(null, null);
             },
 
             showPerPage: function() {
                 var _this = this;
-
-                _this.chat.data.perPageValue = parseInt(_this.labeltPerPage.value);
-                _this.chat.data.currentPage = null;
-                if (_this.chat.data.showEnablePagination) {
-                    if (_this.labeltPerPage.value !== "") {
-                        _this.trigger("changePerPage");
-                    }
+                _this.chat.paginationOptions.currentPage = null;
+                if (_this.chat.paginationOptions.showEnablePagination) {
+                    _this.chat.pagination.countQuantityPages(function() {
+                        _this.chat.render(null, null);
+                    });
                 }
             }
 

@@ -62,10 +62,11 @@ define('chat', [
             goToOptions: {
                 show: false,
                 rteChoicePage: true,
-                mode: "rte"
+                mode_change: "rte"
             },
             paginationOptions: {
                 show: false,
+                mode_change: "rte",
                 currentPage: null,
                 firstPage: 1,
                 lastPage: null,

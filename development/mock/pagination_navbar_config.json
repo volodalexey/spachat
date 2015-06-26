@@ -1,8 +1,8 @@
 [
   {
     "element": "button",
-    "icon": "",
-    "text": "<-",
+    "icon": "back_arrow",
+    "text": "",
     "class": "",
     "title": "Pagination_btn",
     "data_role": "back",
@@ -75,8 +75,8 @@
   },
   {
     "element": "button",
-    "icon": "",
-    "text": "->",
+    "icon": "forward_arrow",
+    "text": "",
     "class": "",
     "title": "Pagination_btn",
     "data_role": "forward",

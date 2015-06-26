@@ -4,8 +4,7 @@
 <% var array_choice_rte = array.config.filter( function(obj){ return obj.redraw_mode === "rte" } ) %>
 
 <div>
-    <% console.log(array.data.mode)%>
-    <% if(array.data.mode === 'nrte') { %>
+    <% if(array.data.mode_change === 'nrte') { %>
         <% array_choice_nrte.forEach( function (_config) { %>
             <%= array.triple_element_template({
             config: _config,

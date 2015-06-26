@@ -97,6 +97,7 @@ define('pagination', [
                 _this.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
                 if (_this.chat.paginationOptions.show) {
                     _this.countQuantityPages(function(){
+                        _this.disableButtonsPagination();
                         _this.body_mode = _this.MODE.PAGINATION;
                         _this.elementMap = {
                             PAGINATION: _this.pagination_container
@@ -114,6 +115,11 @@ define('pagination', [
                             _this.addMainEventListener();
                             _this.cashMainElements();
                             _this.renderGoTo();
+                            if (_this.buttons_show_choice && _this.chat.goToOptions.show) {
+                                _this.buttons_show_choice.forEach(function(btn){
+                                    btn.dataset.toggle = false;
+                                });
+                            }
                         });
                     });
                 } else {
@@ -140,7 +146,7 @@ define('pagination', [
                             GO_TO: _this.go_to_container
                         };
                         var data = {
-                            mode: _this.chat.goToOptions.mode,
+                            mode_change: _this.chat.goToOptions.mode_change,
                             rteChoicePage: _this.chat.goToOptions.rteChoicePage,
                             page: _this.chat.goToOptions.page
                         };
@@ -179,7 +185,7 @@ define('pagination', [
                         _this.chat.messagesOptions.final = (_this.chat.paginationOptions.currentPage - 1) * _this.chat.paginationOptions.perPageValue + _this.chat.paginationOptions.perPageValue;
                     }
                     _this.chat.paginationOptions.lastPage = quantityPages;
-                    _this.disableButtonsPaginatin();
+                    //_this.disableButtonsPagination();
                     callback();
                 });
             },
@@ -198,7 +204,6 @@ define('pagination', [
 
                 if (_this.chat.goToOptions.rteChoicePage && event.target.dataset.role === "choice_per_page") {
                     if (event.target.value === "" ){
-                        _this.chat.paginationOptions.currentPage = 1;
                         _this.chat.goToOptions.page = null;
                     } else {
                         var value = parseInt(event.target.value);
@@ -209,32 +214,19 @@ define('pagination', [
 
                 if (!_this.chat.goToOptions.rteChoicePage && event.target.dataset.role === "go_to_page") {
                     if (_this.input_choose_page.value === "" ){
-                        _this.chat.paginationOptions.currentPage = 1;
                         _this.chat.goToOptions.page = null;
                     } else {
                         var value = parseInt(_this.input_choose_page.value);
                         _this.chat.paginationOptions.currentPage = value;
                         _this.chat.goToOptions.page = value;
                     }
+                    _this.previousShow = false;
                 }
 
                 _this.chat.render(null, null);
             },
 
-            changeRTE: function(event) {
-                var _this = this;
-                if (event.target.checked) {
-                    _this.chat.goToOptions.mode = "rte";
-                    _this.chat.goToOptions.rteChoicePage = true;
-                } else {
-                    _this.chat.goToOptions.mode = "nrte";
-                    _this.chat.goToOptions.rteChoicePage = false;
-                }
-                _this.previousShow = false;
-                _this.chat.render(null, null);
-            },
-
-            disableButtonsPaginatin: function() {
+            disableButtonsPagination: function() {
                 var _this = this;
                 if (_this.chat.paginationOptions.currentPage === _this.chat.paginationOptions.firstPage) {
                     _this.chat.paginationOptions.disableBack = true;
@@ -252,169 +244,18 @@ define('pagination', [
                 }
             },
 
-
-            /* _this.per_page = _this.chatElem.querySelector('[data-role="per_page"]');
-             if (_this.per_page) {
-             _this.per_page.value = _this.chat.data.perPageValue;
-             if (_this.per_page.value === "") {
-             _this.per_page.value = 2;
-             _this.chat.data.perPageValue = 2;
-             }
-             }
-             _this.showPagination(function() {
-             _this.pagination_container.innerHTML = _this.pagination_template({
-             config: _this.pagination_navbar_config
-             });
-             _this.btnBack = _this.pagination_container.querySelector('[data-role="back"]');
-             _this.btnBack.addEventListener('click', _this.selectBack.bind(_this), false);
-             _this.btnFirst = _this.pagination_container.querySelector('[data-role="first"]');
-             _this.btnFirst.addEventListener('click', _this.selectFirst.bind(_this), false);
-             _this.btnLast = _this.pagination_container.querySelector('[data-role="last"]');
-             _this.btnLast.addEventListener('click', _this.selectLast.bind(_this), false);
-             _this.btnForward = _this.pagination_container.querySelector('[data-role="forward"]');
-             _this.btnForward.addEventListener('click', _this.selectForward.bind(_this), false);
-             _this.lblCurrent = _this.pagination_container.querySelector('[data-role="current"]');
-             _this.btnChoiceLeft = _this.pagination_container.querySelector('[data-location="left"]');
-             _this.btnChoiceLeft.addEventListener('click', _this.showChoicePerPage.bind(_this), false);
-             _this.btnChoiceRight = _this.pagination_container.querySelector('[data-location="right"]');
-             _this.btnChoiceRight.addEventListener('click', _this.showChoicePerPage.bind(_this), false);
-             //_this.trigger('resizeMessagesContainer');
-             }, callback);*/
-
-
-            showPagination: function(callback, _callback) {
+            changeRTE: function(event) {
                 var _this = this;
-                if (_this.enable_pagination) {
-                    _this.chat.data.showEnablePagination = _this.enable_pagination.checked;
-                    _this.chat.data.perPageValue = parseInt(_this.per_page.value);
-                    if (_this.enable_pagination.checked) {
-                        if(_this.chat.data.showChoicePerPage){
-                            _this.showChoicePerPage();
-                        }
-                        _this.pagination_container.classList.remove("hide");
-                        _this.countQuantityPages(callback);
-                        if(_callback){
-                            _callback();
-                        }
-                    } else {
-                        _this.pagination_container.classList.add("hide");
-                        _this.choice_per_page_container = _this.outer_container.querySelector('[data-role="go_to_container"]');
-                        _this.choice_per_page_container.innerHTML = "";
-                        _this.trigger('fillListMessage', {start: 0, callback: _callback});
-                    }
+                if (event.target.checked) {
+                    _this.chat.goToOptions.mode_change = "rte";
+                    _this.chat.goToOptions.rteChoicePage = true;
                 } else {
-                    if (_this.chat.data.showEnablePagination) {
-                        if(_this.chat.data.showChoicePerPage){
-                            _this.showChoicePerPage();
-                        }
-                        _this.pagination_container.classList.remove("hide");
-                        _this.countQuantityPages(callback);
-                    } else {
-                        _this.pagination_container.classList.add("hide");
-                        _this.trigger('fillListMessage', {start: 0, callback: _callback});
-                    }
+                    _this.chat.goToOptions.mode_change = "nrte";
+                    _this.chat.goToOptions.rteChoicePage = false;
                 }
-            },
-
-            choicePaginationNavbarConfig: function(callback) {
-                var _this = this;
-                _this.pagination_navbar_config.forEach(function(element) {
-                    if (element.data_role === "current" && element.element === "label") {
-                        element.text = _this.chat.data.currentPage;
-                    }
-                    if (element.data_role === "first") {
-                        element.value = _this.chat.data.firstPage;
-                        element.text = _this.chat.data.firstPage;
-                    }
-                    if (element.data_role === "last") {
-                        element.value = _this.chat.data.lastPage;
-                        element.text = _this.chat.data.lastPage;
-                    }
-                });
-                if (_this.chat.data.currentPage === _this.chat.data.firstPage) {
-                    _this.pagination_navbar_config.forEach(function(element) {
-                        if (element.data_role === "first" || element.data_role === "back" || element.data_location === "left") {
-                            element.disable = true;
-                        }
-                    });
-                } else {
-                    _this.pagination_navbar_config.forEach(function(element) {
-                        if (element.data_role === "first" || element.data_role === "back" || element.data_location === "left") {
-                            element.disable = false;
-                        }
-                        if (element.data_role === "first") {
-                            element.value = _this.chat.data.firstPage;
-                            element.text = _this.chat.data.firstPage;
-                        }
-                    });
-                }
-                if (_this.chat.data.currentPage === _this.chat.data.lastPage) {
-                    _this.pagination_navbar_config.forEach(function(element) {
-                        if (element.data_role === "last" || element.data_role === "forward" || element.data_location === "right") {
-                            element.disable = true;
-                        }
-                    });
-                } else {
-                    _this.pagination_navbar_config.forEach(function(element) {
-                        if (element.data_role === "last" || element.data_role === "forward" || element.data_location === "right") {
-                            element.disable = false;
-                        }
-                    });
-                }
-                if (callback) {
-                    callback();
-                }
-            },
-
-
-
-/*
-                _this.choice_per_page_container.innerHTML = _this.choice_per_page_template({
-                    choice_per_page_config: _this.choice_per_page_config,
-                    triple_element_template: _this.triple_element_template,
-                    button_template: _this.button_template,
-                    input_template: _this.input_template,
-                    label_template: _this.label_template,
-                    mode: _this.chat.data.redraw_choice_page_mode
-                });
-                _this.inp_choise_per_page = _this.chatElem.querySelector('input[data-role="choice_per_page"]');
-                if (_this.inp_choise_per_page) {
-                    _this.inp_choise_per_page.value = _this.chat.data.currentPage;
-                    _this.inp_choise_per_page.addEventListener('input', _this.selectCurrent.bind(_this), false);
-                }
-                _this.rte_go_to_page = _this.chatElem.querySelector('input[data-role="rte_choice_per_page"]');
-                if (_this.rte_go_to_page) {
-                    _this.rte_go_to_page.addEventListener('change', _this.changeRTE.bind(_this), false);
-                    _this.rte_go_to_page.checked = true;
-                }
-                _this.btn_go_to_page = _this.chatElem.querySelector('button[data-role="go_to_page"]');
-                if (_this.btn_go_to_page) {
-                    _this.btn_go_to_page.addEventListener('click', _this.goToCurrentPage.bind(_this), false);
-                    _this.rte_go_to_page.checked = false;
-                }
-                _this.label_go_to_page = _this.chatElem.querySelector('label[data-role="go_to_page"]');
-                if (_this.label_go_to_page) {
-                    _this.rte_go_to_page.checked = true;
-                }*/
-
-
-            selectCurrent: function() {
-                var _this = this;
-                _this.chat.data.currentPage = _this.inp_choise_per_page.value;
-                if (_this.chat.data.redraw_choice_page_mode === "rte") {
-                    _this.render();
-                }
-            },
-
-            goToCurrentPage: function() {
-                var _this = this;
-                _this.chat.data.currentPage = _this.inp_choise_per_page.value;
-                //_this.choice_per_page_container.innerHTML = "";
-                _this.render();
+                _this.previousShow = false;
+                _this.chat.render(null, null);
             }
-
-
-
         };
         extend(pagination, event_core);
         extend(pagination, ajax_core);
