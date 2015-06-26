@@ -4,26 +4,25 @@
 <% var array_choice_rte = array.config.filter( function(obj){ return obj.redraw_mode === "rte" } ) %>
 
 <div>
-    <% if(array.mode === 'nrte') { %>
-
-
+    <% console.log(array.data.mode)%>
+    <% if(array.data.mode === 'nrte') { %>
         <% array_choice_nrte.forEach( function (_config) { %>
             <%= array.triple_element_template({
             config: _config,
             button_template: array.button_template,
             input_template: array.input_template,
-            label_template: array.label_template
+            label_template: array.label_template,
+            data: array.data
             }) %>
         <% }) %>
-
-
     <% } else { %>
         <% array_choice_rte.forEach( function (_config) { %>
             <%= array.triple_element_template({
             config: _config,
             button_template: array.button_template,
             input_template: array.input_template,
-            label_template: array.label_template
+            label_template: array.label_template,
+            data: array.data
             }) %>
         <% }) %>
     <%} %>

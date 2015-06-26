@@ -60,18 +60,23 @@ define('chat', [
                 offScroll: false
             },
             goToOptions: {
-                show: false
+                show: false,
+                rteChoicePage: true,
+                mode: "rte"
             },
             paginationOptions: {
                 show: false,
-                curPage: null,
+                currentPage: null,
                 firstPage: 1,
                 lastPage: null,
                 showEnablePagination: false,
                 showChoicePerPage: false,
-                perPageValue: 2,
+                perPageValue: 1,
                 rtePerPage: true,
-                rteChoicePage: true
+                disableBack: false,
+                disableFirst: false,
+                disableLast: false,
+                disableForward: false
             },
             messagesOptions: {
                 start: 0,
@@ -166,8 +171,8 @@ define('chat', [
                 var _this = this;
                 _this.editor.render(options, this);
                 _this.header.render(null, _array, this);
-                _this.body.render({start: 0, scrollTop: true}, this);
                 _this.pagination.render(options, this);
+                _this.body.render({scrollTop: true}, this);
                 //_this.messages.render({start: 0, scrollTop: true}, this);
             },
 

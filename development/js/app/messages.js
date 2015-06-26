@@ -66,11 +66,11 @@ define('messages', [
                     }
 
                     _this.chat.body_container.innerHTML = "";
-                    if (options.final > messages.length || !options.final) {
-                        options.final = messages.length;
+                    if (_this.chat.messagesOptions.final > messages.length || !_this.chat.messagesOptions.final) {
+                        _this.chat.messagesOptions.final = messages.length;
                     }
                     var generatedMessages = [];
-                    for (var i = options.start; i < options.final; i++) {
+                    for (var i = _this.chat.messagesOptions.start; i < _this.chat.messagesOptions.final; i++) {
                         generatedMessages.push(_this.message_template({
                             innerHTML: messages[i].innerHTML
                         }));

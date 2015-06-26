@@ -6,8 +6,9 @@
     "class": "",
     "title": "Pagination_btn",
     "data_role": "back",
+    "data_action": "switchPage",
     "name": "",
-    "disable": false
+    "data_key_disable": "disableBack"
   },
   {
     "element": "button",
@@ -16,8 +17,10 @@
     "class": "",
     "title": "Pagination_btn",
     "data_role": "first",
+    "data_action": "switchPage",
+    "data_key": "firstPage",
     "name": "",
-    "disable": false
+    "data_key_disable": "disableFirst"
   },
   {
     "element": "button",
@@ -31,7 +34,6 @@
     "data_chat_part": "pagination",
     "data_location": "left",
     "name": "",
-    "disable": false,
     "data_toggle": true
   },
   {
@@ -41,6 +43,7 @@
     "class": "lblStyle",
     "title": "Pagination_btn",
     "data_role": "current",
+    "data_key": "currentPage",
     "name": "",
     "disable": false
   },
@@ -56,7 +59,6 @@
     "data_chat_part": "pagination",
     "data_location": "right",
     "name": "",
-    "disable": false,
     "data_toggle": true
   },
   {
@@ -66,8 +68,10 @@
     "class": "",
     "title": "Pagination_btn",
     "data_role": "last",
+    "data_action": "switchPage",
+    "data_key": "lastPage",
     "name": "",
-    "disable": false
+    "data_key_disable": "disableLast"
   },
   {
     "element": "button",
@@ -76,7 +80,8 @@
     "class": "",
     "title": "Pagination_btn",
     "data_role": "forward",
+    "data_action": "switchPage",
     "name": "",
-    "disable": false
+    "data_key_disable": "disableForward"
   }
 ]

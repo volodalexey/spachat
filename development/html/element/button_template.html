@@ -2,8 +2,15 @@
 <button data-role="<%= _in.config.data_role%>" class="<%= _in.config.class%>"
 <% if(_in.config.data_name !== ""){ %> data-name="<%= _in.config.data_name%>" <%}%>
 <% if(_in.config.disable === true){ %> disabled <%}%>
+
+<% if(_in.config.data_key_disable && _in.data[_in.config.data_key_disable]){ %>
+disabled ="<%= _in.data[_in.config.data_key_disable]%>" <%}%>
+
 <% if(_in.config.data_location){ %> data-location="<%= _in.config.data_location%>" <%}%>
+
 <% if(_in.config.value !== null){ %> value="<%= _in.config.value%>" <%}%>
+<% if(_in.config.data_key){ %> data-value="<%= _in.data[_in.config.data_key]%>" <%}%>
+
 <% if(_in.config.data_action){ %> data-action="<%= _in.config.data_action%>" <%}%>
 <% if(_in.config.data_mode){ %> data-mode="<%= _in.config.data_mode%>" <%}%>
 <% if(_in.config.data_mode_to){ %> data-mode_to="<%= _in.config.data_mode_to%>" <%}%>
@@ -13,7 +20,7 @@
 
 <% if(_in.config.data_chat_part){ %> data-chat_part="<%= _in.config.data_chat_part%>" <%}%> >
 
-<%= _in.text%>
+
 <% if (_in.config.icon) { %>
         <% if (_in.icon_config) { %>
         <% var icon;
@@ -32,5 +39,10 @@
 
 <% } %>
 <%= _in.config.text%>
+
+<% if(_in.config.data_key) { %>
+<%= _in.data[_in.config.data_key] %>
+<%} %>
+
 </button>
 

@@ -34,7 +34,7 @@ define('register', [
 
         register.prototype = {
 
-            cashElements: function() {
+            cashMainElements: function() {
                 var _this = this;
                 _this.registerForm = _this.navigator.main_container.querySelector('[data-role="registerForm"]');
                 _this.redirectToLogin = _this.registerForm.querySelector('[data-action="redirectToLogin"]');

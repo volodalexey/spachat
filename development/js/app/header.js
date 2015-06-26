@@ -96,7 +96,6 @@ define('header', [
                 }
             },
 
-
             render: function(options, _array, chat) {
                 var _this = this;
                 _this.chat = chat;
@@ -223,7 +222,7 @@ define('header', [
                 _this.chat.data.perPageValue = parseInt(_this.labeltPerPage.value);
 
                 if (_this.chat.data.redraw_mode === "rte") {
-                    _this.chat.data.curPage = null;
+                    _this.chat.data.currentPage = null;
                     if (_this.chat.data.showEnablePagination) {
                         if (_this.labeltPerPage.value !== "") {
                             _this.trigger("changePerPage");
@@ -236,7 +235,7 @@ define('header', [
                 var _this = this;
 
                 _this.chat.data.perPageValue = parseInt(_this.labeltPerPage.value);
-                _this.chat.data.curPage = null;
+                _this.chat.data.currentPage = null;
                 if (_this.chat.data.showEnablePagination) {
                     if (_this.labeltPerPage.value !== "") {
                         _this.trigger("changePerPage");

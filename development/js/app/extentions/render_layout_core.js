@@ -24,7 +24,7 @@ define('render_layout_core', [
                             }
 
                             // success
-                            if (callback){
+                            if (callback) {
                                 callback();
                             }
                         });
@@ -41,12 +41,12 @@ define('render_layout_core', [
 
                 if (_this.configMap[_this.body_mode] || _this.configIconMap && _this.configIconMap[_this.body_mode]) {
 
-                        if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW) {
-                            if (_this.config) {
-                                callback();
-                                return;
-                            }
+                    if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW) {
+                        if (_this.config) {
+                            callback();
+                            return;
                         }
+                    }
 
                     if (!_this.configMap[_this.body_mode]) {
                         _this.loadBodyIconConfig(callback);
@@ -68,10 +68,10 @@ define('render_layout_core', [
 
             loadBodyIconConfig: function(callback) {
                 var _this = this;
-                _this.config.forEach(function(_config){
-                    if(_config.icon && _config.icon !== ""){
+                _this.config.forEach(function(_config) {
+                    if (_config.icon && _config.icon !== "") {
                         _this.iconsArray.push(
-                            {icon:'/html/icon/' + _config.icon + '.html', name: _config.icon}
+                            {icon: '/html/icon/' + _config.icon + '.html', name: _config.icon}
                         );
                     }
                 });
@@ -129,7 +129,9 @@ define('render_layout_core', [
                         }
                     });
                 } else {
-                    if (_this.MODE && (_this.body_mode === _this.MODE.FILTER || _this.body_mode === _this.MODE.FORMAT_PANEL)) {
+                    if (_this.MODE && (_this.body_mode === _this.MODE.FILTER ||
+                        _this.body_mode === _this.MODE.FORMAT_PANEL || _this.body_mode === _this.MODE.PAGINATION
+                        || _this.body_mode === _this.MODE.GO_TO)) {
                         callback(null, options);
                         return;
 
@@ -171,7 +173,6 @@ define('render_layout_core', [
 
         };
         extend(render_layout_core, async_core);
-
 
         return render_layout_core;
     }

@@ -20,7 +20,15 @@
 <% } %>
 <% } %>
 
+<% if(_in.config.data_key === "page") { %>
+value= "<%= _in.data[_in.config.data_key] %>"
+<%} %>
+
 <% if (_in.config.type === "text") { %>
 <% if(_in.config.data_key) { %> value= "<%= _in.data[_in.config.data_key] %>" <%} %>
 <% } %>
- ><%= _in.config.text%></input>
+ ><%= _in.config.text%>
+
+
+
+</input>
