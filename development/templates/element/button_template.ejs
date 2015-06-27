@@ -7,32 +7,28 @@
         <% }
     }
 } %>
-
 <% if (_in.config.disable === true){ %> disabled <%}%>
 
-<% if (_in.config.data.key_disable && _in.data[_in.config.data.key_disable]){ %>
-disabled ="<%= _in.data[_in.config.data.key_disabled]%>" <%}%>
+<% if (_in.config.data.key_disable && _in.data[_in.config.data.key_disable]) { %>
+disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
+<% } %>
 
-<% if (_in.config.value !== null){ %> value="<%= _in.config.value%>" <%}%>
-
-<% if (_in.config.icon) { %>
-        <% if (_in.icon_config) { %>
-        <% var icon;
+<% if (_in.config.value !== null){ %> value="<%= _in.config.value%>" <%}%> >
+<% if (_in.config.icon) {
+    if (_in.icon_config) {
+        var icon;
         _in.icon_config.every(function(_icon) {
-        if (_icon.name === _in.config.icon) {
-        icon = _icon;
-        }
-        return !icon;
-        } ); %>
-
-        <% if (icon) { %>
-        <%= icon.svg %>
-        <% } %>
-<% } %>
-
-
-<% } %>
-<%= _in.config.text %>
+            if (_icon.name === _in.config.icon) {
+                icon = _icon;
+            }
+            return !icon;
+        } );
+        if (icon) { %>
+            <%= icon.svg %>
+        <% }
+    }
+} %>
+<%= _in.config.text ? _in.config.text : '' %>
 
 <% if (_in.config.data.key) { %>
 <%= _in.data[_in.config.data.key] %>

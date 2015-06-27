@@ -1,10 +1,10 @@
-    <% var _in = arguments[0]; %>
-    <% var array_left_panel = _in.config.filter( function(obj){ return obj.data.location === "left_panel" } ) %>
-    <% array_left_panel.forEach(function (_config) { %>
+<% var _in = arguments[0];
+var array_left_panel = _in.config.filter( function(obj){ return obj.data.location === "left_panel" } ); %>
+<% array_left_panel.forEach(function (_config) { %>
     <%= _in.triple_element_template({
     config: _config,
     button_template: _in.button_template,
     input_template: _in.input_template,
     label_template: _in.label_template
     }) %>
-    <% }) %>
+<% }) %>
