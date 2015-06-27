@@ -3,7 +3,7 @@ define('messages', [
         'template_core',
         'indexeddb',
 
-        'text!../html/message_template.html'
+        'text!../templates/message_template.ejs'
     ],
     function(
         event_core,

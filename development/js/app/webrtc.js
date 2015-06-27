@@ -2,8 +2,8 @@ define('webrtc', [
         'event_core',
         'template_core',
 
-        'text!../html/webrtc_template.html',
-        'text!../html/waiter_template.html'
+        'text!../templates/webrtc_template.ejs',
+        'text!../templates/waiter_template.ejs'
     ],
     function(event_core,
              template_core,

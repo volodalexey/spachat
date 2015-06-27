@@ -16,9 +16,9 @@ define('chat', [
         'message_core',
         'event_core',
 
-        'text!../html/chat_template.html',
-        'text!../html/waiter_template.html',
-        'text!../html/console_log_template.html'
+        'text!../templates/chat_template.ejs',
+        'text!../templates/waiter_template.ejs',
+        'text!../templates/console_log_template.ejs'
     ],
     function(Header,
              Editor,

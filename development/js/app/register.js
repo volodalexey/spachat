@@ -6,7 +6,7 @@ define('register', [
 
         'indexeddb',
 
-        'text!../html/register_template.html'
+        'text!../templates/register_template.ejs'
     ],
     function(overlay_core,
              event_core,

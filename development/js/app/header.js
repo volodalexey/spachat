@@ -8,12 +8,12 @@ define('header', [
 
         'pagination',
 
-        'text!../html/filter_template.html',
-        'text!../html/header_template.html',
-        'text!../html/element/triple_element_template.html',
-        'text!../html/element/button_template.html',
-        'text!../html/element/label_template.html',
-        'text!../html/element/input_template.html'
+        'text!../templates/filter_template.ejs',
+        'text!../templates/header_template.ejs',
+        'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/button_template.ejs',
+        'text!../templates/element/label_template.ejs',
+        'text!../templates/element/input_template.ejs'
     ],
     function(event_core,
              ajax_core,

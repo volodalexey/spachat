@@ -6,16 +6,16 @@ define('panel', [
 
         'indexeddb',
 
-        'text!../html/panel_left_template.html',
-        'text!../html/panel_right_template.html',
-        'text!../html/user_info_template.html',
-        'text!../html/chat_info_template.html',
-        'text!../html/element/triple_element_template.html',
-        'text!../html/element/button_template.html',
-        'text!../html/element/label_template.html',
-        'text!../html/element/input_template.html',
-        'text!../html/element/textarea_template.html',
-        'text!../html/detail_view_container_template.html'
+        'text!../templates/panel_left_template.ejs',
+        'text!../templates/panel_right_template.ejs',
+        'text!../templates/user_info_template.ejs',
+        'text!../templates/chat_info_template.ejs',
+        'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/button_template.ejs',
+        'text!../templates/element/label_template.ejs',
+        'text!../templates/element/input_template.ejs',
+        'text!../templates/element/textarea_template.ejs',
+        'text!../templates/detail_view_container_template.ejs'
 
     ],
     function(event_core,

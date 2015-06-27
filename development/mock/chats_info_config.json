@@ -23,7 +23,6 @@
     "name": "",
     "disable": false
   },
-
   {
     "element": "label",
     "icon": "",
@@ -48,7 +47,7 @@
     "data_mode": "JOIN_CHAT",
     "name": "",
     "id": "chat_id",
-    "disabled" : false,
+    "disabled": false,
     "data_location": "chat_id"
   },
   {
@@ -84,7 +83,7 @@
     "title": "",
     "data_role": "remote_offer_textarea",
     "data_mode": "JOIN_CHAT",
-    "disabled" : false,
+    "disabled": false,
     "data_location": "remote_offer"
   },
   {
@@ -100,7 +99,6 @@
     "disable": false,
     "data_location": "remote_offer_btn"
   },
-
   {
     "element": "svg",
     "icon": "pointer_icon",
@@ -122,23 +120,22 @@
     "data_mode": "MY_CHATS",
     "data_key": "chatId",
     "name": "",
-    "disabled" : false,
+    "disabled": false,
     "data_location": ""
   },
-
   {
-  "element": "label",
-  "type": "text",
-  "icon": "",
-  "text": "User id",
-  "class": "",
-  "title": "",
-  "data_role": "user_id_label",
-  "data_mode": "DETAIL_VIEW",
-  "data_key": "",
-  "name": "",
-  "disabled" : false,
-  "data_location": "user_id"
+    "element": "label",
+    "type": "text",
+    "icon": "",
+    "text": "User id",
+    "class": "",
+    "title": "",
+    "data_role": "user_id_label",
+    "data_mode": "DETAIL_VIEW",
+    "data_key": "",
+    "name": "",
+    "disabled": false,
+    "data_location": "user_id"
   },
   {
     "element": "label",
@@ -151,7 +148,7 @@
     "data_mode": "DETAIL_VIEW",
     "data_key": "userId",
     "name": "",
-    "disabled" : false,
+    "disabled": false,
     "data_location": "user_id"
   },
   {
@@ -160,12 +157,12 @@
     "text": "Show chat",
     "class": "",
     "title": "",
-    "data_role": "",
-    "data_action": "showMyChats",
-    "data_mode": "DETAIL_VIEW",
+    "data": {
+      "action": "showChat",
+
+    },
     "name": "",
     "disable": false,
     "data_location": "navbar"
   }
-
 ]

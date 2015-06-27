@@ -5,12 +5,12 @@ define('pagination', [
         'render_layout_core',
         'indexeddb',
 
-        'text!../html/pagination_template.html',
-        'text!../html/choice_per_page_template.html',
-        'text!../html/element/triple_element_template.html',
-        'text!../html/element/button_template.html',
-        'text!../html/element/label_template.html',
-        'text!../html/element/input_template.html'
+        'text!../templates/pagination_template.ejs',
+        'text!../templates/choice_per_page_template.ejs',
+        'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/button_template.ejs',
+        'text!../templates/element/label_template.ejs',
+        'text!../templates/element/input_template.ejs'
     ],
     function(event_core,
              ajax_core,

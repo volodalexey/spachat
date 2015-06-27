@@ -8,7 +8,7 @@ define('chat_platform', [
         'indexeddb',
         'message_core',
 
-        'text!../html/chat_platform_template.html'
+        'text!../templates/chat_platform_template.ejs'
     ],
     function(Chat,
              websocket,
@@ -68,17 +68,23 @@ define('chat_platform', [
                 _this.removeEventListeners();
                 _this.on('addNewChatAuto', _this.addNewChatAuto, _this);
                 _this.on('resize', _this.resizeChats, _this);
-                websocket.on('message', _this.onMessageRouter, _this);
                 _this.on('joinByChatIdAuto', _this.joinByChatIdAuto, _this);
+                _this.on('showChat', _this.showChat, _this);
+                websocket.on('message', _this.onMessageRouter, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 _this.off('addNewChatAuto');
                 _this.off('resize');
+                _this.off('joinByChatIdAuto');
+                _this.off('showChat');
                 websocket.off('message');
             },
 
+            /**
+             * invoke each chat to resize its view
+             */
             resizeChats: function() {
                 //Chat.prototype.chatsArray.forEach(function(_chat) {
                 //    _chat.calcMessagesContainerHeight();
@@ -214,6 +220,11 @@ define('chat_platform', [
                 });
             },
 
+            /**
+             * request from this chat was approved by the server
+             * next behaviour
+             * @param event
+             */
             chatJoinApproved: function(event) {
                 var _this = this;
                 var defineBehaviour = function() {
@@ -285,6 +296,58 @@ define('chat_platform', [
                         }
                     }
                 );
+            },
+
+            /**
+             * restore previous chat that should be in the chats database
+             */
+            showChat: function(event) {
+                var _this = this;
+
+                //indexeddb.getAll(
+                //    _this.collectionDescription,
+                //    function(getError, chats) {
+                //        if (getError) {
+                //            if (_this['joinByChatIdAuto__']) {
+                //                _this['joinByChatIdAuto__'].disabled = false;
+                //                _this['joinByChatIdAuto__'] = null;
+                //            }
+                //            console.error(getError);
+                //            return;
+                //        }
+                //
+                //        var chat;
+                //        chats.every(function(_chat) {
+                //            if (_chat.chatId === event.chat_description.chatId) {
+                //                chat = _chat;
+                //            }
+                //            return !chat;
+                //        });
+                //
+                //        if (!chat) {
+                //            event.chat_description.userId = _this.navigator.userId; // since now this is user's chat too
+                //            indexeddb.addOrUpdateAll(
+                //                _this.collectionDescription,
+                //                [
+                //                    event.chat_description
+                //                ],
+                //                function(error) {
+                //                    if (_this['joinByChatIdAuto__']) {
+                //                        _this['joinByChatIdAuto__'].disabled = false;
+                //                        _this['joinByChatIdAuto__'] = null;
+                //                    }
+                //                    if (error) {
+                //                        console.error(error);
+                //                        return;
+                //                    }
+                //                    defineBehaviour();
+                //                }
+                //            );
+                //        } else {
+                //            defineBehaviour();
+                //        }
+                //    }
+                //);
             }
 
         };

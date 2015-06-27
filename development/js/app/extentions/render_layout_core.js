@@ -71,7 +71,7 @@ define('render_layout_core', [
                 _this.config.forEach(function(_config) {
                     if (_config.icon && _config.icon !== "") {
                         _this.iconsArray.push(
-                            {icon: '/html/icon/' + _config.icon + '.html', name: _config.icon}
+                            {icon: '/templates/icon/' + _config.icon + '.html', name: _config.icon}
                         );
                     }
                 });

@@ -4,10 +4,10 @@
 
 <% var byDataLocation = {}; %>
 <% array_detail_view.forEach(function(_config) { %>
-<%  if (!byDataLocation[_config.data_location]) { %>
-<%  byDataLocation[_config.data_location] = []; %>
+<%  if (!byDataLocation[_config.data.location]) { %>
+<%  byDataLocation[_config.data.location] = []; %>
 <% }%>
-<%  byDataLocation[_config.data_location].push(_config); %>
+<%  byDataLocation[_config.data.location].push(_config); %>
 <% }); %>
 
 

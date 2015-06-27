@@ -6,12 +6,12 @@ define('editor', [
         'indexeddb',
         'render_layout_core',
 
-        'text!../html/editor_template.html',
-        'text!../html/editor_format_template.html',
-        'text!../html/element/triple_element_template.html',
-        'text!../html/element/button_template.html',
-        'text!../html/element/label_template.html',
-        'text!../html/element/input_template.html'
+        'text!../templates/editor_template.ejs',
+        'text!../templates/editor_format_template.ejs',
+        'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/button_template.ejs',
+        'text!../templates/element/label_template.ejs',
+        'text!../templates/element/input_template.ejs'
     ],
     function(event_core,
              async_core,

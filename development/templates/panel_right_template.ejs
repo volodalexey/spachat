@@ -1,5 +1,5 @@
 <% var _in = arguments[0]; %>
-<% var array_leright_panel = _in.config.filter( function(obj){ return obj.data_location === "right_panel" } ) %>
+<% var array_leright_panel = _in.config.filter( function(obj){ return obj.data.location === "right_panel" } ) %>
 <% array_leright_panel.forEach(function (_config) { %>
 <%= _in.triple_element_template({
 config: _config,
