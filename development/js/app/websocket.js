@@ -66,7 +66,7 @@ define('websocket', [
             },
 
             onMessage: function(event) {
-                console.log('Received message data: ' + event.data);
+                console.log('WebSocket received message data', event.data);
                 this.trigger('message', event.data);
             },
 

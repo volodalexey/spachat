@@ -279,8 +279,10 @@ define('chat_platform', [
                             return !chat;
                         });
 
+                        event.chat_description.userId = _this.navigator.userId; // since now this is user's chat too
+
                         if (!chat) {
-                            event.chat_description.userId = _this.navigator.userId; // since now this is user's chat too
+                            // store chat as the new one in the database
                             indexeddb.addOrUpdateAll(
                                 _this.collectionDescription,
                                 [

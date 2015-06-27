@@ -190,7 +190,9 @@ var onOffer = function(curWS, data) {
                 offerDescription: data.offerDescription,
                 userId: data.userId
             };
+            delete serverChatData.chat_description.answer; // answer does not make sense now
             responseData.userId = data.userId;
+            console.log('override offer for the same userId = ' + responseData.userId, 'chatId = ' + serverChatData.chat_description.chatId);
         }
     }
     responseData.chat_description = serverChatData.chat_description;
@@ -308,6 +310,7 @@ var onMessage = function(data) {
     try {
         var parsedData = JSON.parse(data);
         var handler = msgMap[parsedData.type];
+        console.log(parsedData.type);
         if (handler) {
             handler(this, parsedData);
         }
