@@ -24,19 +24,12 @@ define('messages', [
                 _this.chat = chat;
                 _this.data = {
                     collection: {
-                        "id": _this.chat.chatsArray.length,
-                        "db_name": _this.chat.chatsArray.length + '_chat_messages',
-                        "table_name": _this.chat.chatsArray.length + '_chat_messages',
+                        "id": _this.chat.chatId,
+                        "db_name": _this.chat.chatId + '_chat_messages',
+                        "table_name": _this.chat.chatId + '_chat_messages',
                         "db_version": 1,
                         "keyPath": "id"
                     }
-                    //collection: {
-                    //    "id": _this.chat.chatId,
-                    //    "db_name": _this.chat.chatId + '_chat_messages',
-                    //    "table_name": _this.chat.chatId + '_chat_messages',
-                    //    "db_version": 1,
-                    //    "keyPath": "id"
-                    //}
                 };
                     _this.fillListMessage(options);
             },

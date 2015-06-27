@@ -14,6 +14,7 @@ require.config({
         "render_layout_core": "app/extentions/render_layout_core",
         "extend_core": "app/extentions/extend_core",
         "message_core": "app/extentions/message_core",
+        "dom_core": "app/extentions/dom_core",
 
         "body": "app/body",
         "chat": "app/chat",

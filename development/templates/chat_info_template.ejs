@@ -91,7 +91,7 @@ var array_my_chats = array.config.filter( function(config){ return config.data.m
 <% if (array.mode === 'MY_CHATS') { %>
 <div>
     <% array.data.forEach(function (chat) { %>
-    <div data-action="show_more_info" value="<%= chat.chatId%>" >
+    <div data-action="show_more_info" value="<%= chat.chatId %>" data-role="chatWrapper" data-chatid="<%= chat.chatId %>" >
         <% array_my_chats.forEach(function (config) { %>
             <%= array.triple_element_template({
             config: config,

@@ -7,6 +7,7 @@ define('chat_platform', [
         'template_core',
         'indexeddb',
         'message_core',
+        'dom_core',
 
         'text!../templates/chat_platform_template.ejs'
     ],
@@ -18,6 +19,7 @@ define('chat_platform', [
              template_core,
              indexeddb,
              message_core,
+             dom_core,
 
              chat_platform_template) {
 
@@ -303,51 +305,42 @@ define('chat_platform', [
              */
             showChat: function(event) {
                 var _this = this;
+                var parentElement = _this.traverseUpToDataset(event.target, 'role', 'chatWrapper');
+                if (!parentElement) {
+                    console.error(new Error('Parent element not found!'));
+                    return;
+                }
 
-                //indexeddb.getAll(
-                //    _this.collectionDescription,
-                //    function(getError, chats) {
-                //        if (getError) {
-                //            if (_this['joinByChatIdAuto__']) {
-                //                _this['joinByChatIdAuto__'].disabled = false;
-                //                _this['joinByChatIdAuto__'] = null;
-                //            }
-                //            console.error(getError);
-                //            return;
-                //        }
-                //
-                //        var chat;
-                //        chats.every(function(_chat) {
-                //            if (_chat.chatId === event.chat_description.chatId) {
-                //                chat = _chat;
-                //            }
-                //            return !chat;
-                //        });
-                //
-                //        if (!chat) {
-                //            event.chat_description.userId = _this.navigator.userId; // since now this is user's chat too
-                //            indexeddb.addOrUpdateAll(
-                //                _this.collectionDescription,
-                //                [
-                //                    event.chat_description
-                //                ],
-                //                function(error) {
-                //                    if (_this['joinByChatIdAuto__']) {
-                //                        _this['joinByChatIdAuto__'].disabled = false;
-                //                        _this['joinByChatIdAuto__'] = null;
-                //                    }
-                //                    if (error) {
-                //                        console.error(error);
-                //                        return;
-                //                    }
-                //                    defineBehaviour();
-                //                }
-                //            );
-                //        } else {
-                //            defineBehaviour();
-                //        }
-                //    }
-                //);
+                if (!parentElement.dataset.chatid) {
+                    console.error(new Error('Chat wrapper does not have chat id!'));
+                    return;
+                }
+
+                var chatId = parentElement.dataset.chatid;
+
+                indexeddb.getAll(
+                    _this.collectionDescription,
+                    function(getError, chats) {
+                        if (getError) {
+                            console.error(getError);
+                            return;
+                        }
+
+                        var chat;
+                        chats.every(function(_chat) {
+                            if (_chat.chatId === chatId) {
+                                chat = _chat;
+                            }
+                            return !chat;
+                        });
+
+                        if (chat) {
+
+                        } else {
+                            console.error(new Error('Chat with such id not found in the database!'));
+                        }
+                    }
+                );
             }
 
         };
@@ -355,6 +348,7 @@ define('chat_platform', [
         extend(chat_platform, event_core);
         extend(chat_platform, template_core);
         extend(chat_platform, message_core);
+        extend(chat_platform, dom_core);
 
         chat_platform.prototype.chat_platform_template = chat_platform.prototype.template(chat_platform_template);
 
