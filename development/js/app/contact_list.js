@@ -30,7 +30,7 @@ define('contact_list', [
         contact_list.prototype = {
 
             configMap: {
-                CONTACT_LIST: '/mock/contact_list_config.json'
+                CONTACT_LIST: '/configs/contact_list_config.json'
             },
 
 

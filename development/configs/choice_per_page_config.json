@@ -5,8 +5,10 @@
     "text": "Go to",
     "class": "",
     "title": "",
-    "data_role": "go_to_page",
-    "data_action": "switchPage",
+    "data": {
+      "role": "go_to_page",
+      "action": "switchPage"
+    },
     "name": "",
     "for": "per_page",
     "sort": 1,
@@ -19,8 +21,10 @@
     "text": "",
     "class": "",
     "title": "",
-    "data_role": "choice_per_page",
-    "data_key": "page",
+    "data": {
+      "role": "choice_per_page",
+      "key": "page"
+    },
     "name": "",
     "id": "per_page",
     "sort": 2,
@@ -33,9 +37,11 @@
     "text": "",
     "class": "",
     "title": "",
-    "data_role": "rte_choice_per_page",
-    "data_action": "changeRTE",
-    "data_key": "rteChoicePage",
+    "data": {
+      "role": "rte_choice_per_page",
+      "action": "changeRTE",
+      "key": "rteChoicePage"
+    },
     "name": "",
     "id": "",
     "sort": 3,
@@ -47,7 +53,9 @@
     "text": "Go to",
     "class": "",
     "title": "",
-    "data_role": "go_to_page",
+    "data": {
+      "role": "go_to_page"
+    },
     "name": "",
     "for": "per_page",
     "sort": 1,
@@ -60,9 +68,11 @@
     "text": "",
     "class": "",
     "title": "",
-    "data_role": "choice_per_page",
-    "data_action": "switchPage",
-    "data_key": "page",
+    "data": {
+      "role": "choice_per_page",
+      "action": "switchPage",
+      "key": "page"
+    },
     "name": "",
     "id": "per_page",
     "sort": 2,
@@ -75,9 +85,11 @@
     "text": "",
     "class": "",
     "title": "",
-    "data_role": "rte_choice_per_page",
-    "data_action": "changeRTE",
-    "data_key": "rteChoicePage",
+    "data": {
+      "role": "rte_choice_per_page",
+      "action": "changeRTE",
+      "key": "rteChoicePage"
+    },
     "name": "",
     "id": "",
     "sort": 3,

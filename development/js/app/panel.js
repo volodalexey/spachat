@@ -76,10 +76,10 @@ define('panel', [
             },
 
             configMap: {
-                "USER_INFO_EDIT": '/mock/user_info_config.json',
-                "USER_INFO_SHOW": '/mock/user_info_config.json',
-                "CREATE_CHAT": '/mock/chats_info_config.json',
-                "JOIN_CHAT": '/mock/chats_info_config.json',
+                "USER_INFO_EDIT": '/configs/user_info_config.json',
+                "USER_INFO_SHOW": '/configs/user_info_config.json',
+                "CREATE_CHAT": '/configs/chats_info_config.json',
+                "JOIN_CHAT": '/configs/chats_info_config.json',
                 "MY_CHATS": '',
                 "DETAIL_VIEW": ''
             },

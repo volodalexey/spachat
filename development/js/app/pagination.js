@@ -37,8 +37,8 @@ define('pagination', [
             },
 
             configMap: {
-                "PAGINATION": '/mock/pagination_navbar_config.json',
-                "GO_TO": '/mock/choice_per_page_config.json'
+                "PAGINATION": '/configs/pagination_navbar_config.json',
+                "GO_TO": '/configs/choice_per_page_config.json'
             },
 
             bindMainContexts: function() {

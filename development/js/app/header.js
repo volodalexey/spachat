@@ -37,8 +37,8 @@ define('header', [
 
             configMap: {
                 WEBRTC: '',
-                TAB: '/mock/header_navbar_config.json',
-                FILTER: '/mock/filter_navbar_config.json',
+                TAB: '/configs/header_navbar_config.json',
+                FILTER: '/configs/filter_navbar_config.json',
                 WAITER: ''
             },
 

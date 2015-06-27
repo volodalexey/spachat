@@ -5,15 +5,17 @@
     "text": "Format",
     "class": "main-btn",
     "title": "",
-    "data_action": "changeMode",
-    "data_mode_to": "FORMAT_PANEL",
-    "data_chat_part": "editor",
+    "data": {
+      "action": "changeMode",
+      "mode_to": "FORMAT_PANEL",
+      "chat_part": "editor",
+      "toggle": true
+    },
     "name": "",
     "for": "",
     "service_id": "",
     "sort": 1,
-    "redraw_mode": "",
-    "data_toggle": true
+    "redraw_mode": ""
   },
   {
     "element": "button",
@@ -21,9 +23,11 @@
     "text": "Send",
     "class": "main-btn",
     "title": "",
-    "data_action": "sendMessage",
-    "data_mode_to": "",
-    "data_chat_part": "",
+    "data": {
+      "action": "sendMessage",
+      "mode_to": "",
+      "chat_part": ""
+    },
     "name": "",
     "for": "",
     "service_id": "",

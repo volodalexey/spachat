@@ -5,9 +5,10 @@
     "text": "Auto handshake",
     "class": "",
     "title": "",
-    "data_role": "",
-    "data_action": "addNewChatAuto",
-    "data_mode": "CREATE_CHAT",
+    "data": {
+      "action": "addNewChatAuto",
+      "mode": "CREATE_CHAT"
+    },
     "name": "",
     "disable": false
   },
@@ -17,9 +18,10 @@
     "text": "Manual handshake",
     "class": "",
     "title": "",
-    "data_role": "",
-    "data_action": "addNewChatManual",
-    "data_mode": "CREATE_CHAT",
+    "data": {
+      "action": "addNewChatManual",
+      "mode": "CREATE_CHAT"
+    },
     "name": "",
     "disable": false
   },
@@ -29,12 +31,14 @@
     "text": "Chat id",
     "class": "",
     "title": "",
-    "data_role": "chat_id_label",
-    "data_mode": "JOIN_CHAT",
+    "data": {
+      "location": "chat_id",
+      "role": "chat_id_label",
+      "mode": "JOIN_CHAT"
+    },
     "for": "chat_id",
     "name": "",
-    "disable": false,
-    "data_location": "chat_id"
+    "disable": false
   },
   {
     "element": "input",
@@ -43,12 +47,14 @@
     "text": "",
     "class": "flex-item-w50p",
     "title": "",
-    "data_role": "chat_id_input",
-    "data_mode": "JOIN_CHAT",
+    "data": {
+      "location": "chat_id",
+      "role": "chat_id_input",
+      "mode": "JOIN_CHAT"
+    },
     "name": "",
     "id": "chat_id",
-    "disabled": false,
-    "data_location": "chat_id"
+    "disabled": false
   },
   {
     "element": "button",
@@ -56,12 +62,13 @@
     "text": "Join chat by chat id",
     "class": "",
     "title": "",
-    "data_role": "",
-    "data_action": "joinByChatIdAuto",
-    "data_mode": "JOIN_CHAT",
+    "data": {
+      "location": "chat_id_btn",
+      "action": "joinByChatIdAuto",
+      "mode": "JOIN_CHAT"
+    },
     "name": "",
-    "disable": false,
-    "data_location": "chat_id_btn"
+    "disable": false
   },
   {
     "element": "label",
@@ -69,11 +76,13 @@
     "text": "Remote offer",
     "class": "",
     "title": "",
-    "data_role": "remote_offer_label",
-    "data_mode": "JOIN_CHAT",
+    "data": {
+      "location": "remote_offer",
+      "role": "remote_offer_label",
+      "mode": "JOIN_CHAT"
+    },
     "name": "",
-    "disable": false,
-    "data_location": "remote_offer"
+    "disable": false
   },
   {
     "element": "textarea",
@@ -81,10 +90,12 @@
     "text": "",
     "class": "w-100p",
     "title": "",
-    "data_role": "remote_offer_textarea",
-    "data_mode": "JOIN_CHAT",
-    "disabled": false,
-    "data_location": "remote_offer"
+    "data": {
+      "location": "remote_offer",
+      "role": "remote_offer_textarea",
+      "mode": "JOIN_CHAT"
+    },
+    "disabled": false
   },
   {
     "element": "button",
@@ -92,12 +103,13 @@
     "text": "Join chat by sdp",
     "class": "",
     "title": "",
-    "data_role": "",
-    "data_action": "joinChatByChatSdp",
-    "data_mode": "JOIN_CHAT",
+    "data": {
+      "location": "remote_offer_btn",
+      "action": "joinChatByChatSdp",
+      "mode": "JOIN_CHAT"
+    },
     "name": "",
-    "disable": false,
-    "data_location": "remote_offer_btn"
+    "disable": false
   },
   {
     "element": "svg",
@@ -105,8 +117,9 @@
     "text": "",
     "class": "",
     "title": "",
-    "data_role": "",
-    "data_mode": "MY_CHATS",
+    "data": {
+      "mode": "MY_CHATS"
+    },
     "name": ""
   },
   {
@@ -116,12 +129,13 @@
     "text": "",
     "class": "",
     "title": "",
-    "data_role": "my_chat_id_label",
-    "data_mode": "MY_CHATS",
-    "data_key": "chatId",
+    "data": {
+      "role": "my_chat_id_label",
+      "key": "chatId",
+      "mode": "MY_CHATS"
+    },
     "name": "",
-    "disabled": false,
-    "data_location": ""
+    "disabled": false
   },
   {
     "element": "label",
@@ -130,12 +144,13 @@
     "text": "User id",
     "class": "",
     "title": "",
-    "data_role": "user_id_label",
-    "data_mode": "DETAIL_VIEW",
-    "data_key": "",
+    "data": {
+      "role": "user_id_label",
+      "location": "user_id",
+      "mode": "DETAIL_VIEW"
+    },
     "name": "",
-    "disabled": false,
-    "data_location": "user_id"
+    "disabled": false
   },
   {
     "element": "label",
@@ -144,12 +159,14 @@
     "text": "",
     "class": "flex-item-w50p",
     "title": "",
-    "data_role": "user_id",
-    "data_mode": "DETAIL_VIEW",
-    "data_key": "userId",
+    "data": {
+      "role": "user_id",
+      "key": "user_id",
+      "mode": "DETAIL_VIEW",
+      "location": "user_id"
+    },
     "name": "",
-    "disabled": false,
-    "data_location": "user_id"
+    "disabled": false
   },
   {
     "element": "button",
@@ -159,10 +176,9 @@
     "title": "",
     "data": {
       "action": "showChat",
-
+      "location": "navbar"
     },
     "name": "",
-    "disable": false,
-    "data_location": "navbar"
+    "disable": false
   }
 ]

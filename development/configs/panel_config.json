@@ -5,10 +5,12 @@
     "text": "Create chat",
     "class": "",
     "title": "",
-    "data_role": "",
-    "data_location": "left_panel",
-    "data_action": "switchPanelMode",
-    "data_mode": "CREATE_CHAT",
+    "data": {
+      "role": "",
+      "location": "left_panel",
+      "action": "switchPanelMode",
+      "mode": "CREATE_CHAT"
+    },
     "name": "",
     "disable": false
   },
@@ -18,10 +20,12 @@
     "text": "Join chat",
     "class": "",
     "title": "",
-    "data_role": "",
-    "data_location": "left_panel",
-    "data_action": "switchPanelMode",
-    "data_mode": "JOIN_CHAT",
+    "data": {
+      "role": "",
+      "location": "left_panel",
+      "action": "switchPanelMode",
+      "mode": "JOIN_CHAT"
+    },
     "name": "",
     "disable": false
   },
@@ -31,10 +35,12 @@
     "text": "My chats",
     "class": "",
     "title": "",
-    "data_role": "",
-    "data_location": "left_panel",
-    "data_action": "switchPanelMode",
-    "data_mode": "MY_CHATS",
+    "data": {
+      "role": "",
+      "location": "left_panel",
+      "action": "switchPanelMode",
+      "mode": "MY_CHATS"
+    },
     "name": "",
     "disable": false
   },
@@ -44,9 +50,11 @@
     "text": "button",
     "class": "floatR",
     "title": "Panel_btn",
-    "data_role": "",
-    "data_location": "right_panel",
-    "data_action": "",
+    "data": {
+      "role": "",
+      "location": "right_panel",
+      "action": ""
+    },
     "name": "",
     "disable": false
   },
@@ -56,10 +64,12 @@
     "text": "User info",
     "class": "floatR",
     "title": "Panel_btn",
-    "data_role": "",
-    "data_location": "right_panel",
-    "data_action": "btn_user_info",
-    "data_mode": "user_info",
+    "data": {
+      "role": "",
+      "location": "right_panel",
+      "action": "btn_user_info",
+      "mode": "user_info"
+    },
     "name": "",
     "disable": false
   }

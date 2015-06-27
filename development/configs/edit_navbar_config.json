@@ -5,9 +5,11 @@
     "text": "",
     "class": "btnEdit",
     "title": "Edit_btn",
-    "data_role": "btnEdit",
-    "data_action": "addEdit",
-    "data_name": "JustifyLeft"
+    "data": {
+      "role": "btnEdit",
+      "action": "addEdit",
+      "name": "JustifyLeft"
+    }
   },
   {
     "element": "button",
@@ -15,9 +17,11 @@
     "text": "",
     "class": "btnEdit",
     "title": "Edit_btn",
-    "data_role": "btnEdit",
-    "data_action": "addEdit",
-    "data_name": "JustifyCenter"
+    "data": {
+      "role": "btnEdit",
+      "action": "addEdit",
+      "name": "JustifyCenter"
+    }
   },
 
   {
@@ -26,9 +30,11 @@
     "text": "",
     "class": "btnEdit",
     "title": "Edit_btn",
-    "data_role": "btnEdit",
-    "data_action": "addEdit",
-    "data_name": "JustifyRight"
+    "data": {
+      "role": "btnEdit",
+      "action": "addEdit",
+      "name": "JustifyRight"
+    }
   },
   {
     "element": "button",
@@ -36,9 +42,11 @@
     "text": "",
     "class": "btnEdit",
     "title": "Edit_btn",
-    "data_role": "btnEdit",
-    "data_action": "addEdit",
-    "data_name": "Bold"
+    "data": {
+      "role": "btnEdit",
+      "action": "addEdit",
+      "name": "Bold"
+    }
   },
   {
     "element": "button",
@@ -46,9 +54,11 @@
     "text": "",
     "class": "btnEdit",
     "title": "Edit_btn",
-    "data_role": "btnEdit",
-    "data_action": "addEdit",
-    "data_name": "Italic"
+    "data": {
+      "role": "btnEdit",
+      "action": "addEdit",
+      "name": "Italic"
+    }
   },
   {
     "element": "button",
@@ -56,20 +66,24 @@
     "text": "",
     "class": "btnEdit",
     "title": "Edit_btn",
-    "data_role": "btnEdit",
-    "data_name": "ForeColor",
-    "data_action": "addEdit",
-    "data_param": true
+    "data": {
+      "role": "btnEdit",
+      "name": "ForeColor",
+      "action": "addEdit",
+      "param": true
+    }
   },
   {
     "element": "input",
     "type": "checkbox",
-    "data_key": "offScroll",
     "text": "Off Scroll",
     "class": "btnEdit",
     "title": "Edit_btn",
-    "data_role": "btnEdit",
-    "data_action": "changeEdit",
-    "data_name": "ControlScrollMessage"
+    "data": {
+      "key": "offScroll",
+      "role": "btnEdit",
+      "action": "changeEdit",
+      "name": "ControlScrollMessage"
+    }
   }
 ]

@@ -5,7 +5,9 @@
     "text": "icon",
     "class": "hide",
     "title": "",
-    "data_role": "",
+    "data": {
+      "role": ""
+    },
     "name": "",
     "service_id": "date_from",
     "sort": 1
@@ -16,7 +18,9 @@
     "text": "From date",
     "class": "",
     "title": "",
-    "data_role": "",
+    "data": {
+      "role": ""
+    },
     "name": "",
     "service_id": "date_from",
     "sort": 2
@@ -28,7 +32,9 @@
     "text": "",
     "class": "inputWidth",
     "title": "",
-    "data_role": "",
+    "data": {
+      "role": ""
+    },
     "name": "",
     "service_id": "date_from",
     "sort": 3
@@ -39,7 +45,9 @@
     "text": "Clear",
     "class": "",
     "title": "",
-    "data_role": "",
+    "data": {
+      "role": ""
+    },
     "name": "",
     "service_id": "date_from",
     "sort": 4
@@ -50,7 +58,9 @@
     "text": "icon",
     "class": "hide",
     "title": "",
-    "data_role": "",
+    "data": {
+      "role": ""
+    },
     "name": "",
     "service_id": "date_to",
     "sort": 1
@@ -61,7 +71,9 @@
     "text": "to date",
     "class": "",
     "title": "",
-    "data_role": "",
+    "data": {
+      "role": ""
+    },
     "name": "",
     "service_id": "date_to",
     "sort": 2
@@ -73,7 +85,9 @@
     "text": "",
     "class": "inputWidth",
     "title": "",
-    "data_role": "",
+    "data": {
+      "role": ""
+    },
     "name": "",
     "service_id": "date_to",
     "sort": 3
@@ -84,7 +98,9 @@
     "text": "Clear",
     "class": "",
     "title": "",
-    "data_role": "",
+    "data": {
+      "role": ""
+    },
     "name": "",
     "service_id": "date_to",
     "sort": 4
@@ -97,7 +113,9 @@
     "text": "icon",
     "class": "hide",
     "title": "",
-    "data_role": "icon_enable_pagination",
+    "data": {
+      "role": "icon_enable_pagination"
+    },
     "name": "",
     "service_id": "pagination",
     "sort": 1
@@ -108,7 +126,9 @@
     "text": "Enable pagination",
     "class": "",
     "title": "",
-    "data_role": "",
+    "data": {
+      "role": ""
+    },
     "name": "",
     "for": "enable_pagination",
     "service_id": "pagination",
@@ -121,11 +141,13 @@
     "text": "",
     "class": "",
     "title": "",
-    "data_role": "enablePagination",
-    "data_action": "changeMode",
-    "data_mode_to": "PAGINATION",
-    "data_chat_part": "pagination",
-    "data_key": "showEnablePagination",
+    "data": {
+      "role": "enablePagination",
+      "action": "changeMode",
+      "mode_to": "PAGINATION",
+      "chat_part": "pagination",
+      "key": "showEnablePagination"
+    },
     "name": "",
     "id": "enable_pagination",
     "service_id": "pagination",
@@ -139,7 +161,9 @@
     "text": "icon",
     "class": "hide",
     "title": "",
-    "data_role": "icon_show_per_page",
+    "data": {
+      "role": "icon_show_per_page"
+    },
     "name": "",
     "service_id": "per_page",
     "sort": 1,
@@ -151,7 +175,9 @@
     "text": "Show per page",
     "class": "",
     "title": "",
-    "data_role": "",
+    "data": {
+      "role": ""
+    },
     "name": "",
     "for": "show_per_page",
     "service_id": "per_page",
@@ -165,10 +191,12 @@
     "text": "",
     "class": "inputWidth",
     "title": "",
-    "data_role": "perPageValue",
-    "data_action": "changePerPage",
+    "data": {
+      "role": "perPageValue",
+      "action": "changePerPage",
+      "key": "perPageValue"
+    },
     "name": "",
-    "data_key": "perPageValue",
     "id": "show_per_page",
     "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
     "service_id": "per_page",
@@ -182,9 +210,11 @@
     "text": "",
     "class": "",
     "title": "",
-    "data_role": "rteShowPerPage",
-    "data_action": "changeRTE",
-    "data_key": "rtePerPage",
+    "data": {
+      "role": "rteShowPerPage",
+      "action": "changeRTE",
+      "key": "rtePerPage"
+    },
     "name": "",
     "id": "",
     "service_id": "per_page",
@@ -199,7 +229,9 @@
     "text": "",
     "class": "",
     "title": "",
-    "data_role": "icon_show_per_page",
+    "data": {
+      "role": "icon_show_per_page"
+    },
     "name": "",
     "service_id": "per_page",
     "sort": 1,
@@ -211,8 +243,10 @@
     "text": "Show per page",
     "class": "",
     "title": "",
-    "data_role": "show_per_page",
-    "data_action": "showPerPage",
+    "data": {
+      "role": "show_per_page",
+      "action": "showPerPage"
+    },
     "name": "",
     "for": "show_per_page",
     "service_id": "per_page",
@@ -226,9 +260,11 @@
     "text": "",
     "class": "inputWidth",
     "title": "",
-    "data_role": "perPageValue",
-    "data_action": "changePerPage",
-    "data_key": "perPageValue",
+    "data": {
+      "role": "perPageValue",
+      "action": "changePerPage",
+      "key": "perPageValue"
+    },
     "name": "",
     "id": "show_per_page",
     "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
@@ -243,9 +279,11 @@
     "text": "",
     "class": "",
     "title": "",
-    "data_role": "rteChoicePerPage",
-    "data_action": "changeRTE",
-    "data_key": "rtePerPage",
+    "data": {
+      "role": "rteChoicePerPage",
+      "action": "changeRTE",
+      "key": "rtePerPage"
+    },
     "name": "",
     "id": "",
     "service_id": "per_page",

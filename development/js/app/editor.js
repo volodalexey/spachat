@@ -39,8 +39,8 @@ define('editor', [
             },
 
             configMap: {
-                "MAIN_PANEL": '/mock/editor_navbar_config.json',
-                "FORMAT_PANEL": '/mock/edit_navbar_config.json'
+                "MAIN_PANEL": '/configs/editor_navbar_config.json',
+                "FORMAT_PANEL": '/configs/edit_navbar_config.json'
             },
 
             bindMainContexts: function() {
