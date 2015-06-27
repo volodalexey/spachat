@@ -35,8 +35,18 @@ var broadcastChat = function(serverChatData, broadcastData) {
     if (typeof broadcastData !== 'string') {
         strData = JSON.stringify(broadcastData);
     }
-    serverChatData['clients'].forEach(function(_webSocket) {
-        _webSocket.send(strData);
+    var oldConnections = [];
+    serverChatData['clients'].forEach(function(_webSocket, ind) {
+        if (_webSocket.readyState !== _webSocket.CLOSED) {
+            _webSocket.send(strData);
+        } else {
+            oldConnections.push(ind);
+        }
+    });
+
+    oldConnections.forEach(function(oldIndex) {
+        console.log('removed old client connection');
+        serverChatData['clients'].splice(oldIndex, 1);
     });
 };
 
@@ -173,6 +183,15 @@ var onOffer = function(curWS, data) {
         responseData.userId = data.userId;
     } else {
         // somebody created offer before this request...
+        if (serverChatData.chat_description.offer.userId === data.userId) {
+            // the same user sends offer again
+            // override offer
+            serverChatData.chat_description.offer = {
+                offerDescription: data.offerDescription,
+                userId: data.userId
+            };
+            responseData.userId = data.userId;
+        }
     }
     responseData.chat_description = serverChatData.chat_description;
 
