@@ -3,29 +3,27 @@ var array_create_chat = array.config.filter( function(config){ return config.dat
 var array_join_chat = array.config.filter( function(config){ return config.data.mode === "JOIN_CHAT" } )
 var array_my_chats = array.config.filter( function(config){ return config.data.mode === "MY_CHATS" } ) %>
 
-
 <% if (array.mode === 'CREATE_CHAT') { %>
-
-<% array_create_chat.forEach(function (config) { %>
-<div class="w-100p p-t-b flex-sp-around">
-    <%= array.triple_element_template({
-    config: config,
-    data: array.data,
-    button_template: array.button_template,
-    input_template: array.input_template,
-    label_template: array.label_template
-    }) %>
-</div>
-<% }) %>
+    <% array_create_chat.forEach(function (config) { %>
+    <div class="w-100p p-t-b flex-sp-around">
+        <%= array.triple_element_template({
+        config: config,
+        data: array.data,
+        button_template: array.button_template,
+        input_template: array.input_template,
+        label_template: array.label_template
+        }) %>
+    </div>
+    <% }) %>
 <% } %>
 
 <% if (array.mode === 'JOIN_CHAT') { %>
 
 <% var byDataLocation = {}; %>
 <% array_join_chat.forEach(function(_config) { %>
-<%  if (!byDataLocation[_config.data.location]) { %>
-<%  byDataLocation[_config.data.location] = []; %>
-<% }%>
+<%  if (!byDataLocation[_config.data.location]) {
+    byDataLocation[_config.data.location] = [];
+}%>
 <%  byDataLocation[_config.data.location].push(_config); %>
 <% }); %>
 

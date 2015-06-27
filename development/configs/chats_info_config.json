@@ -161,7 +161,7 @@
     "title": "",
     "data": {
       "role": "user_id",
-      "key": "user_id",
+      "key": "userId",
       "mode": "DETAIL_VIEW",
       "location": "user_id"
     },
@@ -176,6 +176,7 @@
     "title": "",
     "data": {
       "action": "showChat",
+      "mode": "DETAIL_VIEW",
       "location": "navbar"
     },
     "name": "",

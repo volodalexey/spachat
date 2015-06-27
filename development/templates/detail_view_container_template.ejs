@@ -2,16 +2,16 @@
 
 <% var array_detail_view = array.config.filter( function(config){ return config.data.mode === "DETAIL_VIEW" } ) %>
 
-<% var byDataLocation = {}; %>
-<% array_detail_view.forEach(function(_config) { %>
-<%  if (!byDataLocation[_config.data.location]) { %>
-<%  byDataLocation[_config.data.location] = []; %>
-<% }%>
-<%  byDataLocation[_config.data.location].push(_config); %>
-<% }); %>
+<% var byDataLocation = {};
+array_detail_view.forEach(function(_config) {
+    if (!byDataLocation[_config.data.location]) {
+        byDataLocation[_config.data.location] = [];
+    }
+    byDataLocation[_config.data.location].push(_config);
+}); %>
 
 
-<% if (byDataLocation['user_id'].length) { %>
+<% if (byDataLocation['user_id'] && byDataLocation['user_id'].length) { %>
 <div class="w-100p flex-sp-between">
     <% byDataLocation['user_id'].forEach(function (config) { %>
     <%= array.triple_element_template({
@@ -25,7 +25,7 @@
 </div>
 <%} %>
 
-<% if (byDataLocation['navbar'].length) { %>
+<% if (byDataLocation['navbar'] && byDataLocation['navbar'].length) { %>
 <div class="w-100p flex-sp-around">
     <% byDataLocation['navbar'].forEach(function (config) { %>
     <%= array.triple_element_template({
