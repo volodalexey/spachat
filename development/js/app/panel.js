@@ -222,7 +222,7 @@ define('panel', [
                 if (_this.panel_config) {
                     _this.togglePanel();
                 } else {
-                    _this.sendRequest("/mock/panel_config.json", function(err, res) {
+                    _this.sendRequest("/configs/panel_config.json", function(err, res) {
                         if (err) {
                             console.error(err);
                             return;

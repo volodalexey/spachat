@@ -1,7 +1,7 @@
 <% var array = arguments[0];
-var array_create_chat = array.config.filter( function(config){ return config.data_mode === "CREATE_CHAT" } )
-var array_join_chat = array.config.filter( function(config){ return config.data_mode === "JOIN_CHAT" } )
-var array_my_chats = array.config.filter( function(config){ return config.data_mode === "MY_CHATS" } ) %>
+var array_create_chat = array.config.filter( function(config){ return config.data.mode === "CREATE_CHAT" } )
+var array_join_chat = array.config.filter( function(config){ return config.data.mode === "JOIN_CHAT" } )
+var array_my_chats = array.config.filter( function(config){ return config.data.mode === "MY_CHATS" } ) %>
 
 
 <% if (array.mode === 'CREATE_CHAT') { %>

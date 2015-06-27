@@ -1,7 +1,15 @@
 <% var _in = arguments[0]; %>
-<textarea data-role="<%=_in.config.data_role%>" class="<%=_in.config.class%>"
+<textarea class="<%=_in.config.class%>"
+
+        <% if(_in.config.data) {
+                for (var dataKey in _in.config.data) {
+        if (_in.config.data[dataKey] !== "") { %>
+        <%= 'data-' + dataKey + '=\"' + _in.config.data[dataKey] + '\"' %>
+        <% }
+        }
+        } %>
+
 <% if(_in.config.rows){ %> rows="<%= _in.config.rows%>" <%}%>
 <% if(_in.config.value !== ""){ %> value="<%=_in.config.value%>" <%}%>
-<% if(_in.config.data_location){ %> data-location="<%= _in.config.data_location%>" <%}%>
 
 ><%=_in.config.text%></textarea>

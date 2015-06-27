@@ -6,19 +6,19 @@
 
 <% var byDataLocationShow = {}; %>
 <% array_show.forEach(function(_config) { %>
-<%  if (!byDataLocationShow[_config.data_location]) { %>
-<%  byDataLocationShow[_config.data_location] = []; %>
+<%  if (!byDataLocationShow[_config.data.location]) { %>
+<%  byDataLocationShow[_config.data.location] = []; %>
 <% }%>
-<%  byDataLocationShow[_config.data_location].push(_config); %>
+<%  byDataLocationShow[_config.data.location].push(_config); %>
 <% }); %>
 
 
 <% var byDataLocationReading = {};%>
 <% array_editing.forEach(function(_config) { %>
-<% if (!byDataLocationReading[_config.data_location]) { %>
-<% byDataLocationReading[_config.data_location] = []; %>
+<% if (!byDataLocationReading[_config.data.location]) { %>
+<% byDataLocationReading[_config.data.location] = []; %>
 <% } %>
-<% byDataLocationReading[_config.data_location].push(_config); %>
+<% byDataLocationReading[_config.data.location].push(_config); %>
 <% }); %>
 
 

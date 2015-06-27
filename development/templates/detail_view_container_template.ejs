@@ -1,6 +1,6 @@
 <% var array = arguments[0]; %>
 
-<% var array_detail_view = array.config.filter( function(config){ return config.data_mode === "DETAIL_VIEW" } ) %>
+<% var array_detail_view = array.config.filter( function(config){ return config.data.mode === "DETAIL_VIEW" } ) %>
 
 <% var byDataLocation = {}; %>
 <% array_detail_view.forEach(function(_config) { %>

@@ -1,34 +1,34 @@
 <% var _in = arguments[0]; %>
 <input type="<%= _in.config.type%>"
 <% if(_in.config.class){ %> class="<%= _in.config.class%>" <%}%>
-<% if(_in.config.data_role){ %> data-role="<%= _in.config.data_role%>" <%}%>
-<% if(_in.config.data_action){ %> data-action="<%= _in.config.data_action%>" <%}%>
+        <% if(_in.config.data) {
+            for (var dataKey in _in.config.data) {
+                if (_in.config.data[dataKey] !== "") { %>
+                    <%= 'data-' + dataKey + '=\"' + _in.config.data[dataKey] + '\"' %>
+                <% }
+            }
+        } %>
+
 
 <% if(_in.config.id){ %> id="<%= _in.config.id%>" <%}%>
-<% if(_in.config.data_main){ %> data-main="<%= _in.config.id%>" <%}%>
 <% if(_in.config.disabled === true){ %> disabled <%}%>
 <% if(_in.config.onkeypress){ %> onkeypress="<%= _in.config.onkeypress %>" <%}%>
-<% if(_in.config.data_location){ %> data-location="<%= _in.config.data_location%>" <%}%>
-<% if(_in.config.data_chat_part){ %> data-chat_part="<%= _in.config.data_chat_part%>" <%}%>
-<% if(_in.config.data_mode_to){ %> data-mode_to="<%= _in.config.data_mode_to%>" <%}%>
 
 <% if (_in.config.type === "checkbox") { %>
-<% if (_in.config.data_key) { %>
-  <% if(_in.data[_in.config.data_key]) { %>
-  checked
-  <%} %>
-<% } %>
+    <% if (_in.config.data.key) { %>
+      <% if(_in.data[_in.config.data.key]) { %>
+      checked
+      <%} %>
+    <% } %>
 <% } %>
 
-<% if(_in.config.data_key === "page") { %>
-value= "<%= _in.data[_in.config.data_key] %>"
+<% if(_in.config.data.key === "page") { %>
+value= "<%= _in.data[_in.config.data.key] %>"
 <%} %>
 
 <% if (_in.config.type === "text") { %>
-<% if(_in.config.data_key) { %> value= "<%= _in.data[_in.config.data_key] %>" <%} %>
+<% if(_in.config.data.key) { %> value= "<%= _in.data[_in.config.data.key] %>" <%} %>
 <% } %>
  ><%= _in.config.text%>
-
-
 
 </input>

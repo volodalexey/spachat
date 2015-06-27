@@ -1,19 +1,19 @@
 <% var _in = arguments[0]; %>
-<button data-role="<%= _in.config.data_role%>" class="<%= _in.config.class%>"
+<button class="<%= _in.config.class%>"
 <% if(_in.config.data) {
-        for (var dataKey in _in.config.data) {
-                if (_in.config.data[dataKey] !== "") { %>
-                        <%= 'data-' + dataKey + '=\"' + _in.config.data[dataKey] + '\"' %>
-                <% }
-        }
+    for (var dataKey in _in.config.data) {
+        if (_in.config.data[dataKey] !== "") { %>
+                <%= 'data-' + dataKey + '=\"' + _in.config.data[dataKey] + '\"' %>
+        <% }
+    }
 } %>
 
-<% if(_in.config.disable === true){ %> disabled <%}%>
+<% if (_in.config.disable === true){ %> disabled <%}%>
 
-<% if(_in.config.data_key_disable && _in.data[_in.config.data_key_disable]){ %>
+<% if (_in.config.data.key_disable && _in.data[_in.config.data.key_disable]){ %>
 disabled ="<%= _in.data[_in.config.data.key_disabled]%>" <%}%>
 
-<% if(_in.config.value !== null){ %> value="<%= _in.config.value%>" <%}%>
+<% if (_in.config.value !== null){ %> value="<%= _in.config.value%>" <%}%>
 
 <% if (_in.config.icon) { %>
         <% if (_in.icon_config) { %>
@@ -32,10 +32,10 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>" <%}%>
 
 
 <% } %>
-<%= _in.config.text%>
+<%= _in.config.text %>
 
-<% if (_in.config.data_key) { %>
-<%= _in.data[_in.config.data_key] %>
+<% if (_in.config.data.key) { %>
+<%= _in.data[_in.config.data.key] %>
 <%} %>
 
 </button>

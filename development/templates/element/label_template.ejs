@@ -1,19 +1,25 @@
 <% var _in = arguments[0]; %>
-<label data-role="<%=_in.config.data_role%>" class="<%=_in.config.class%>"
+<label class="<%=_in.config.class%>"
 <% if(_in.config.name !== ""){ %> name="<%= _in.config.name%>" <%}%>
 
 <% if(_in.config.for){ %> for="<%= _in.config.for%>" <%}%>
-<% if(_in.config.data_location){ %> data-location="<%= _in.config.data_location%>" <%}%>
-<% if(_in.config.data_action){ %> data-action="<%= _in.config.data_action%>" <%}%>
-<% if(_in.config.data_key) { %>
-value = "<%= _in.data[_in.config.data_key] %>"
+
+        <% if(_in.config.data) {
+                for (var dataKey in _in.config.data) {
+                 if (_in.config.data[dataKey] !== "") { %>
+                 <%= 'data-' + dataKey + '=\"' + _in.config.data[dataKey] + '\"' %>
+                 <% }
+                }
+        } %>
+<% if(_in.config.data.key) { %>
+value = "<%= _in.data[_in.config.data.key] %>"
  <%}%>
 
 
 
 ><%=_in.config.text%>
-<% if(_in.config.data_key) { %>
-<%= _in.data[_in.config.data_key] %>
+<% if(_in.config.data.key) { %>
+<%= _in.data[_in.config.data.key] %>
 <%} %>
 
 </label>
