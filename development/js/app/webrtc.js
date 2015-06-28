@@ -263,7 +263,7 @@ define('webrtc', [
                 };
                 _this.dataChannel.onmessage = function(e) {
                     var message = JSON.parse(e.data);
-                    _this.chat.messages.addMessage({remote: true}, message);
+                    _this.chat.messages.addRemoteMessage({remote: true}, message);
                 };
             },
 

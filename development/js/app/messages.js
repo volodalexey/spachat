@@ -30,24 +30,28 @@ define('messages', [
                 var _this = this;
 
                 _this.chat = chat;
+                _this.messagesCollectionDescription = {
+                    "id": _this.chat.chatId,
+                    "db_name": _this.chat.chatId + '_chat',
+                    "table_name": _this.chat.chatId + '_messages',
+                    "db_version": 1,
+                    "keyPath": "id"
+                };
+                _this.logsCollectionDescription = {
+                    "id": _this.chat.chatId,
+                    "db_name": _this.chat.chatId + '_chat',
+                    "table_name": _this.chat.chatId + '_logs',
+                    "db_version": 1,
+                    "keyPath": "id"
+                };
+
+
                 switch (_this.chat.bodyOptions.mode) {
                     case _this.chat.body.MODE.MESSAGES:
-                        _this.collectionDescription = {
-                            "id": _this.chat.chatId,
-                            "db_name": _this.chat.chatId + '_chat',
-                            "table_name": _this.chat.chatId + '_messages',
-                            "db_version": 1,
-                            "keyPath": "id"
-                        };
+                        _this.collectionDescription = _this.messagesCollectionDescription;
                         break;
                     case _this.chat.body.MODE.LOGGER:
-                        _this.collectionDescription = {
-                            "id": _this.chat.chatId,
-                            "db_name": _this.chat.chatId + '_chat',
-                            "table_name": _this.chat.chatId + '_logs',
-                            "db_version": 1,
-                            "keyPath": "id"
-                        };
+                        _this.collectionDescription = _this.logsCollectionDescription;
                         break;
                 }
                 _this.fillListMessage(options);
@@ -99,22 +103,14 @@ define('messages', [
             },
 
             /**
-             * add message to the database and show it if possible
+             * add message to the database
              * @param options
              * @param messageInnerHTML
              */
-            addMessage: function(options, messageInnerHTML) {
+            addLocalMessage: function(options, callback) {
                 var _this = this;
                 // TODO distinct this chat messages from other
-                var message = new Message({ innerHTML: messageInnerHTML });
-                switch (_this.chat.bodyOptions.mode) {
-                    case _this.chat.body.MODE.MESSAGES:
-                        if (_this.chat.webrtc && _this.chat.webrtc.dataChannel &&
-                            _this.chat.webrtc.dataChannel.readyState === "open") {
-                            _this.chat.webrtc.dataChannel.send(JSON.stringify(message));
-                        }
-                        break;
-                }
+                var message = new Message({ innerHTML: options.messageInnerHTML });
 
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
@@ -123,19 +119,50 @@ define('messages', [
                     ],
                     function(error) {
                         if (error) {
+                            callback && callback(error);
                             return;
                         }
-                        // TODO check which page is current
-                        _this.chat.body_container.innerHTML = _this.chat.body_container.innerHTML + _this.message_template({
-                            innerHTML: message.innerHTML
-                        });
-                        _this.scrollTo(options);
+
+                        callback && callback(null, message);
                     }
                 );
             },
 
-            renderMessage: function() {
+            /**
+             * show message in chat body if possible
+             * @param message
+             */
+            renderMessage: function(message) {
+                var _this = this;
+                switch (_this.chat.bodyOptions.mode) {
+                    case _this.chat.body.MODE.MESSAGES:
+                        if (_this.chat.webrtc && _this.chat.webrtc.dataChannel &&
+                            _this.chat.webrtc.dataChannel.readyState === "open") {
+                            _this.chat.webrtc.dataChannel.send(JSON.stringify(message));
+                        }
+                        break;
+                }
+                // TODO check which page is current
+                _this.chat.body_container.innerHTML = _this.chat.body_container.innerHTML + _this.message_template({
+                    message: message
+                });
+                _this.scrollTo(options);
+            },
 
+            addRemoteMessage: function(options, message) {
+                var _this = this;
+                // TODO distinct this chat messages from other
+                var message = new Message(message);
+
+                indexeddb.addOrUpdateAll(
+                    _this.messagesCollectionDescription,
+                    [
+                        message
+                    ],
+                    function(error) {
+
+                    }
+                );
             }
         };
         extend(messages, event_core);

@@ -4,6 +4,8 @@ require.config({
     "paths": {
         "text": "lib/text",
 
+        "message": "app/model/message",
+
         "async_core": "app/extentions/async_core",
         "ajax_core": "app/extentions/ajax_core",
         "overlay_core": "app/extentions/overlay_core",

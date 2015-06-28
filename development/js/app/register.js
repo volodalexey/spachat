@@ -48,7 +48,7 @@ define('register', [
                 var _this = this;
                 _this.navigator = options.navigator;
                 _this.navigator.main_container.innerHTML = _this.register_template();
-                _this.cashElements();
+                _this.cashMainElements();
                 _this.addEventListeners();
                 _this.toggleWaiter();
             },

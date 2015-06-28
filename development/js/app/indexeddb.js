@@ -88,7 +88,7 @@ define('indexeddb',
                 var executeAddOrUpdateAll = function() {
                     var trans, store, keyPath = _this.getKeyPath(options);
                     try {
-                        trans = _this.openDatabases[options.id].db.transaction([options.db_name], "readwrite");
+                        trans = _this.openDatabases[options.id].db.transaction([options.table_name], "readwrite");
                         store = trans.objectStore(options.table_name);
                     } catch (error) {
                         callback(error);
@@ -160,7 +160,7 @@ define('indexeddb',
                 var executeGetAll = function() {
                     var trans, store, openRequest;
                     try {
-                        trans = _this.openDatabases[options.id].db.transaction([options.db_name], "readonly");
+                        trans = _this.openDatabases[options.id].db.transaction([options.table_name], "readonly");
                         store = trans.objectStore(options.table_name);
                         openRequest = store.openCursor();
                     } catch (error) {
