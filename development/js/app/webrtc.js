@@ -32,16 +32,20 @@ define('webrtc', [
         webrtc.prototype = {
 
             MODE: {
-                LOCAL_OFFER: 'LOCAL_OFFER',
-                LOCAL_ANSWER: 'LOCAL_ANSWER'
+                WAITING: 'WAITING',
+                CREATING_OFFER: 'CREATING_OFFER',
+                CREATING_ANSWER: 'CREATING_ANSWER',
+                ACCEPTING_ANSWER: 'ACCEPTING_ANSWER'
             },
 
             render: function(options, chat) {
                 var _this = this;
+                options = options ? options : {}; // TODO always check on upper level
                 _this.chat = chat;
-                switch (chat.mode) {
-                    case chat.MODE.CREATED_AUTO: case chat.MODE.JOINED_AUTO_OFFER:
+                switch (_this.mode) {
+                    case _this.MODE.CREATING_OFFER:
                         options.onicecandidate = function(description) {
+                            _this.mode = _this.MODE.WAITING;
                             _this.localOfferDescription = description;
                             _this.trigger('sendToWebSocket', {
                                 type: 'offer',
@@ -59,8 +63,9 @@ define('webrtc', [
                             }
                         );
                         break;
-                    case chat.MODE.JOINED_AUTO_ANSWER:
+                    case _this.MODE.CREATING_ANSWER:
                         options.onicecandidate = function(description) {
+                            _this.mode = _this.MODE.WAITING;
                             _this.localAnswerDescription = description;
                             _this.trigger('sendToWebSocket', {
                                 type: 'answer',
@@ -78,7 +83,7 @@ define('webrtc', [
                             }
                         );
                         break;
-                    case chat.MODE.JOINED_AUTO_ACCEPT:
+                    case _this.MODE.ACCEPTING_ANSWER:
                         _this.acceptRemoteAnswerAuto(
                             options,
                             function(createError) {
@@ -92,6 +97,7 @@ define('webrtc', [
                                     userId: chat.userId,
                                     localOfferDescription: _this.localOfferDescription
                                 });
+                                _this.mode = _this.MODE.WAITING;
                             }
                         );
                     break;
@@ -137,7 +143,7 @@ define('webrtc', [
                 var _this = this;
                 _this.removeEventListeners();
                 _this.renderWaiter();
-                _this.createRTCPeerConnection({mode: _this.MODE.LOCAL_OFFER});
+                _this.createRTCPeerConnection({});
                 _this.createLocalOffer();
             },
 
@@ -150,7 +156,6 @@ define('webrtc', [
                 var _this = this;
                 _this.createRTCPeerConnection(
                     {
-                        mode: _this.MODE.LOCAL_OFFER,
                         onicecandidate: options.onicecandidate
                     },
                     function(createError) {
@@ -173,7 +178,6 @@ define('webrtc', [
                 var _this = this;
                 _this.createRTCPeerConnection(
                     {
-                        mode: _this.MODE.LOCAL_ANSWER,
                         onicecandidate: options.onicecandidate
                     },
                     function(createError) {
@@ -262,8 +266,10 @@ define('webrtc', [
                     _this.trigger('webrtc:done');
                 };
                 _this.dataChannel.onmessage = function(e) {
-                    var message = JSON.parse(e.data);
-                    _this.chat.messages.addRemoteMessage({remote: true}, message);
+                    var remoteMessage = JSON.parse(e.data);
+                    _this.chat.messages.addRemoteMessage(remoteMessage, function(error, message) {
+                        _this.chat.messages.renderMessage({ scrollTop : true }, message);
+                    });
                 };
             },
 

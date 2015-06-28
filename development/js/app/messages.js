@@ -118,12 +118,16 @@ define('messages', [
                         message
                     ],
                     function(error) {
-                        if (error) {
-                            callback && callback(error);
-                            return;
+                        switch (_this.chat.bodyOptions.mode) {
+                            case _this.chat.body.MODE.MESSAGES:
+                                if (_this.chat.webrtc && _this.chat.webrtc.dataChannel &&
+                                    _this.chat.webrtc.dataChannel.readyState === "open") {
+                                    _this.chat.webrtc.dataChannel.send(JSON.stringify(message));
+                                }
+                                break;
                         }
 
-                        callback && callback(null, message);
+                        callback && callback(error, message);
                     }
                 );
             },
@@ -132,16 +136,8 @@ define('messages', [
              * show message in chat body if possible
              * @param message
              */
-            renderMessage: function(message) {
+            renderMessage: function(options, message) {
                 var _this = this;
-                switch (_this.chat.bodyOptions.mode) {
-                    case _this.chat.body.MODE.MESSAGES:
-                        if (_this.chat.webrtc && _this.chat.webrtc.dataChannel &&
-                            _this.chat.webrtc.dataChannel.readyState === "open") {
-                            _this.chat.webrtc.dataChannel.send(JSON.stringify(message));
-                        }
-                        break;
-                }
                 // TODO check which page is current
                 _this.chat.body_container.innerHTML = _this.chat.body_container.innerHTML + _this.message_template({
                     message: message
@@ -149,10 +145,10 @@ define('messages', [
                 _this.scrollTo(options);
             },
 
-            addRemoteMessage: function(options, message) {
+            addRemoteMessage: function(remoteMessage, callback) {
                 var _this = this;
                 // TODO distinct this chat messages from other
-                var message = new Message(message);
+                var message = new Message(remoteMessage);
 
                 indexeddb.addOrUpdateAll(
                     _this.messagesCollectionDescription,
@@ -160,7 +156,7 @@ define('messages', [
                         message
                     ],
                     function(error) {
-
+                        callback && callback(error, message);
                     }
                 );
             }

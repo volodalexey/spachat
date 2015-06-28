@@ -1,6 +1,7 @@
 define('chat_platform', [
         'chat',
         'websocket',
+        'webrtc',
 
         'overlay_core',
         'event_core',
@@ -13,6 +14,7 @@ define('chat_platform', [
     ],
     function(Chat,
              websocket,
+             webrtc,
 
              overlay_core,
              event_core,
@@ -175,8 +177,18 @@ define('chat_platform', [
                             console.error(error);
                             return;
                         }
-                        event.chat_description.mode = Chat.prototype.MODE.CREATED_AUTO;
-                        _this.createChatLayout(event.chat_description, { chat_wrapper: _this.chat_wrapper});
+                        // chat create was approved
+                        // create offer
+                        _this.createChatLayout(
+                            event.chat_description,
+                            {
+                                chat_wrapper: _this.chat_wrapper,
+                                modeDescriptions: [{
+                                    'chat_part': 'webrtc',
+                                    'newMode': webrtc.prototype.MODE.CREATING_OFFER
+                                }]
+                            }
+                        );
                     }
                 );
             },
@@ -191,7 +203,7 @@ define('chat_platform', [
                 var newChat = new Chat(chat_description);
                 Chat.prototype.chatsArray.push(newChat);
                 newChat.initialize(renderOptions);
-                newChat.render(renderOptions);
+                newChat.switchModes(renderOptions.modeDescriptions, renderOptions);
                 setTimeout(function() {
                     _this.proceedNextMessage();
                 }, 0);
@@ -235,12 +247,15 @@ define('chat_platform', [
                         // Chat already has offer
                         // Create answer
                         if (event.chat_description.offer.userId !== _this.navigator.userId) {
-                            event.chat_description.mode = Chat.prototype.MODE.JOINED_AUTO_ANSWER;
                             _this.createChatLayout(
                                 event.chat_description,
                                 {
                                     chat_wrapper: _this.chat_wrapper,
-                                    remoteOfferDescription: event.chat_description.offer ? event.chat_description.offer.offerDescription : null
+                                    remoteOfferDescription: event.chat_description.offer ? event.chat_description.offer.offerDescription : null,
+                                    modeDescriptions: [{
+                                        'chat_part': 'webrtc',
+                                        'newMode': webrtc.prototype.MODE.CREATING_ANSWER
+                                    }]
                                 }
                             );
                             return;
@@ -251,11 +266,14 @@ define('chat_platform', [
 
                     // Chat does not have offer
                     // Create offer
-                    event.chat_description.mode = Chat.prototype.MODE.JOINED_AUTO_OFFER;
                     _this.createChatLayout(
                         event.chat_description,
                         {
-                            chat_wrapper: _this.chat_wrapper
+                            chat_wrapper: _this.chat_wrapper,
+                            modeDescriptions: [{
+                                'chat_part': 'webrtc',
+                                'newMode': webrtc.prototype.MODE.CREATING_OFFER
+                            }]
                         }
                     );
                 };

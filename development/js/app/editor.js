@@ -157,7 +157,7 @@ define('editor', [
                                 return;
                             }
 
-                            _this.chat.messages.renderMessage(message);
+                            _this.chat.messages.renderMessage({ scrollTop : true }, message);
                             // do something with message ?
                         }
                     );

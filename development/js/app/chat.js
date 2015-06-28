@@ -124,17 +124,6 @@ define('chat', [
 
             chatsArray: [],
 
-            MODE: {
-                SETTING: 'SETTING',
-                //MESSAGES: 'MESSAGES',
-                CONTACT_LIST: 'CONTACT_LIST',
-                MESSAGES_DISCONNECTED: 'MESSAGES_DISCONNECTED',
-                CREATED_AUTO: 'CREATED_AUTO',
-                JOINED_AUTO_OFFER: 'JOINED_AUTO_OFFER',
-                JOINED_AUTO_ANSWER: 'JOINED_AUTO_ANSWER',
-                JOINED_AUTO_ACCEPT: 'JOINED_AUTO_ACCEPT'
-            },
-
             cashElements: function() {
                 var _this = this;
                 _this.chat_element = _this.chat_wrapper.querySelector('section');
@@ -169,7 +158,7 @@ define('chat', [
             render: function(options, _array) {
                 var _this = this;
                 _this.editor.render(options, this);
-                _this.header.render(null, _array, this);
+                _this.header.render(options, _array, this);
                 _this.pagination.render(options, this);
                 _this.body.render({scrollTop: true}, this);
                 _this.webrtc.render(options, this);
@@ -194,7 +183,7 @@ define('chat', [
              * switch mode of all dependencies in the chat followed by array of descriptions
              * @param _array - array of descriptions
              */
-            switchModes: function(_array) {
+            switchModes: function(_array, options) {
                 var _this = this;
                 _array.forEach(function(_obj) {
                     switch (_obj.chat_part) {
@@ -319,9 +308,12 @@ define('chat', [
                                     _this.toggleShowState({key: 'show', toggle: false}, _this.goToOptions, _obj);
                                     break;
                             }
+                            break;
+                        case "webrtc":
+                            _this.webrtc.mode = _obj.newMode;
                     }
                 });
-                _this.render(null, _array);
+                _this.render(options, _array);
             },
 
             addEventListeners: function() {
@@ -382,7 +374,6 @@ define('chat', [
                     // I am the creator of server stored offer
                     // Waiting for answer
                     _this.console.log.call(_this, {message: 'waiting for connection'});
-                    _this.mode = _this.MODE.MESSAGES_DISCONNECTED;
                     _this.switchModes([
                         {
                             'chat_part': 'header',
@@ -395,21 +386,26 @@ define('chat', [
                         {
                             'chat_part': 'editor',
                             'newMode': _this.editor.MODE.MAIN_PANEL
-                        }
-                        ,
+                        },
                         {
                             'chat_part': 'pagination',
                             'newMode': _this.pagination.MODE.PAGINATION
+                        },
+                        {
+                            'chat_part': 'webrtc',
+                            'newMode': _this.webrtc.MODE.WAITING
                         }
                     ]);
                 } else {
                     // I am NOT the creator of server stored offer
                     // Somebody created offer while I was trying to create my offer
                     // Create answer
-                    _this.mode = _this.MODE.JOINED_AUTO_ANSWER;
-                    _this.render({
-                        remoteOfferDescription: event.chat_description.offer.offerDescription
-                    });
+                    _this.switchModes([
+                        {
+                            'chat_part': 'webrtc',
+                            'newMode': _this.webrtc.MODE.CREATING_ANSWER
+                        }
+                    ], { remoteOfferDescription: event.chat_description.offer.offerDescription });
                 }
             },
 
@@ -419,7 +415,6 @@ define('chat', [
                     // I am the creator of server stored answer
                     // Waiting for accept
                     _this.console.log.call(_this, {message: 'waiting for accept connection'});
-                    _this.mode = _this.MODE.MESSAGES_DISCONNECTED;
                     _this.switchModes([
                         {
                             'chat_part': 'header',
@@ -432,16 +427,22 @@ define('chat', [
                         {
                             'chat_part': 'editor',
                             'newMode': _this.editor.MODE.MAIN_PANEL
+                        },
+                        {
+                            'chat_part': 'webrtc',
+                            'newMode': _this.webrtc.MODE.WAITING
                         }
                     ]);
                 } else {
                     // I am NOT the creator of server stored answer
                     // Accept answer if I am the offer creator
                     if (event.chat_description.offer.userId === _this.userId) {
-                        _this.mode = _this.MODE.JOINED_AUTO_ACCEPT;
-                        _this.render({
-                            remoteAnswerDescription: event.chat_description.answer.answerDescription
-                        });
+                        _this.switchModes([
+                            {
+                                'chat_part': 'webrtc',
+                                'newMode': _this.webrtc.MODE.ACCEPTING_ANSWER
+                            }
+                        ], { remoteAnswerDescription: event.chat_description.answer.answerDescription });
                     } else {
                         console.error(new Error('Offer and Answer do not make sense!'));
                     }
