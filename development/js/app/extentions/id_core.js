@@ -16,9 +16,13 @@ define('id_core', [
                 return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
             },
 
+            s4Date: function() {
+                return Date.now().toString(16).substring(1);
+            },
+
             generateId: function() {
                 return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
-                    this.s4() + '-' + this.s4() + this.s4() + this.s4();
+                    this.s4() + '-' + this.s4() + this.s4() + this.s4Date();
             }
         };
 

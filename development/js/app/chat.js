@@ -98,7 +98,7 @@ define('chat', [
             this.messages = new Messages({chat: this});
             this.webrtc = new Webrtc({chat: this});
             this.body = new Body({chat: this});
-            this.bodyOptions.mode = this.body.MODE.MESSAGES;
+            this.bodyOptions.mode = this.body.MODE.MESSAGES; // TODO move to description
 
             this.extend(this, options);
             this.bindContexts();
@@ -157,15 +157,13 @@ define('chat', [
                 }
             },
 
-            initialization: function(options) {
+            initialize: function(options) {
                 var _this = this;
                 _this.chat_wrapper = options && options.chat_wrapper ? options.chat_wrapper : _this.chat_wrapper;
                 _this.chat_wrapper.innerHTML = _this.chat_template();
                 _this.cashElements();
                 _this.header_waiter_container.innerHTML = _this.waiter_template();
                 _this.addEventListeners();
-                _this.render(options);
-                _this.webrtc.render(options, this);
             },
 
             render: function(options, _array) {
@@ -174,9 +172,13 @@ define('chat', [
                 _this.header.render(null, _array, this);
                 _this.pagination.render(options, this);
                 _this.body.render({scrollTop: true}, this);
-                //_this.messages.render({start: 0, scrollTop: true}, this);
+                _this.webrtc.render(options, this);
             },
 
+            /**
+             * prepare change mode from UI event
+             * @param event - UI event
+             */
             changeMode: function(event) {
                 var _this = this;
                 _this.switchModes([
@@ -188,6 +190,10 @@ define('chat', [
                 ]);
             },
 
+            /**
+             * switch mode of all dependencies in the chat followed by array of descriptions
+             * @param _array - array of descriptions
+             */
             switchModes: function(_array) {
                 var _this = this;
                 _array.forEach(function(_obj) {
@@ -384,7 +390,7 @@ define('chat', [
                         },
                         {
                             'chat_part': 'body',
-                            'newMode': _this.body.MODE.MESSAGES
+                            'newMode': _this.body.MODE.WEBRTC
                         },
                         {
                             'chat_part': 'editor',
@@ -421,7 +427,7 @@ define('chat', [
                         },
                         {
                             'chat_part': 'body',
-                            'newMode': _this.body.MODE.MESSAGES
+                            'newMode': _this.body.MODE.WEBRTC
                         },
                         {
                             'chat_part': 'editor',

@@ -18,7 +18,8 @@ define('body', [
             MODE: {
                 SETTING: 'SETTING',
                 MESSAGES: 'MESSAGES',
-                CONTACT_LIST: 'CONTACT_LIST'
+                CONTACT_LIST: 'CONTACT_LIST',
+                LOGGER: 'LOGGER'
             },
 
             render: function(options, chat) {
@@ -32,7 +33,7 @@ define('body', [
                         case _this.MODE.CONTACT_LIST:
                             _this.chat.contact_list.renderContactList(options, chat);
                             break;
-                        case _this.MODE.MESSAGES:
+                        case _this.MODE.MESSAGES: case _this.MODE.LOGGER:
                             _this.chat.messages.render(options, chat);
                             break;
                     }

@@ -190,7 +190,8 @@ define('chat_platform', [
                 var _this = this;
                 var newChat = new Chat(chat_description);
                 Chat.prototype.chatsArray.push(newChat);
-                newChat.initialization(renderOptions);
+                newChat.initialize(renderOptions);
+                newChat.render(renderOptions);
                 setTimeout(function() {
                     _this.proceedNextMessage();
                 }, 0);

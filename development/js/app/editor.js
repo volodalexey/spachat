@@ -146,10 +146,10 @@ define('editor', [
                 }
 
                 // TODO replace with data-role
-                var newMessage = _this.message_inner_container.innerHTML;
-                var pattern = /[^\s{0,}$|^$]/;
-                if (pattern.test(newMessage)) {
-                    _this.chat.messages.addMessage({scrollTop: true}, newMessage);
+                var messageInnerHTML = _this.message_inner_container.innerHTML;
+                var pattern = /[^\s{0,}$|^$]/; // empty message or \n only
+                if (pattern.test(messageInnerHTML)) {
+                    _this.chat.messages.addMessage({scrollTop: true}, messageInnerHTML);
                     _this.message_inner_container.innerHTML = "";
                 }
             }

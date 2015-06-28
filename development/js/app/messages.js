@@ -1,16 +1,24 @@
 define('messages', [
         'event_core',
         'template_core',
-        'indexeddb',
+        'id_core',
 
-        'text!../templates/message_template.ejs'
+        'indexeddb',
+        'message',
+
+        'text!../templates/body/message_template.ejs',
+        'text!../templates/body/log_message_template.ejs'
     ],
     function(
         event_core,
         template_core,
-        indexeddb,
+        id_core,
 
-        message_template
+        indexeddb,
+        Message,
+
+        message_template,
+        log_message_template
     ) {
 
         var messages = function() {
@@ -22,16 +30,27 @@ define('messages', [
                 var _this = this;
 
                 _this.chat = chat;
-                _this.data = {
-                    collection: {
-                        "id": _this.chat.chatId,
-                        "db_name": _this.chat.chatId + '_chat_messages',
-                        "table_name": _this.chat.chatId + '_chat_messages',
-                        "db_version": 1,
-                        "keyPath": "id"
-                    }
-                };
-                    _this.fillListMessage(options);
+                switch (_this.chat.bodyOptions.mode) {
+                    case _this.chat.body.MODE.MESSAGES:
+                        _this.collectionDescription = {
+                            "id": _this.chat.chatId,
+                            "db_name": _this.chat.chatId + '_chat',
+                            "table_name": _this.chat.chatId + '_messages',
+                            "db_version": 1,
+                            "keyPath": "id"
+                        };
+                        break;
+                    case _this.chat.body.MODE.LOGGER:
+                        _this.collectionDescription = {
+                            "id": _this.chat.chatId,
+                            "db_name": _this.chat.chatId + '_chat',
+                            "table_name": _this.chat.chatId + '_logs',
+                            "db_version": 1,
+                            "keyPath": "id"
+                        };
+                        break;
+                }
+                _this.fillListMessage(options);
             },
 
             scrollTo: function(options) {
@@ -52,48 +71,53 @@ define('messages', [
                 }
 
                 _this.chat.body_container.innerHTML = "";
-                indexeddb.getAll(_this.data.collection, function(getAllErr, messages) {
-                    if (getAllErr) {
-                        _this.chat.body_container.innerHTML = getAllErr.message || getAllErr;
-                        return;
-                    }
+                indexeddb.getAll(
+                    _this.collectionDescription,
+                    function(getAllErr, messages) {
+                        if (getAllErr) {
+                            _this.chat.body_container.innerHTML = getAllErr.message || getAllErr;
+                            return;
+                        }
 
-                    _this.chat.body_container.innerHTML = "";
-                    if (_this.chat.messagesOptions.final > messages.length || !_this.chat.messagesOptions.final) {
-                        _this.chat.messagesOptions.final = messages.length;
+                        _this.chat.body_container.innerHTML = "";
+                        if (_this.chat.messagesOptions.final > messages.length || !_this.chat.messagesOptions.final) {
+                            _this.chat.messagesOptions.final = messages.length;
+                        }
+                        var generatedMessages = [];
+                        for (var i = _this.chat.messagesOptions.start; i < _this.chat.messagesOptions.final; i++) {
+                            generatedMessages.push(_this.message_template({
+                                message: messages[i]
+                            }));
+                        }
+                        _this.chat.body_container.innerHTML = generatedMessages.join('');
+                        _this.scrollTo(options);
+                        if(options.callback){
+                            options.callback();
+                        }
                     }
-                    var generatedMessages = [];
-                    for (var i = _this.chat.messagesOptions.start; i < _this.chat.messagesOptions.final; i++) {
-                        generatedMessages.push(_this.message_template({
-                            innerHTML: messages[i].innerHTML
-                        }));
-                    }
-                    _this.chat.body_container.innerHTML = generatedMessages.join('');
-                    _this.scrollTo(options);
-                    if(options.callback){
-                        options.callback();
-                    }
-                });
+                );
             },
 
-            addMessage: function(options, newMessage) {
-                var _this = this, message;
-                if (options.remote) {
-                    message = newMessage;
-                } else {
-                    message = {
-                        id: new Date().getTime(),
-                        innerHTML: newMessage
-                    };
-                    if (_this.chat.webrtc && _this.chat.webrtc.dataChannel &&
-                        _this.chat.webrtc.dataChannel.readyState === "open") {
-                        _this.chat.webrtc.dataChannel.send(JSON.stringify(message));
-                    }
+            /**
+             * add message to the database and show it if possible
+             * @param options
+             * @param messageInnerHTML
+             */
+            addMessage: function(options, messageInnerHTML) {
+                var _this = this;
+                // TODO distinct this chat messages from other
+                var message = new Message({ innerHTML: messageInnerHTML });
+                switch (_this.chat.bodyOptions.mode) {
+                    case _this.chat.body.MODE.MESSAGES:
+                        if (_this.chat.webrtc && _this.chat.webrtc.dataChannel &&
+                            _this.chat.webrtc.dataChannel.readyState === "open") {
+                            _this.chat.webrtc.dataChannel.send(JSON.stringify(message));
+                        }
+                        break;
                 }
 
-                // TODO check which page is current
                 indexeddb.addOrUpdateAll(
-                    _this.data.collection,
+                    _this.collectionDescription,
                     [
                         message
                     ],
@@ -101,16 +125,22 @@ define('messages', [
                         if (error) {
                             return;
                         }
+                        // TODO check which page is current
                         _this.chat.body_container.innerHTML = _this.chat.body_container.innerHTML + _this.message_template({
-                                innerHTML: message.innerHTML
-                            });
+                            innerHTML: message.innerHTML
+                        });
                         _this.scrollTo(options);
                     }
                 );
+            },
+
+            renderMessage: function() {
+
             }
         };
         extend(messages, event_core);
         extend(messages, template_core);
+        extend(messages, id_core);
 
         messages.prototype.message_template = messages.prototype.template(message_template);
 

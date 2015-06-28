@@ -259,6 +259,7 @@ define('webrtc', [
 
                 _this.dataChannel.onopen = function() {
                     console.log('Data channel connection established!!!');
+                    _this.trigger('webrtc:done');
                 };
                 _this.dataChannel.onmessage = function(e) {
                     var message = JSON.parse(e.data);
