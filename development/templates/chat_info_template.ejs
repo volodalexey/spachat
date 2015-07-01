@@ -1,108 +1,134 @@
 <% var array = arguments[0];
-var array_create_chat = array.config.filter( function(config){ return config.data.mode === "CREATE_CHAT" } )
-var array_join_chat = array.config.filter( function(config){ return config.data.mode === "JOIN_CHAT" } )
-var array_my_chats = array.config.filter( function(config){ return config.data.mode === "MY_CHATS" } ) %>
-
+var array_create_chat = array.config.filter(function(config) {
+    return config.data.mode === "CREATE_CHAT"
+})
+var array_join_chat = array.config.filter(function(config) {
+    return config.data.mode === "JOIN_CHAT"
+})
+var array_my_chats = array.config.filter(function(config) {
+    return config.data.mode === "MY_CHATS"
+}) %>
 <% if (array.mode === 'CREATE_CHAT') { %>
-    <% array_create_chat.forEach(function (config) { %>
-    <div class="w-100p p-t-b flex-sp-around">
-        <%= array.triple_element_template({
+<% array_create_chat.forEach(function (config) { %>
+<div class="w-100p p-t-b flex-sp-around">
+    <%= array.triple_element_template({
         config: config,
         data: array.data,
         button_template: array.button_template,
         input_template: array.input_template,
         label_template: array.label_template
-        }) %>
-    </div>
-    <% }) %>
+    }) %>
+</div>
+<% }) %>
 <% } %>
-
 <% if (array.mode === 'JOIN_CHAT') { %>
-
 <% var byDataLocation = {}; %>
 <% array_join_chat.forEach(function(_config) { %>
-<%  if (!byDataLocation[_config.data.location]) {
+<% if (!byDataLocation[_config.data.location]) {
     byDataLocation[_config.data.location] = [];
-}%>
-<%  byDataLocation[_config.data.location].push(_config); %>
+} %>
+<% byDataLocation[_config.data.location].push(_config); %>
 <% }); %>
-
-
 <% if (byDataLocation['chat_id'].length) { %>
 <div class="w-100p flex-sp-between">
     <% byDataLocation['chat_id'].forEach(function (config) { %>
     <%= array.triple_element_template({
-    config: config,
-    data: array.data,
-    button_template: array.button_template,
-    input_template: array.input_template,
-    label_template: array.label_template
+        config: config,
+        data: array.data,
+        button_template: array.button_template,
+        input_template: array.input_template,
+        label_template: array.label_template
     }) %>
     <% }) %>
 </div>
-<%} %>
-
+<% } %>
 <% if (byDataLocation['chat_id_btn'].length) { %>
 <div class="w-100p flex-sp-around">
     <% byDataLocation['chat_id_btn'].forEach(function (config) { %>
     <%= array.triple_element_template({
-    config: config,
-    data: array.data,
-    button_template: array.button_template,
-    input_template: array.input_template,
-    label_template: array.label_template
+        config: config,
+        data: array.data,
+        button_template: array.button_template,
+        input_template: array.input_template,
+        label_template: array.label_template
     }) %>
     <% }) %>
 </div>
-<%} %>
-
-
+<% } %>
 <% if (byDataLocation['remote_offer'].length) { %>
 <% byDataLocation['remote_offer'].forEach(function (config) { %>
 <div class="w-100p flex-sp-between">
     <%= array.triple_element_template({
-    config: config,
-    data: array.data,
-    button_template: array.button_template,
-    input_template: array.input_template,
-    label_template: array.label_template,
-    textarea_template: array.textarea_template,
+        config: config,
+        data: array.data,
+        button_template: array.button_template,
+        input_template: array.input_template,
+        label_template: array.label_template,
+        textarea_template: array.textarea_template,
     }) %>
 </div>
 <% }) %>
-
 <% if (byDataLocation['remote_offer_btn'].length) { %>
 <div class="w-100p flex-sp-around">
     <% byDataLocation['remote_offer_btn'].forEach(function (config) { %>
     <%= array.triple_element_template({
-    config: config,
-    data: array.data,
-    button_template: array.button_template,
-    input_template: array.input_template,
-    label_template: array.label_template
+        config: config,
+        data: array.data,
+        button_template: array.button_template,
+        input_template: array.input_template,
+        label_template: array.label_template
     }) %>
     <% }) %>
 </div>
-<%} %>
-
-<%} %>
 <% } %>
-
+<% } %>
+<% } %>
 <% if (array.mode === 'MY_CHATS') { %>
 <div>
-    <% array.data.forEach(function (chat) { %>
-    <div data-action="show_more_info" value="<%= chat.chatId %>" data-role="chatWrapper" data-chatid="<%= chat.chatId %>" >
+    <% array.data.data.forEach(function (chat) { %>
+    <% var result = array.data.openChatsArray.indexOf(chat.chatId); %>
+    <div data-action="show_more_info" value="<%= chat.chatId %>" data-role="chatWrapper"
+         data-chatid="<%= chat.chatId %>">
         <% array_my_chats.forEach(function (config) { %>
-            <%= array.triple_element_template({
+        <% var element = array.triple_element_template({
             config: config,
             icon_config: array.icon_config,
             button_template: array.button_template,
             input_template: array.input_template,
             label_template: array.label_template,
             data: chat
-            }) %>
+        }) %>
+
+        <% if ((result === 1 || result === 0) && config.element === "svg") { %>
+        <% var div = document.createElement('div');
+            div.innerHTML = element;
+            var pointer = div.querySelector('[data-role="pointer"]');
+            pointer.classList.add("rotate-90");
+        %>
+        <%= div.innerHTML %>
+        <% } else { %>
+        <%= element %>
+        <% } %>
         <% }) %>
-        <div data-role="detail_view_container" style="max-height: 0;" class=" max-height-0"></div>
+
+        <% if (result === 1 || result === 0) { %>
+        <div data-role="detail_view_container" style="max-height: 15em;" class="max-height-auto max-height-0"
+             data-state="expanded">
+            <%= array.data.detail_view_template({
+                config: config,
+                data: chat,
+                icon_config: array.icon_config,
+                triple_element_template: array.triple_element_template,
+                button_template: array.button_template,
+                input_template: array.input_template,
+                label_template: array.label_template
+            }) %>
+
+        </div>
+        <% } else { %>
+        <div data-role="detail_view_container" style="max-height: 0;" class="max-height-0"></div>
+        <% } %>
+
     </div>
     <% }) %>
 </div>

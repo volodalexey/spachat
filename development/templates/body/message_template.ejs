@@ -1,2 +1,31 @@
 <% var obj = arguments[0]; %>
-<div class="message"><%= obj.message.innerHTML %></div>
+<div class="flex-sp-around">
+    <div class="fotoFormat">
+        <%if (obj.message.ids[obj.message.id].sender) {%>
+         <img src="img\app\6.ico" width="35px" height="35px"></div>
+        <%} else {%>
+            <img src="img\app\3.ico" width="35px" height="35px"></div>
+        <%}%>
+
+
+    <%if (obj.message.ids[obj.message.id].sender) {%>
+        <div class="message myMessage flex-item-1-auto"><%= obj.message.innerHTML %>
+            <div class="dateFormat">
+                <%if (obj.message.ids[obj.message.id].dateTime) { %>
+                <% var time = new Date(obj.message.ids[obj.message.id].dateTime);%>
+                <%= time.toISOString()%>
+                <%}%>
+            </div>
+        </div>
+    <%} else {%>
+        <div class="message flex-item-1-auto"><%= obj.message.innerHTML %>
+            <div class="dateFormat">
+                <%if (obj.message.ids[obj.message.id].dateTime) { %>
+                <% var time = new Date(obj.message.ids[obj.message.id].dateTime);%>
+                <%= time.toISOString()%>
+                <%}%>
+            </div>
+        </div>
+    <%}%>
+
+</div>

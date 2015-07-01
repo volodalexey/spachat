@@ -57,7 +57,9 @@ define('chat', [
             },
             formatOptions: {
                 show: false,
-                offScroll: false
+                offScroll: false,
+                sendEnter: false,
+                iSender: true
             },
             goToOptions: {
                 show: false,
@@ -330,9 +332,6 @@ define('chat', [
                 _this.header.on('throw', _this.throwRouter, _this);
                 _this.editor.on('throw', _this.throwRouter, _this);
                 _this.pagination.on('throw', _this.throwRouter, _this);
-                //_this.pagination.on('fillListMessage', function(obj) {
-                //    _this.fillMessages(obj);
-                //}, _this);
                 _this.webrtc.on('log', _this.console.log, _this);
                 _this.webrtc.on('sendToWebSocket', _this.sendToWebSocket, _this);
                 _this.on('notifyChat', _this.onMessageRouter, _this);
@@ -351,6 +350,14 @@ define('chat', [
             throwRouter: function(action, event) {
                 if (this[action]) {
                     this[action](event);
+                }
+            },
+
+            destroyChat: function(event) {
+                var _this = this;
+                if (confirm("Close this chat ?")) {
+                    _this.chatsArray.splice(_this.chatsArray.indexOf(_this.chatId),1);
+                    _this.chat_element.remove();
                 }
             },
 

@@ -47,6 +47,7 @@ define('editor', [
                 var _this = this;
                 _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
                 _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
+                _this.bindedSendEnter = _this.sendEnter.bind(_this);
             },
 
             addMainEventListener: function() {
@@ -54,21 +55,22 @@ define('editor', [
                 _this.removeMainEventListeners();
                 _this.addRemoveListener('add', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('add', _this.controls_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.message_inner_container, 'keypress', _this.bindedSendEnter, false);
             },
 
             removeMainEventListeners: function() {
                 var _this = this;
                 _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.message_inner_container, 'keypress', _this.bindedSendEnter, false);
             },
 
             cashElements: function() {
                 var _this = this;
                 _this.controls_container = _this.editor_container.querySelector('[data-role="controls_container"]');
                 _this.message_inner_container = _this.editor_container.querySelector('[data-role="message_inner_container"]');
-                _this.btnEditPanel = _this.controls_container.querySelector('[data-action="btnEditPanel"]');
+                _this.btnEditPanel = _this.controls_container.querySelector('[data-role="btnEditPanel"]');
                 _this.buttonFormat = _this.editor_container.querySelector('[data-toggle]');
-
             },
 
             render: function(options, chat) {
@@ -106,7 +108,9 @@ define('editor', [
                         FORMAT_PANEL: _this.btnEditPanel
                     };
                     var data = {
-                        "offScroll": _this.chat.formatOptions.offScroll
+                        "offScroll": _this.chat.formatOptions.offScroll,
+                        "sendEnter": _this.chat.formatOptions.sendEnter,
+                        "iSender": _this.chat.formatOptions.iSender
                     };
                     _this.renderLayout(data, null);
                 } else {
@@ -124,6 +128,33 @@ define('editor', [
                     document.execCommand(command, null, "red");
                 } else {
                     document.execCommand(command, null, null);
+                }
+            },
+
+            changeSendEnter: function(event) {
+                var _this = this;
+                if (event.target.checked) {
+                    _this.chat.formatOptions.sendEnter = true;
+                } else {
+                    _this.chat.formatOptions.sendEnter = false;
+                }
+            },
+
+            changeSender: function(event) {
+                var _this = this;
+                if (event.target.checked) {
+                    _this.chat.formatOptions.iSender = true;
+                } else {
+                    _this.chat.formatOptions.iSender = false;
+                }
+            },
+
+            sendEnter: function(event){
+                var _this = this;
+                if (event.keyCode === 13) {
+                    if (_this.chat.formatOptions.sendEnter) {
+                        _this.sendMessage();
+                    }
                 }
             },
 

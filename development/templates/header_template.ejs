@@ -1,26 +1,49 @@
     <% var _in = arguments[0]; %>
+
+    <% var byDataLocationShow = {}; %>
+    <% _in.config.forEach(function(_config) { %>
+    <%  if (!byDataLocationShow[_config.data.location]) { %>
+    <%  byDataLocationShow[_config.data.location] = []; %>
+    <% }%>
+    <%  byDataLocationShow[_config.data.location].push(_config); %>
+    <% }); %>
+
     <div data-role="webrtc_container"></div>
     <div data-role="waiter_container"></div>
     <div data-role="tabs_container">
+        <div data-role="topHeaderPanel" class="flex-sp-end">
+            <% if (byDataLocationShow['topPanel'].length) { %>
+                <% byDataLocationShow['topPanel'].forEach(function (config) { %>
+
+                <%= _in.triple_element_template({
+                    config: config,
+                    icon_config: _in.icon_config,
+                    button_template: _in.button_template,
+                    input_template: _in.input_template,
+                    label_template: _in.label_template
+                }) %>
+
+                <%})%>
+            <%}%>
+        </div>
         <div data-role="header_description">
             <h3><%= _in.description %></h3>
             <hr/>
         </div>
-        <% if (_in.config) { %>
         <div data-role="btnHeaderPanel">
-            <% _in.config.forEach(function (config) { %>
+            <% if (byDataLocationShow['bottomPanel'].length) { %>
+                <% byDataLocationShow['bottomPanel'].forEach(function (config) { %>
 
-            <%= _in.triple_element_template({
-            config: config,
-            icon_config: _in.icon_config,
-            button_template: _in.button_template,
-            input_template: _in.input_template,
-            label_template: _in.label_template,
-            }) %>
+                <%= _in.triple_element_template({
+                    config: config,
+                    icon_config: _in.icon_config,
+                    button_template: _in.button_template,
+                    input_template: _in.input_template,
+                    label_template: _in.label_template
+                }) %>
 
-            <%})%>
-
+                <%})%>
+            <%}%>
         </div>
-        <% } %>
         <div data-role="filter_container" class="background flex wrap"></div>
     </div>

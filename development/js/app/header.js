@@ -168,24 +168,6 @@ define('header', [
                     _this.chat.filterOptions.show = false;
                 }
             },
-/*
-            showPagination: function(event) {
-                var _this = this;
-                if (event.type === "click") {
-                    return;
-
-                }
-                if (!event.target.checked){
-                    _this.chat.messagesOptions.previousStart = 0;
-                    _this.chat.messagesOptions.previousFinal = 0;
-                }
-                _this.chat.switchModes([
-                    {
-                        'chat_part':'pagination',
-                        'newMode': _this.chat.pagination.MODE.PAGINATION
-                    }
-                ]);
-            },*/
 
             changePerPage: function(event) {
                 var _this = this;

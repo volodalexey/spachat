@@ -1,5 +1,22 @@
 [
   {
+    "element": "input",
+    "type": "checkbox",
+    "icon": "",
+    "text": "",
+    "class": "",
+    "title": "",
+    "data": {
+      "role": "rte_choice_per_page",
+      "action": "changeRTE",
+      "key": "rteChoicePage"
+    },
+    "name": "",
+    "id": "",
+    "sort": 3,
+    "redraw_mode": "nrte"
+  },
+  {
     "element": "button",
     "icon": "",
     "text": "Go to",
@@ -30,6 +47,7 @@
     "sort": 2,
     "redraw_mode": "nrte"
   },
+
   {
     "element": "input",
     "type": "checkbox",
@@ -45,13 +63,13 @@
     "name": "",
     "id": "",
     "sort": 3,
-    "redraw_mode": "nrte"
+    "redraw_mode": "rte"
   },
   {
     "element": "label",
     "icon": "",
     "text": "Go to",
-    "class": "w-50px p-r-l",
+    "class": "",
     "title": "",
     "data": {
       "role": "go_to_page"
@@ -66,7 +84,7 @@
     "type": "number",
     "icon": "",
     "text": "",
-    "class": "w-50px",
+    "class": "",
     "title": "",
     "data": {
       "role": "choice_per_page",
@@ -76,23 +94,6 @@
     "name": "",
     "id": "per_page",
     "sort": 2,
-    "redraw_mode": "rte"
-  },
-  {
-    "element": "input",
-    "type": "checkbox",
-    "icon": "",
-    "text": "",
-    "class": "",
-    "title": "",
-    "data": {
-      "role": "rte_choice_per_page",
-      "action": "changeRTE",
-      "key": "rteChoicePage"
-    },
-    "name": "",
-    "id": "",
-    "sort": 3,
     "redraw_mode": "rte"
   }
 ]

@@ -50,6 +50,8 @@ define('panel', [
 
             panelArray: [],
 
+            openChatsArray: [],
+
             collectionDescription: {
                 "id": 'authentication',
                 "db_name": 'authentication',
@@ -272,6 +274,17 @@ define('panel', [
                 return chat_info;
             },
 
+            transferData: function(options, data){
+                var _this = this;
+
+                var dataUpdated = {
+                    "data": data,
+                    "detail_view_template": _this.detail_view_container_template,
+                    "openChatsArray": _this.openChatsArray
+                };
+                return dataUpdated;
+            },
+
             inputUserInfo: function(event) {
                 var _this = this;
                 if (_this.config) {
@@ -367,6 +380,7 @@ define('panel', [
                 var detail_view = element.querySelector('[data-role="detail_view_container"]');
                 var pointer = element.querySelector('[data-role="pointer"]');
                 if (detail_view.dataset.state) {
+                    _this.openChatsArray.splice(_this.openChatsArray.indexOf(chat_id_value),1);
                     detail_view.classList.remove("max-height-auto");
                     pointer.classList.remove("rotate-90");
                     detail_view.style.maxHeight = '0em';
@@ -386,6 +400,7 @@ define('panel', [
                             detail_view.classList.add("max-height-auto");
                             detail_view.style.maxHeight = '15em';
                             pointer.classList.add("rotate-90");
+                            _this.openChatsArray.push(chat_id_value);
                         });
                     });
                 }
@@ -455,7 +470,7 @@ define('panel', [
             "USER_INFO_SHOW": panel.prototype.usersFilter,
             "CREATE_CHAT": null,
             "JOIN_CHAT": null,
-            "MY_CHATS": null,
+            "MY_CHATS": panel.prototype.transferData,
             "DETAIL_VIEW": panel.prototype.chatsFilter
         };
 

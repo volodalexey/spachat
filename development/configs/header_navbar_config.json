@@ -2,13 +2,27 @@
   {
     "element": "button",
     "icon": "",
+    "text": "Close",
+    "data": {
+      "action": "destroyChat",
+      "location": "topPanel"
+    },
+    "class": "btnEdit",
+    "title": "Header_btn",
+    "name": "CloseChat"
+  },
+
+  {
+    "element": "button",
+    "icon": "",
     "text": "Setting",
     "data": {
       "chat_part": "body",
       "mode_to": "SETTING",
       "action": "changeMode",
       "role": "btnHeader",
-      "toggle_reset_header": true
+      "toggle_reset_header": true,
+      "location": "bottomPanel"
     },
     "class": "btnEdit",
     "title": "Header_btn",
@@ -23,7 +37,8 @@
       "chat_part": "body",
       "action": "changeMode",
       "role": "btnHeader",
-      "toggle_reset_header": true
+      "toggle_reset_header": true,
+      "location": "bottomPanel"
     },
     "class": "btnEdit",
     "title": "Header_btn",
@@ -38,7 +53,8 @@
       "chat_part": "header",
       "action": "changeMode",
       "role": "btnHeader",
-      "toggle": true
+      "toggle": true,
+      "location": "bottomPanel"
     },
     "class": "btnEdit",
     "title": "Header_btn",

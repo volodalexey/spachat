@@ -106,7 +106,25 @@
     "sort": 4
   },
 
-
+  {
+    "element": "input",
+    "type": "checkbox",
+    "icon": "",
+    "text": "",
+    "class": "",
+    "title": "",
+    "data": {
+      "role": "enablePagination",
+      "action": "changeMode",
+      "mode_to": "PAGINATION",
+      "chat_part": "pagination",
+      "key": "showEnablePagination"
+    },
+    "name": "",
+    "id": "enable_pagination",
+    "service_id": "pagination",
+    "sort": 3
+  },
   {
     "element": "label",
     "icon": "",
@@ -134,6 +152,8 @@
     "service_id": "pagination",
     "sort": 2
   },
+
+
   {
     "element": "input",
     "type": "checkbox",
@@ -142,19 +162,16 @@
     "class": "",
     "title": "",
     "data": {
-      "role": "enablePagination",
-      "action": "changeMode",
-      "mode_to": "PAGINATION",
-      "chat_part": "pagination",
-      "key": "showEnablePagination"
+      "role": "rteShowPerPage",
+      "action": "changeRTE",
+      "key": "rtePerPage"
     },
     "name": "",
-    "id": "enable_pagination",
-    "service_id": "pagination",
-    "sort": 3
+    "id": "",
+    "service_id": "per_page",
+    "sort": 4,
+    "redraw_mode": "rte"
   },
-
-
   {
     "element": "label",
     "icon": "",
@@ -203,24 +220,6 @@
     "sort": 3,
     "redraw_mode": "rte"
   },
-  {
-    "element": "input",
-    "type": "checkbox",
-    "icon": "",
-    "text": "",
-    "class": "",
-    "title": "",
-    "data": {
-      "role": "rteShowPerPage",
-      "action": "changeRTE",
-      "key": "rtePerPage"
-    },
-    "name": "",
-    "id": "",
-    "service_id": "per_page",
-    "sort": 4,
-    "redraw_mode": "rte"
-  },
 
 
   {
@@ -235,6 +234,24 @@
     "name": "",
     "service_id": "per_page",
     "sort": 1,
+    "redraw_mode": "nrte"
+  },
+  {
+    "element": "input",
+    "type": "checkbox",
+    "icon": "",
+    "text": "",
+    "class": "",
+    "title": "",
+    "data": {
+      "role": "rteChoicePerPage",
+      "action": "changeRTE",
+      "key": "rtePerPage"
+    },
+    "name": "",
+    "id": "",
+    "service_id": "per_page",
+    "sort": 4,
     "redraw_mode": "nrte"
   },
   {
@@ -270,24 +287,6 @@
     "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
     "service_id": "per_page",
     "sort": 3,
-    "redraw_mode": "nrte"
-  },
-  {
-    "element": "input",
-    "type": "checkbox",
-    "icon": "",
-    "text": "",
-    "class": "",
-    "title": "",
-    "data": {
-      "role": "rteChoicePerPage",
-      "action": "changeRTE",
-      "key": "rtePerPage"
-    },
-    "name": "",
-    "id": "",
-    "service_id": "per_page",
-    "sort": 4,
     "redraw_mode": "nrte"
   }
 ]

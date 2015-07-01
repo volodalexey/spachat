@@ -113,6 +113,12 @@ define('messages', [
                 // TODO distinct this chat messages from other
                 var message = new Message({innerHTML: options.messageInnerHTML});
 
+                if (_this.chat.formatOptions.iSender){
+                    message.ids[message.id].sender = 1 ;
+                } else {
+                    message.ids[message.id].sender = 0;
+                }
+
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
                     [

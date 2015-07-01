@@ -85,5 +85,31 @@
       "action": "changeEdit",
       "name": "ControlScrollMessage"
     }
+  },
+  {
+    "element": "input",
+    "type": "checkbox",
+    "text": "Send Enter",
+    "class": "btnEdit",
+    "title": "Edit_btn",
+    "data": {
+      "key": "sendEnter",
+      "role": "btnEdit",
+      "action": "changeSendEnter",
+      "name": ""
+    }
+  },
+  {
+    "element": "input",
+    "type": "checkbox",
+    "text": "I seder",
+    "class": "btnEdit",
+    "title": "Edit_btn",
+    "data": {
+      "key": "iSender",
+      "role": "btnEdit",
+      "action": "changeSender",
+      "name": ""
+    }
   }
 ]
