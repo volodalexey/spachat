@@ -202,6 +202,9 @@ define('panel', [
                     }
                 } else {
                     panel.prototype.z_index--;
+                    if (_this.body_mode === _this.MODE.DETAIL_VIEW) {
+                        _this.body_mode = _this.MODE.MY_CHATS;
+                    }
                     _this.outer_container.style.zIndex = _this.previous_z_index;
                     _this.outer_container.style[_this.type] = (-_this.outer_container.offsetWidth) + 'px';
                     if (bigMode === true) {

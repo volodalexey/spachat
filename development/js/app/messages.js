@@ -9,17 +9,13 @@ define('messages', [
         'text!../templates/body/message_template.ejs',
         'text!../templates/body/log_message_template.ejs'
     ],
-    function(
-        event_core,
-        template_core,
-        id_core,
-
-        indexeddb,
-        Message,
-
-        message_template,
-        log_message_template
-    ) {
+    function(event_core,
+             template_core,
+             id_core,
+             indexeddb,
+             Message,
+             message_template,
+             log_message_template) {
 
         var messages = function() {
         };
@@ -44,7 +40,6 @@ define('messages', [
                     "db_version": 1,
                     "keyPath": "id"
                 };
-
 
                 switch (_this.chat.bodyOptions.mode) {
                     case _this.chat.body.MODE.MESSAGES:
@@ -74,7 +69,7 @@ define('messages', [
                     return;
                 }
 
-                _this.chat.body_container.innerHTML = "";
+                //_this.chat.body_container.innerHTML = "";
                 indexeddb.getAll(
                     _this.collectionDescription,
                     function(getAllErr, messages) {
@@ -83,20 +78,26 @@ define('messages', [
                             return;
                         }
 
-                        _this.chat.body_container.innerHTML = "";
                         if (_this.chat.messagesOptions.final > messages.length || !_this.chat.messagesOptions.final) {
                             _this.chat.messagesOptions.final = messages.length;
                         }
-                        var generatedMessages = [];
-                        for (var i = _this.chat.messagesOptions.start; i < _this.chat.messagesOptions.final; i++) {
-                            generatedMessages.push(_this.message_template({
-                                message: messages[i]
-                            }));
-                        }
-                        _this.chat.body_container.innerHTML = generatedMessages.join('');
-                        _this.scrollTo(options);
-                        if(options.callback){
-                            options.callback();
+                        if (_this.chat.messagesOptions.previousStart !== _this.chat.messagesOptions.start || _this.chat.messagesOptions.previousFinal !== _this.chat.messagesOptions.final) {
+                            _this.chat.body_container.innerHTML = "";
+                            _this.chat.messagesOptions.previousStart = _this.chat.messagesOptions.start;
+                            _this.chat.messagesOptions.previousFinal = _this.chat.messagesOptions.final;
+
+                            var generatedMessages = [];
+                            for (var i = _this.chat.messagesOptions.start; i < _this.chat.messagesOptions.final; i++) {
+                                generatedMessages.push(_this.message_template({
+                                    message: messages[i]
+                                }));
+                            }
+                            _this.chat.body_container.innerHTML = generatedMessages.join('');
+                            _this.scrollTo(options);
+                        } else {
+                            if (options.callback) {
+                                options.callback();
+                            }
                         }
                     }
                 );
@@ -110,7 +111,7 @@ define('messages', [
             addLocalMessage: function(options, callback) {
                 var _this = this;
                 // TODO distinct this chat messages from other
-                var message = new Message({ innerHTML: options.messageInnerHTML });
+                var message = new Message({innerHTML: options.messageInnerHTML});
 
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
@@ -139,9 +140,10 @@ define('messages', [
             renderMessage: function(options, message) {
                 var _this = this;
                 // TODO check which page is current
-                _this.chat.body_container.innerHTML = _this.chat.body_container.innerHTML + _this.message_template({
+                _this.chat.body_container.innerHTML += _this.message_template({
                     message: message
                 });
+                _this.chat.messagesOptions.final += 1;
                 _this.scrollTo(options);
             },
 

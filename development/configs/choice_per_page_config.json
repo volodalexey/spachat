@@ -3,7 +3,7 @@
     "element": "button",
     "icon": "",
     "text": "Go to",
-    "class": "",
+    "class": "w-50px",
     "title": "",
     "data": {
       "role": "go_to_page",
@@ -19,7 +19,7 @@
     "type": "number",
     "icon": "",
     "text": "",
-    "class": "",
+    "class": "w-50px",
     "title": "",
     "data": {
       "role": "choice_per_page",
@@ -51,7 +51,7 @@
     "element": "label",
     "icon": "",
     "text": "Go to",
-    "class": "",
+    "class": "w-50px p-r-l",
     "title": "",
     "data": {
       "role": "go_to_page"
@@ -66,7 +66,7 @@
     "type": "number",
     "icon": "",
     "text": "",
-    "class": "",
+    "class": "w-50px",
     "title": "",
     "data": {
       "role": "choice_per_page",

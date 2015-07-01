@@ -81,7 +81,9 @@ define('chat', [
             },
             messagesOptions: {
                 start: 0,
-                last: null
+                last: null,
+                previousStart: 0,
+                previousFinal: 0
             }
         };
 
@@ -299,6 +301,12 @@ define('chat', [
                                     if (_obj.target) {
                                         _this.paginationOptions.show = _obj.target.checked;
                                         _this.paginationOptions.showEnablePagination = _obj.target.checked;
+                                        if (!_obj.target.checked) {
+                                            _this.messagesOptions.previousStart = 0;
+                                            _this.messagesOptions.previousFinal = null;
+                                            _this.messagesOptions.start = 0;
+                                            _this.messagesOptions.final = null;
+                                        }
                                     }
                                     _this.toggleShowState({key: 'show', toggle: false}, _this.paginationOptions, _obj);
                                     //_this.toggleShowState({key: 'show', toggle: false}, _this.goToOptions, _obj);

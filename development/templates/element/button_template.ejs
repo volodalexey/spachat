@@ -11,10 +11,11 @@
 
 <% if (_in.config.data.key_disable && _in.data[_in.config.data.key_disable]) { %>
 disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
+<% var flag = true;%>
 <% } %>
 
-<% if (_in.config.value !== null){ %> value="<%= _in.config.value%>" <%}%> >
-<% if (_in.config.icon) {
+    <% if(_in.config.data.key){ %> data-value="<%= _in.data[_in.config.data.key]%>" <%}%>
+><% if (_in.config.icon) {
     if (_in.icon_config) {
         var icon;
         _in.icon_config.every(function(_icon) {
@@ -23,15 +24,17 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
             }
             return !icon;
         } );
-        if (icon) { %>
+        if (icon) {
+
+            if (flag)  { %>
+                  <div class="opacity-05">   <%= icon.svg %></div>
+           <% } else { %>
             <%= icon.svg %>
+    <%}%>
         <% }
     }
 } %>
 <%= _in.config.text ? _in.config.text : '' %>
-
 <% if (_in.config.data.key) { %>
 <%= _in.data[_in.config.data.key] %>
-<%} %>
-
-</button>
+<%} %></button>

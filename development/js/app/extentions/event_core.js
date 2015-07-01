@@ -82,6 +82,11 @@ define('event_core',
                 var element = event.target;
                 var getDataAction =  function(element, n) {
                     action = element.getAttribute('data-action');
+                    if (element.disabled) {
+                        action = null;
+                        return;
+
+                    }
                     if (!action && n > 0) {
                         parent = element.parentNode;
                         getDataAction(parent, n-1);

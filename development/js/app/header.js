@@ -168,6 +168,24 @@ define('header', [
                     _this.chat.filterOptions.show = false;
                 }
             },
+/*
+            showPagination: function(event) {
+                var _this = this;
+                if (event.type === "click") {
+                    return;
+
+                }
+                if (!event.target.checked){
+                    _this.chat.messagesOptions.previousStart = 0;
+                    _this.chat.messagesOptions.previousFinal = 0;
+                }
+                _this.chat.switchModes([
+                    {
+                        'chat_part':'pagination',
+                        'newMode': _this.chat.pagination.MODE.PAGINATION
+                    }
+                ]);
+            },*/
 
             changePerPage: function(event) {
                 var _this = this;
@@ -182,8 +200,8 @@ define('header', [
 
                     }
                     _this.chat.paginationOptions.perPageValue = value;
+                    _this.chat.paginationOptions.currentPage = null;
                     if (_this.chat.paginationOptions.showEnablePagination) {
-                        _this.chat.paginationOptions.currentPage = null;
                         _this.chat.pagination.countQuantityPages(function() {
                             _this.chat.render(null, null);
                         });

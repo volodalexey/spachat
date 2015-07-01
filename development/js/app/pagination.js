@@ -87,11 +87,16 @@ define('pagination', [
                 var _this = this;
                 _this.chat = chat;
                  _this.collectionDescription= {
-                     "id": _this.chat.chatsArray.length,
+                     "id": _this.chat.chatId,
+                     "db_name": _this.chat.chatId + '_chat',
+                     "table_name": _this.chat.chatId + '_messages',
+                     "db_version": 1,
+                     "keyPath": "id"
+                     /*"id": _this.chat.chatsArray.length,
                      "db_name": _this.chat.chatsArray.length + '_chat_messages',
                      "table_name": _this.chat.chatsArray.length + '_chat_messages',
                      "db_version": 1,
-                     "keyPath": "id"
+                     "keyPath": "id"*/
                  };
                 _this.pagination_container = _this.chat.chat_element.querySelector('[data-role="pagination_container"]');
                 _this.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
