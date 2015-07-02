@@ -1,18 +1,22 @@
-<div data-role="message_container" class="modal-controls message_conteiner">
-    <div data-role="message_inner_container" class="container" contenteditable="true"></div>
-</div>
-<div class="modal-controls" data-role="controls_container">
-    <div class="modal-main-btn">
-        <% var _in = arguments[0]; %>
-        <% _in.config.forEach(function (_config) { %>
+<div class="flex-wrap p-l-5px background-blue">
+    <div class="flex-wrap width-40px" data-role="controls_container">
+        <div class="modal-main-btn background-blue" style="margin-right: 5px;">
+            <% var _in = arguments[0]; %>
+            <% _in.config.forEach(function (_config) { %>
             <%= _in.triple_element_template({
-            config: _config,
-            button_template: _in.button_template,
-            input_template: _in.input_template,
-            label_template: _in.label_template,
-            data: _in.data
+                config: _config,
+                button_template: _in.button_template,
+                input_template: _in.input_template,
+                label_template: _in.label_template,
+                data: _in.data
             }) %>
-        <% }) %>
+            <% }) %>
+        </div>
     </div>
-    <div data-role="btnEditPanel" class="btnEditPanel"></div>
+    <div data-role="message_container" class="modal-controls message_conteiner">
+        <div data-role="message_inner_container" class="container" contenteditable="true"></div>
+    </div>
 </div>
+
+<div data-role="btnEditPanel" class="btnEditPanel background-blue"></div>
+

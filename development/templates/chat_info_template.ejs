@@ -99,7 +99,7 @@ var array_my_chats = array.config.filter(function(config) {
             data: chat
         }) %>
 
-        <% if ((result === 1 || result === 0) && config.element === "svg") { %>
+        <% if ((result !== -1) && config.element === "svg") { %>
         <% var div = document.createElement('div');
             div.innerHTML = element;
             var pointer = div.querySelector('[data-role="pointer"]');
@@ -111,7 +111,7 @@ var array_my_chats = array.config.filter(function(config) {
         <% } %>
         <% }) %>
 
-        <% if (result === 1 || result === 0) { %>
+        <% if (result !== -1) { %>
         <div data-role="detail_view_container" style="max-height: 15em;" class="max-height-auto max-height-0"
              data-state="expanded">
             <%= array.data.detail_view_template({

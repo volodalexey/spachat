@@ -55,13 +55,17 @@ define('editor', [
                 _this.removeMainEventListeners();
                 _this.addRemoveListener('add', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('add', _this.controls_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.btnEditPanel, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('add', _this.btnEditPanel, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.message_inner_container, 'keypress', _this.bindedSendEnter, false);
             },
 
             removeMainEventListeners: function() {
                 var _this = this;
                 _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
-                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedDataActionRouter, false);                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('remove', _this.btnEditPanel, 'click', _this.bindedDataActionRouter, false);                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('remove', _this.btnEditPanel, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.message_inner_container, 'keypress', _this.bindedSendEnter, false);
             },
 
@@ -69,7 +73,7 @@ define('editor', [
                 var _this = this;
                 _this.controls_container = _this.editor_container.querySelector('[data-role="controls_container"]');
                 _this.message_inner_container = _this.editor_container.querySelector('[data-role="message_inner_container"]');
-                _this.btnEditPanel = _this.controls_container.querySelector('[data-role="btnEditPanel"]');
+                _this.btnEditPanel = _this.editor_container.querySelector('[data-role="btnEditPanel"]');
                 _this.buttonFormat = _this.editor_container.querySelector('[data-toggle]');
             },
 

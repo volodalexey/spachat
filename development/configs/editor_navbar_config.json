@@ -3,7 +3,7 @@
     "element": "button",
     "icon": "",
     "text": "Format",
-    "class": "main-btn",
+    "class": "",
     "title": "",
     "data": {
       "action": "changeMode",
@@ -21,7 +21,7 @@
     "element": "button",
     "icon": "",
     "text": "Send",
-    "class": "main-btn",
+    "class": "",
     "title": "",
     "data": {
       "action": "sendMessage",
