@@ -10,12 +10,15 @@
 
     <%if (obj.message.ids[obj.message.id].sender) {%>
         <div class="message myMessage flex-item-1-auto"><%= obj.message.innerHTML %>
-            <div class="dateFormat">
-                <%if (obj.message.ids[obj.message.id].dateTime) { %>
-                <% var time = new Date(obj.message.ids[obj.message.id].dateTime);%>
-                <%= time.toISOString()%>
-                <%}%>
+            <div>
+                <div class="dateFormat">
+                    <%if (obj.message.ids[obj.message.id].dateTime) { %>
+                    <% var time = new Date(obj.message.ids[obj.message.id].dateTime);%>
+                    <%= time.toISOString()%>
+                    <%}%>
+                </div>
             </div>
+
         </div>
     <%} else {%>
         <div class="message flex-item-1-auto"><%= obj.message.innerHTML %>

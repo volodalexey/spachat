@@ -66,10 +66,12 @@ define('indexeddb',
                         callback(e.currentTarget.error);
                     };
 
-                    if(db.objectStoreNames.contains(options.table_name)) {
-                        db.deleteObjectStore(options.table_name);
-                    }
-                    db.createObjectStore(options.table_name, { keyPath : keyPath });
+                    options.table_names.forEach(function(_table_name){
+                        if(db.objectStoreNames.contains(_table_name)) {
+                            db.deleteObjectStore(_table_name);
+                        }
+                        db.createObjectStore(_table_name, { keyPath : keyPath });
+                    });
                 };
 
                 openRequest.onblocked = function () {
@@ -77,19 +79,23 @@ define('indexeddb',
                 };
             },
 
-            addOrUpdateAll: function(options, addOrUpdateData, callback) {
-                var _this = this;
+            addOrUpdateAll: function(options, tables, addOrUpdateData, callback) {
+                var _this = this, table_name;
 
                 if (_this.state !== _this.STATES.READY) {
                     callback(new Error('ErrorState'));
                     return;
                 }
 
+                if (!tables) {
+                    table_name = options.table_names[0];
+                }
+
                 var executeAddOrUpdateAll = function() {
                     var trans, store, keyPath = _this.getKeyPath(options);
                     try {
-                        trans = _this.openDatabases[options.id].db.transaction([options.table_name], "readwrite");
-                        store = trans.objectStore(options.table_name);
+                        trans = _this.openDatabases[options.id].db.transaction([table_name], "readwrite");
+                        store = trans.objectStore(table_name);
                     } catch (error) {
                         callback(error);
                         return;
@@ -149,19 +155,22 @@ define('indexeddb',
                 }
             },
 
-            getAll: function(options, callback) {
-                var returnData = [], _this = this;
+            getAll: function(options, tables, callback) {
+                var returnData = [], _this = this, table_name;
 
                 if (_this.state !== _this.STATES.READY) {
                     callback(new Error('ErrorState'));
                     return;
                 }
+                if (!tables) {
+                    table_name = options.table_names[0];
+                }
 
                 var executeGetAll = function() {
                     var trans, store, openRequest;
                     try {
-                        trans = _this.openDatabases[options.id].db.transaction([options.table_name], "readonly");
-                        store = trans.objectStore(options.table_name);
+                        trans = _this.openDatabases[options.id].db.transaction([table_name], "readonly");
+                        store = trans.objectStore(table_name);
                         openRequest = store.openCursor();
                     } catch (error) {
                         callback(error);

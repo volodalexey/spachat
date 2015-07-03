@@ -55,7 +55,7 @@ define('panel', [
             collectionDescription: {
                 "id": 'authentication',
                 "db_name": 'authentication',
-                "table_name": 'authentication',
+                "table_names": ['authentication'],
                 "db_version": 1,
                 "keyPath": "userId"
             },
@@ -63,7 +63,7 @@ define('panel', [
             collectionDescriptionChats: {
                 "id": 'chats',
                 "db_name": 'chats',
-                "table_name": 'chats',
+                "table_names": ['chats'],
                 "db_version": 1,
                 "keyPath": "chatId"
             },
@@ -336,6 +336,7 @@ define('panel', [
                 };
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
+                    null,
                     [
                         account
                     ],

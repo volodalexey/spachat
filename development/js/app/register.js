@@ -24,7 +24,7 @@ define('register', [
             this.link = /register/; // is used for navigator
             this.collectionDescription = {
                 "db_name": 'authentication',
-                "table_name": 'authentication',
+                "table_names": ['authentication'],
                 "db_version": 1,
                 "keyPath": "userId"
             };
@@ -112,7 +112,7 @@ define('register', [
 
             registerNewUser: function(options, callback){
                 var _this = this;
-                indexeddb.getAll(_this.collectionDescription, function(getAllErr, users) {
+                indexeddb.getAll(_this.collectionDescription, null, function(getAllErr, users) {
                     if (getAllErr) {
                         callback(getAllErr);
                         return;
@@ -139,6 +139,7 @@ define('register', [
 
                     indexeddb.addOrUpdateAll(
                         _this.collectionDescription,
+                        null,
                         [
                             account
                         ],

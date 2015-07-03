@@ -26,30 +26,30 @@ define('messages', [
                 var _this = this;
 
                 _this.chat = chat;
-                _this.messagesCollectionDescription = {
+
+                _this.collectionDescription = {
                     "id": _this.chat.chatId,
                     "db_name": _this.chat.chatId + '_chat',
-                    "table_name": _this.chat.chatId + '_messages',
-                    "db_version": 1,
-                    "keyPath": "id"
-                };
-                _this.logsCollectionDescription = {
-                    "id": _this.chat.chatId,
-                    "db_name": _this.chat.chatId + '_chat',
-                    "table_name": _this.chat.chatId + '_logs',
+                    "table_names": [],
                     "db_version": 1,
                     "keyPath": "id"
                 };
 
-                switch (_this.chat.bodyOptions.mode) {
+                _this.tableDefinition(_this.chat.bodyOptions.mode);
+                _this.fillListMessage(options);
+            },
+
+            tableDefinition: function(mode){
+                var _this = this;
+
+                switch (mode) {
                     case _this.chat.body.MODE.MESSAGES:
-                        _this.collectionDescription = _this.messagesCollectionDescription;
+                        _this.collectionDescription.table_names = [_this.chat.chatId + '_messages'];
                         break;
                     case _this.chat.body.MODE.LOGGER:
-                        _this.collectionDescription = _this.logsCollectionDescription;
+                        _this.collectionDescription.table_names = [_this.chat.chatId + '_logs'];
                         break;
                 }
-                _this.fillListMessage(options);
             },
 
             scrollTo: function(options) {
@@ -68,14 +68,17 @@ define('messages', [
                 if (!_this.chat.body_container) {
                     return;
                 }
-
-                //_this.chat.body_container.innerHTML = "";
                 indexeddb.getAll(
                     _this.collectionDescription,
+                    null,
                     function(getAllErr, messages) {
                         if (getAllErr) {
                             _this.chat.body_container.innerHTML = getAllErr.message || getAllErr;
                             return;
+                        }
+
+                        if (messages.length === 0) {
+                            _this.chat.body_container.innerHTML = "";
                         }
 
                         if (_this.chat.messagesOptions.final > messages.length || !_this.chat.messagesOptions.final) {
@@ -87,8 +90,18 @@ define('messages', [
                             _this.chat.messagesOptions.previousFinal = _this.chat.messagesOptions.final;
 
                             var generatedMessages = [];
+                            var currentTemplate;
+                            switch (_this.chat.bodyOptions.mode) {
+                                case _this.chat.body.MODE.LOGGER:
+                                    currentTemplate = _this.log_message_template;
+                                    break;
+                                case _this.chat.body.MODE.MESSAGES:
+                                    currentTemplate = _this.message_template;
+                                    break;
+                            }
+
                             for (var i = _this.chat.messagesOptions.start; i < _this.chat.messagesOptions.final; i++) {
-                                generatedMessages.push(_this.message_template({
+                                generatedMessages.push(currentTemplate({
                                     message: messages[i]
                                 }));
                             }
@@ -108,7 +121,7 @@ define('messages', [
              * @param options
              * @param messageInnerHTML
              */
-            addLocalMessage: function(options, callback) {
+            addLocalMessage: function(log, options, callback) {
                 var _this = this;
                 // TODO distinct this chat messages from other
                 var message = new Message({innerHTML: options.messageInnerHTML});
@@ -119,8 +132,10 @@ define('messages', [
                     message.ids[message.id].sender = 0;
                 }
 
+                _this.tableDefinition(log);
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
+                    null,
                     [
                         message
                     ],
@@ -157,9 +172,11 @@ define('messages', [
                 var _this = this;
                 // TODO distinct this chat messages from other
                 var message = new Message(remoteMessage);
+                _this.tableDefinition(log);
 
                 indexeddb.addOrUpdateAll(
-                    _this.messagesCollectionDescription,
+                    _this.collectionDescription,
+                    null,
                     [
                         message
                     ],
@@ -174,6 +191,7 @@ define('messages', [
         extend(messages, id_core);
 
         messages.prototype.message_template = messages.prototype.template(message_template);
+        messages.prototype.log_message_template = messages.prototype.template(log_message_template);
 
         return messages;
     });

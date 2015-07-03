@@ -25,14 +25,30 @@ define('settings', [
              label_template,
              input_template) {
 
-        var settings = function(options) {
-
+        var settings = function() {
+            this.bindMainContexts();
         };
 
         settings.prototype = {
 
             configMap: {
-                SETTING: ''
+                SETTING: '/configs/settings_config.json'
+            },
+
+            bindMainContexts: function() {
+                var _this = this;
+                _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
+            },
+
+            addEventListener: function() {
+                var _this = this;
+                _this.removeEventListeners();
+                _this.addRemoveListener('add', _this.body_container, 'click', _this.bindedThrowEventRouter, false);
+            },
+
+            removeEventListeners: function() {
+                var _this = this;
+                _this.addRemoveListener('remove', _this.body_container, 'click', _this.bindedThrowEventRouter, false);
             },
 
             renderSettings: function(options, chat) {
@@ -48,7 +64,9 @@ define('settings', [
                     _this.elementMap = {
                         "SETTING": _this.body_container
                     };
-                    _this.renderLayout(null, null);
+                    _this.renderLayout(null, function(){
+                        _this.addEventListener();
+                    });
                 } else {
                     _this.chat.switchModes([
                         {

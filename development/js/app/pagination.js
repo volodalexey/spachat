@@ -89,7 +89,7 @@ define('pagination', [
                  _this.collectionDescription= {
                      "id": _this.chat.chatId,
                      "db_name": _this.chat.chatId + '_chat',
-                     "table_name": _this.chat.chatId + '_messages',
+                     "table_names": [_this.chat.chatId + '_messages'],
                      "db_version": 1,
                      "keyPath": "id"
                      /*"id": _this.chat.chatsArray.length,
@@ -174,7 +174,7 @@ define('pagination', [
 
             countQuantityPages: function(callback) {
                 var _this = this, quantityPages;
-                indexeddb.getAll(_this.collectionDescription, function(getAllErr, messages) {
+                indexeddb.getAll(_this.collectionDescription, null, function(getAllErr, messages) {
                     var quantityMessage = messages.length;
                     if (quantityMessage !== 0) {
                         quantityPages = Math.ceil(quantityMessage / _this.chat.paginationOptions.perPageValue);

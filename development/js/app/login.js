@@ -21,7 +21,7 @@ define('login', [
             this.redirectToRegisterElement = this.loginForm.querySelector('[data-action="clickRedirectToRegister"]');
             this.collectionDescription = {
                 "db_name": 'authentication',
-                "table_name": 'authentication',
+                "table_names": ['authentication'],
                 "db_version": 1,
                 "keyPath": "userId"
             };
@@ -73,7 +73,7 @@ define('login', [
                 var userPassword = _this.loginForm.elements.userPassword.value;
                 if (userName && userPassword) {
                     _this.toggleWaiter(true);
-                    indexeddb.getAll(_this.collectionDescription, function(getAllErr, users) {
+                    indexeddb.getAll(_this.collectionDescription, null,  function(getAllErr, users) {
                         _this.toggleWaiter();
                         if (getAllErr) {
                             console.error(getAllErr);

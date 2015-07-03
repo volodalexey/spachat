@@ -1,0 +1,16 @@
+[
+  {
+    "element": "button",
+    "icon": "",
+    "text": "Console log",
+    "class": "",
+    "title": "",
+    "data": {
+      "action": "changeMode",
+      "chat_part": "body",
+      "mode_to": "LOGGER"
+    },
+    "name": "",
+    "disable": false
+  }
+]

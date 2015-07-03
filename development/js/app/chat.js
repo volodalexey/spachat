@@ -140,13 +140,15 @@ define('chat', [
                 log: function(event) {
                     var _this = this;
                     var txt = _this.console_log_template(event);
-                    var div = document.createElement('div');
+/*                    var div = document.createElement('div');
                     div.innerHTML = txt;
                     var nodeArray = [];
                     nodeArray.push.apply(nodeArray, div.childNodes);
                     Array.prototype.forEach.call(nodeArray, function(node) {
                         _this.body_container.appendChild(node);
-                    });
+                    });*/
+                    _this.messages.addLocalMessage(_this.body.MODE.LOGGER,
+                        {scrollTop: true, messageInnerHTML: txt}, null);
                 }
             },
 
@@ -261,6 +263,7 @@ define('chat', [
                                         toggle: false
                                     }, _this.goToOptions, _obj);
                                     break;
+
                                 case _this.body.MODE.MESSAGES:
                                     _this.bodyOptions.mode = _this.body.MODE.MESSAGES;
                                     _this.editorOptions.show = true;
@@ -280,12 +283,32 @@ define('chat', [
                                         toggle: true
                                     }, _this.goToOptions, _obj);
                                     break;
+
+
+
+                                case _this.body.MODE.LOGGER:
+                                    _this.bodyOptions.mode = _this.body.MODE.LOGGER;
+                                    _this.filterOptions.show = false;
+                                    _this.editorOptions.show = false;
+                                    _this.messagesOptions.final = null;
+
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.paginationOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.goToOptions, _obj);
+                                    break;
+
                             }
                             break;
                         case "editor":
                             switch (_obj.newMode) {
                                 case _this.editor.MODE.MAIN_PANEL:
-
                                     _this.editorOptions.show = true;
                                     break;
                                 case _this.editor.MODE.FORMAT_PANEL:
@@ -330,6 +353,7 @@ define('chat', [
                 var _this = this;
                 _this.removeEventListeners();
                 _this.header.on('throw', _this.throwRouter, _this);
+                _this.settings.on('throw', _this.throwRouter, _this);
                 _this.editor.on('throw', _this.throwRouter, _this);
                 _this.pagination.on('throw', _this.throwRouter, _this);
                 _this.webrtc.on('log', _this.console.log, _this);
@@ -340,6 +364,7 @@ define('chat', [
             removeEventListeners: function() {
                 var _this = this;
                 _this.header.off('throw');
+                _this.settings.off('throw');
                 _this.editor.off('throw');
                 _this.pagination.off('throw');
                 _this.webrtc.off('log');

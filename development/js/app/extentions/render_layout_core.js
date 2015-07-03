@@ -117,7 +117,7 @@ define('render_layout_core', [
                         return;
                     }
 
-                    indexeddb.getAll(collectionDescription, function(getAllErr, data) {
+                    indexeddb.getAll(collectionDescription, null, function(getAllErr, data) {
                         if (getAllErr) {
                             callback(getAllErr);
                         } else {

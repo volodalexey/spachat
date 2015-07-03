@@ -184,7 +184,7 @@ define('editor', [
                 var messageInnerHTML = _this.message_inner_container.innerHTML;
                 var pattern = /[^\s{0,}$|^$]/; // empty message or \n only
                 if (pattern.test(messageInnerHTML)) {
-                    _this.chat.messages.addLocalMessage(
+                    _this.chat.messages.addLocalMessage(_this.chat.body.MODE.MESSAGES,
                         {scrollTop: true, messageInnerHTML: messageInnerHTML},
                         function(error, message) {
                             if (error) {

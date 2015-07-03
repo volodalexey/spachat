@@ -1,2 +1,13 @@
-<% var obj = arguments[0]; %>
-<div class="message"><%= obj.message.innerHTML %></div>
+<% var _in = arguments[0]; %>
+<div class=" flex-sp-around p-rel">
+    <div class="message flex-item-1-auto">
+        <%= _in.message.innerHTML %>
+        <div class="dateFormat">
+            <%if (_in.message.ids[_in.message.id].dateTime) { %>
+            <% var time = new Date(_in.message.ids[_in.message.id].dateTime);%>
+            <%= time.toISOString()%>
+            <%}%>
+        </div>
+    </div>
+
+</div>
