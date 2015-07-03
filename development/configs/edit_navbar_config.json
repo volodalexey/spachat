@@ -77,7 +77,7 @@
     "element": "input",
     "type": "checkbox",
     "text": "Off Scroll",
-    "class": "btnEdit",
+    "class": "btnEdit check-box-size",
     "title": "Edit_btn",
     "data": {
       "key": "offScroll",
@@ -90,7 +90,7 @@
     "element": "input",
     "type": "checkbox",
     "text": "Send Enter",
-    "class": "btnEdit",
+    "class": "btnEdit check-box-size",
     "title": "Edit_btn",
     "data": {
       "key": "sendEnter",
@@ -103,7 +103,7 @@
     "element": "input",
     "type": "checkbox",
     "text": "I seder",
-    "class": "btnEdit",
+    "class": "btnEdit check-box-size",
     "title": "Edit_btn",
     "data": {
       "key": "iSender",

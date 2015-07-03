@@ -31,7 +31,7 @@
 </div>
 
 <div class="flex-item flex">
-    <div class="elements">
+    <div class="elements flex-align-c">
         <% array_pagination.forEach(function (_config) { %>
         <%= array.triple_element_template({
         config: _config,
@@ -42,7 +42,7 @@
         }) %>
         <% }) %>
     </div>
-    <div class="elements">
+    <div class="elements flex-align-c">
 
         <% if(array.data.mode_change === 'nrte') { %>
             <% array_per_page_nrte.forEach(function (_config) { %>
