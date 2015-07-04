@@ -5,6 +5,7 @@ define('editor', [
         'template_core',
         'indexeddb',
         'render_layout_core',
+        'description_core',
 
         'text!../templates/editor_template.ejs',
         'text!../templates/editor_format_template.ejs',
@@ -19,6 +20,8 @@ define('editor', [
              template_core,
              indexeddb,
              render_layout_core,
+             description_core,
+
              editor_template,
              format_template,
              triple_element_template,
@@ -48,6 +51,7 @@ define('editor', [
                 _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
                 _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
                 _this.bindedSendEnter = _this.sendEnter.bind(_this);
+                _this.bindedShowDescription = _this.showDescription.bind(_this);
             },
 
             addMainEventListener: function() {
@@ -58,6 +62,13 @@ define('editor', [
                 _this.addRemoveListener('add', _this.btnEditPanel, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('add', _this.btnEditPanel, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.message_inner_container, 'keypress', _this.bindedSendEnter, false);
+
+                _this.addRemoveListener('add', _this.controls_container, 'mousedown', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', _this.controls_container, 'mousemove', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', _this.controls_container, 'mouseup', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', _this.controls_container, 'touchmove', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', _this.controls_container, 'touchstart', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', _this.controls_container, 'touchend', _this.bindedShowDescription, false);
             },
 
             removeMainEventListeners: function() {
@@ -67,6 +78,13 @@ define('editor', [
                 _this.addRemoveListener('remove', _this.btnEditPanel, 'click', _this.bindedDataActionRouter, false);                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('remove', _this.btnEditPanel, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.message_inner_container, 'keypress', _this.bindedSendEnter, false);
+
+                _this.addRemoveListener('remove', _this.controls_container, 'touchmove', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', _this.controls_container, 'mousemove', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', _this.controls_container, 'mousedown', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', _this.controls_container, 'touchstart', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', _this.controls_container, 'mouseup', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', _this.controls_container, 'touchend', _this.bindedShowDescription, false);
             },
 
             cashElements: function() {
@@ -206,6 +224,7 @@ define('editor', [
         extend(editor, ajax_core);
         extend(editor, template_core);
         extend(editor, render_layout_core);
+        extend(editor, description_core);
 
         editor.prototype.editor_template = editor.prototype.template(editor_template);
         editor.prototype.format_template = editor.prototype.template(format_template);

@@ -9,7 +9,8 @@
       "action": "changeMode",
       "mode_to": "FORMAT_PANEL",
       "chat_part": "editor",
-      "toggle": true
+      "toggle": true,
+      "description": "Описвание кнопки Формат........"
     },
     "name": "",
     "for": "",
