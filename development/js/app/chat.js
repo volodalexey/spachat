@@ -130,8 +130,8 @@ define('chat', [
 
             cashElements: function() {
                 var _this = this;
-                _this.buttom_description = document.querySelector('[data-role="description"]');
-                _this.chat_element = _this.chat_wrapper.querySelector('section');
+                _this.button_description = document.querySelector('[data-role="description"]');
+                _this.chat_element = _this.chat_wrapper.querySelector('section[data-chat_id="' + _this.chatId + '"]');
                 _this.header_container = _this.chat_element.querySelector('[data-role="header_container"]');
                 _this.header_waiter_container = _this.chat_element.querySelector('[data-role="waiter_container"]');
                 _this.body_container = _this.chat_element.querySelector('[data-role="body_container"]');
@@ -156,7 +156,7 @@ define('chat', [
             initialize: function(options) {
                 var _this = this;
                 _this.chat_wrapper = options && options.chat_wrapper ? options.chat_wrapper : _this.chat_wrapper;
-                _this.chat_wrapper.innerHTML = _this.chat_template();
+                _this.chat_wrapper.insertAdjacentHTML( 'beforeend', _this.chat_template({ chat: this}) );
                 _this.cashElements();
                 _this.header_waiter_container.innerHTML = _this.waiter_template();
                 _this.addEventListeners();
@@ -382,7 +382,8 @@ define('chat', [
             destroyChat: function(event) {
                 var _this = this;
                 if (confirm("Close this chat ?")) {
-                    _this.chatsArray.splice(_this.chatsArray.indexOf(_this.chatId),1);
+                    _this.removeEventListeners();
+                    _this.chatsArray.splice(_this.chatsArray.indexOf(_this),1);
                     _this.chat_element.remove();
                 }
             },
