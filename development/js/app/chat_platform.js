@@ -155,14 +155,9 @@ define('chat_platform', [
                     return;
                 }
 
-                _this['addNewChatAuto__'] = event.target;
-                event.target.disabled = true;
-
                 _this.checkGeneratedChatId(Chat.prototype.generateId(), function(error, chatId) {
                     if (error) {
                         console.error(error);
-                        _this['addNewChatAuto__'].disabled = false;
-                        _this['addNewChatAuto__'] = null;
                         return;
                     }
                     var chat_description = {
@@ -223,10 +218,6 @@ define('chat_platform', [
                         event.chat_description
                     ],
                     function(error) {
-                        if (_this['addNewChatAuto__']) {
-                            _this['addNewChatAuto__'].disabled = false;
-                            _this['addNewChatAuto__'] = null;
-                        }
                         if (error) {
                             console.error(error);
                             return;
@@ -234,7 +225,7 @@ define('chat_platform', [
                         // chat create was approved
                         // create offer
                         _this.createChatLayout(
-                            event.chat_description,
+                            event,
                             {
                                 chat_wrapper: _this.chat_wrapper,
                                 modeDescriptions: [{
@@ -252,9 +243,10 @@ define('chat_platform', [
              * @param chat_description
              * @param renderOptions
              */
-            createChatLayout: function(chat_description, renderOptions) {
+            createChatLayout: function(messageData, renderOptions) {
                 var _this = this;
-                var newChat = new Chat(chat_description);
+                messageData.chat_description.userId = messageData.userId;
+                var newChat = new Chat(messageData.chat_description);
                 Chat.prototype.chatsArray.push(newChat);
                 newChat.collectionDescription = {
                     "id": newChat.chatId,
@@ -310,7 +302,7 @@ define('chat_platform', [
             chatJoinApproved: function(event) {
                 var _this = this;
                 _this.createChatLayout(
-                    event.chat_description,
+                    event,
                     {
                         chat_wrapper: _this.chat_wrapper,
                         modeDescriptions: [{
