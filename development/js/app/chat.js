@@ -8,14 +8,15 @@ define('chat', [
         'webrtc',
         'websocket',
         'body',
-
+        'event_bus',
+        //
         'ajax_core',
         'template_core',
         'id_core',
         'extend_core',
         'message_core',
         'event_core',
-
+        //
         'text!../templates/chat_template.ejs',
         'text!../templates/waiter_template.ejs',
         'text!../templates/console_log_template.ejs'
@@ -29,12 +30,15 @@ define('chat', [
              Webrtc,
              websocket,
              Body,
+             event_bus,
+             //
              ajax_core,
              template_core,
              id_core,
              extend_core,
              message_core,
              event_core,
+             //
              chat_template,
              waiter_template,
              console_log_template) {
@@ -137,17 +141,19 @@ define('chat', [
                 _this.body_container = _this.chat_element.querySelector('[data-role="body_container"]');
             },
 
+            unCashElements: function() {
+                var _this = this;
+                _this.button_description = null;
+                _this.chat_element = null;
+                _this.header_container = null;
+                _this.header_waiter_container = null;
+                _this.body_container = null;
+            },
+
             console: {
                 log: function(event) {
                     var _this = this;
                     var txt = _this.console_log_template(event);
-/*                    var div = document.createElement('div');
-                    div.innerHTML = txt;
-                    var nodeArray = [];
-                    nodeArray.push.apply(nodeArray, div.childNodes);
-                    Array.prototype.forEach.call(nodeArray, function(node) {
-                        _this.body_container.appendChild(node);
-                    });*/
                     _this.messages.addLocalMessage(_this.body.MODE.LOGGER,
                         {scrollTop: true, messageInnerHTML: txt}, null);
                 }
@@ -359,6 +365,7 @@ define('chat', [
                 _this.pagination.on('throw', _this.throwRouter, _this);
                 _this.webrtc.on('log', _this.console.log, _this);
                 _this.webrtc.on('sendToWebSocket', _this.sendToWebSocket, _this);
+                _this.webrtc.on('deviceId', _this.setDeviceId, _this);
                 _this.on('notifyChat', _this.onMessageRouter, _this);
             },
 
@@ -370,6 +377,7 @@ define('chat', [
                 _this.pagination.off('throw');
                 _this.webrtc.off('log');
                 _this.webrtc.off('sendToWebSocket');
+                _this.webrtc.off('deviceId');
                 _this.off('notifyChat');
             },
 
@@ -383,8 +391,25 @@ define('chat', [
                 var _this = this;
                 if (confirm("Close this chat ?")) {
                     _this.removeEventListeners();
-                    _this.chatsArray.splice(_this.chatsArray.indexOf(_this),1);
                     _this.chat_element.remove();
+                    _this.unCashElements();
+                    this.header.destroy();
+                    this.header = null;
+                    this.editor.destroy();
+                    this.editor = null;
+                    this.pagination.destroy();
+                    this.pagination = null;
+                    this.settings.destroy();
+                    this.settings = null;
+                    this.contact_list.destroy();
+                    this.contact_list = null;
+                    this.messages.destroy();
+                    this.messages = null;
+                    this.webrtc.destroy();
+                    this.webrtc = null;
+                    this.body.destroy();
+                    this.body = null;
+                    event_bus.trigger('destroyChat', _this);
                 }
             },
 
@@ -412,73 +437,34 @@ define('chat', [
             serverStoredOffer: function(event) {
                 var _this = this;
 
-                if (event.chat_description.offer.userId === _this.userId) {
+                if (event.deviceId === _this.deviceId) {
                     // I am the creator of server stored offer
                     // Waiting for answer
                     _this.console.log.call(_this, {message: 'waiting for connection'});
-                    _this.switchModes([
-                        {
-                            'chat_part': 'header',
-                            'newMode': _this.header.MODE.TAB
-                        },
-                        {
-                            'chat_part': 'body',
-                            'newMode': _this.body.MODE.WEBRTC
-                        },
-                        {
-                            'chat_part': 'editor',
-                            'newMode': _this.editor.MODE.MAIN_PANEL
-                        },
-                        {
-                            'chat_part': 'pagination',
-                            'newMode': _this.pagination.MODE.PAGINATION
-                        },
-                        {
-                            'chat_part': 'webrtc',
-                            'newMode': _this.webrtc.MODE.WAITING
-                        }
-                    ]);
                 } else {
                     // I am NOT the creator of server stored offer
-                    // Somebody created offer while I was trying to create my offer
                     // Create answer
                     _this.switchModes([
                         {
                             'chat_part': 'webrtc',
                             'newMode': _this.webrtc.MODE.CREATING_ANSWER
                         }
-                    ], { remoteOfferDescription: event.chat_description.offer.offerDescription });
+                    ], {
+                        remoteOfferDescription: event.offerDescription
+                    });
                 }
             },
 
             serverStoredAnswer: function(event) {
                 var _this = this;
-                if (event.chat_description.answer.userId === _this.userId) {
+                if (event.deviceId === _this.deviceId) {
                     // I am the creator of server stored answer
                     // Waiting for accept
                     _this.console.log.call(_this, {message: 'waiting for accept connection'});
-                    _this.switchModes([
-                        {
-                            'chat_part': 'header',
-                            'newMode': _this.header.MODE.TAB
-                        },
-                        {
-                            'chat_part': 'body',
-                            'newMode': _this.body.MODE.WEBRTC
-                        },
-                        {
-                            'chat_part': 'editor',
-                            'newMode': _this.editor.MODE.MAIN_PANEL
-                        },
-                        {
-                            'chat_part': 'webrtc',
-                            'newMode': _this.webrtc.MODE.WAITING
-                        }
-                    ]);
                 } else {
                     // I am NOT the creator of server stored answer
                     // Accept answer if I am the offer creator
-                    if (event.chat_description.offer.userId === _this.userId) {
+                    if (event.deviceId === _this.deviceId) {
                         _this.switchModes([
                             {
                                 'chat_part': 'webrtc',
@@ -542,6 +528,10 @@ define('chat', [
 
                 }
                 toggleObject[_options.key] = _options.toggle;
+            },
+
+            setDeviceId: function(deviceId) {
+                this.deviceId = deviceId;
             }
 
         };

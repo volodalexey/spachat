@@ -3,9 +3,9 @@ require.config({
     "waitSeconds": 10,
     "paths": {
         "text": "lib/text",
-
+        //
         "message": "app/model/message",
-
+        //
         "async_core": "app/extentions/async_core",
         "ajax_core": "app/extentions/ajax_core",
         "overlay_core": "app/extentions/overlay_core",
@@ -18,7 +18,7 @@ require.config({
         "message_core": "app/extentions/message_core",
         "dom_core": "app/extentions/dom_core",
         "description_core": "app/extentions/description_core",
-
+        //
         "body": "app/body",
         "chat": "app/chat",
         "chat_platform": "app/chat_platform",
@@ -36,7 +36,8 @@ require.config({
         "login": "app/login",
         "register": "app/register",
         "navigator": "app/navigator",
-        "websocket": "app/websocket"
+        "websocket": "app/websocket",
+        "event_bus": "app/event_bus"
     }
 });
 

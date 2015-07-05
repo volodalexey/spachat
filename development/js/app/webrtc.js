@@ -25,6 +25,7 @@ define('webrtc', [
                     ]
                 }
             };
+            _this.connectionByDeviceId = {};
             _this.channel = 'test';
             _this.bindContexts();
         };
@@ -38,19 +39,26 @@ define('webrtc', [
                 ACCEPTING_ANSWER: 'ACCEPTING_ANSWER'
             },
 
+            extractDeviceId: function(RTCSessionDescription) {
+                return RTCSessionDescription.sdp.match(/a=fingerprint:sha-256\s*(.+)/)[1];
+            },
+
             render: function(options, chat) {
                 var _this = this;
                 options = options ? options : {}; // TODO always check on upper level
                 _this.chat = chat;
                 switch (_this.mode) {
                     case _this.MODE.CREATING_OFFER:
-                        options.onicecandidate = function(description) {
+                        options.onicecandidate = function(localOfferDescription) {
                             _this.mode = _this.MODE.WAITING;
-                            _this.localOfferDescription = description;
+                            var deviceId = _this.extractDeviceId(localOfferDescription);
+                            _this.trigger('deviceId', deviceId);
+                            console.log('Extracted device id from offer => ', deviceId);
                             _this.trigger('sendToWebSocket', {
                                 type: 'offer',
                                 userId: chat.userId,
-                                offerDescription: _this.localOfferDescription
+                                deviceId: chat.deviceId,
+                                offerDescription: localOfferDescription
                             });
                         };
                         _this.createLocalOfferAuto(
@@ -139,14 +147,6 @@ define('webrtc', [
                 }
             },
 
-            createLocalOfferManual: function(event) {
-                var _this = this;
-                _this.removeEventListeners();
-                _this.renderWaiter();
-                _this.createRTCPeerConnection({});
-                _this.createLocalOffer();
-            },
-
             /**
              * create offer session description protocol and send it to the server
              * @param options
@@ -208,13 +208,6 @@ define('webrtc', [
                 if (callback) {
                     callback();
                 }
-            },
-
-            clickAnswerRemoteOffer: function(event) {
-                var _this = this;
-                _this.removeEventListeners();
-                _this.mode = "remoteOffer";
-                _this.renderHanshake();
             },
 
             /**
@@ -346,19 +339,6 @@ define('webrtc', [
                 });
             },
 
-            clickSubmitRemoteOffer: function() {
-                var _this = this;
-                var remoteOfferDescription = _this.chat.body_container.querySelector('[data-role="remoteOfferDescription"]');
-
-                if (remoteOfferDescription) {
-                    _this.createRTCPeerConnection({mode: "localAnswer"});
-                    _this.createLocalAnswer({
-                        remoteOfferDescription: JSON.parse(remoteOfferDescription.value)
-                    });
-                    _this.renderWaiter();
-                }
-            },
-
             createLocalAnswer: function(options, callback) {
                 var _this = this;
                 _this.trigger('log', { message: 'try: createLocalAnswer' });
@@ -407,17 +387,6 @@ define('webrtc', [
                         }
                     }
                 );
-            },
-
-            clickSubmitRemoteAnswer: function(event) {
-                var _this = this;
-                var remoteAnswerDescription = _this.chat.body_container.querySelector('[data-role="remoteAnswerDescription"]');
-
-                if (remoteAnswerDescription) {
-                    _this.remoteAnswerDescription = new RTCSessionDescription(JSON.parse(remoteAnswerDescription.value));
-                    _this.peerConnection.setRemoteDescription(_this.remoteAnswerDescription);
-                    _this.renderWaiter();
-                }
             }
         };
         extend(webrtc, event_core);
