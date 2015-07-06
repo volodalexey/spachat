@@ -10,7 +10,7 @@
       "mode_to": "FORMAT_PANEL",
       "chat_part": "editor",
       "toggle": true,
-      "description": "Описвание кнопки Формат........"
+      "description": "Description Format button........1111111111155555555555555555554444444444448888888000000000 555555 5 5 5 5 5 5 55 5 5  8 8 8 88 "
     },
     "name": "",
     "for": "",
@@ -27,7 +27,8 @@
     "data": {
       "action": "sendMessage",
       "mode_to": "",
-      "chat_part": ""
+      "chat_part": "",
+      "description": "Description Send button.......1111111115555555555555555555444444444444888888800000000. 9 9 9 9 99 9 8 8 88   77 8 8 8 8 8 8 88   4 4 7 8 8 5 5 "
     },
     "name": "",
     "for": "",

@@ -75,7 +75,7 @@ define('editor', [
                 var _this = this;
                 _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedDataActionRouter, false);                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
-                _this.addRemoveListener('remove', _this.btnEditPanel, 'click', _this.bindedDataActionRouter, false);                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('remove', _this.btnEditPanel, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.btnEditPanel, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.message_inner_container, 'keypress', _this.bindedSendEnter, false);
 

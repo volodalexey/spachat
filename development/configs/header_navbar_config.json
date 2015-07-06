@@ -5,7 +5,8 @@
     "text": "Close",
     "data": {
       "action": "destroyChat",
-      "location": "topPanel"
+      "location": "topPanel",
+      "description": "Description Close button.......1111111115555555555555555555444444444444888888800000000. 9 9 9 9 99 9 8 8 88   77 8 8 8 8 8 8 88   4 4 7 8 8 5 5 "
     },
     "class": "btnEdit",
     "title": "Header_btn",
@@ -22,7 +23,8 @@
       "action": "changeMode",
       "role": "btnHeader",
       "toggle_reset_header": true,
-      "location": "bottomPanel"
+      "location": "bottomPanel",
+      "description": "Description Setting button.......1111111115555555555555555555444444444444888888800000000. 9 9 9 9 99 9 8 8 88   77 8 8 8 8 8 8 88   4 4 7 8 8 5 5 "
     },
     "class": "btnEdit",
     "title": "Header_btn",
@@ -38,7 +40,8 @@
       "action": "changeMode",
       "role": "btnHeader",
       "toggle_reset_header": true,
-      "location": "bottomPanel"
+      "location": "bottomPanel",
+      "description": "Description Contact_list button.......1111111115555555555555555555444444444444888888800000000. 9 9 9 9 99 9 8 8 88   77 8 8 8 8 8 8 88   4 4 7 8 8 5 5 "
     },
     "class": "btnEdit",
     "title": "Header_btn",
@@ -54,7 +57,8 @@
       "action": "changeMode",
       "role": "btnHeader",
       "toggle": true,
-      "location": "bottomPanel"
+      "location": "bottomPanel",
+      "description": "Description Filter button.......1111111115555555555555555555444444444444888888800000000. 9 9 9 9 99 9 8 8 88   77 8 8 8 8 8 8 88   4 4 7 8 8 5 5 "
     },
     "class": "btnEdit",
     "title": "Header_btn",
