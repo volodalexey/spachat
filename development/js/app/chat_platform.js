@@ -5,7 +5,7 @@ define('chat_platform', [
         'event_bus',
         //
         'overlay_core',
-        'event_core',
+        'throw_event_core',
         'template_core',
         'indexeddb',
         'message_core',
@@ -19,7 +19,7 @@ define('chat_platform', [
              event_bus,
              //
              overlay_core,
-             event_core,
+             throw_event_core,
              template_core,
              indexeddb,
              message_core,
@@ -406,7 +406,7 @@ define('chat_platform', [
 
         };
         extend(chat_platform, overlay_core);
-        extend(chat_platform, event_core);
+        extend(chat_platform, throw_event_core);
         extend(chat_platform, template_core);
         extend(chat_platform, message_core);
         extend(chat_platform, dom_core);

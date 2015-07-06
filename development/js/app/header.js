@@ -1,5 +1,5 @@
 define('header', [
-        'event_core',
+        'throw_event_core',
         'ajax_core',
         'async_core',
         'template_core',
@@ -17,7 +17,7 @@ define('header', [
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs'
     ],
-    function(event_core,
+    function(throw_event_core,
              ajax_core,
              async_core,
              template_core,
@@ -235,7 +235,7 @@ define('header', [
             }
 
         };
-        extend(header, event_core);
+        extend(header, throw_event_core);
         extend(header, async_core);
         extend(header, ajax_core);
         extend(header, template_core);

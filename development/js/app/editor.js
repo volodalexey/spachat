@@ -1,5 +1,5 @@
 define('editor', [
-        'event_core',
+        'throw_event_core',
         'async_core',
         'ajax_core',
         'template_core',
@@ -14,7 +14,7 @@ define('editor', [
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs'
     ],
-    function(event_core,
+    function(throw_event_core,
              async_core,
              ajax_core,
              template_core,
@@ -219,7 +219,7 @@ define('editor', [
             }
         };
 
-        extend(editor, event_core);
+        extend(editor, throw_event_core);
         extend(editor, async_core);
         extend(editor, ajax_core);
         extend(editor, template_core);

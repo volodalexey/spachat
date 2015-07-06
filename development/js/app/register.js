@@ -1,6 +1,6 @@
 define('register', [
         'overlay_core',
-        'event_core',
+        'throw_event_core',
         'template_core',
         'id_core',
 
@@ -9,7 +9,7 @@ define('register', [
         'text!../templates/register_template.ejs'
     ],
     function(overlay_core,
-             event_core,
+             throw_event_core,
              template_core,
              id_core,
 
@@ -157,7 +157,7 @@ define('register', [
         };
 
         extend(register, overlay_core);
-        extend(register, event_core);
+        extend(register, throw_event_core);
         extend(register, template_core);
         extend(register, id_core);
 

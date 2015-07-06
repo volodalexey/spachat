@@ -1,7 +1,7 @@
 define('websocket', [
-        'event_core'
+        'throw_event_core'
     ],
-    function(event_core) {
+    function(throw_event_core) {
 
         var websocket = function() {
             this.create();
@@ -82,7 +82,7 @@ define('websocket', [
                 this.socket.send(senddata);
             }
         };
-        extend(websocket, event_core);
+        extend(websocket, throw_event_core);
 
         return new websocket();
     }

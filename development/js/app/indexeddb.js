@@ -1,6 +1,6 @@
 define('indexeddb',
-    ['async_core', 'event_core'],
-    function (async_core, event_core) {
+    ['async_core', 'throw_event_core'],
+    function (async_core, throw_event_core) {
 
         var indexeddb = function() {
             this.defaultKeyPath = 'id';
@@ -207,7 +207,7 @@ define('indexeddb',
             }
         };
         extend(indexeddb, async_core);
-        extend(indexeddb, event_core);
+        extend(indexeddb, throw_event_core);
 
         return new indexeddb();
     }

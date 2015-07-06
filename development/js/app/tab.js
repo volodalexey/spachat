@@ -1,8 +1,8 @@
 define('tab', [
-        'event_core'
+        'throw_event_core'
     ],
     function(
-        event_core
+        throw_event_core
     ) {
 
         var tab = function() {};
@@ -34,7 +34,7 @@ define('tab', [
                 return tabId;
             }
         };
-        extend(tab, event_core);
+        extend(tab, throw_event_core);
 
         return new tab();
     }

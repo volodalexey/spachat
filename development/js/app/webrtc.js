@@ -1,11 +1,11 @@
 define('webrtc', [
-        'event_core',
+        'throw_event_core',
         'template_core',
 
         'text!../templates/webrtc_template.ejs',
         'text!../templates/waiter_template.ejs'
     ],
-    function(event_core,
+    function(throw_event_core,
              template_core,
 
              webrtc_template,
@@ -389,7 +389,7 @@ define('webrtc', [
                 );
             }
         };
-        extend(webrtc, event_core);
+        extend(webrtc, throw_event_core);
         extend(webrtc, template_core);
 
         webrtc.prototype.webrtc_template = webrtc.prototype.template(webrtc_template);

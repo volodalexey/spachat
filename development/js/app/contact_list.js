@@ -1,5 +1,5 @@
 define('contact_list', [
-        'event_core',
+        'throw_event_core',
         'ajax_core',
         'template_core',
         'indexeddb',
@@ -11,7 +11,7 @@ define('contact_list', [
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs'
     ],
-    function(event_core,
+    function(throw_event_core,
              ajax_core,
              template_core,
              indexeddb,
@@ -59,7 +59,7 @@ define('contact_list', [
             }
         };
 
-        extend(contact_list, event_core);
+        extend(contact_list, throw_event_core);
         extend(contact_list, ajax_core);
         extend(contact_list, template_core);
         extend(contact_list, render_layout_core);

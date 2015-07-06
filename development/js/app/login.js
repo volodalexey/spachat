@@ -1,11 +1,11 @@
 define('login', [
         'overlay_core',
-        'event_core',
+        'throw_event_core',
 
         'indexeddb'
     ],
     function(overlay_core,
-             event_core,
+             throw_event_core,
 
              indexeddb) {
 
@@ -109,7 +109,7 @@ define('login', [
         };
 
         extend(login, overlay_core);
-        extend(login, event_core);
+        extend(login, throw_event_core);
 
         return new login();
 

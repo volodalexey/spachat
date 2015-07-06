@@ -1,5 +1,5 @@
 define('messages', [
-        'event_core',
+        'throw_event_core',
         'template_core',
         'id_core',
 
@@ -9,7 +9,7 @@ define('messages', [
         'text!../templates/body/message_template.ejs',
         'text!../templates/body/log_message_template.ejs'
     ],
-    function(event_core,
+    function(throw_event_core,
              template_core,
              id_core,
              indexeddb,
@@ -186,7 +186,7 @@ define('messages', [
                 );
             }
         };
-        extend(messages, event_core);
+        extend(messages, throw_event_core);
         extend(messages, template_core);
         extend(messages, id_core);
 

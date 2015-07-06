@@ -1,12 +1,12 @@
 define('panel_platform', [
         'panel',
         'overlay_core',
-        'event_core',
+        'throw_event_core',
         'ping_core'
     ],
     function(panel,
              overlay_core,
-             event_core,
+             throw_event_core,
              ping_core) {
 
         var panel_platform = function() {
@@ -91,7 +91,7 @@ define('panel_platform', [
             }
         };
         extend(panel_platform, overlay_core);
-        extend(panel_platform, event_core);
+        extend(panel_platform, throw_event_core);
         extend(panel_platform, ping_core);
 
         return new panel_platform();

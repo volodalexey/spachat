@@ -1,12 +1,12 @@
 define('body', [
         'chat',
-        'event_core',
+        'throw_event_core',
         'template_core',
         'render_layout_core'
 
     ],
     function(chat,
-             event_core,
+             throw_event_core,
              ajax_core,
              template_core) {
 
@@ -44,7 +44,7 @@ define('body', [
 
         };
 
-        extend(body, event_core);
+        extend(body, throw_event_core);
         extend(body, template_core);
 
         return body;

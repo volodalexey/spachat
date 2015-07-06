@@ -1,5 +1,5 @@
 define('panel', [
-        'event_core',
+        'throw_event_core',
         'ajax_core',
         'template_core',
         'render_layout_core',
@@ -18,7 +18,7 @@ define('panel', [
         'text!../templates/detail_view_container_template.ejs'
 
     ],
-    function(event_core,
+    function(throw_event_core,
              ajax_core,
              template_core,
              render_layout_core,
@@ -432,7 +432,7 @@ define('panel', [
             }
 
         };
-        extend(panel, event_core);
+        extend(panel, throw_event_core);
         extend(panel, ajax_core);
         extend(panel, template_core);
         extend(panel, render_layout_core);

@@ -1,5 +1,5 @@
 define('pagination', [
-        'event_core',
+        'throw_event_core',
         'ajax_core',
         'template_core',
         'render_layout_core',
@@ -12,7 +12,7 @@ define('pagination', [
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs'
     ],
-    function(event_core,
+    function(throw_event_core,
              ajax_core,
              template_core,
              render_layout_core,
@@ -262,7 +262,7 @@ define('pagination', [
                 _this.chat.render(null, null);
             }
         };
-        extend(pagination, event_core);
+        extend(pagination, throw_event_core);
         extend(pagination, ajax_core);
         extend(pagination, template_core);
         extend(pagination, render_layout_core);

@@ -15,7 +15,7 @@ define('chat', [
         'id_core',
         'extend_core',
         'message_core',
-        'event_core',
+        'throw_event_core',
         //
         'text!../templates/chat_template.ejs',
         'text!../templates/waiter_template.ejs',
@@ -37,7 +37,7 @@ define('chat', [
              id_core,
              extend_core,
              message_core,
-             event_core,
+             throw_event_core,
              //
              chat_template,
              waiter_template,
@@ -540,7 +540,7 @@ define('chat', [
         extend(chat, id_core);
         extend(chat, extend_core);
         extend(chat, message_core);
-        extend(chat, event_core);
+        extend(chat, throw_event_core);
 
         chat.prototype.chat_template = chat.prototype.template(chat_template);
         chat.prototype.waiter_template = chat.prototype.template(waiter_template);

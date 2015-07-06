@@ -10,6 +10,7 @@ require.config({
         "ajax_core": "app/extentions/ajax_core",
         "overlay_core": "app/extentions/overlay_core",
         "event_core": "app/extentions/event_core",
+        "throw_event_core": "app/extentions/throw_event_core",
         "template_core": "app/extentions/template_core",
         "ping_core": "app/extentions/ping_core",
         "id_core": "app/extentions/id_core",

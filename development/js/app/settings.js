@@ -1,6 +1,6 @@
 define('settings', [
         'chat',
-        'event_core',
+        'throw_event_core',
         'ajax_core',
         'template_core',
         'indexeddb',
@@ -13,7 +13,7 @@ define('settings', [
         'text!../templates/element/input_template.ejs'
     ],
     function(chat,
-             event_core,
+             throw_event_core,
              ajax_core,
              template_core,
              indexeddb,
@@ -79,7 +79,7 @@ define('settings', [
 
         };
 
-        extend(settings, event_core);
+        extend(settings, throw_event_core);
         extend(settings, ajax_core);
         extend(settings, template_core);
         extend(settings, render_layout_core);
