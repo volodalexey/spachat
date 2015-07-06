@@ -6,6 +6,7 @@
     "class": "",
     "title": "",
     "data": {
+      "throw": "true",
       "action": "addNewChatAuto",
       "mode": "CREATE_CHAT"
     },
@@ -19,6 +20,7 @@
     "class": "",
     "title": "",
     "data": {
+      "throw": "true",
       "action": "addNewChatManual",
       "mode": "CREATE_CHAT"
     },
@@ -63,6 +65,7 @@
     "class": "",
     "title": "",
     "data": {
+      "throw": "true",
       "location": "chat_id_btn",
       "action": "joinByChatIdAuto",
       "mode": "JOIN_CHAT"
@@ -104,6 +107,7 @@
     "class": "",
     "title": "",
     "data": {
+      "throw": "true",
       "location": "remote_offer_btn",
       "action": "joinChatByChatSdp",
       "mode": "JOIN_CHAT"
@@ -175,6 +179,7 @@
     "class": "",
     "title": "",
     "data": {
+      "throw": "true",
       "action": "showChat",
       "mode": "DETAIL_VIEW",
       "location": "navbar"

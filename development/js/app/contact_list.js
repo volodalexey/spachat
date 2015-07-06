@@ -56,6 +56,10 @@ define('contact_list', [
                         }
                     ]);
                 }
+            },
+
+            destroy: function() {
+                var _this = this;
             }
         };
 

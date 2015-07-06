@@ -1,8 +1,11 @@
 define('throw_event_core', [
-        'event_core'
+        'event_core',
+        'event_bus'
+
     ],
     function (
-        event_core
+        event_core,
+        event_bus
 ) {
 
         var throw_event_core = function() {};
@@ -58,29 +61,17 @@ define('throw_event_core', [
             throwEventRouter: function(event) {
                 var _this = this;
                 var action = event.target.dataset.action;
-                var data_throw_to = event.target.dataset.throw_to;
-                var data_mode_to = event.target.dataset.mode_to;
-                var data_chat_part = event.target.dataset.chat_part;
-
-                if (_this.throwEvent) {
-                    event.data_throw_to = data_throw_to;
-                    event.data_mode_to = data_mode_to;
-                    event.data_chat_part = data_chat_part;
-                    if (!event.data_param) {
-                        event.data_param = true;
-                    } else {
-                        event.data_param = false;
-                    }
+                if (action && event.target.dataset.throw) {
                     _this.throwEvent(action, event);
                 }
             },
 
             throwEvent: function(name, data) {
-                this.trigger('throw', name, data);
+                event_bus.trigger('throw', name, data);
             },
 
             triggerRouter: function(event) {
-                var action = event.target.getAttribute('data-action');
+                var action = event.target.dataset.action;
                 if (action) {
                     this.trigger(action);
                 }

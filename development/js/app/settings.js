@@ -75,6 +75,11 @@ define('settings', [
                         }
                     ]);
                 }
+            },
+
+            destroy: function() {
+                var _this = this;
+                _this.removeEventListeners();
             }
 
         };

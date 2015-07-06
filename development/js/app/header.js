@@ -7,7 +7,6 @@ define('header', [
         'render_layout_core',
         'description_core',
 
-
         'pagination',
 
         'text!../templates/filter_template.ejs',
@@ -24,9 +23,7 @@ define('header', [
              indexeddb,
              render_layout_core,
              description_core,
-
              pagination,
-
              filter_template,
              header_template,
              triple_element_template,
@@ -79,7 +76,6 @@ define('header', [
                 _this.addRemoveListener('add', _this.chat.header_container, 'change', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.chat.header_container, 'input', _this.bindedDataActionRouter, false);
 
-
                 _this.addRemoveListener('add', _this.chat.header_container, 'mousedown', _this.bindedShowDescription, false);
                 _this.addRemoveListener('add', _this.chat.header_container, 'mousemove', _this.bindedShowDescription, false);
                 _this.addRemoveListener('add', _this.chat.header_container, 'mouseup', _this.bindedShowDescription, false);
@@ -96,7 +92,6 @@ define('header', [
                 _this.addRemoveListener('remove', _this.chat.header_container, 'change', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.chat.header_container, 'input', _this.bindedDataActionRouter, false);
 
-
                 _this.addRemoveListener('remove', _this.chat.header_container, 'touchmove', _this.bindedShowDescription, false);
                 _this.addRemoveListener('remove', _this.chat.header_container, 'mousemove', _this.bindedShowDescription, false);
                 _this.addRemoveListener('remove', _this.chat.header_container, 'mousedown', _this.bindedShowDescription, false);
@@ -105,15 +100,28 @@ define('header', [
                 _this.addRemoveListener('remove', _this.chat.header_container, 'touchend', _this.bindedShowDescription, false);
             },
 
+            cashToolbarElement: function() {
+                var _this = this;
+                _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
+                _this.button_filter = _this.chat.header_container.querySelector('[data-toggle]');
+            },
+
             cashBodyElement: function() {
                 var _this = this;
-
                 if (_this.body_mode === _this.MODE.FILTER) {
                     _this.enablePagination = _this.filter_container.querySelector('[data-role="enablePagination"]');
                     _this.perPageValue = _this.filter_container.querySelector('[data-role="perPageValue"]');
-                    //_this.showPerPage = _this.filter_container.querySelector('[data-action="showPerPage"]');
                     _this.rteShowPerPage = _this.filter_container.querySelector('[data-role="rteShowPerPage"]');
                 }
+            },
+
+            unCashElements: function() {
+                var _this = this;
+                _this.filter_container = null;
+                _this.button_filter = null;
+                _this.enablePagination = null;
+                _this.perPageValue = null;
+                _this.rteShowPerPage = null;
             },
 
             render: function(options, _array, chat) {
@@ -137,9 +145,7 @@ define('header', [
                                     TAB: _this.chat.header_container
                                 };
                                 _this.renderLayout(null, function() {
-                                    _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
-                                    //_this.buttons_toggle_reset = _this.chat.header_container.querySelectorAll('[data-toggle_reset]');
-                                    _this.button_filter = _this.chat.header_container.querySelector('[data-toggle]');
+                                    _this.cashToolbarElement();
                                     _this.addToolbarEventListener();
                                     _this.renderFilter();
                                 });
@@ -232,6 +238,12 @@ define('header', [
                         _this.chat.render(null, null);
                     });
                 }
+            },
+
+            destroy: function() {
+                var _this = this;
+                _this.removeToolbarEventListeners();
+                _this.unCashElements();
             }
 
         };
@@ -241,7 +253,6 @@ define('header', [
         extend(header, template_core);
         extend(header, render_layout_core);
         extend(header, description_core);
-
 
         header.prototype.header_template = header.prototype.template(header_template);
         header.prototype.filter_template = header.prototype.template(filter_template);

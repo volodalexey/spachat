@@ -359,10 +359,10 @@ define('chat', [
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                _this.header.on('throw', _this.throwRouter, _this);
-                _this.settings.on('throw', _this.throwRouter, _this);
-                _this.editor.on('throw', _this.throwRouter, _this);
-                _this.pagination.on('throw', _this.throwRouter, _this);
+                event_bus.on('throw', _this.throwRouter, _this);
+                //_this.settings.on('throw', _this.throwRouter, _this);
+                //_this.editor.on('throw', _this.throwRouter, _this);
+                //_this.pagination.on('throw', _this.throwRouter, _this);
                 _this.webrtc.on('log', _this.console.log, _this);
                 _this.webrtc.on('sendToWebSocket', _this.sendToWebSocket, _this);
                 _this.webrtc.on('deviceId', _this.setDeviceId, _this);
@@ -371,10 +371,10 @@ define('chat', [
 
             removeEventListeners: function() {
                 var _this = this;
-                _this.header.off('throw');
-                _this.settings.off('throw');
-                _this.editor.off('throw');
-                _this.pagination.off('throw');
+                event_bus.off('throw', _this.throwRouter);
+                //_this.settings.off('throw');
+                //_this.editor.off('throw');
+                //_this.pagination.off('throw');
                 _this.webrtc.off('log');
                 _this.webrtc.off('sendToWebSocket');
                 _this.webrtc.off('deviceId');
@@ -391,8 +391,6 @@ define('chat', [
                 var _this = this;
                 if (confirm("Close this chat ?")) {
                     _this.removeEventListeners();
-                    _this.chat_element.remove();
-                    _this.unCashElements();
                     this.header.destroy();
                     this.header = null;
                     this.editor.destroy();
@@ -409,6 +407,8 @@ define('chat', [
                     this.webrtc = null;
                     this.body.destroy();
                     this.body = null;
+                    _this.chat_element.remove();
+                    _this.unCashElements();
                     event_bus.trigger('destroyChat', _this);
                 }
             },

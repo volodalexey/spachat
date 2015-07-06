@@ -83,6 +83,14 @@ define('pagination', [
                 _this.addRemoveListener('remove', _this.go_to_container, 'click', _this.bindedDataActionRouter, false);
             },
 
+            unCashElements: function() {
+                var _this = this;
+                _this.buttons_show_choice = null;
+                _this.input_choose_page = null;
+                _this.pagination_container = null;
+                _this.go_to_container = null;
+            },
+
             render: function(options, chat) {
                 var _this = this;
                 _this.chat = chat;
@@ -260,6 +268,13 @@ define('pagination', [
                 }
                 _this.previousShow = false;
                 _this.chat.render(null, null);
+            },
+
+            destroy: function() {
+                var _this = this;
+                _this.removeMainEventListeners();
+                _this.removeContextEventListeners();
+                _this.unCashElements();
             }
         };
         extend(pagination, throw_event_core);

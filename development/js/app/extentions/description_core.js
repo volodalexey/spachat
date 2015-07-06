@@ -1,5 +1,9 @@
-define('description_core', [],
-    function() {
+define('description_core', [
+        'dom_core'
+    ],
+    function(
+        dom_core
+    ) {
 
         var description_core = function() {
         };
@@ -17,6 +21,7 @@ define('description_core', [],
                         _this.checkReorderClientX = event.changedTouches[0].clientX;
                     }
                     _this.reorderMouseDown = true;
+                    event.preventDefault();
                     break;
                     case 'mousemove':case 'touchmove':
                     if (_this.reorderMouseDown) {
@@ -29,7 +34,7 @@ define('description_core', [],
                             _this.descriptionShow = true;
                             if (event.target.dataset.description ||
                                 ( event.changedTouches && event.changedTouches[0].target.dataset.description) ){
-                                var offsetLeft = 0, offsetTop = 0, element;
+                                var element;
                                 if (event.type === 'touchmove' && event.changedTouches) {
                                     _this.chat.button_description.innerHTML = event.changedTouches[0].target.dataset.description;
                                     element = event.changedTouches[0].target;
@@ -38,15 +43,10 @@ define('description_core', [],
                                     _this.chat.button_description.innerHTML = event.target.dataset.description;
                                     element = event.target;
                                 }
-                                do {
-                                    offsetLeft += element.offsetLeft;
-                                    offsetTop  += element.offsetTop;
-                                } while (element = element.offsetParent);
 
-
-
-                                this.chat.button_description.style.left = offsetLeft  + "px";
-                                this.chat.button_description.style.top = offsetTop + "px";
+                                var result = _this.getOffset(element);
+                                this.chat.button_description.style.left = result.offsetLeft  + "px";
+                                this.chat.button_description.style.top = result.offsetTop + "px";
                                 this.chat.button_description.classList.remove("opacity-0");
 
                                 var difference, offsetLeftElementEnd, offsetTopElementEnd;
@@ -97,5 +97,7 @@ define('description_core', [],
                 }
             }
         };
+        extend(description_core, dom_core);
+
         return description_core;
     });

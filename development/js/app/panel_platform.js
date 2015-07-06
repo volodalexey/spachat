@@ -70,17 +70,11 @@ define('panel_platform', [
                 var _this = this;
                 _this.removeEventListeners();
                 _this.on('resize', _this.bindedResizePanel, _this);
-                panel.prototype.panelArray.forEach(function(_panel) {
-                    _panel.on('throw', _this.throwEvent.bind(_this), _this);
-                });
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 _this.off('resize');
-                panel.prototype.panelArray.forEach(function(_panel) {
-                    _panel.off('throw');
-                });
             },
 
             resizePanels: function(){

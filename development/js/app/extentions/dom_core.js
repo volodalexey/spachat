@@ -21,6 +21,15 @@ define('dom_core',
                 } else {
                     return null;
                 }
+            },
+
+            getOffset: function(element) {
+                var offsetLeft = 0, offsetTop = 0;
+                do {
+                    offsetLeft += element.offsetLeft;
+                    offsetTop  += element.offsetTop;
+                } while (element = element.offsetParent);
+                return {offsetLeft: offsetLeft, offsetTop:offsetTop};
             }
         };
 

@@ -40,6 +40,10 @@ define('body', [
 
                     _this.previousMode = _this.chat.bodyOptions.mode;
                 }
+            },
+
+            destroy: function() {
+                var _this = this;
             }
 
         };

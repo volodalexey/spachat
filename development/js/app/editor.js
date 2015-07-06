@@ -95,6 +95,15 @@ define('editor', [
                 _this.buttonFormat = _this.editor_container.querySelector('[data-toggle]');
             },
 
+            unCashElements: function() {
+                var _this = this;
+                _this.controls_container = null;
+                _this.message_inner_container = null;
+                _this.btnEditPanel = null;
+                _this.buttonFormat = null;
+                _this.editor_container = null;
+            },
+
             render: function(options, chat) {
                 var _this = this;
                 _this.chat = chat;
@@ -216,6 +225,12 @@ define('editor', [
                     );
                     _this.message_inner_container.innerHTML = "";
                 }
+            },
+
+            destroy: function() {
+                var _this = this;
+                _this.removeMainEventListeners();
+                _this.unCashElements();
             }
         };
 

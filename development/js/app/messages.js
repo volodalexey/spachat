@@ -184,6 +184,10 @@ define('messages', [
                         callback && callback(error, message);
                     }
                 );
+            },
+
+            destroy: function() {
+                var _this = this;
             }
         };
         extend(messages, throw_event_core);

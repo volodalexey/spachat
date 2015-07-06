@@ -31,6 +31,7 @@ define('chat_platform', [
             this.link = /chat/;
             this.withPanels = true;
             this.mainConteiner = document.querySelector('[data-role="main_container"]');
+            this.bindContexts();
         };
 
         chat_platform.prototype = {
@@ -41,6 +42,11 @@ define('chat_platform', [
                 "table_names": ['chats'],
                 "db_version": 1,
                 "keyPath": "chatId"
+            },
+
+            bindContexts: function() {
+                var _this = this;
+                _this.bindedOnThrowEvent = _this.onThrowEvent.bind(_this);
             },
 
             render: function
@@ -58,36 +64,37 @@ define('chat_platform', [
                 _this.cashElements();
                 _this.addEventListeners();
                 _this.toggleWaiter();
-            }
-            ,
+            },
 
             dispose: function() {
                 var _this = this;
                 _this.removeEventListeners();
-            }
-            ,
+            },
 
             cashElements: function() {
                 var _this = this;
                 _this.chat_wrapper = _this.mainConteiner.querySelector('[data-role="chat_wrapper"]');
-            }
-            ,
+            },
 
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                _this.on('addNewChatAuto', _this.addNewChatAuto, _this);
+                event_bus.on('throw', _this.bindedOnThrowEvent, false);
+
+                event_bus.on('addNewChatAuto', _this.addNewChatAuto, _this);
                 _this.on('resize', _this.resizeChats, _this);
                 _this.on('joinByChatIdAuto', _this.joinByChatIdAuto, _this);
                 _this.on('showChat', _this.showChat, _this);
                 websocket.on('message', _this.onMessageRouter, _this);
                 _this.UIbuttonsByChatId = {};
                 event_bus.on('destroyChat', _this.destroyChat, _this);
-            }
-            ,
+            },
 
             removeEventListeners: function() {
                 var _this = this;
+                event_bus.off('throw', _this.bindedOnThrowEvent);
+
+
                 _this.off('addNewChatAuto');
                 _this.off('resize');
                 _this.off('joinByChatIdAuto');
@@ -95,8 +102,7 @@ define('chat_platform', [
                 websocket.off('message');
                 _this.UIbuttonsByChatId = {};
                 event_bus.off('destroyChat');
-            }
-            ,
+            },
 
             /**
              * invoke each chat to resize its view
@@ -105,8 +111,17 @@ define('chat_platform', [
                 //Chat.prototype.chatsArray.forEach(function(_chat) {
                 //    _chat.calcMessagesContainerHeight();
                 //});
-            }
-            ,
+            },
+
+            onThrowEvent: function(eventName, eventData) {
+                if (!eventName) {
+                    return;
+                }
+
+                if (this[eventName]) {
+                    this[eventName](eventData);
+                }
+            },
 
             /**
              * route message from web-socket
