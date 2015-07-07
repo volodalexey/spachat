@@ -5,7 +5,6 @@ define('header', [
         'template_core',
         'indexeddb',
         'render_layout_core',
-        'description_core',
 
         'pagination',
 
@@ -22,8 +21,9 @@ define('header', [
              template_core,
              indexeddb,
              render_layout_core,
-             description_core,
+
              pagination,
+
              filter_template,
              header_template,
              triple_element_template,
@@ -59,13 +59,9 @@ define('header', [
 
             bindToolbarContext: function() {
                 var _this = this;
-                //_this.bindedTriggerRouter = _this.triggerRouter.bind(_this);
                 _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
                 _this.bindedRenderFilter = _this.renderFilter.bind(_this);
                 _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
-
-                _this.bindedShowDescription = _this.showDescription.bind(_this);
-
             },
 
             addToolbarEventListener: function() {
@@ -75,14 +71,6 @@ define('header', [
                 _this.addRemoveListener('add', _this.chat.header_container, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.chat.header_container, 'change', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.chat.header_container, 'input', _this.bindedDataActionRouter, false);
-
-                _this.addRemoveListener('add', _this.chat.header_container, 'mousedown', _this.bindedShowDescription, false);
-                _this.addRemoveListener('add', _this.chat.header_container, 'mousemove', _this.bindedShowDescription, false);
-                _this.addRemoveListener('add', _this.chat.header_container, 'mouseup', _this.bindedShowDescription, false);
-                _this.addRemoveListener('add', _this.chat.header_container, 'touchmove', _this.bindedShowDescription, false);
-                _this.addRemoveListener('add', _this.chat.header_container, 'touchstart', _this.bindedShowDescription, false);
-                _this.addRemoveListener('add', _this.chat.header_container, 'touchend', _this.bindedShowDescription, false);
-
             },
 
             removeToolbarEventListeners: function() {
@@ -91,13 +79,6 @@ define('header', [
                 _this.addRemoveListener('remove', _this.chat.header_container, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.chat.header_container, 'change', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.chat.header_container, 'input', _this.bindedDataActionRouter, false);
-
-                _this.addRemoveListener('remove', _this.chat.header_container, 'touchmove', _this.bindedShowDescription, false);
-                _this.addRemoveListener('remove', _this.chat.header_container, 'mousemove', _this.bindedShowDescription, false);
-                _this.addRemoveListener('remove', _this.chat.header_container, 'mousedown', _this.bindedShowDescription, false);
-                _this.addRemoveListener('remove', _this.chat.header_container, 'touchstart', _this.bindedShowDescription, false);
-                _this.addRemoveListener('remove', _this.chat.header_container, 'mouseup', _this.bindedShowDescription, false);
-                _this.addRemoveListener('remove', _this.chat.header_container, 'touchend', _this.bindedShowDescription, false);
             },
 
             cashToolbarElement: function() {
@@ -252,7 +233,6 @@ define('header', [
         extend(header, ajax_core);
         extend(header, template_core);
         extend(header, render_layout_core);
-        extend(header, description_core);
 
         header.prototype.header_template = header.prototype.template(header_template);
         header.prototype.filter_template = header.prototype.template(filter_template);

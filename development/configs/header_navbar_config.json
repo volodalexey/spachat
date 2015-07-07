@@ -4,6 +4,7 @@
     "icon": "",
     "text": "Close",
     "data": {
+      "throw": "true",
       "action": "destroyChat",
       "location": "topPanel",
       "description": "Description Close button.......1111111115555555555555555555444444444444888888800000000. 9 9 9 9 99 9 8 8 88   77 8 8 8 8 8 8 88   4 4 7 8 8 5 5 "
@@ -18,6 +19,7 @@
     "icon": "",
     "text": "Setting",
     "data": {
+      "throw": "true",
       "chat_part": "body",
       "mode_to": "SETTING",
       "action": "changeMode",
@@ -35,6 +37,7 @@
     "icon": "",
     "text": "ContactList",
     "data": {
+      "throw": "true",
       "mode_to": "CONTACT_LIST",
       "chat_part": "body",
       "action": "changeMode",
@@ -52,6 +55,7 @@
     "icon": "",
     "text": "Filter",
     "data": {
+      "throw": "true",
       "mode_to": "FILTER",
       "chat_part": "header",
       "action": "changeMode",

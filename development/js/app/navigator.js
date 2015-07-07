@@ -3,14 +3,27 @@ define('navigator',
         'chat_platform',
         'panel_platform',
         'login',
-        'register'
+        'register',
+
+        'description_core',
+        'throw_event_core',
+        'dom_core',
+
+        'event_bus'
     ],
     function(chat_platform,
              panel_platform,
              login,
-             register) {
+             register,
+
+             description_core,
+             throw_event_core,
+             dom_core,
+
+            event_bus) {
 
         var navigator = function() {
+            this.cashElements();
             this.bindContexts();
             this.login_outer_container = document.querySelector('[data-role="login_outer_container"]');
             this.main_container = document.querySelector('[data-role="main_container"]');
@@ -22,11 +35,22 @@ define('navigator',
 
         navigator.prototype = {
 
+            cashElements: function() {
+                var _this = this;
+                _this.button_description = document.querySelector('[data-role="description"]');
+            },
+
+            unCashElements: function() {
+                var _this = this;
+                _this.button_description = null;
+            },
+
             bindContexts: function() {
                 var _this = this;
                 _this.bindedNavigate = _this.navigate.bind(_this);
                 _this.bindedRedirectToLogin = _this.redirectToLogin.bind(_this);
                 _this.bindedNotifyCurrentPage = _this.notifyCurrentPage.bind(_this);
+                _this.bindedShowDescription = description_core.showDescription.bind(_this, _this.button_description);
             },
 
             addEventListeners: function() {
@@ -35,6 +59,13 @@ define('navigator',
                 window.addEventListener('popstate', _this.bindedNavigate, false);
                 window.addEventListener('resize', _this.bindedNotifyCurrentPage, false);
                 panel_platform.on('throw', _this.bindedNotifyCurrentPage, false);
+
+                _this.addRemoveListener('add', document.body, 'mousedown', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', document.body, 'mousemove', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', document.body, 'mouseup', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', document.body, 'touchmove', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', document.body, 'touchstart', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', document.body, 'touchend', _this.bindedShowDescription, false);
             },
 
             removeEventListeners: function() {
@@ -42,6 +73,13 @@ define('navigator',
                 window.removeEventListener('popstate', _this.bindedNavigate, false);
                 window.removeEventListener('resize', _this.bindedNotifyCurrentPage, false);
                 panel_platform.off('addNewPanel');
+
+                _this.addRemoveListener('remove', document.body, 'mousedown', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', document.body, 'mousemove', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', document.body, 'mouseup', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', document.body, 'touchmove', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', document.body, 'touchstart', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', document.body, 'touchend', _this.bindedShowDescription, false);
             },
 
             getCurrentPage: function(href) {
@@ -105,8 +143,17 @@ define('navigator',
                 if (this.currentPage.withPanels) {
                     panel_platform.trigger(eventName, eventData);
                 }
+            },
+
+            destroy: function() {
+                var _this = this;
+                _this.removeEventListeners();
+                _this.unCashElements();
             }
         };
+        extend(navigator, throw_event_core);
+        extend(navigator, dom_core);
+
 
         return new navigator();
     }

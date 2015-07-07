@@ -114,6 +114,7 @@
     "class": "check-box-size",
     "title": "",
     "data": {
+      "throw": "true",
       "role": "enablePagination",
       "action": "changeMode",
       "mode_to": "PAGINATION",
@@ -162,6 +163,7 @@
     "class": "check-box-size",
     "title": "",
     "data": {
+      "throw": "true",
       "role": "rteShowPerPage",
       "action": "changeRTE",
       "key": "rtePerPage"
@@ -244,6 +246,7 @@
     "class": "check-box-size",
     "title": "",
     "data": {
+      "throw": "true",
       "role": "rteChoicePerPage",
       "action": "changeRTE",
       "key": "rtePerPage"
@@ -261,6 +264,7 @@
     "class": "",
     "title": "",
     "data": {
+      "throw": "true",
       "role": "show_per_page",
       "action": "showPerPage"
     },

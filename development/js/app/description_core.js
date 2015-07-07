@@ -1,9 +1,5 @@
-define('description_core', [
-        'dom_core'
-    ],
-    function(
-        dom_core
-    ) {
+define('description_core', [],
+    function() {
 
         var description_core = function() {
         };
@@ -12,8 +8,8 @@ define('description_core', [
 
             __class_name: "description_core",
 
-            showDescription: function (event) {
-                var _this = this;
+            showDescription: function (button_description, event) {
+                var _this = this, description = button_description;
                 switch (event.type) {
                     case 'mousedown':case 'touchstart':
                     _this.checkReorderClientX = event.clientX;
@@ -36,49 +32,49 @@ define('description_core', [
                                 ( event.changedTouches && event.changedTouches[0].target.dataset.description) ){
                                 var element;
                                 if (event.type === 'touchmove' && event.changedTouches) {
-                                    _this.chat.button_description.innerHTML = event.changedTouches[0].target.dataset.description;
+                                    description.innerHTML = event.changedTouches[0].target.dataset.description;
                                     element = event.changedTouches[0].target;
 
                                 } else {
-                                    _this.chat.button_description.innerHTML = event.target.dataset.description;
+                                    description.innerHTML = event.target.dataset.description;
                                     element = event.target;
                                 }
 
                                 var result = _this.getOffset(element);
-                                this.chat.button_description.style.left = result.offsetLeft  + "px";
-                                this.chat.button_description.style.top = result.offsetTop + "px";
-                                this.chat.button_description.classList.remove("opacity-0");
+                                description.style.left = result.offsetLeft  + "px";
+                                description.style.top = result.offsetTop + "px";
+                                description.classList.remove("opacity-0");
 
                                 var difference, offsetLeftElementEnd, offsetTopElementEnd;
-                                offsetLeftElementEnd = this.chat.button_description.offsetWidth + this.chat.button_description.offsetLeft;
-                                offsetTopElementEnd = this.chat.button_description.offsetHeight + this.chat.button_description.offsetTop;
+                                offsetLeftElementEnd = description.offsetWidth + description.offsetLeft;
+                                offsetTopElementEnd = description.offsetHeight + description.offsetTop;
 
-                                if (this.chat.button_description.offsetWidth > document.body.offsetWidth) {
-                                    difference = this.chat.button_description.offsetWidth - document.body.offsetWidth;
-                                    if (difference <= this.chat.button_description.offsetLeft) {
-                                        this.chat.button_description.style.left = "0px";
+                                if (description.offsetWidth > document.body.offsetWidth) {
+                                    difference = description.offsetWidth - document.body.offsetWidth;
+                                    if (difference <= description.offsetLeft) {
+                                        description.style.left = "0px";
                                     }
                                 }
                                 if (offsetLeftElementEnd > document.body.offsetWidth){
                                     difference = offsetLeftElementEnd - document.body.offsetWidth;
-                                    if (difference <= this.chat.button_description.offsetLeft) {
-                                        this.chat.button_description.style.left = this.chat.button_description.offsetLeft - difference  + "px";
+                                    if (difference <= description.offsetLeft) {
+                                        description.style.left = description.offsetLeft - difference  + "px";
                                     } else{
-                                        this.chat.button_description.style.left = "0px";
+                                        description.style.left = "0px";
                                     }
                                 }
 
                                 if(offsetTopElementEnd > document.documentElement.clientHeight) {
                                     difference = offsetTopElementEnd - document.documentElement.clientHeight;
-                                    if (difference <= this.chat.button_description.offsetTop) {
-                                        this.chat.button_description.style.top = offsetTop - difference + "px";
+                                    if (difference <= description.offsetTop) {
+                                        description.style.top = description.offsetTop - difference + "px";
                                     } else {
-                                        this.chat.button_description.style.top = "0px";
+                                        description.style.top = "0px";
                                     }
                                 }
 
-                                if (this.chat.button_description.offsetTop < 0 ) {
-                                    this.chat.button_description.style.top = "0px";
+                                if (description.offsetTop < 0 ) {
+                                    description.style.top = "0px";
                                 }
                             }
                         }
@@ -87,17 +83,16 @@ define('description_core', [
                     case 'mouseup':case 'touchend':
                         _this.reorderMouseDown = false;
                         if (_this.descriptionShow) {
-                            _this.chat.button_description.innerHTML = "";
-                            this.chat.button_description.style.left = "0px";
-                            this.chat.button_description.style.top = "0px";
-                            this.chat.button_description.classList.add("opacity-0");
+                            description.innerHTML = "";
+                            description.style.left = "0px";
+                            description.style.top = "0px";
+                            description.classList.add("opacity-0");
 
                         }
                     break;
                 }
             }
         };
-        extend(description_core, dom_core);
 
-        return description_core;
+        return new description_core();
     });

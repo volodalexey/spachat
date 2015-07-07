@@ -134,7 +134,6 @@ define('chat', [
 
             cashElements: function() {
                 var _this = this;
-                _this.button_description = document.querySelector('[data-role="description"]');
                 _this.chat_element = _this.chat_wrapper.querySelector('section[data-chat_id="' + _this.chatId + '"]');
                 _this.header_container = _this.chat_element.querySelector('[data-role="header_container"]');
                 _this.header_waiter_container = _this.chat_element.querySelector('[data-role="waiter_container"]');
@@ -143,7 +142,6 @@ define('chat', [
 
             unCashElements: function() {
                 var _this = this;
-                _this.button_description = null;
                 _this.chat_element = null;
                 _this.header_container = null;
                 _this.header_waiter_container = null;

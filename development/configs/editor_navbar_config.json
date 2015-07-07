@@ -6,6 +6,7 @@
     "class": "",
     "title": "",
     "data": {
+      "throw": "true",
       "action": "changeMode",
       "mode_to": "FORMAT_PANEL",
       "chat_part": "editor",
@@ -25,6 +26,7 @@
     "class": "",
     "title": "",
     "data": {
+      "throw": "true",
       "action": "sendMessage",
       "mode_to": "",
       "chat_part": "",

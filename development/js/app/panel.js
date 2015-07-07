@@ -138,7 +138,7 @@ define('panel', [
             cashBodyElement: function() {
                 var _this = this;
                 if (_this.body_mode === _this.MODE.USER_INFO_EDIT) {
-                    _this.user_name = _this.panel_body.querySelector('[data-main="user_name"]');
+                    _this.user_name = _this.panel_body.querySelector('[data-main="user_name_input"]');
                     _this.old_password = _this.panel_body.querySelector('[data-role="passwordOld"]');
                     _this.new_password = _this.panel_body.querySelector('[data-role="passwordNew"]');
                     _this.confirm_password = _this.panel_body.querySelector('[data-role="passwordConfirm"]');
@@ -180,13 +180,11 @@ define('panel', [
 
             addToolbarEventListener: function() {
                 var _this = this;
-                //_this.addRemoveListener('add', _this.panel_toolbar, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('add', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
             },
 
             removeToolbarEventListeners: function() {
                 var _this = this;
-                //_this.addRemoveListener('remove', _this.panel_toolbar, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('remove', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
             },
 
@@ -197,7 +195,6 @@ define('panel', [
                     _this.outer_container.style.zIndex = ++panel.prototype.z_index;
                     _this.outer_container.style[_this.type] = "0px";
                     _this.fillPanelToolbar();
-                    //_this.renderPanelBody();
                     _this.renderLayout(null, null);
                     if (bigMode === true) {
                         _this.resizePanel();

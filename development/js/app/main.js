@@ -18,7 +18,7 @@ require.config({
         "extend_core": "app/extentions/extend_core",
         "message_core": "app/extentions/message_core",
         "dom_core": "app/extentions/dom_core",
-        "description_core": "app/extentions/description_core",
+        "description_core": "app/description_core",
         //
         "body": "app/body",
         "chat": "app/chat",

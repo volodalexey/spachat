@@ -192,7 +192,7 @@
     "class": "",
     "title": "",
     "data": {
-      "_role": "passwordNew",
+      "role": "passwordNew",
       "location": "new_password",
       "key": "passwordNew"
     },

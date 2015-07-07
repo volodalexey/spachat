@@ -33,6 +33,7 @@
     "class": "",
     "title": "Pagination_btn",
     "data": {
+      "throw": "true",
       "role": "choice",
       "action": "changeMode",
       "mode_to": "GO_TO",
@@ -62,6 +63,7 @@
     "class": "",
     "title": "Pagination_btn",
     "data": {
+      "throw": "true",
       "role": "choice",
       "action": "changeMode",
       "mode_to": "GO_TO",
