@@ -6,6 +6,7 @@
     "class": "",
     "title": "",
     "data": {
+      "description": "Button CREATE CHAT",
       "role": "",
       "location": "left_panel",
       "action": "switchPanelMode",
@@ -22,6 +23,7 @@
     "title": "",
     "data": {
       "role": "",
+      "description": "HHyuggggggggggggggggggggggg",
       "location": "left_panel",
       "action": "switchPanelMode",
       "mode": "JOIN_CHAT"
@@ -36,6 +38,7 @@
     "class": "",
     "title": "",
     "data": {
+      "description": "Button My CHAT",
       "role": "",
       "location": "left_panel",
       "action": "switchPanelMode",
