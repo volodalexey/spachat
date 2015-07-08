@@ -156,7 +156,7 @@ define('header', [
 
             renderFilter: function() {
                 var _this = this;
-                var f = _this.chat.filterOptions.show;
+                _this.optionsDefinition(_this.chat.bodyOptions.mode);
                 if (_this.chat.filterOptions.show) {
                     _this.body_mode = _this.MODE.FILTER;
                     _this.elementMap = {
@@ -164,10 +164,10 @@ define('header', [
                     };
                     _this.body_mode = _this.MODE.FILTER;
                     var data = {
-                        "perPageValue": _this.chat.paginationOptions.perPageValue,
-                        "showEnablePagination": _this.chat.paginationOptions.showEnablePagination,
-                        "rtePerPage": _this.chat.paginationOptions.rtePerPage,
-                        "mode_change": _this.chat.paginationOptions.mode_change
+                        "perPageValue": _this.currentPaginationOptions.perPageValue,
+                        "showEnablePagination": _this.currentPaginationOptions.showEnablePagination,
+                        "rtePerPage": _this.currentPaginationOptions.rtePerPage,
+                        "mode_change": _this.currentPaginationOptions.mode_change
                     };
                     _this.renderLayout(data, null);
                 }
@@ -177,21 +177,35 @@ define('header', [
                 }
             },
 
+
+            optionsDefinition: function(mode){
+                var _this = this;
+
+                switch (mode) {
+                    case _this.chat.body.MODE.MESSAGES: case _this.chat.body.MODE.SETTING: case _this.chat.body.MODE.CONTACT_LIST:
+                    _this.currentPaginationOptions = _this.chat.paginationMessageOptions;
+                    break;
+                    case _this.chat.body.MODE.LOGGER:
+                        _this.currentPaginationOptions = _this.chat.paginationLoggerOptions;
+                        break;
+                }
+            },
+
             changePerPage: function(event) {
                 var _this = this;
                 var value = parseInt(event.target.value);
 
                 if (event.target.value !== "" && event.target.value !== "0" && event.type !== "click") {
-                    if (!_this.chat.paginationOptions.rtePerPage) {
-                        _this.chat.paginationOptions.currentPage = null;
-                        _this.chat.paginationOptions.perPageValue = value;
+                    if (!_this.currentPaginationOptions.rtePerPage) {
+                        _this.currentPaginationOptions.currentPage = null;
+                        _this.currentPaginationOptions.perPageValue = value;
                         event.target.focus();
                         return;
 
                     }
-                    _this.chat.paginationOptions.perPageValue = value;
-                    _this.chat.paginationOptions.currentPage = null;
-                    if (_this.chat.paginationOptions.showEnablePagination) {
+                    _this.currentPaginationOptions.perPageValue = value;
+                    _this.currentPaginationOptions.currentPage = null;
+                    if (_this.currentPaginationOptions.showEnablePagination) {
                         _this.chat.pagination.countQuantityPages(function() {
                             _this.chat.render(null, null);
                         });
@@ -202,19 +216,22 @@ define('header', [
             changeRTE: function(event) {
                 var _this = this;
                 if (event.target.checked) {
-                    _this.chat.paginationOptions.mode_change = "rte";
-                    _this.chat.paginationOptions.rtePerPage = true;
+                    _this.currentPaginationOptions.mode_change = "rte";
+                    _this.currentPaginationOptions.rtePerPage = true;
                 } else {
-                    _this.chat.paginationOptions.mode_change = "nrte";
-                    _this.chat.paginationOptions.rtePerPage = false;
+                    _this.currentPaginationOptions.mode_change = "nrte";
+                    _this.currentPaginationOptions.rtePerPage = false;
                 }
                 _this.chat.render(null, null);
             },
 
             showPerPage: function() {
                 var _this = this;
-                _this.chat.paginationOptions.currentPage = null;
-                if (_this.chat.paginationOptions.showEnablePagination) {
+                //_this.chat.paginationOptions.currentPage = null;
+                //_this.chat.paginationLoggerOptions.currentPage = null;
+                _this.currentPaginationOptions.currentPage = null;
+
+                if (_this.currentPaginationOptions.showEnablePagination) {
                     _this.chat.pagination.countQuantityPages(function() {
                         _this.chat.render(null, null);
                     });

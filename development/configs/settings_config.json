@@ -6,6 +6,7 @@
     "class": "",
     "title": "",
     "data": {
+      "throw": "true",
       "action": "changeMode",
       "chat_part": "body",
       "mode_to": "LOGGER"

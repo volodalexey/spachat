@@ -23,7 +23,7 @@
     "title": "",
     "data": {
       "role": "",
-      "description": "HHyuggggggggggggggggggggggg",
+      "description": "Button JOIN CHAT",
       "location": "left_panel",
       "action": "switchPanelMode",
       "mode": "JOIN_CHAT"

@@ -97,7 +97,7 @@ define('pagination', [
                  _this.collectionDescription= {
                      "id": _this.chat.chatId,
                      "db_name": _this.chat.chatId + '_chat',
-                     "table_names": [_this.chat.chatId + '_messages'],
+                     "table_names": [],
                      "db_version": 1,
                      "keyPath": "id"
                      /*"id": _this.chat.chatsArray.length,
@@ -106,9 +106,12 @@ define('pagination', [
                      "db_version": 1,
                      "keyPath": "id"*/
                  };
+
+                _this.optionsDefinition(_this.chat.bodyOptions.mode);
+
                 _this.pagination_container = _this.chat.chat_element.querySelector('[data-role="pagination_container"]');
                 _this.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
-                if (_this.chat.paginationOptions.show) {
+                if (_this.currentPaginationOptions.show) {
                     _this.countQuantityPages(function(){
                         _this.disableButtonsPagination();
                         _this.body_mode = _this.MODE.PAGINATION;
@@ -116,19 +119,19 @@ define('pagination', [
                             PAGINATION: _this.pagination_container
                         };
                         var data = {
-                            firstPage: _this.chat.paginationOptions.firstPage,
-                            currentPage: _this.chat.paginationOptions.currentPage,
-                            lastPage:  _this.chat.paginationOptions.lastPage,
-                            disableBack: _this.chat.paginationOptions.disableBack,
-                            disableFirst: _this.chat.paginationOptions.disableFirst,
-                            disableLast: _this.chat.paginationOptions.disableLast,
-                            disableForward: _this.chat.paginationOptions.disableForward
+                            firstPage: _this.currentPaginationOptions.firstPage,
+                            currentPage: _this.currentPaginationOptions.currentPage,
+                            lastPage:  _this.currentPaginationOptions.lastPage,
+                            disableBack: _this.currentPaginationOptions.disableBack,
+                            disableFirst: _this.currentPaginationOptions.disableFirst,
+                            disableLast: _this.currentPaginationOptions.disableLast,
+                            disableForward: _this.currentPaginationOptions.disableForward
                         };
                         _this.renderLayout(data, function(){
                             _this.addMainEventListener();
                             _this.cashMainElements();
                             _this.renderGoTo();
-                            if (_this.buttons_show_choice && _this.chat.goToOptions.show) {
+                            if (_this.buttons_show_choice && _this.currentGoToOptions.show) {
                                 _this.buttons_show_choice.forEach(function(btn){
                                     btn.dataset.toggle = false;
                                 });
@@ -147,9 +150,35 @@ define('pagination', [
                 }
             },
 
+            optionsDefinition: function(mode){
+                var _this = this;
+
+                if (_this.previousMode !== mode) {
+                    _this.chat.messagesOptions.previousStart = 0;
+                    _this.chat.messagesOptions.previousFinal = null;
+                    _this.chat.messagesOptions.start = 0;
+                    _this.chat.messagesOptions.final = null;
+                }
+
+                switch (mode) {
+                    case _this.chat.body.MODE.MESSAGES: case _this.chat.body.MODE.SETTING: case _this.chat.body.MODE.CONTACT_LIST:
+                         _this.previousMode = _this.chat.body.MODE.MESSAGES;
+                        _this.collectionDescription.table_names = [_this.chat.chatId + '_messages'];
+                        _this.currentPaginationOptions = _this.chat.paginationMessageOptions;
+                        _this.currentGoToOptions = _this.chat.goToMessageOptions;
+                        break;
+                    case _this.chat.body.MODE.LOGGER:
+                        _this.previousMode = _this.chat.body.MODE.LOGGER;
+                        _this.collectionDescription.table_names = [_this.chat.chatId + '_logs'];
+                        _this.currentPaginationOptions = _this.chat.paginationLoggerOptions;
+                        _this.currentGoToOptions = _this.chat.goToLoggerOptions;
+                        break;
+                }
+            },
+
             renderGoTo: function() {
                 var _this = this;
-                if (_this.chat.goToOptions.show){
+                if (_this.currentGoToOptions.show){
                     if (!_this.previousShow) {
                         _this.previousShow = true;
                         _this.buttons_show_choice.forEach(function(btn){
@@ -159,9 +188,9 @@ define('pagination', [
                             GO_TO: _this.go_to_container
                         };
                         var data = {
-                            mode_change: _this.chat.goToOptions.mode_change,
-                            rteChoicePage: _this.chat.goToOptions.rteChoicePage,
-                            page: _this.chat.goToOptions.page
+                            mode_change: _this.currentGoToOptions.mode_change,
+                            rteChoicePage: _this.currentGoToOptions.rteChoicePage,
+                            page: _this.currentGoToOptions.page
                         };
                         _this.body_mode = _this.MODE.GO_TO;
                         _this.renderLayout(data, function(){
@@ -182,56 +211,60 @@ define('pagination', [
 
             countQuantityPages: function(callback) {
                 var _this = this, quantityPages;
+                _this.optionsDefinition(_this.chat.bodyOptions.mode);
                 indexeddb.getAll(_this.collectionDescription, null, function(getAllErr, messages) {
                     var quantityMessage = messages.length;
                     if (quantityMessage !== 0) {
-                        quantityPages = Math.ceil(quantityMessage / _this.chat.paginationOptions.perPageValue);
+                        quantityPages = Math.ceil(quantityMessage / _this.currentPaginationOptions.perPageValue);
                     } else {
                         quantityPages = 1;
                     }
-                    if (_this.chat.paginationOptions.currentPage === null) {
-                        _this.chat.messagesOptions.start = quantityPages * _this.chat.paginationOptions.perPageValue - _this.chat.paginationOptions.perPageValue;
-                        _this.chat.messagesOptions.final = quantityPages * _this.chat.paginationOptions.perPageValue;
-                        _this.chat.paginationOptions.currentPage = quantityPages;
+                    if (_this.currentPaginationOptions.currentPage === null) {
+                        _this.chat.messagesOptions.start = quantityPages * _this.currentPaginationOptions.perPageValue - _this.currentPaginationOptions.perPageValue;
+                        _this.chat.messagesOptions.final = quantityPages * _this.currentPaginationOptions.perPageValue;
+                        _this.currentPaginationOptions.currentPage = quantityPages;
                     } else {
-                        _this.chat.messagesOptions.start = (_this.chat.paginationOptions.currentPage - 1) * _this.chat.paginationOptions.perPageValue;
-                        _this.chat.messagesOptions.final = (_this.chat.paginationOptions.currentPage - 1) * _this.chat.paginationOptions.perPageValue + _this.chat.paginationOptions.perPageValue;
+                        _this.chat.messagesOptions.start = (_this.currentPaginationOptions.currentPage - 1) * _this.currentPaginationOptions.perPageValue;
+                        _this.chat.messagesOptions.final = (_this.currentPaginationOptions.currentPage - 1) * _this.currentPaginationOptions.perPageValue + _this.currentPaginationOptions.perPageValue;
                     }
-                    _this.chat.paginationOptions.lastPage = quantityPages;
+                    _this.currentPaginationOptions.lastPage = quantityPages;
                     //_this.disableButtonsPagination();
-                    callback();
+                    if (callback) {
+                        callback();
+                    }
                 });
             },
+
 
             switchPage: function(event) {
                 var _this = this;
                 if (event.target.dataset.role === "first" || event.target.dataset.role === "last") {
-                    _this.chat.paginationOptions.currentPage = parseInt(event.target.dataset.value);
+                    _this.currentPaginationOptions.currentPage = parseInt(event.target.dataset.value);
                 }
                 if (event.target.dataset.role === "back") {
-                    _this.chat.paginationOptions.currentPage = parseInt(_this.chat.paginationOptions.currentPage) - 1;
+                    _this.currentPaginationOptions.currentPage = parseInt(_this.currentPaginationOptions.currentPage) - 1;
                 }
                 if (event.target.dataset.role === "forward") {
-                    _this.chat.paginationOptions.currentPage = parseInt(_this.chat.paginationOptions.currentPage) + 1;
+                    _this.currentPaginationOptions.currentPage = parseInt(_this.currentPaginationOptions.currentPage) + 1;
                 }
 
-                if (_this.chat.goToOptions.rteChoicePage && event.target.dataset.role === "choice_per_page") {
+                if (_this.currentGoToOptions.rteChoicePage && event.target.dataset.role === "choice_per_page") {
                     if (event.target.value === "" ){
-                        _this.chat.goToOptions.page = null;
+                        _this.currentGoToOptions.page = null;
                     } else {
                         var value = parseInt(event.target.value);
-                        _this.chat.paginationOptions.currentPage = value;
-                        _this.chat.goToOptions.page = value;
+                        _this.currentPaginationOptions.currentPage = value;
+                        _this.currentGoToOptions.page = value;
                     }
                 }
 
-                if (!_this.chat.goToOptions.rteChoicePage && event.target.dataset.role === "go_to_page") {
+                if (!_this.currentGoToOptions.rteChoicePage && event.target.dataset.role === "go_to_page") {
                     if (_this.input_choose_page.value === "" ){
-                        _this.chat.goToOptions.page = null;
+                        _this.currentGoToOptions.page = null;
                     } else {
                         var value = parseInt(_this.input_choose_page.value);
-                        _this.chat.paginationOptions.currentPage = value;
-                        _this.chat.goToOptions.page = value;
+                        _this.currentPaginationOptions.currentPage = value;
+                        _this.currentGoToOptions.page = value;
                     }
                     _this.previousShow = false;
                 }
@@ -241,30 +274,30 @@ define('pagination', [
 
             disableButtonsPagination: function() {
                 var _this = this;
-                if (_this.chat.paginationOptions.currentPage === _this.chat.paginationOptions.firstPage) {
-                    _this.chat.paginationOptions.disableBack = true;
-                    _this.chat.paginationOptions.disableFirst = true;
+                if (_this.currentPaginationOptions.currentPage === _this.currentPaginationOptions.firstPage) {
+                    _this.currentPaginationOptions.disableBack = true;
+                    _this.currentPaginationOptions.disableFirst = true;
                 } else {
-                    _this.chat.paginationOptions.disableBack = false;
-                    _this.chat.paginationOptions.disableFirst = false;
+                    _this.currentPaginationOptions.disableBack = false;
+                    _this.currentPaginationOptions.disableFirst = false;
                 }
-                if (_this.chat.paginationOptions.currentPage === _this.chat.paginationOptions.lastPage){
-                    _this.chat.paginationOptions.disableForward = true;
-                    _this.chat.paginationOptions.disableLast = true;
+                if (_this.currentPaginationOptions.currentPage === _this.currentPaginationOptions.lastPage){
+                    _this.currentPaginationOptions.disableForward = true;
+                    _this.currentPaginationOptions.disableLast = true;
                 } else {
-                    _this.chat.paginationOptions.disableForward = false;
-                    _this.chat.paginationOptions.disableLast = false;
+                    _this.currentPaginationOptions.disableForward = false;
+                    _this.currentPaginationOptions.disableLast = false;
                 }
             },
 
             changeRTE: function(event) {
                 var _this = this;
                 if (event.target.checked) {
-                    _this.chat.goToOptions.mode_change = "rte";
-                    _this.chat.goToOptions.rteChoicePage = true;
+                    _this.currentGoToOptions.mode_change = "rte";
+                    _this.currentGoToOptions.rteChoicePage = true;
                 } else {
-                    _this.chat.goToOptions.mode_change = "nrte";
-                    _this.chat.goToOptions.rteChoicePage = false;
+                    _this.currentGoToOptions.mode_change = "nrte";
+                    _this.currentGoToOptions.rteChoicePage = false;
                 }
                 _this.previousShow = false;
                 _this.chat.render(null, null);
