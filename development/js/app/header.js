@@ -227,8 +227,6 @@ define('header', [
 
             showPerPage: function() {
                 var _this = this;
-                //_this.chat.paginationOptions.currentPage = null;
-                //_this.chat.paginationLoggerOptions.currentPage = null;
                 _this.currentPaginationOptions.currentPage = null;
 
                 if (_this.currentPaginationOptions.showEnablePagination) {

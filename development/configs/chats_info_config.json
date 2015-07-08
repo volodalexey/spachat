@@ -142,6 +142,22 @@
     "disabled": false
   },
   {
+    "element": "button",
+    "icon": "",
+    "text": "Filter",
+    "class": "",
+    "title": "",
+    "data": {
+      "action": "change_Panel_Body_Mode",
+      "toggle": true,
+      "panel_body_part": "FILTER",
+      "mode_to": "FILTER_MY_CHATS",
+      "mode": "MY_CHATS_HELP_TOOLBAR"
+    },
+    "name": "",
+    "disabled": false
+  },
+  {
     "element": "label",
     "type": "text",
     "icon": "",

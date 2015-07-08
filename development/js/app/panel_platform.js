@@ -15,13 +15,15 @@ define('panel_platform', [
             _this.right_panel_outer_container = document.querySelector('[data-role="right_panel_outer_container"]');
             _this.left_panel_inner_container = document.querySelector('[data-role="left_panel_inner_container"]');
             _this.right_panel_inner_container = document.querySelector('[data-role="right_panel_inner_container"]');
+            _this.left_filter_container = _this.left_panel_inner_container.querySelector('[data-role="left_filter_container"]');
             this.panelsDescriptions = [
                 {
                     type: this.PANEL_TYPES.LEFT,
                     outer_container: _this.left_panel_outer_container,
                     inner_container: _this.left_panel_inner_container,
                     panel_platform: this,
-                    body_mode: panel.prototype.MODE.CREATE_CHAT
+                    body_mode: panel.prototype.MODE.CREATE_CHAT,
+                    filter_container: _this.left_filter_container
                 },
                 {
                     type: this.PANEL_TYPES.RIGHT,

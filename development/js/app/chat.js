@@ -190,7 +190,7 @@ define('chat', [
                 var _this = this;
                 _this.editor.render(options, this);
                 _this.header.render(options, _array, this);
-                _this.pagination.render(options, this);
+                _this.pagination.render(options, this, _this.bodyOptions.mode);
                 _this.body.render({scrollTop: true}, this);
                 _this.webrtc.render(options, this);
             },

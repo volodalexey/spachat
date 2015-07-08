@@ -7,6 +7,9 @@ var array_join_chat = array.config.filter(function(config) {
 })
 var array_my_chats = array.config.filter(function(config) {
     return config.data.mode === "MY_CHATS"
+})
+var array_my_chats_help_toolbar = array.config.filter(function(config) {
+    return config.data.mode === "MY_CHATS_HELP_TOOLBAR"
 }) %>
 <% if (array.mode === 'CREATE_CHAT') { %>
 <% array_create_chat.forEach(function (config) { %>
@@ -84,6 +87,17 @@ var array_my_chats = array.config.filter(function(config) {
 <% } %>
 <% } %>
 <% if (array.mode === 'MY_CHATS') { %>
+<div class="w-100p p-t-b flex-sp-around">
+    <% array_my_chats_help_toolbar.forEach(function (config) { %>
+        <%= array.triple_element_template({
+            config: config,
+            data: array.data,
+            button_template: array.button_template,
+            input_template: array.input_template,
+            label_template: array.label_template
+        }) %>
+    <% }) %>
+</div>
 <div>
     <% array.data.data.forEach(function (chat) { %>
     <% var result = array.data.openChatsArray.indexOf(chat.chatId); %>

@@ -91,7 +91,7 @@ define('pagination', [
                 _this.go_to_container = null;
             },
 
-            render: function(options, chat) {
+            render: function(options, chat, mode) {
                 var _this = this;
                 _this.chat = chat;
                  _this.collectionDescription= {
@@ -107,7 +107,7 @@ define('pagination', [
                      "keyPath": "id"*/
                  };
 
-                _this.optionsDefinition(_this.chat.bodyOptions.mode);
+                _this.optionsDefinition(mode);
 
                 _this.pagination_container = _this.chat.chat_element.querySelector('[data-role="pagination_container"]');
                 _this.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
@@ -172,6 +172,12 @@ define('pagination', [
                         _this.collectionDescription.table_names = [_this.chat.chatId + '_logs'];
                         _this.currentPaginationOptions = _this.chat.paginationLoggerOptions;
                         _this.currentGoToOptions = _this.chat.goToLoggerOptions;
+                        break;
+                    case _this.chat.MODE.MY_CHATS:
+                        _this.previousMode = _this.chat.MODE.MY_CHATS;
+                        _this.collectionDescription.table_names = ['authentication'];
+                        _this.currentPaginationOptions = _this.chat.paginationMyChatsOptions;
+                        _this.currentGoToOptions = _this.chat.goToMyChatsOptions;
                         break;
                 }
             },

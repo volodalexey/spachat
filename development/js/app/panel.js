@@ -3,6 +3,9 @@ define('panel', [
         'ajax_core',
         'template_core',
         'render_layout_core',
+        'extend_core',
+
+        'pagination',
 
         'indexeddb',
 
@@ -15,13 +18,20 @@ define('panel', [
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs',
         'text!../templates/element/textarea_template.ejs',
-        'text!../templates/detail_view_container_template.ejs'
+        'text!../templates/detail_view_container_template.ejs',
+
+
+        'text!../templates/filter_my_chats_template.ejs'
 
     ],
     function(throw_event_core,
              ajax_core,
              template_core,
              render_layout_core,
+             extend_core,
+
+             Pagination,
+
              indexeddb,
 
              panel_left_template,
@@ -33,9 +43,46 @@ define('panel', [
              label_template,
              input_template,
              textarea_template,
-             detail_view_container_template) {
+             detail_view_container_template,
+
+             filter_my_chats_template) {
+
+        var defaultOptions = {
+            goToMyChatsOptions: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+            paginationMyChatsOptions: {
+                show: false,
+                mode_change: "rte",
+                currentPage: null,
+                firstPage: 1,
+                lastPage: null,
+                showEnablePagination: false,
+                showChoicePerPage: false,
+                perPageValue: 1,
+                rtePerPage: true,
+                disableBack: false,
+                disableFirst: false,
+                disableLast: false,
+                disableForward: false
+            },
+            informationOptions: {
+                start: 0,
+                last: null,
+                previousStart: 0,
+                previousFinal: 0
+            },
+            filterOptions: {
+                show: false
+            }
+
+        };
 
         var panel = function(description) {
+            this.extend(this, defaultOptions);
+
             this.bindToolbarContext();
             this.bindMainContexts();
 
@@ -44,6 +91,10 @@ define('panel', [
             this.outer_container = description.outer_container;
             this.inner_container = description.inner_container;
             this.body_mode = description.body_mode;
+            this.filter_container = description.filter_container;
+
+            this.pagination = new Pagination({chat: this});
+
         };
 
         panel.prototype = {
@@ -74,7 +125,11 @@ define('panel', [
                 CREATE_CHAT: 'CREATE_CHAT',
                 JOIN_CHAT: 'JOIN_CHAT',
                 MY_CHATS: 'MY_CHATS',
-                DETAIL_VIEW: 'DETAIL_VIEW'
+                DETAIL_VIEW: 'DETAIL_VIEW',
+                FILTER_MY_CHATS: 'FILTER_MY_CHATS',
+                GO_TO: 'GO_TO',
+                PAGINATION: 'PAGINATION',
+                FILTER: 'FILTER'
             },
 
             configMap: {
@@ -82,8 +137,9 @@ define('panel', [
                 "USER_INFO_SHOW": '/configs/user_info_config.json',
                 "CREATE_CHAT": '/configs/chats_info_config.json',
                 "JOIN_CHAT": '/configs/chats_info_config.json',
-                "MY_CHATS": '',
-                "DETAIL_VIEW": ''
+                "MY_CHATS": '/configs/chats_info_config.json',
+                "DETAIL_VIEW": '/configs/chats_info_config.json',
+                "FILTER_MY_CHATS": '/configs/filter_my_chats_config.json'
             },
 
             z_index: 80,
@@ -104,7 +160,8 @@ define('panel', [
                     "CREATE_CHAT":  _this.panel_body,
                     "JOIN_CHAT":  _this.panel_body,
                     "MY_CHATS":  _this.panel_body,
-                    "DETAIL_VIEW": null
+                    "DETAIL_VIEW": null,
+                    "FILTER_MY_CHATS":  _this.filter_container
                 };
                 _this.addMainEventListener();
                 _this.outer_container.classList.remove("hide");
@@ -212,6 +269,58 @@ define('panel', [
                     }
                     _this.panel_body.innerHTML = "";
                 }
+            },
+
+            switchPanelMode: function(event) {
+                var _this = this;
+                _this.body_mode = event.target.getAttribute("data-mode");
+                _this.filterOptions.show = false;
+                _this.filter_container.innerHTML = "";
+                _this.renderLayout(null, null);
+            },
+
+            change_Panel_Body_Mode: function(event) {
+                var _this = this;
+                _this.switch_Panel_Body_Mode({
+                    panel_body_part: event.target.dataset.panel_body_part,
+                    newMode: event.target.dataset.mode_to,
+                    target: event.target
+                })
+            },
+
+            switch_Panel_Body_Mode: function(obj) {
+                var _this = this;
+                switch (obj.panel_body_part) {
+                    case _this.MODE.FILTER:
+                        if (obj.target) {
+                            var bool_Value = obj.target.dataset.toggle === "true";
+                            _this.filterOptions.show = bool_Value;
+                            obj.target.dataset.toggle = !bool_Value;
+                        }
+                        break;
+                }
+                _this.renderBodyPanel();
+            },
+
+            renderBodyPanel: function() {
+                var _this = this;
+                if (_this.filterOptions.show) {
+                    _this.previous_mode = _this.body_mode;
+                    _this.body_mode = _this.MODE.FILTER_MY_CHATS;
+                    var data = {
+                        "perPageValue": _this.paginationMyChatsOptions.perPageValue,
+                        "showEnablePagination": _this.paginationMyChatsOptions.showEnablePagination,
+                        "rtePerPage": _this.paginationMyChatsOptions.rtePerPage,
+                        "mode_change": _this.paginationMyChatsOptions.mode_change
+                    };
+                    _this.renderLayout(data, function() {
+                        _this.body_mode = _this.previous_mode;
+                    });
+                } else {
+                    _this.filter_container.innerHTML = "";
+                }
+
+                //_this.pagination.render(null, this, _this.body_mode);
             },
 
             togglePanel: function(forceClose) {
@@ -365,12 +474,6 @@ define('panel', [
                 _this.navigator.navigate();
             },
 
-            switchPanelMode: function(event) {
-                var _this = this;
-                _this.body_mode = event.target.getAttribute("data-mode");
-                _this.renderLayout(null, null);
-            },
-
             show_more_info: function(event) {
                 var _this = this, chat_id_value, element;
                 element = event.target;
@@ -388,7 +491,19 @@ define('panel', [
                 if (element) {
                     _this.body_mode = _this.MODE.DETAIL_VIEW;
                     _this.elementMap.DETAIL_VIEW = detail_view;
-                    _this.loadBodyData(null, {chat_id_value: chat_id_value}, function(dataErr, data) {
+                    _this.renderLayout({chat_id_value: chat_id_value}, function(err) {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
+                        detail_view.dataset.state = "expanded";
+                        detail_view.classList.add("max-height-auto");
+                        detail_view.style.maxHeight = '15em';
+                        pointer.classList.add("rotate-90");
+                        _this.openChatsArray.push(chat_id_value);
+                    });
+
+                    /*_this.loadBodyData(null, {chat_id_value: chat_id_value}, function(dataErr, data) {
                         _this.fillBody(dataErr, data, function(templErr) {
                             if (templErr) {
                                 console.error(templErr);
@@ -400,7 +515,7 @@ define('panel', [
                             pointer.classList.add("rotate-90");
                             _this.openChatsArray.push(chat_id_value);
                         });
-                    });
+                    });*/
                 }
             },
 
@@ -433,6 +548,8 @@ define('panel', [
         extend(panel, ajax_core);
         extend(panel, template_core);
         extend(panel, render_layout_core);
+        extend(panel, extend_core);
+
 
         panel.prototype.panel_left_template = panel.prototype.template(panel_left_template);
         panel.prototype.panel_right_template = panel.prototype.template(panel_right_template);
@@ -445,13 +562,16 @@ define('panel', [
         panel.prototype.textarea_template = panel.prototype.template(textarea_template);
         panel.prototype.detail_view_container_template = panel.prototype.template(detail_view_container_template);
 
+        panel.prototype.filter_my_chats_template = panel.prototype.template(filter_my_chats_template);
+
         panel.prototype.dataMap = {
             "USER_INFO_EDIT": panel.prototype.collectionDescription,
             "USER_INFO_SHOW": panel.prototype.collectionDescription,
             "CREATE_CHAT": '',
             'JOIN_CHAT': '',
             "MY_CHATS": panel.prototype.collectionDescriptionChats,
-            "DETAIL_VIEW": panel.prototype.collectionDescriptionChats
+            "DETAIL_VIEW": panel.prototype.collectionDescriptionChats,
+            "FILTER_MY_CHATS": ''
         };
 
         panel.prototype.templateMap = {
@@ -460,7 +580,8 @@ define('panel', [
             "CREATE_CHAT": panel.prototype.chat_info_template,
             "JOIN_CHAT": panel.prototype.chat_info_template,
             "MY_CHATS": panel.prototype.chat_info_template,
-            "DETAIL_VIEW": panel.prototype.detail_view_container_template
+            "DETAIL_VIEW": panel.prototype.detail_view_container_template,
+            "FILTER_MY_CHATS": panel.prototype.filter_my_chats_template
         };
 
         panel.prototype.dataHandlerMap = {
@@ -469,7 +590,8 @@ define('panel', [
             "CREATE_CHAT": null,
             "JOIN_CHAT": null,
             "MY_CHATS": panel.prototype.transferData,
-            "DETAIL_VIEW": panel.prototype.chatsFilter
+            "DETAIL_VIEW": panel.prototype.chatsFilter,
+            "FILTER_MY_CHATS": ''
         };
 
         return panel;
