@@ -23,8 +23,8 @@ define('register', [
         var register = function() {
             this.link = /register/; // is used for navigator
             this.collectionDescription = {
-                "db_name": 'authentication',
-                "table_names": ['authentication'],
+                "db_name": 'users',
+                "table_names": ['users'],
                 "db_version": 1,
                 "keyPath": "userId"
             };

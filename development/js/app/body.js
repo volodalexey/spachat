@@ -2,44 +2,178 @@ define('body', [
         'chat',
         'throw_event_core',
         'template_core',
-        'render_layout_core'
+        'render_layout_core',
+        'ajax_core',
 
+        'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/button_template.ejs',
+        'text!../templates/element/label_template.ejs',
+        'text!../templates/element/input_template.ejs',
+        'text!../templates/element/textarea_template.ejs',
+        'text!../templates/detail_view_container_template.ejs',
+        'text!../templates/chat_info_template.ejs',
+        'text!../templates/user_info_template.ejs'
     ],
     function(chat,
              throw_event_core,
+             template_core,
+             render_layout_core,
              ajax_core,
-             template_core) {
+
+             triple_element_template,
+             button_template,
+             label_template,
+             input_template,
+             textarea_template,
+             detail_view_container_template,
+             chat_info_template,
+             user_info_template) {
 
         var body = function(options) {
         };
 
         body.prototype = {
 
+            configMap: {
+                "USER_INFO_EDIT": '/configs/user_info_config.json',
+                "USER_INFO_SHOW": '/configs/user_info_config.json',
+                "CREATE_CHAT": '/configs/chats_info_config.json',
+                "JOIN_CHAT": '/configs/chats_info_config.json',
+                "CHATS": '/configs/chats_info_config.json',
+                "DETAIL_VIEW": '/configs/chats_info_config.json'
+            },
+
+            collectionDescription: {
+                "id": 'users',
+                "db_name": 'users',
+                "table_names": ['users'],
+                "db_version": 1,
+                "keyPath": "userId"
+            },
+
+            collectionDescriptionChats: {
+                "id": 'chats',
+                "db_name": 'chats',
+                "table_names": ['chats'],
+                "db_version": 1,
+                "keyPath": "chatId"
+            },
+
             MODE: {
                 SETTING: 'SETTING',
                 MESSAGES: 'MESSAGES',
                 CONTACT_LIST: 'CONTACT_LIST',
-                LOGGER: 'LOGGER'
+                LOGGER: 'LOGGER',
+
+                CREATE_CHAT: 'CREATE_CHAT',
+                JOIN_CHAT: 'JOIN_CHAT',
+                CHATS: 'CHATS',
+                DETAIL_VIEW: 'DETAIL_VIEW',
+
+                USER_INFO_EDIT: 'USER_INFO_EDIT',
+                USER_INFO_SHOW: 'USER_INFO_SHOW'
             },
 
-            render: function(options, chat) {
+            render: function(options, _module) {
                 var _this = this;
-                _this.chat = chat;
-                if (_this.chat.bodyOptions.show) {
-                    switch (_this.chat.bodyOptions.mode) {
+                _this.module = _module;
+                if (_this.module.bodyOptions.show) {
+                    switch (_this.module.bodyOptions.mode) {
                         case _this.MODE.SETTING:
-                            _this.chat.settings.renderSettings(options, chat);
+                            _this.module.settings.renderSettings(options, _module);
                             break;
                         case _this.MODE.CONTACT_LIST:
-                            _this.chat.contact_list.renderContactList(options, chat);
+                            _this.module.contact_list.renderContactList(options, _module);
                             break;
                         case _this.MODE.MESSAGES: case _this.MODE.LOGGER:
-                            _this.chat.messages.render(options, chat);
+                            _this.module.messages.render(options, _module);
+                            break;
+                        case _this.MODE.USER_INFO_SHOW:
+                            _this.elementMap = {
+                                "USER_INFO_SHOW":  _this.module.panel_body
+                            };
+                            _this.body_mode = _this.MODE.USER_INFO_SHOW;
+                            _this.renderLayout(null, null);
+                            break;
+                        case _this.MODE.USER_INFO_EDIT:
+                            _this.elementMap = {
+                                "USER_INFO_EDIT":  _this.module.panel_body
+                            };
+                            _this.body_mode = _this.MODE.USER_INFO_EDIT;
+                            var data= {
+                                "user": _this.module.user
+                            };
+                            _this.renderLayout(data, function() {
+                                _this.module.cashBodyElement();
+                            });
+                            break;
+                        case _this.MODE.CREATE_CHAT:
+                            _this.elementMap = {
+                                "CREATE_CHAT":  _this.module.panel_body
+                            };
+                            _this.body_mode = _this.MODE.CREATE_CHAT;
+                            _this.renderLayout(null, null);
+                            break;
+                        case _this.MODE.JOIN_CHAT:
+                            _this.elementMap = {
+                            "JOIN_CHAT":  _this.module.panel_body
+                            };
+                            _this.body_mode = _this.MODE.JOIN_CHAT;
+                            _this.renderLayout(null, null);
+                            break;
+                        case _this.MODE.CHATS:
+                            _this.elementMap = {
+                                "CHATS":  _this.module.panel_body
+                            };
+                            _this.body_mode = _this.MODE.CHATS;
+                            _this.renderLayout(null, null);
+                            break;
+                        case _this.MODE.DETAIL_VIEW:
+                            _this.elementMap = {
+                                "DETAIL_VIEW":  options.detail_view
+                            };
+                            _this.body_mode = _this.MODE.DETAIL_VIEW;
+                            _this.renderLayout({chat_id_value: options.chat_id_value}, function(){
+                                _this.module.rotatePointer(options);
+                            });
                             break;
                     }
 
-                    _this.previousMode = _this.chat.bodyOptions.mode;
+                    _this.previousMode = _this.module.bodyOptions.mode;
                 }
+            },
+
+            usersFilter: function(options, users) {
+                var _this = this;
+                users.every(function(_user) {
+                    if (_user.userId === _this.module.navigator.userId) {
+                        _this.module.user = _user;
+                    }
+                    return !_this.module.user;
+                });
+                return _this.module.user;
+            },
+
+            chatsFilter: function(options, chats) {
+                var chat_info;
+                chats.every(function(_chat) {
+                    if (_chat.chatId === options.chat_id_value) {
+                        chat_info = _chat;
+                    }
+                    return !chat_info;
+                });
+                return chat_info;
+            },
+
+            transferData: function(options, data){
+                var _this = this;
+
+                var dataUpdated = {
+                    "data": data,
+                    "detail_view_template": _this.detail_view_container_template,
+                    "openChatsArray": _this.module.openChatsArray
+                };
+                return dataUpdated;
             },
 
             destroy: function() {
@@ -50,6 +184,48 @@ define('body', [
 
         extend(body, throw_event_core);
         extend(body, template_core);
+        extend(body, render_layout_core);
+        extend(body, ajax_core);
+
+        body.prototype.chat_info_template = body.prototype.template(chat_info_template);
+        body.prototype.user_info_template = body.prototype.template(user_info_template);
+        body.prototype.triple_element_template = body.prototype.template(triple_element_template);
+        body.prototype.button_template = body.prototype.template(button_template);
+        body.prototype.label_template = body.prototype.template(label_template);
+        body.prototype.input_template = body.prototype.template(input_template);
+        body.prototype.textarea_template = body.prototype.template(textarea_template);
+        body.prototype.detail_view_container_template = body.prototype.template(detail_view_container_template);
+
+
+        body.prototype.dataMap = {
+            "USER_INFO_EDIT": body.prototype.collectionDescription,
+            "USER_INFO_SHOW": body.prototype.collectionDescription,
+            "CREATE_CHAT": '',
+            'JOIN_CHAT': '',
+            "CHATS": body.prototype.collectionDescriptionChats,
+            "DETAIL_VIEW": body.prototype.collectionDescriptionChats,
+            "FILTER_MY_CHATS": ''
+        };
+
+        body.prototype.templateMap = {
+            "USER_INFO_EDIT": body.prototype.user_info_template,
+            "USER_INFO_SHOW": body.prototype.user_info_template,
+            "CREATE_CHAT": body.prototype.chat_info_template,
+            "JOIN_CHAT": body.prototype.chat_info_template,
+            "CHATS": body.prototype.chat_info_template,
+            "DETAIL_VIEW": body.prototype.detail_view_container_template,
+            "FILTER_MY_CHATS": body.prototype.filter_my_chats_template
+        };
+
+        body.prototype.dataHandlerMap = {
+            "USER_INFO_EDIT": body.prototype.usersFilter,
+            "USER_INFO_SHOW": body.prototype.usersFilter,
+            "CREATE_CHAT": null,
+            "JOIN_CHAT": null,
+            "CHATS": body.prototype.transferData,
+            "DETAIL_VIEW": body.prototype.chatsFilter,
+            "FILTER_CHATS": ''
+        };
 
         return body;
     });

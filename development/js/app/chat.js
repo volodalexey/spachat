@@ -16,6 +16,7 @@ define('chat', [
         'extend_core',
         'message_core',
         'throw_event_core',
+        "switcher",
         //
         'text!../templates/chat_template.ejs',
         'text!../templates/waiter_template.ejs',
@@ -38,6 +39,7 @@ define('chat', [
              extend_core,
              message_core,
              throw_event_core,
+             switcher,
              //
              chat_template,
              waiter_template,
@@ -226,7 +228,6 @@ define('chat', [
                                         _this.filterOptions.show = bool_Value;
                                         _obj.target.dataset.toggle = !bool_Value;
                                     }
-
                                     switch (_this.bodyOptions.mode) {
                                         case _this.body.MODE.SETTING: case _this.body.MODE.CONTACT_LIST:
                                             _this.bodyOptions.mode = _this.body.MODE.MESSAGES;
@@ -250,7 +251,6 @@ define('chat', [
                                         case  _this.body.MODE.LOGGER:
                                             break;
                                     }
-
                                     break;
                             }
                             break;
@@ -393,7 +393,7 @@ define('chat', [
                             switch (_obj.newMode) {
                                 case _this.pagination.MODE.PAGINATION:
                                     if (_obj.target) {
-                                        _this.optionsDefinition(_this.bodyOptions.mode);
+                                        _this.optionsDefinition(_this, _this.bodyOptions.mode);
                                         _this.currentPaginationOptions.show = _obj.target.checked;
                                         _this.currentPaginationOptions.showEnablePagination = _obj.target.checked;
                                         if (!_obj.target.checked) {
@@ -406,7 +406,11 @@ define('chat', [
                                     _this.toggleShowState({key: 'show', toggle: false}, _this.currentPaginationOptions, _obj);
                                     break;
                                 case _this.pagination.MODE.GO_TO:
-                                    _this.toggleShowState({key: 'show', toggle: false}, _this.currentGoToOptions, _obj);
+                                    _this.optionsDefinition(_this, _this.bodyOptions.mode);
+                                    if (_obj.target) {
+                                        var bool_Value = _obj.target.dataset.toggle === "true";
+                                        _this.currentGoToOptions.show = bool_Value;
+                                    }
                                     break;
                             }
                             break;
@@ -415,21 +419,6 @@ define('chat', [
                     }
                 });
                 _this.render(options, _array);
-            },
-
-            optionsDefinition: function(mode){
-                var _this = this;
-
-                switch (mode) {
-                    case _this.body.MODE.MESSAGES: case _this.body.MODE.SETTING: case _this.body.MODE.CONTACT_LIST:
-                         _this.currentPaginationOptions = _this.paginationMessageOptions;
-                         _this.currentGoToOptions = _this.goToMessageOptions;
-                    break;
-                    case _this.body.MODE.LOGGER:
-                        _this.currentPaginationOptions = _this.paginationLoggerOptions;
-                        _this.currentGoToOptions = _this.goToLoggerOptions;
-                        break;
-                }
             },
 
             addEventListeners: function() {
@@ -611,6 +600,7 @@ define('chat', [
         extend(chat, extend_core);
         extend(chat, message_core);
         extend(chat, throw_event_core);
+        extend(chat, switcher);
 
         chat.prototype.chat_template = chat.prototype.template(chat_template);
         chat.prototype.waiter_template = chat.prototype.template(waiter_template);

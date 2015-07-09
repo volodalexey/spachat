@@ -4,6 +4,7 @@ define('pagination', [
         'template_core',
         'render_layout_core',
         'indexeddb',
+        "switcher",
 
         'text!../templates/pagination_template.ejs',
         'text!../templates/choice_per_page_template.ejs',
@@ -17,6 +18,7 @@ define('pagination', [
              template_core,
              render_layout_core,
              indexeddb,
+             switcher,
 
              pagination_template,
              choice_per_page_template,
@@ -94,20 +96,7 @@ define('pagination', [
             render: function(options, chat, mode) {
                 var _this = this;
                 _this.chat = chat;
-                 _this.collectionDescription= {
-                     "id": _this.chat.chatId,
-                     "db_name": _this.chat.chatId + '_chat',
-                     "table_names": [],
-                     "db_version": 1,
-                     "keyPath": "id"
-                     /*"id": _this.chat.chatsArray.length,
-                     "db_name": _this.chat.chatsArray.length + '_chat_messages',
-                     "table_name": _this.chat.chatsArray.length + '_chat_messages',
-                     "db_version": 1,
-                     "keyPath": "id"*/
-                 };
-
-                _this.optionsDefinition(mode);
+                _this.optionsDefinition(_this.chat, mode);
 
                 _this.pagination_container = _this.chat.chat_element.querySelector('[data-role="pagination_container"]');
                 _this.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
@@ -150,38 +139,6 @@ define('pagination', [
                 }
             },
 
-            optionsDefinition: function(mode){
-                var _this = this;
-
-                if (_this.previousMode !== mode) {
-                    _this.chat.messagesOptions.previousStart = 0;
-                    _this.chat.messagesOptions.previousFinal = null;
-                    _this.chat.messagesOptions.start = 0;
-                    _this.chat.messagesOptions.final = null;
-                }
-
-                switch (mode) {
-                    case _this.chat.body.MODE.MESSAGES: case _this.chat.body.MODE.SETTING: case _this.chat.body.MODE.CONTACT_LIST:
-                         _this.previousMode = _this.chat.body.MODE.MESSAGES;
-                        _this.collectionDescription.table_names = [_this.chat.chatId + '_messages'];
-                        _this.currentPaginationOptions = _this.chat.paginationMessageOptions;
-                        _this.currentGoToOptions = _this.chat.goToMessageOptions;
-                        break;
-                    case _this.chat.body.MODE.LOGGER:
-                        _this.previousMode = _this.chat.body.MODE.LOGGER;
-                        _this.collectionDescription.table_names = [_this.chat.chatId + '_logs'];
-                        _this.currentPaginationOptions = _this.chat.paginationLoggerOptions;
-                        _this.currentGoToOptions = _this.chat.goToLoggerOptions;
-                        break;
-                    case _this.chat.MODE.MY_CHATS:
-                        _this.previousMode = _this.chat.MODE.MY_CHATS;
-                        _this.collectionDescription.table_names = ['authentication'];
-                        _this.currentPaginationOptions = _this.chat.paginationMyChatsOptions;
-                        _this.currentGoToOptions = _this.chat.goToMyChatsOptions;
-                        break;
-                }
-            },
-
             renderGoTo: function() {
                 var _this = this;
                 if (_this.currentGoToOptions.show){
@@ -217,8 +174,8 @@ define('pagination', [
 
             countQuantityPages: function(callback) {
                 var _this = this, quantityPages;
-                _this.optionsDefinition(_this.chat.bodyOptions.mode);
-                indexeddb.getAll(_this.collectionDescription, null, function(getAllErr, messages) {
+                _this.optionsDefinition(_this.chat, _this.chat.bodyOptions.mode);
+                indexeddb.getAll(_this.chat.collectionDescription, null, function(getAllErr, messages) {
                     var quantityMessage = messages.length;
                     if (quantityMessage !== 0) {
                         quantityPages = Math.ceil(quantityMessage / _this.currentPaginationOptions.perPageValue);
@@ -234,13 +191,11 @@ define('pagination', [
                         _this.chat.messagesOptions.final = (_this.currentPaginationOptions.currentPage - 1) * _this.currentPaginationOptions.perPageValue + _this.currentPaginationOptions.perPageValue;
                     }
                     _this.currentPaginationOptions.lastPage = quantityPages;
-                    //_this.disableButtonsPagination();
                     if (callback) {
                         callback();
                     }
                 });
             },
-
 
             switchPage: function(event) {
                 var _this = this;
@@ -320,6 +275,7 @@ define('pagination', [
         extend(pagination, ajax_core);
         extend(pagination, template_core);
         extend(pagination, render_layout_core);
+        extend(pagination, switcher);
 
 
         pagination.prototype.pagination_template = pagination.prototype.template(pagination_template);

@@ -20,8 +20,8 @@ define('login', [
             this.loginForm = this.login_outer_container.querySelector('[data-role="loginForm"]');
             this.redirectToRegisterElement = this.loginForm.querySelector('[data-action="clickRedirectToRegister"]');
             this.collectionDescription = {
-                "db_name": 'authentication',
-                "table_names": ['authentication'],
+                "db_name": 'users',
+                "table_names": ['users'],
                 "db_version": 1,
                 "keyPath": "userId"
             };

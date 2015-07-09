@@ -42,7 +42,7 @@
       "role": "",
       "location": "left_panel",
       "action": "switchPanelMode",
-      "mode": "MY_CHATS"
+      "mode": "CHATS"
     },
     "name": "",
     "disable": false

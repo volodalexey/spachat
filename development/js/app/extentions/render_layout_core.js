@@ -42,7 +42,7 @@ define('render_layout_core', [
                 if (_this.configMap[_this.body_mode] || _this.configIconMap && _this.configIconMap[_this.body_mode]) {
 
                     if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW) {
-                        if (_this.config) {
+                        if (_this.module.config) {
                             callback();
                             return;
                         }
@@ -59,6 +59,9 @@ define('render_layout_core', [
                             return;
                         }
                         _this.config = JSON.parse(res);
+                        if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW) {
+                            _this.module.config = _this.config;
+                        }
                         _this.loadBodyIconConfig(callback);
                     });
                 } else {
@@ -112,8 +115,8 @@ define('render_layout_core', [
                 if (_this.dataMap[_this.body_mode]) {
                     var collectionDescription = _this.dataMap[_this.body_mode];
 
-                    if (_this.user) {
-                        callback(null, _this.user);
+                    if (_this.module.user) {
+                        callback(null, _this.module.user);
                         return;
                     }
 

@@ -5,6 +5,7 @@ define('header', [
         'template_core',
         'indexeddb',
         'render_layout_core',
+        "switcher",
 
         'pagination',
 
@@ -21,6 +22,7 @@ define('header', [
              template_core,
              indexeddb,
              render_layout_core,
+             switcher,
 
              pagination,
 
@@ -156,38 +158,28 @@ define('header', [
 
             renderFilter: function() {
                 var _this = this;
-                _this.optionsDefinition(_this.chat.bodyOptions.mode);
+                _this.optionsDefinition(_this.chat, _this.chat.bodyOptions.mode);
                 if (_this.chat.filterOptions.show) {
-                    _this.body_mode = _this.MODE.FILTER;
-                    _this.elementMap = {
-                        FILTER: _this.filter_container
-                    };
-                    _this.body_mode = _this.MODE.FILTER;
-                    var data = {
-                        "perPageValue": _this.currentPaginationOptions.perPageValue,
-                        "showEnablePagination": _this.currentPaginationOptions.showEnablePagination,
-                        "rtePerPage": _this.currentPaginationOptions.rtePerPage,
-                        "mode_change": _this.currentPaginationOptions.mode_change
-                    };
-                    _this.renderLayout(data, null);
+                    if (!_this.previousFilterShow) {
+                        _this.previousFilterShow = true;
+                        _this.body_mode = _this.MODE.FILTER;
+                        _this.elementMap = {
+                            FILTER: _this.filter_container
+                        };
+                        _this.body_mode = _this.MODE.FILTER;
+                        var data = {
+                            "perPageValue": _this.currentPaginationOptions.perPageValue,
+                            "showEnablePagination": _this.currentPaginationOptions.showEnablePagination,
+                            "rtePerPage": _this.currentPaginationOptions.rtePerPage,
+                            "mode_change": _this.currentPaginationOptions.mode_change
+                        };
+                        _this.renderLayout(data, null);
+                    }
                 }
                 else {
                     _this.filter_container.innerHTML = "";
                     _this.chat.filterOptions.show = false;
-                }
-            },
-
-
-            optionsDefinition: function(mode){
-                var _this = this;
-
-                switch (mode) {
-                    case _this.chat.body.MODE.MESSAGES: case _this.chat.body.MODE.SETTING: case _this.chat.body.MODE.CONTACT_LIST:
-                    _this.currentPaginationOptions = _this.chat.paginationMessageOptions;
-                    break;
-                    case _this.chat.body.MODE.LOGGER:
-                        _this.currentPaginationOptions = _this.chat.paginationLoggerOptions;
-                        break;
+                    _this.previousFilterShow = false;
                 }
             },
 
@@ -248,6 +240,7 @@ define('header', [
         extend(header, ajax_core);
         extend(header, template_core);
         extend(header, render_layout_core);
+        extend(header, switcher);
 
         header.prototype.header_template = header.prototype.template(header_template);
         header.prototype.filter_template = header.prototype.template(filter_template);
