@@ -52,6 +52,10 @@ define('editor', [
                 _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
                 _this.bindedSendEnter = _this.sendEnter.bind(_this);
             },
+            //override extended throwEvent to use trigger on chat
+            throwEvent: function(name, data) {
+                this.chat && this.chat.trigger('throw', name, data);
+            },
 
             addMainEventListener: function() {
                 var _this = this;

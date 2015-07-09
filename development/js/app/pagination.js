@@ -49,6 +49,11 @@ define('pagination', [
                 _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
             },
 
+            //override extended throwEvent to use trigger on chat
+            throwEvent: function(name, data) {
+                this.chat && this.chat.trigger('throw', name, data);
+            },
+
             cashMainElements: function() {
                 var _this = this;
                 _this.buttons_show_choice = Array.prototype.slice.call(_this.pagination_container.querySelectorAll('[data-role="choice"]'));

@@ -78,7 +78,7 @@ define('panel', [
         var panel = function(description) {
             this.extend(this, defaultOptions);
 
-            this.bindToolbarContext();
+            //this.bindToolbarContext();
             this.bindMainContexts();
 
             this.type = description.type;
@@ -183,10 +183,10 @@ define('panel', [
                 _this.bindedTransitionEnd = _this.transitionEnd.bind(_this);
             },
 
-            bindToolbarContext: function() {
-                var _this = this;
-                _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
-            },
+            //bindToolbarContext: function() {
+            //    var _this = this;
+            //    _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
+            //},
 
             addMainEventListener: function() {
                 var _this = this;

@@ -424,7 +424,7 @@ define('chat', [
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
-                event_bus.on('throw', _this.throwRouter, _this);
+                _this.on('throw', _this.throwRouter, _this);
                 _this.webrtc.on('log', _this.console.log, _this);
                 _this.webrtc.on('sendToWebSocket', _this.sendToWebSocket, _this);
                 _this.webrtc.on('deviceId', _this.setDeviceId, _this);
@@ -433,7 +433,7 @@ define('chat', [
 
             removeEventListeners: function() {
                 var _this = this;
-                event_bus.off('throw', _this.throwRouter);
+                _this.off('throw', _this.throwRouter);
                 _this.webrtc.off('log');
                 _this.webrtc.off('sendToWebSocket');
                 _this.webrtc.off('deviceId');

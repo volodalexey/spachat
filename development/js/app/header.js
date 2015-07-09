@@ -66,6 +66,11 @@ define('header', [
                 _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
             },
 
+            //override extended throwEvent to use trigger on chat
+            throwEvent: function(name, data) {
+                this.chat && this.chat.trigger('throw', name, data);
+            },
+
             addToolbarEventListener: function() {
                 var _this = this;
                 _this.removeToolbarEventListeners();
