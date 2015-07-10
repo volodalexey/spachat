@@ -4,7 +4,7 @@ define('pagination', [
         'template_core',
         'render_layout_core',
         'indexeddb',
-        "switcher",
+        "switcher_core",
 
         'text!../templates/pagination_template.ejs',
         'text!../templates/choice_per_page_template.ejs',
@@ -18,7 +18,7 @@ define('pagination', [
              template_core,
              render_layout_core,
              indexeddb,
-             switcher,
+             switcher_core,
 
              pagination_template,
              choice_per_page_template,
@@ -51,66 +51,66 @@ define('pagination', [
 
             //override extended throwEvent to use trigger on chat
             throwEvent: function(name, data) {
-                this.chat && this.chat.trigger('throw', name, data);
+                this.module && this.module.trigger('throw', name, data);
             },
 
             cashMainElements: function() {
                 var _this = this;
-                _this.buttons_show_choice = Array.prototype.slice.call(_this.pagination_container.querySelectorAll('[data-role="choice"]'));
+                _this.buttons_show_choice = Array.prototype.slice.call(_this.module.pagination_container.querySelectorAll('[data-role="choice"]'));
             },
 
             addMainEventListener: function() {
                 var _this = this;
                 _this.removeMainEventListeners();
-                _this.addRemoveListener('add', _this.pagination_container, 'click', _this.bindedThrowEventRouter, false);
-                _this.addRemoveListener('add', _this.pagination_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.module.pagination_container, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('add', _this.module.pagination_container, 'click', _this.bindedDataActionRouter, false);
             },
 
             removeMainEventListeners: function() {
                 var _this = this;
-                _this.addRemoveListener('remove', _this.pagination_container, 'click', _this.bindedThrowEventRouter, false);
-                _this.addRemoveListener('remove', _this.pagination_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.module.pagination_container, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('remove', _this.module.pagination_container, 'click', _this.bindedDataActionRouter, false);
             },
 
             cashContextElements: function() {
                 var _this = this;
-                _this.input_choose_page = _this.go_to_container.querySelector('[data-role="choice_per_page"]');
+                _this.input_choose_page = _this.module.go_to_container.querySelector('[data-role="choice_per_page"]');
             },
 
             addContextEventListener: function() {
                 var _this = this;
                 _this.removeContextEventListeners();
-                _this.addRemoveListener('add', _this.go_to_container, 'input', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('add', _this.go_to_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.module.go_to_container, 'input', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.module.go_to_container, 'click', _this.bindedDataActionRouter, false);
             },
 
             removeContextEventListeners: function() {
                 var _this = this;
-                _this.addRemoveListener('remove', _this.go_to_container, 'input', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('remove', _this.go_to_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.module.go_to_container, 'input', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.module.go_to_container, 'click', _this.bindedDataActionRouter, false);
             },
 
             unCashElements: function() {
                 var _this = this;
                 _this.buttons_show_choice = null;
                 _this.input_choose_page = null;
-                _this.pagination_container = null;
-                _this.go_to_container = null;
+                //_this.pagination_container = null;
+                //_this.go_to_container = null;
             },
 
-            render: function(options, chat, mode) {
+            render: function(options, _module, mode) {
                 var _this = this;
-                _this.chat = chat;
-                _this.optionsDefinition(_this.chat, mode);
+                _this.module = _module;
+                _this.optionsDefinition(_this.module, mode);
 
-                _this.pagination_container = _this.chat.chat_element.querySelector('[data-role="pagination_container"]');
-                _this.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
+                //_this.module.pagination_container = _this.chat.chat_element.querySelector('[data-role="pagination_container"]');
+                //_this.module.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
                 if (_this.currentPaginationOptions.show) {
                     _this.countQuantityPages(function(){
                         _this.disableButtonsPagination();
                         _this.body_mode = _this.MODE.PAGINATION;
                         _this.elementMap = {
-                            PAGINATION: _this.pagination_container
+                            PAGINATION: _this.module.pagination_container
                         };
                         var data = {
                             firstPage: _this.currentPaginationOptions.firstPage,
@@ -133,8 +133,8 @@ define('pagination', [
                         });
                     });
                 } else {
-                    _this.pagination_container.innerHTML = "";
-                    _this.go_to_container.innerHTML = "";
+                    _this.module.pagination_container.innerHTML = "";
+                    _this.module.go_to_container.innerHTML = "";
                     if (_this.buttons_show_choice) {
                         _this.buttons_show_choice.forEach(function(btn){
                             btn.dataset.toggle = true;
@@ -153,7 +153,7 @@ define('pagination', [
                             btn.dataset.toggle = false;
                         });
                         _this.elementMap = {
-                            GO_TO: _this.go_to_container
+                            GO_TO: _this.module.go_to_container
                         };
                         var data = {
                             mode_change: _this.currentGoToOptions.mode_change,
@@ -168,7 +168,7 @@ define('pagination', [
                     }
                 } else {
                     _this.previousShow = false;
-                    _this.go_to_container.innerHTML = "";
+                    _this.module.go_to_container.innerHTML = "";
                     if (_this.buttons_show_choice) {
                         _this.buttons_show_choice.forEach(function(btn){
                             btn.dataset.toggle = true;
@@ -179,8 +179,8 @@ define('pagination', [
 
             countQuantityPages: function(callback) {
                 var _this = this, quantityPages;
-                _this.optionsDefinition(_this.chat, _this.chat.bodyOptions.mode);
-                indexeddb.getAll(_this.chat.collectionDescription, null, function(getAllErr, messages) {
+                _this.optionsDefinition(_this.module, _this.module.bodyOptions.mode);
+                indexeddb.getAll(_this.module.collectionDescription, null, function(getAllErr, messages) {
                     var quantityMessage = messages.length;
                     if (quantityMessage !== 0) {
                         quantityPages = Math.ceil(quantityMessage / _this.currentPaginationOptions.perPageValue);
@@ -188,12 +188,12 @@ define('pagination', [
                         quantityPages = 1;
                     }
                     if (_this.currentPaginationOptions.currentPage === null) {
-                        _this.chat.messagesOptions.start = quantityPages * _this.currentPaginationOptions.perPageValue - _this.currentPaginationOptions.perPageValue;
-                        _this.chat.messagesOptions.final = quantityPages * _this.currentPaginationOptions.perPageValue;
+                        _this.module.messagesOptions.start = quantityPages * _this.currentPaginationOptions.perPageValue - _this.currentPaginationOptions.perPageValue;
+                        _this.module.messagesOptions.final = quantityPages * _this.currentPaginationOptions.perPageValue;
                         _this.currentPaginationOptions.currentPage = quantityPages;
                     } else {
-                        _this.chat.messagesOptions.start = (_this.currentPaginationOptions.currentPage - 1) * _this.currentPaginationOptions.perPageValue;
-                        _this.chat.messagesOptions.final = (_this.currentPaginationOptions.currentPage - 1) * _this.currentPaginationOptions.perPageValue + _this.currentPaginationOptions.perPageValue;
+                        _this.module.messagesOptions.start = (_this.currentPaginationOptions.currentPage - 1) * _this.currentPaginationOptions.perPageValue;
+                        _this.module.messagesOptions.final = (_this.currentPaginationOptions.currentPage - 1) * _this.currentPaginationOptions.perPageValue + _this.currentPaginationOptions.perPageValue;
                     }
                     _this.currentPaginationOptions.lastPage = quantityPages;
                     if (callback) {
@@ -235,7 +235,7 @@ define('pagination', [
                     _this.previousShow = false;
                 }
 
-                _this.chat.render(null, null);
+                _this.module.render(null, null);
             },
 
             disableButtonsPagination: function() {
@@ -266,7 +266,7 @@ define('pagination', [
                     _this.currentGoToOptions.rteChoicePage = false;
                 }
                 _this.previousShow = false;
-                _this.chat.render(null, null);
+                _this.module.render(null, null);
             },
 
             destroy: function() {
@@ -280,7 +280,7 @@ define('pagination', [
         extend(pagination, ajax_core);
         extend(pagination, template_core);
         extend(pagination, render_layout_core);
-        extend(pagination, switcher);
+        extend(pagination, switcher_core);
 
 
         pagination.prototype.pagination_template = pagination.prototype.template(pagination_template);

@@ -84,7 +84,8 @@ define('messages', [
                         if (_this.chat.messagesOptions.final > messages.length || !_this.chat.messagesOptions.final) {
                             _this.chat.messagesOptions.final = messages.length;
                         }
-                        if (_this.chat.messagesOptions.previousStart !== _this.chat.messagesOptions.start || _this.chat.messagesOptions.previousFinal !== _this.chat.messagesOptions.final) {
+                        if (_this.chat.messagesOptions.previousStart !== _this.chat.messagesOptions.start ||
+                            _this.chat.messagesOptions.previousFinal !== _this.chat.messagesOptions.final) {
                             _this.chat.body_container.innerHTML = "";
                             _this.chat.messagesOptions.previousStart = _this.chat.messagesOptions.start;
                             _this.chat.messagesOptions.previousFinal = _this.chat.messagesOptions.final;

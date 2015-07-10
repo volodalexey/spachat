@@ -47,6 +47,22 @@
     "name": "",
     "disable": false
   },
+  {
+    "element": "button",
+    "icon": "",
+    "text": "My users",
+    "class": "",
+    "title": "",
+    "data": {
+      "description": "Button My USERS",
+      "role": "",
+      "location": "left_panel",
+      "action": "switchPanelMode",
+      "mode": "USERS"
+    },
+    "name": "",
+    "disable": false
+  },
 
   {
     "element": "button",

@@ -51,6 +51,11 @@ define('settings', [
                 _this.addRemoveListener('remove', _this.body_container, 'click', _this.bindedThrowEventRouter, false);
             },
 
+            //override extended throwEvent to use trigger on chat
+            throwEvent: function(name, data) {
+                this.chat && this.chat.trigger('throw', name, data);
+            },
+
             renderSettings: function(options, chat) {
                 var _this = this;
                 _this.chat = chat;

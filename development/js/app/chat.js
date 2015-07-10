@@ -16,7 +16,7 @@ define('chat', [
         'extend_core',
         'message_core',
         'throw_event_core',
-        "switcher",
+        "switcher_core",
         //
         'text!../templates/chat_template.ejs',
         'text!../templates/waiter_template.ejs',
@@ -39,7 +39,7 @@ define('chat', [
              extend_core,
              message_core,
              throw_event_core,
-             switcher,
+             switcher_core,
              //
              chat_template,
              waiter_template,
@@ -160,6 +160,8 @@ define('chat', [
                 _this.header_container = _this.chat_element.querySelector('[data-role="header_container"]');
                 _this.header_waiter_container = _this.chat_element.querySelector('[data-role="waiter_container"]');
                 _this.body_container = _this.chat_element.querySelector('[data-role="body_container"]');
+                _this.pagination_container = _this.chat_element.querySelector('[data-role="pagination_container"]');
+                _this.go_to_container = _this.chat_element.querySelector('[data-role="go_to_container"]');
             },
 
             unCashElements: function() {
@@ -558,7 +560,7 @@ define('chat', [
                 console.log('chatConnectionEstablished');
             },
 
-            toggleShowState: function(_options, toggleObject, _obj) {
+            /*toggleShowState: function(_options, toggleObject, _obj) {
                 if (_obj.target && _obj.target.dataset.role === "enablePagination") {
                     toggleObject[_options.key] = _obj.target.checked;
                     return;
@@ -588,7 +590,7 @@ define('chat', [
                 }
                 toggleObject[_options.key] = _options.toggle;
             },
-
+*/
             setDeviceId: function(deviceId) {
                 this.deviceId = deviceId;
             }
@@ -600,7 +602,7 @@ define('chat', [
         extend(chat, extend_core);
         extend(chat, message_core);
         extend(chat, throw_event_core);
-        extend(chat, switcher);
+        extend(chat, switcher_core);
 
         chat.prototype.chat_template = chat.prototype.template(chat_template);
         chat.prototype.waiter_template = chat.prototype.template(waiter_template);

@@ -4,6 +4,7 @@ define('panel', [
         'template_core',
         'render_layout_core',
         'extend_core',
+        "switcher_core",
 
         'pagination',
         'body',
@@ -18,7 +19,9 @@ define('panel', [
         'text!../templates/element/input_template.ejs',
         'text!../templates/element/textarea_template.ejs',
 
-        'text!../templates/filter_my_chats_template.ejs'
+        'text!../templates/filter_my_chats_template.ejs',
+        'text!../templates/panel_extra_toolbar_template.ejs'
+
 
     ],
     function(throw_event_core,
@@ -26,9 +29,13 @@ define('panel', [
              template_core,
              render_layout_core,
              extend_core,
+             switcher_core,
+
              Pagination,
              Body,
+
              indexeddb,
+
              panel_left_template,
              panel_right_template,
              triple_element_template,
@@ -36,15 +43,33 @@ define('panel', [
              label_template,
              input_template,
              textarea_template,
-             filter_my_chats_template) {
+             filter_my_chats_template,
+             panel_extra_toolbar_template) {
 
         var defaultOptions = {
-            goToChatsOptions: {
+
+            //collectionDescription: {
+            //    "id": 'users',
+            //    "db_name": 'users',
+            //    "table_names": ['users'],
+            //    "db_version": 1,
+            //    "keyPath": "userId"
+            //},
+            collectionDescription: {
+                "id": 'chats',
+                "db_name": 'chats',
+                "table_names": ['chats'],
+                "db_version": 1,
+                "keyPath": "chatId"
+            },
+
+            chatsGoToOptions: {
                 show: false,
                 rteChoicePage: true,
-                mode_change: "rte"
+                mode_change: "rte",
+                "chat": null
             },
-            paginationChatsOptions: {
+            chatsPaginationOptions: {
                 show: false,
                 mode_change: "rte",
                 currentPage: null,
@@ -59,7 +84,102 @@ define('panel', [
                 disableLast: false,
                 disableForward: false
             },
-            informationOptions: {
+            chats_Extra_Toolbar_Options: {
+                show: true
+            },
+            chats_Filter_Options: {
+                show: false
+            },
+
+            users_Extra_Toolbar_Options: {
+                show: true
+            },
+            users_Filter_Options: {
+                show: false
+            },
+            usersGoToOptions: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte",
+                "user": null
+            },
+            usersPaginationOptions: {
+                show: false,
+                mode_change: "rte",
+                currentPage: null,
+                firstPage: 1,
+                lastPage: null,
+                showEnablePagination: false,
+                showChoicePerPage: false,
+                perPageValue: 15,
+                rtePerPage: true,
+                disableBack: false,
+                disableFirst: false,
+                disableLast: false,
+                disableForward: false
+            },
+
+            create_Chat_Extra_Toolbar_Options: {
+                show: false
+            },
+            create_Chat_Filter_Options: {
+                show: false
+            },
+            createChatPaginationOptions: {
+                show: false
+            },
+            createChatGoToOptions: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+
+            join_Chat_Extra_Toolbar_Options: {
+                show: false
+            },
+            join_Chat_Filter_Options: {
+                show: false
+            },
+            joinChatPaginationOptions: {
+                show: false
+            },
+            joinChatGoToOptions: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+
+            user_info_edit_Extra_Toolbar_Options: {
+                show: false
+            },
+            user_info_edit_Filter_Options: {
+                show: false
+            },
+            user_Info_Edit_Pagination_Options: {
+                show: false
+            },
+            user_Info_Edit_Go_To_Options: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+
+            user_info_show_Extra_Toolbar_Options: {
+                show: false
+            },
+            user_info_show_Filter_Options: {
+                show: false
+            },
+            user_Info_Show_Pagination_Options: {
+                show: false
+            },
+            user_Info_Show_Go_To_Options: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+
+            messagesOptions: {
                 start: 0,
                 last: null,
                 previousStart: 0,
@@ -87,6 +207,9 @@ define('panel', [
             this.inner_container = description.inner_container;
             this.body_mode = description.body_mode;
             this.filter_container = description.filter_container;
+            this.go_to_container = description.go_to_container;
+            this.pagination_container = description.pagination_container;
+            this.extra_toolbar_container = description.extra_toolbar_container;
 
             this.pagination = new Pagination();
             this.body = new Body();
@@ -99,26 +222,37 @@ define('panel', [
 
             openChatsArray: [],
 
+            configMap: {
+                "CHATS_FILTER": '/configs/panel_chats_filter_config.json',
+                "CHATS_EXTRA_TOOLBAR": '/configs/panel_chats_extra_toolbar_config.json',
+                "USERS_FILTER": '/configs/panel_users_filter_config.json',
+                "USERS_EXTRA_TOOLBAR": '/configs/panel_users_extra_toolbar_config.json'
+            },
+
             MODE: {
                 CREATE_CHAT: 'CREATE_CHAT',
                 JOIN_CHAT: 'JOIN_CHAT',
                 CHATS: 'CHATS',
+                USERS: 'USERS',
 
                 USER_INFO_EDIT: 'USER_INFO_EDIT',
                 USER_INFO_SHOW: 'USER_INFO_SHOW',
                 DETAIL_VIEW: 'DETAIL_VIEW',
 
-                FILTER_CHATS: 'FILTER_CHATS',
-                EXTRA_TOOLBAR_CHATS: 'EXTRA_TOOLBAR_CHATS',
-                FILTER_USERS: 'FILTER_USERS',
-                EXTRA_TOOLBAR_USERS: ' EXTRA_TOOLBAR_USERS',
+                CHATS_FILTER: 'CHATS_FILTER',
+                CHATS_EXTRA_TOOLBAR: 'CHATS_EXTRA_TOOLBAR',
 
+                USERS_FILTER: 'USERS_FILTER',
+                USERS_EXTRA_TOOLBAR: ' USERS_EXTRA_TOOLBAR',
+
+                PAGINATION: "PAGINATION",
+                GO_TO: "GO_TO",
                 FILTER: 'FILTER'
             },
 
             z_index: 80,
 
-            render: function(options) {
+            initialization: function(options) {
                 if (!options || !options.navigator || !options.panel_platform) {
                     console.error(new Error('Invalid input options for render'));
                     return;
@@ -129,11 +263,16 @@ define('panel', [
 
                 _this.cashElements();
                 _this.elementMap = {
-                    "USER_INFO_EDIT": _this.panel_body,
+/*                    "USER_INFO_EDIT": _this.panel_body,
                     "USER_INFO_SHOW": _this.panel_body,
                     "CREATE_CHAT": _this.panel_body,
                     "JOIN_CHAT": _this.panel_body,
-                    "CHATS": _this.panel_body
+                    "CHATS": _this.panel_body,*/
+                    "CHATS_FILTER": _this.filter_container,
+                    "CHATS_EXTRA_TOOLBAR": _this.extra_toolbar_container,
+                    "USERS_FILTER": _this.filter_container,
+                    "USERS_EXTRA_TOOLBAR": _this.extra_toolbar_container
+
                 };
                 _this.addMainEventListener();
                 _this.outer_container.classList.remove("hide");
@@ -174,6 +313,20 @@ define('panel', [
                 }
             },
 
+            cashExtraToolbarElement: function() {
+                var _this = this;
+                _this.btn_Filter = _this.extra_toolbar_container.querySelector('[data-role="btn_Filter"]');
+            },
+
+            unCashElements: function() {
+                var _this = this;
+                _this.btn_Filter = null;
+                _this.user_name = null;
+                _this.old_password = null;
+                _this.new_password = null;
+                _this.confirm_password = null;
+            },
+
             bindMainContexts: function() {
                 var _this = this;
                 _this.bindedTogglePanelWorkflow = _this.togglePanelWorkflow.bind(_this);
@@ -193,28 +346,38 @@ define('panel', [
                 _this.removeMainEventListeners();
                 _this.addRemoveListener('add', _this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
                 _this.addRemoveListener('add', _this.panel_body, 'input', _this.bindedInutUserInfo, false);
-                _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.inner_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.inner_container, 'input', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('add', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
+                _this.on('throw', _this.throwRouter, _this);
             },
 
             removeMainEventListeners: function() {
                 var _this = this;
                 _this.addRemoveListener('remove', _this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'input', _this.bindedInutUserInfo, false);
-                _this.addRemoveListener('remove', _this.panel_body, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.inner_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.inner_container, 'input', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
+                _this.off('throw', _this.throwRouter);
+            },
+
+            throwRouter: function(action, event) {
+                if (this[action]) {
+                    this[action](event);
+                }
             },
 
             addToolbarEventListener: function() {
                 var _this = this;
-                _this.addRemoveListener('add', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
+                //_this.addRemoveListener('add', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
             },
 
             removeToolbarEventListeners: function() {
                 var _this = this;
-                _this.addRemoveListener('remove', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
+                //_this.addRemoveListener('remove', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
             },
 
             openOrClosePanel: function(bigMode, forceClose) {
@@ -224,7 +387,7 @@ define('panel', [
                     _this.outer_container.style.zIndex = ++panel.prototype.z_index;
                     _this.outer_container.style[_this.type] = "0px";
                     _this.fillPanelToolbar();
-                    _this.renderBodyPanel();
+                    _this.render();
                     if (bigMode === true) {
                         _this.resizePanel();
                     }
@@ -243,50 +406,96 @@ define('panel', [
                 }
             },
 
-            renderBodyPanel: function(options) {
-                var _this = this;
-                _this.body.render(options, this);
-                _this.renderExtraToolbar();
-                _this.renderFilter();
-                //_this.pagination.render(options, this, _this.bodyOptions.mode);
-            },
-
-            renderExtraToolbar: function() {
-
-            },
-
-            renderFilter: function() {
-                var _this = this;
-               /* if (_this.filterOptions.show) {
-                   /!* _this.previous_mode = _this.body_mode;
-                    _this.body_mode = _this.MODE.FILTER_CHATS;
-                    var data = {
-                        "perPageValue": _this.paginationChatsOptions.perPageValue,
-                        "showEnablePagination": _this.paginationChatsOptions.showEnablePagination,
-                        "rtePerPage": _this.paginationChatsOptions.rtePerPage,
-                        "mode_change": _this.paginationChatsOptions.mode_change
-                    };
-                    _this.renderLayout(data, function() {
-                        _this.body_mode = _this.previous_mode;
-                    });*!/
-                } else {
-                    _this.filter_container.innerHTML = "";
-                }*/
-            },
-
             switchPanelMode: function(event) {
                 var _this = this;
                 _this.bodyOptions.mode = event.target.getAttribute("data-mode");
-                _this.filterOptions.show = false;
-                _this.filter_container.innerHTML = "";
-                //_this.renderLayout(null, null);
-                _this.renderBodyPanel();
+                _this.previous_Filter_Options = false;
+                _this.pagination.previousShow = false;
+                _this.render();
             },
 
-            change_Panel_Body_Mode: function(event) {
+            render: function(options) {
                 var _this = this;
+
+                _this.renderExtraToolbar(function(){
+                    _this.renderFilter(function(){
+                        _this.pagination.render(options, _this, _this.bodyOptions.mode);
+                        _this.body.render(options, _this);
+                    });
+                });
+
+            },
+
+            renderExtraToolbar: function(_callback) {
+                var _this = this;
+                if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
+                    _this.optionsDefinition(_this, _this.MODE.CHATS);
+                } else {
+                    _this.optionsDefinition(_this, _this.bodyOptions.mode);
+                }
+
+                if (_this.current_Extra_Toolbar_Options.show) {
+                    if (_this.previousExtraToolbar !== _this.bodyOptions.mode &&
+                        _this.bodyOptions.mode !== _this.MODE.DETAIL_VIEW) {
+                        _this.body_mode = _this.bodyOptions.mode + "_EXTRA_TOOLBAR";
+                        _this.previousExtraToolbar = _this.bodyOptions.mode;
+                        _this.renderLayout(null, function(){
+                            _this.cashExtraToolbarElement();
+                            _callback();
+                        });
+                    } else {
+                        _callback();
+                    }
+                } else {
+                    _this.previousExtraToolbar = _this.bodyOptions.mode;
+                    _this.extra_toolbar_container.innerHTML = "";
+                    _callback();
+                }
+            },
+
+            renderFilter: function(callback) {
+                var _this = this;
+
+                if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
+                    _this.optionsDefinition(_this, _this.MODE.CHATS);
+                } else {
+                    _this.optionsDefinition(_this, _this.bodyOptions.mode);
+                }
+
+                if (_this.currnetFilterOptions.show) {
+                    if (_this.btn_Filter) {
+                        _this.btn_Filter.dataset.toggle = false;
+                    }
+                    if (!_this.previous_Filter_Options &&
+                        _this.bodyOptions.mode !== _this.MODE.DETAIL_VIEW) {
+                        _this.previous_Filter_Options = true;
+                        _this.body_mode = _this.bodyOptions.mode + "_FILTER";
+                        var data = {
+                            "perPageValue": _this.currentPaginationOptions.perPageValue,
+                            "showEnablePagination": _this.currentPaginationOptions.showEnablePagination,
+                            "rtePerPage": _this.currentPaginationOptions.rtePerPage,
+                            "mode_change": _this.currentPaginationOptions.mode_change
+                        };
+                        _this.renderLayout(data, function() {
+                            callback();
+                        });
+                    } else {
+                        callback();
+                    }
+                } else {
+                    _this.filter_container.innerHTML = "";
+                    _this.previous_Filter_Options = false;
+                    callback();
+                }
+            },
+
+            changeMode: function(event) {
+                var _this = this;
+                if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
+                    _this.bodyOptions.mode = _this.MODE.CHATS;
+                }
                 _this.switch_Panel_Body_Mode({
-                    panel_body_part: event.target.dataset.panel_body_part,
+                    chat_part: event.target.dataset.chat_part,
                     newMode: event.target.dataset.mode_to,
                     target: event.target
                 })
@@ -294,16 +503,108 @@ define('panel', [
 
             switch_Panel_Body_Mode: function(obj) {
                 var _this = this;
-                switch (obj.panel_body_part) {
-                    case _this.MODE.FILTER:
+                switch (obj.chat_part) {
+                    case "filter":
                         if (obj.target) {
                             var bool_Value = obj.target.dataset.toggle === "true";
-                            _this.filterOptions.show = bool_Value;
+                            _this.optionsDefinition(_this, _this.bodyOptions.mode);
+                            _this.currnetFilterOptions.show = bool_Value;
                             obj.target.dataset.toggle = !bool_Value;
                         }
                         break;
+                    case "pagination":
+                        switch (obj.newMode) {
+                            case _this.MODE.PAGINATION:
+                                if (obj.target) {
+                                    _this.optionsDefinition(_this, _this.bodyOptions.mode);
+                                    _this.currentPaginationOptions.show = obj.target.checked;
+                                    _this.currentPaginationOptions.showEnablePagination = obj.target.checked;
+                                    if (!obj.target.checked) {
+                                        _this.messagesOptions.previousStart = 0;
+                                        _this.messagesOptions.previousFinal = null;
+                                        _this.messagesOptions.start = 0;
+                                        _this.messagesOptions.final = null;
+                                    }
+                                }
+                                _this.toggleShowState({key: 'show', toggle: false}, _this.currentPaginationOptions, obj);
+                                break;
+                            case  _this.MODE.GO_TO:
+                                _this.optionsDefinition(_this, _this.bodyOptions.mode);
+                                if (obj.target) {
+                                    var bool_Value = obj.target.dataset.toggle === "true";
+                                    _this.currentGoToOptions.show = bool_Value;
+                                }
+                                break;
+                        }
+                        break;
                 }
-                _this.renderBodyPanel();
+                _this.render();
+            },
+
+            changePerPage: function(event) {
+                var _this = this;
+                var value = parseInt(event.target.value);
+                _this.optionsDefinition(_this, _this.bodyOptions.mode);
+
+                if (event.target.value !== "" && event.target.value !== "0" && event.type !== "click") {
+                    if (!_this.currentPaginationOptions.rtePerPage) {
+                        _this.currentPaginationOptions.currentPage = null;
+                        _this.currentPaginationOptions.perPageValue = value;
+                        //event.target.focus();
+                        return;
+
+                    }
+                    _this.currentPaginationOptions.perPageValue = value;
+                    _this.currentPaginationOptions.currentPage = null;
+                    if (_this.currentPaginationOptions.showEnablePagination) {
+                        _this.pagination.countQuantityPages(function() {
+                            _this.render();
+                        });
+                    }
+                }
+            },
+
+            changeRTE: function(event) {
+                var _this = this;
+                _this.optionsDefinition(_this, _this.bodyOptions.mode);
+                _this.previous_Filter_Options = false;
+
+                if (event.target.checked) {
+                    _this.currentGoToOptions.mode_change = "rte";
+                    _this.currentGoToOptions.rtePerPage = true;
+                } else {
+                    _this.currentGoToOptions.mode_change = "nrte";
+                    _this.currentGoToOptions.rtePerPage = false;
+                }
+                _this.render();
+            },
+
+            changeRTE_Filer: function(event) {
+                var _this = this;
+                _this.optionsDefinition(_this, _this.bodyOptions.mode);
+                _this.previous_Filter_Options = false;
+
+                if (event.target.checked) {
+                    _this.currentPaginationOptions.mode_change = "rte";
+                    _this.currentPaginationOptions.rtePerPage = true;
+                } else {
+                    _this.currentPaginationOptions.mode_change = "nrte";
+                    _this.currentPaginationOptions.rtePerPage = false;
+                }
+                _this.render();
+            },
+
+            showPerPage: function() {
+                var _this = this;
+                _this.optionsDefinition(_this, _this.bodyOptions.mode);
+
+                _this.currentPaginationOptions.currentPage = null;
+
+                if (_this.currentPaginationOptions.showEnablePagination) {
+                    _this.pagination.countQuantityPages(function() {
+                        _this.render();
+                    });
+                }
             },
 
             togglePanel: function(forceClose) {
@@ -352,7 +653,7 @@ define('panel', [
                 var _this = this;
                 _this.bodyOptions.mode = _this.MODE.USER_INFO_SHOW;
                 _this.user = null;
-                _this.renderBodyPanel();
+                _this.render();
             },
 
             saveChangeUserInfo: function() {
@@ -363,7 +664,7 @@ define('panel', [
                             _this.updateUserInfo(function() {
                                 _this.bodyOptions.mode = _this.MODE.USER_INFO_SHOW;
                                 _this.user = null;
-                                _this.renderBodyPanel();
+                                _this.render();
                             })
                         } else {
                             console.error(new Error("New password and confirm password do not match"));
@@ -407,7 +708,7 @@ define('panel', [
             changeUserInfo: function() {
                 var _this = this;
                 _this.bodyOptions.mode = _this.MODE.USER_INFO_EDIT;
-                _this.renderBodyPanel();
+                _this.render();
             },
 
             logout: function() {
@@ -437,7 +738,7 @@ define('panel', [
                 if (element) {
                     _this.bodyOptions.mode = _this.MODE.DETAIL_VIEW;
                     _this.elementMap.DETAIL_VIEW = detail_view;
-                    _this.renderBodyPanel({
+                    _this.render({
                         "detail_view": detail_view,
                         "pointer": pointer,
                         "chat_id_value": chat_id_value
@@ -484,6 +785,7 @@ define('panel', [
         extend(panel, template_core);
         extend(panel, render_layout_core);
         extend(panel, extend_core);
+        extend(panel, switcher_core);
 
         panel.prototype.panel_left_template = panel.prototype.template(panel_left_template);
         panel.prototype.panel_right_template = panel.prototype.template(panel_right_template);
@@ -494,6 +796,17 @@ define('panel', [
         panel.prototype.textarea_template = panel.prototype.template(textarea_template);
 
         panel.prototype.filter_my_chats_template = panel.prototype.template(filter_my_chats_template);
+        panel.prototype.panel_extra_toolbar_template = panel.prototype.template(panel_extra_toolbar_template);
+
+        panel.prototype.templateMap = {
+            "CHATS_FILTER": panel.prototype.filter_my_chats_template,
+            "CHATS_EXTRA_TOOLBAR": panel.prototype.panel_extra_toolbar_template,
+            "USERS_FILTER": panel.prototype.filter_my_chats_template,
+            "USERS_EXTRA_TOOLBAR": panel.prototype.panel_extra_toolbar_template
+        };
+
+        panel.prototype.dataHandlerMap = {};
+        panel.prototype.dataMap = {};
 
         return panel;
     });

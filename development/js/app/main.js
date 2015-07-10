@@ -19,7 +19,7 @@ require.config({
         "message_core": "app/extentions/message_core",
         "dom_core": "app/extentions/dom_core",
         "description_core": "app/description_core",
-        "switcher": "app/extentions/switcher",
+        "switcher_core": "app/extentions/switcher_core",
         //
         "body": "app/body",
         "chat": "app/chat",

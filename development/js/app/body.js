@@ -12,6 +12,7 @@ define('body', [
         'text!../templates/element/textarea_template.ejs',
         'text!../templates/detail_view_container_template.ejs',
         'text!../templates/chat_info_template.ejs',
+        'text!../templates/panel_users_template.ejs',
         'text!../templates/user_info_template.ejs'
     ],
     function(chat,
@@ -27,6 +28,7 @@ define('body', [
              textarea_template,
              detail_view_container_template,
              chat_info_template,
+             panel_users_template,
              user_info_template) {
 
         var body = function(options) {
@@ -40,6 +42,7 @@ define('body', [
                 "CREATE_CHAT": '/configs/chats_info_config.json',
                 "JOIN_CHAT": '/configs/chats_info_config.json',
                 "CHATS": '/configs/chats_info_config.json',
+                "USERS": '/configs/users_info_config.json',
                 "DETAIL_VIEW": '/configs/chats_info_config.json'
             },
 
@@ -68,6 +71,8 @@ define('body', [
                 CREATE_CHAT: 'CREATE_CHAT',
                 JOIN_CHAT: 'JOIN_CHAT',
                 CHATS: 'CHATS',
+                USERS: 'USERS',
+
                 DETAIL_VIEW: 'DETAIL_VIEW',
 
                 USER_INFO_EDIT: 'USER_INFO_EDIT',
@@ -128,6 +133,13 @@ define('body', [
                             _this.body_mode = _this.MODE.CHATS;
                             _this.renderLayout(null, null);
                             break;
+                        case _this.MODE.USERS:
+                            _this.elementMap = {
+                                "USERS":  _this.module.panel_body
+                            };
+                            _this.body_mode = _this.MODE.USERS;
+                            _this.renderLayout(null, null);
+                            break;
                         case _this.MODE.DETAIL_VIEW:
                             _this.elementMap = {
                                 "DETAIL_VIEW":  options.detail_view
@@ -141,6 +153,26 @@ define('body', [
 
                     _this.previousMode = _this.module.bodyOptions.mode;
                 }
+            },
+
+            limitationQuantityRecords: function(data) {
+                console.log("limitationQuantityRecords");
+                var _this = this;
+                if (data.length) {
+                    if (_this.module.messagesOptions.final > data.length || !_this.module.messagesOptions.final) {
+                        _this.module.messagesOptions.final = data.length;
+                    }
+                }
+
+                if (_this.module.messagesOptions.previousStart !== _this.module.messagesOptions.start ||
+                    _this.module.messagesOptions.previousFinal !== _this.module.messagesOptions.final) {
+                    _this.module.panel_body.innerHTML = "";
+                    _this.module.messagesOptions.previousStart = _this.module.messagesOptions.start;
+                    _this.module.messagesOptions.previousFinal = _this.module.messagesOptions.final;
+
+                    data = data.slice(_this.module.messagesOptions.start, _this.module.messagesOptions.final);
+                }
+                return data;
             },
 
             usersFilter: function(options, users) {
@@ -168,6 +200,7 @@ define('body', [
             transferData: function(options, data){
                 var _this = this;
 
+                data = this.limitationQuantityRecords(data);
                 var dataUpdated = {
                     "data": data,
                     "detail_view_template": _this.detail_view_container_template,
@@ -194,6 +227,7 @@ define('body', [
         body.prototype.label_template = body.prototype.template(label_template);
         body.prototype.input_template = body.prototype.template(input_template);
         body.prototype.textarea_template = body.prototype.template(textarea_template);
+        body.prototype.panel_users_template = body.prototype.template(panel_users_template);
         body.prototype.detail_view_container_template = body.prototype.template(detail_view_container_template);
 
 
@@ -203,6 +237,7 @@ define('body', [
             "CREATE_CHAT": '',
             'JOIN_CHAT': '',
             "CHATS": body.prototype.collectionDescriptionChats,
+            "USERS": '',
             "DETAIL_VIEW": body.prototype.collectionDescriptionChats,
             "FILTER_MY_CHATS": ''
         };
@@ -213,6 +248,7 @@ define('body', [
             "CREATE_CHAT": body.prototype.chat_info_template,
             "JOIN_CHAT": body.prototype.chat_info_template,
             "CHATS": body.prototype.chat_info_template,
+            "USERS": body.prototype.panel_users_template,
             "DETAIL_VIEW": body.prototype.detail_view_container_template,
             "FILTER_MY_CHATS": body.prototype.filter_my_chats_template
         };
@@ -223,6 +259,7 @@ define('body', [
             "CREATE_CHAT": null,
             "JOIN_CHAT": null,
             "CHATS": body.prototype.transferData,
+            "USERS": null,
             "DETAIL_VIEW": body.prototype.chatsFilter,
             "FILTER_CHATS": ''
         };

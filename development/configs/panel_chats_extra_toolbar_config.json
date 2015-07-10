@@ -2,15 +2,15 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Filter",
+    "text": "Filter chats",
     "class": "",
     "title": "",
     "data": {
-      "action": "change_Panel_Body_Mode",
+      "action": "changeMode",
+      "role": "btn_Filter",
       "toggle": true,
-      "panel_body_part": "FILTER",
-      "mode_to": "FILTER_CHATS",
-      "mode": "CHATS_HELP_TOOLBAR"
+      "chat_part": "filter",
+      "mode_to": "CHATS_FILTER"
     },
     "name": "",
     "disabled": false

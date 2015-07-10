@@ -5,7 +5,7 @@ define('header', [
         'template_core',
         'indexeddb',
         'render_layout_core',
-        "switcher",
+        "switcher_core",
 
         'pagination',
 
@@ -22,7 +22,7 @@ define('header', [
              template_core,
              indexeddb,
              render_layout_core,
-             switcher,
+             switcher_core,
 
              pagination,
 
@@ -245,7 +245,7 @@ define('header', [
         extend(header, ajax_core);
         extend(header, template_core);
         extend(header, render_layout_core);
-        extend(header, switcher);
+        extend(header, switcher_core);
 
         header.prototype.header_template = header.prototype.template(header_template);
         header.prototype.filter_template = header.prototype.template(filter_template);

@@ -134,7 +134,8 @@ define('render_layout_core', [
                 } else {
                     if (_this.MODE && (_this.body_mode === _this.MODE.FILTER ||
                         _this.body_mode === _this.MODE.FORMAT_PANEL || _this.body_mode === _this.MODE.PAGINATION
-                        || _this.body_mode === _this.MODE.GO_TO || _this.body_mode === _this.MODE.FILTER_MY_CHATS)) {
+                        || _this.body_mode === _this.MODE.GO_TO || _this.body_mode === _this.MODE.CHATS_FILTER
+                        || _this.body_mode === _this.MODE.USERS_FILTER)) {
                         callback(null, options);
                         return;
 

@@ -1,0 +1,18 @@
+[
+  {
+    "element": "button",
+    "icon": "",
+    "text": "Filter users",
+    "class": "",
+    "title": "",
+    "data": {
+      "action": "changeMode",
+      "role": "btn_Filter",
+      "toggle": true,
+      "chat_part": "filter",
+      "mode_to": "USERS_FILTER"
+    },
+    "name": "",
+    "disabled": false
+  }
+]
