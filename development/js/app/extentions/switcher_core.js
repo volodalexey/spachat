@@ -34,7 +34,7 @@ define('switcher_core',
                         break;
                     case _module.MODE.CHATS:
                         _this.previousModeSwitcher = _module.MODE.CHATS;
-                        _module.body.collectionDescription.table_names = ['users'];
+                        //_module.body.collectionDescription.table_names = ['users'];
                         _this.currentPaginationOptions = _module.chatsPaginationOptions;
                         _this.currentGoToOptions = _module.chatsGoToOptions;
                         _module.current_Extra_Toolbar_Options = _module.chats_Extra_Toolbar_Options;

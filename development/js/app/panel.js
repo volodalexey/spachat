@@ -4,7 +4,8 @@ define('panel', [
         'template_core',
         'render_layout_core',
         'extend_core',
-        "switcher_core",
+        'switcher_core',
+        'users',
 
         'pagination',
         'body',
@@ -30,6 +31,7 @@ define('panel', [
              render_layout_core,
              extend_core,
              switcher_core,
+             users,
 
              Pagination,
              Body,
@@ -48,13 +50,6 @@ define('panel', [
 
         var defaultOptions = {
 
-            //collectionDescription: {
-            //    "id": 'users',
-            //    "db_name": 'users',
-            //    "table_names": ['users'],
-            //    "db_version": 1,
-            //    "keyPath": "userId"
-            //},
             collectionDescription: {
                 "id": 'chats',
                 "db_name": 'chats',
@@ -78,6 +73,7 @@ define('panel', [
                 showEnablePagination: false,
                 showChoicePerPage: false,
                 perPageValue: 1,
+                perPageValueNull: false,
                 rtePerPage: true,
                 disableBack: false,
                 disableFirst: false,
@@ -112,6 +108,7 @@ define('panel', [
                 showEnablePagination: false,
                 showChoicePerPage: false,
                 perPageValue: 15,
+                perPageValueNull: false,
                 rtePerPage: true,
                 disableBack: false,
                 disableFirst: false,
@@ -198,7 +195,6 @@ define('panel', [
         var panel = function(description) {
             this.extend(this, defaultOptions);
 
-            //this.bindToolbarContext();
             this.bindMainContexts();
 
             this.type = description.type;
@@ -263,11 +259,6 @@ define('panel', [
 
                 _this.cashElements();
                 _this.elementMap = {
-/*                    "USER_INFO_EDIT": _this.panel_body,
-                    "USER_INFO_SHOW": _this.panel_body,
-                    "CREATE_CHAT": _this.panel_body,
-                    "JOIN_CHAT": _this.panel_body,
-                    "CHATS": _this.panel_body,*/
                     "CHATS_FILTER": _this.filter_container,
                     "CHATS_EXTRA_TOOLBAR": _this.extra_toolbar_container,
                     "USERS_FILTER": _this.filter_container,
@@ -336,11 +327,6 @@ define('panel', [
                 _this.bindedTransitionEnd = _this.transitionEnd.bind(_this);
             },
 
-            //bindToolbarContext: function() {
-            //    var _this = this;
-            //    _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
-            //},
-
             addMainEventListener: function() {
                 var _this = this;
                 _this.removeMainEventListeners();
@@ -372,12 +358,10 @@ define('panel', [
 
             addToolbarEventListener: function() {
                 var _this = this;
-                //_this.addRemoveListener('add', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
             },
 
             removeToolbarEventListeners: function() {
                 var _this = this;
-                //_this.addRemoveListener('remove', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
             },
 
             openOrClosePanel: function(bigMode, forceClose) {
@@ -423,7 +407,6 @@ define('panel', [
                         _this.body.render(options, _this);
                     });
                 });
-
             },
 
             renderExtraToolbar: function(_callback) {
@@ -465,6 +448,9 @@ define('panel', [
                 if (_this.currnetFilterOptions.show) {
                     if (_this.btn_Filter) {
                         _this.btn_Filter.dataset.toggle = false;
+                    }
+                    if (_this.currentPaginationOptions.perPageValueNull) {
+                        _this.previous_Filter_Options = false;
                     }
                     if (!_this.previous_Filter_Options &&
                         _this.bodyOptions.mode !== _this.MODE.DETAIL_VIEW) {
@@ -544,16 +530,24 @@ define('panel', [
             changePerPage: function(event) {
                 var _this = this;
                 var value = parseInt(event.target.value);
+                if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
+                    _this.bodyOptions.mode = _this.MODE.CHATS;
+                }
                 _this.optionsDefinition(_this, _this.bodyOptions.mode);
 
-                if (event.target.value !== "" && event.target.value !== "0" && event.type !== "click") {
-                    if (!_this.currentPaginationOptions.rtePerPage) {
-                        _this.currentPaginationOptions.currentPage = null;
-                        _this.currentPaginationOptions.perPageValue = value;
-                        //event.target.focus();
+                if (event.type !== "click") {
+                    if (event.target.value === "" || event.target.value === "0") {
+                        _this.currentPaginationOptions.perPageValueNull = true;
                         return;
 
                     }
+                    if (!_this.currentPaginationOptions.rtePerPage) {
+                        _this.currentPaginationOptions.currentPage = null;
+                        _this.currentPaginationOptions.perPageValue = value;
+                        return;
+
+                    }
+                    _this.currentPaginationOptions.perPageValueNull = false;
                     _this.currentPaginationOptions.perPageValue = value;
                     _this.currentPaginationOptions.currentPage = null;
                     if (_this.currentPaginationOptions.showEnablePagination) {
@@ -564,23 +558,11 @@ define('panel', [
                 }
             },
 
-            changeRTE: function(event) {
-                var _this = this;
-                _this.optionsDefinition(_this, _this.bodyOptions.mode);
-                _this.previous_Filter_Options = false;
-
-                if (event.target.checked) {
-                    _this.currentGoToOptions.mode_change = "rte";
-                    _this.currentGoToOptions.rtePerPage = true;
-                } else {
-                    _this.currentGoToOptions.mode_change = "nrte";
-                    _this.currentGoToOptions.rtePerPage = false;
-                }
-                _this.render();
-            },
-
             changeRTE_Filer: function(event) {
                 var _this = this;
+                if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
+                    _this.bodyOptions.mode = _this.MODE.CHATS;
+                }
                 _this.optionsDefinition(_this, _this.bodyOptions.mode);
                 _this.previous_Filter_Options = false;
 
@@ -597,9 +579,7 @@ define('panel', [
             showPerPage: function() {
                 var _this = this;
                 _this.optionsDefinition(_this, _this.bodyOptions.mode);
-
                 _this.currentPaginationOptions.currentPage = null;
-
                 if (_this.currentPaginationOptions.showEnablePagination) {
                     _this.pagination.countQuantityPages(function() {
                         _this.render();
@@ -690,7 +670,7 @@ define('panel', [
                     userName: _this.user_name.value
                 };
                 indexeddb.addOrUpdateAll(
-                    _this.collectionDescription,
+                    users.collectionDescription,
                     null,
                     [
                         account
