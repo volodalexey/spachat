@@ -101,7 +101,11 @@ define('pagination', [
             render: function(options, _module, mode) {
                 var _this = this;
                 _this.module = _module;
-                _this.optionsDefinition(_this.module, mode);
+                _this.bodyOptionsMode = mode;
+                if (_this.module.MODE && _this.module.bodyOptions.mode === _this.module.MODE.DETAIL_VIEW) {
+                    _this.bodyOptionsMode = _this.module.MODE.CHATS;
+                }
+                _this.optionsDefinition(_this.module, _this.bodyOptionsMode);
 
                 //_this.module.pagination_container = _this.chat.chat_element.querySelector('[data-role="pagination_container"]');
                 //_this.module.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
@@ -179,7 +183,7 @@ define('pagination', [
 
             countQuantityPages: function(callback) {
                 var _this = this, quantityPages;
-                _this.optionsDefinition(_this.module, _this.module.bodyOptions.mode);
+                _this.optionsDefinition(_this.module, _this.bodyOptionsMode);
                 indexeddb.getAll(_this.module.collectionDescription, null, function(getAllErr, messages) {
                     var quantityMessage = messages.length;
                     if (quantityMessage !== 0) {
@@ -204,6 +208,9 @@ define('pagination', [
 
             switchPage: function(event) {
                 var _this = this;
+                if (_this.module.MODE && _this.module.bodyOptions.mode === _this.module.MODE.DETAIL_VIEW) {
+                    _this.module.bodyOptions.mode = _this.module.MODE.CHATS;
+                }
                 if (event.target.dataset.role === "first" || event.target.dataset.role === "last") {
                     _this.currentPaginationOptions.currentPage = parseInt(event.target.dataset.value);
                 }
@@ -258,6 +265,13 @@ define('pagination', [
 
             changeRTE: function(event) {
                 var _this = this;
+
+                if (_this.module.bodyOptions.mode === _this.module.MODE.DETAIL_VIEW) {
+                    _this.module.bodyOptions.mode = _this.module.MODE.CHATS;
+                }
+                _this.optionsDefinition(_this.module, _this.module.bodyOptions.mode);
+                _this.module.previous_Filter_Options = false;
+
                 if (event.target.checked) {
                     _this.currentGoToOptions.mode_change = "rte";
                     _this.currentGoToOptions.rteChoicePage = true;

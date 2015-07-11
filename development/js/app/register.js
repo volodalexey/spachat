@@ -3,6 +3,7 @@ define('register', [
         'throw_event_core',
         'template_core',
         'id_core',
+        'users',
 
         'indexeddb',
 
@@ -12,6 +13,7 @@ define('register', [
              throw_event_core,
              template_core,
              id_core,
+             users,
 
              indexeddb,
 
@@ -22,12 +24,6 @@ define('register', [
          */
         var register = function() {
             this.link = /register/; // is used for navigator
-            this.collectionDescription = {
-                "db_name": 'users',
-                "table_names": ['users'],
-                "db_version": 1,
-                "keyPath": "userId"
-            };
             this.bindContexts();
             this.register_template = this.template(register_template);
         };
@@ -112,7 +108,7 @@ define('register', [
 
             registerNewUser: function(options, callback){
                 var _this = this;
-                indexeddb.getAll(_this.collectionDescription, null, function(getAllErr, users) {
+                indexeddb.getAll(users.collectionDescription, null, function(getAllErr, users) {
                     if (getAllErr) {
                         callback(getAllErr);
                         return;
@@ -138,7 +134,7 @@ define('register', [
                     };
 
                     indexeddb.addOrUpdateAll(
-                        _this.collectionDescription,
+                        users.collectionDescription,
                         null,
                         [
                             account

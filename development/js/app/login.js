@@ -1,11 +1,13 @@
 define('login', [
         'overlay_core',
         'throw_event_core',
+        'users',
 
         'indexeddb'
     ],
     function(overlay_core,
              throw_event_core,
+             users,
 
              indexeddb) {
 
@@ -19,12 +21,6 @@ define('login', [
             this.login_outer_container = document.querySelector('[data-role="login_outer_container"]');
             this.loginForm = this.login_outer_container.querySelector('[data-role="loginForm"]');
             this.redirectToRegisterElement = this.loginForm.querySelector('[data-action="clickRedirectToRegister"]');
-            this.collectionDescription = {
-                "db_name": 'users',
-                "table_names": ['users'],
-                "db_version": 1,
-                "keyPath": "userId"
-            };
             this.bindContexts();
         };
 
@@ -73,7 +69,7 @@ define('login', [
                 var userPassword = _this.loginForm.elements.userPassword.value;
                 if (userName && userPassword) {
                     _this.toggleWaiter(true);
-                    indexeddb.getAll(_this.collectionDescription, null,  function(getAllErr, users) {
+                    indexeddb.getAll(users.collectionDescription, null,  function(getAllErr, users) {
                         _this.toggleWaiter();
                         if (getAllErr) {
                             console.error(getAllErr);

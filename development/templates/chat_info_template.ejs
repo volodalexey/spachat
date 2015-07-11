@@ -117,7 +117,9 @@ var array_my_chats_help_toolbar = array.config.filter(function(config) {
         <% var div = document.createElement('div');
             div.innerHTML = element;
             var pointer = div.querySelector('[data-role="pointer"]');
-            pointer.classList.add("rotate-90");
+            if (pointer) {
+                pointer.classList.add("rotate-90");
+            }
         %>
         <%= div.innerHTML %>
         <% } else { %>

@@ -4,6 +4,8 @@ define('body', [
         'template_core',
         'render_layout_core',
         'ajax_core',
+        'users',
+
 
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
@@ -20,6 +22,8 @@ define('body', [
              template_core,
              render_layout_core,
              ajax_core,
+             users,
+
 
              triple_element_template,
              button_template,
@@ -45,22 +49,14 @@ define('body', [
                 "USERS": '/configs/users_info_config.json',
                 "DETAIL_VIEW": '/configs/chats_info_config.json'
             },
-
-            collectionDescription: {
-                "id": 'users',
-                "db_name": 'users',
-                "table_names": ['users'],
-                "db_version": 1,
-                "keyPath": "userId"
-            },
-
+/*
             collectionDescriptionChats: {
                 "id": 'chats',
                 "db_name": 'chats',
                 "table_names": ['chats'],
                 "db_version": 1,
                 "keyPath": "chatId"
-            },
+            },*/
 
             MODE: {
                 SETTING: 'SETTING',
@@ -97,12 +93,18 @@ define('body', [
                             _this.elementMap = {
                                 "USER_INFO_SHOW":  _this.module.panel_body
                             };
+                            _this.dataMap = {
+                                "USER_INFO_SHOW": users.collectionDescription
+                            };
                             _this.body_mode = _this.MODE.USER_INFO_SHOW;
                             _this.renderLayout(null, null);
                             break;
                         case _this.MODE.USER_INFO_EDIT:
                             _this.elementMap = {
                                 "USER_INFO_EDIT":  _this.module.panel_body
+                            };
+                            _this.dataMap = {
+                                "USER_INFO_EDIT": users.collectionDescription
                             };
                             _this.body_mode = _this.MODE.USER_INFO_EDIT;
                             var data= {
@@ -130,6 +132,9 @@ define('body', [
                             _this.elementMap = {
                                 "CHATS":  _this.module.panel_body
                             };
+                            _this.dataMap = {
+                                "CHATS": _this.module.collectionDescription
+                            };
                             _this.body_mode = _this.MODE.CHATS;
                             _this.renderLayout(null, null);
                             break;
@@ -144,6 +149,9 @@ define('body', [
                             _this.elementMap = {
                                 "DETAIL_VIEW":  options.detail_view
                             };
+                            _this.dataMap = {
+                                "DETAIL_VIEW": _this.module.collectionDescription
+                            };
                             _this.body_mode = _this.MODE.DETAIL_VIEW;
                             _this.renderLayout({chat_id_value: options.chat_id_value}, function(){
                                 _this.module.rotatePointer(options);
@@ -156,7 +164,6 @@ define('body', [
             },
 
             limitationQuantityRecords: function(data) {
-                console.log("limitationQuantityRecords");
                 var _this = this;
                 if (data.length) {
                     if (_this.module.messagesOptions.final > data.length || !_this.module.messagesOptions.final) {
@@ -169,9 +176,12 @@ define('body', [
                     _this.module.panel_body.innerHTML = "";
                     _this.module.messagesOptions.previousStart = _this.module.messagesOptions.start;
                     _this.module.messagesOptions.previousFinal = _this.module.messagesOptions.final;
+                }
+
+
 
                     data = data.slice(_this.module.messagesOptions.start, _this.module.messagesOptions.final);
-                }
+
                 return data;
             },
 
@@ -232,13 +242,13 @@ define('body', [
 
 
         body.prototype.dataMap = {
-            "USER_INFO_EDIT": body.prototype.collectionDescription,
-            "USER_INFO_SHOW": body.prototype.collectionDescription,
+            "USER_INFO_EDIT": '',
+            "USER_INFO_SHOW": '',
             "CREATE_CHAT": '',
             'JOIN_CHAT': '',
-            "CHATS": body.prototype.collectionDescriptionChats,
+            "CHATS": '',
             "USERS": '',
-            "DETAIL_VIEW": body.prototype.collectionDescriptionChats,
+            "DETAIL_VIEW":'',
             "FILTER_MY_CHATS": ''
         };
 

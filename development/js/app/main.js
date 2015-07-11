@@ -39,7 +39,8 @@ require.config({
         "register": "app/register",
         "navigator": "app/navigator",
         "websocket": "app/websocket",
-        "event_bus": "app/event_bus"
+        "event_bus": "app/event_bus",
+        "users": "app/users"
     }
 });
 
