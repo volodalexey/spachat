@@ -528,7 +528,7 @@ define('chat', [
                                 'newMode': _this.webrtc.MODE.ACCEPTING_ANSWER
                             }
                         ], {
-                            remoteAnswerDescription: event.chat_description.answer.answerDescription
+                            remoteAnswerDescription: event.answerDescription
                         });
                     } else {
                         console.error(new Error('Offer and Answer do not make sense!'));
