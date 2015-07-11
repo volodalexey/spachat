@@ -255,8 +255,6 @@ define('chat_platform', [
 
             /**
              * create chat layout
-             * @param chat_description
-             * @param renderOptions
              */
             createChatLayout: function(messageData, renderOptions) {
                 var _this = this;
@@ -284,7 +282,7 @@ define('chat_platform', [
             },
 
             /**
-             * sends current chat description to the server to retrieve waitForOffer/waitForAnswer state
+             * sends current chat description to the server
              * @param event - click event
              */
             joinByChatIdAuto: function(event) {
@@ -303,7 +301,7 @@ define('chat_platform', [
                 };
 
                 websocket.sendMessage({
-                    type: "join",
+                    type: "chat_join",
                     userId: _this.navigator.userId,
                     chat_description: chat_description
                 });
@@ -401,7 +399,7 @@ define('chat_platform', [
                             delete chat.offer;
                             delete chat.answer;
                             websocket.sendMessage({
-                                type: "join",
+                                type: "chat_join",
                                 userId: _this.navigator.userId,
                                 chat_description: chat
                             });

@@ -55,7 +55,7 @@ define('webrtc', [
                             _this.trigger('deviceId', deviceId);
                             console.log('Extracted device id from offer => ', deviceId);
                             _this.trigger('sendToWebSocket', {
-                                type: 'offer',
+                                type: 'chat_offer',
                                 userId: chat.userId,
                                 deviceId: chat.deviceId,
                                 offerDescription: localOfferDescription
