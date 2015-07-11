@@ -27,7 +27,6 @@ define('webrtc', [
             };
             _this.connectionsByDeviceId = {};
             _this.dataChannelsByDeviceId = {};
-            _this.bindContexts();
         };
 
         webrtc.prototype = {
@@ -54,9 +53,9 @@ define('webrtc', [
                             var deviceId = _this.extractDeviceId(_options.peerConnection.localDescription);
                             _this.connectionsByDeviceId[deviceId] = peerConnection;
                             _this.dataChannelsByDeviceId[deviceId] = dataChannel;
-                            _this.chat.trigger('setDeviceId', deviceId);
+                            _this.chat.trigger('throw', 'setDeviceId', deviceId);
                             _this.chat.trigger('log',{ message: 'Extracted host device id from offer => ' + deviceId});
-                            _this.chat.trigger('sendToWebSocket', {
+                            _this.chat.trigger('throw', 'sendToWebSocket', {
                                 type: 'chat_offer',
                                 userId: _this.chat.userId,
                                 deviceId: _this.chat.deviceId,
@@ -82,7 +81,7 @@ define('webrtc', [
                             _this.mode = _this.MODE.WAITING;
                             _this.connectionsByDeviceId[_options.offerDeviceId] = peerConnection;
                             peerConnection.ondatachannel = _this.onDataChannel.bind(_this, _options.offerDeviceId, options);
-                            _this.chat.trigger('sendToWebSocket', {
+                            _this.chat.trigger('throw', 'sendToWebSocket', {
                                 type: 'chat_answer',
                                 userId: _this.chat.userId,
                                 offerDeviceId: _options.offerDeviceId,
@@ -113,7 +112,7 @@ define('webrtc', [
                                 }
 
                                 _this.mode = _this.MODE.WAITING;
-                                _this.chat.trigger('sendToWebSocket', {
+                                _this.chat.trigger('throw', 'sendToWebSocket', {
                                     type: 'chat_accept',
                                     userId: _this.chat.userId,
                                     deviceId: _this.chat.deviceId,
@@ -197,19 +196,19 @@ define('webrtc', [
              */
             onICEcandidate: function(peerConnection, options, event) {
                 if (event.candidate == null) {
-                    this.trigger('log', { message: 'done: ICE candidate' });
+                    this.chat.trigger('log', { message: 'done: ICE candidate' });
                     if (options.onicecandidate) {
                         options.onicecandidate({
                             peerConnection: peerConnection
                         });
                     }
                 } else {
-                    this.trigger('log', { message: 'next: ICE candidate' });
+                    this.chat.trigger('log', { message: 'next: ICE candidate' });
                 }
             },
 
             onDataChannel: function(offerDeviceId, options, event) {
-                this.trigger('log', { message: 'Data Channel established' });
+                this.chat.trigger('log', { message: 'Data Channel established' });
                 this.dataChannelsByDeviceId[offerDeviceId] = event.channel;
                 this.addDataChannelListeners(event.channel);
             },
@@ -247,7 +246,7 @@ define('webrtc', [
                 _this.removeDataChannelListeners(dataChannel);
 
                 dataChannel.onopen = function() {
-                    _this.chat.trigger('Data channel connection established!');
+                    _this.chat.trigger('log', { message: 'Data channel connection established!' });
                 };
                 dataChannel.onmessage = function(event) {
                     var remoteMessage = JSON.parse(event.data);
