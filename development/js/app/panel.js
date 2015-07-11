@@ -321,7 +321,7 @@ define('panel', [
             bindMainContexts: function() {
                 var _this = this;
                 _this.bindedTogglePanelWorkflow = _this.togglePanelWorkflow.bind(_this);
-                _this.bindedInutUserInfo = _this.inputUserInfo.bind(_this);
+                _this.bindedInputUserInfo = _this.inputUserInfo.bind(_this);
                 _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
                 _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
                 _this.bindedTransitionEnd = _this.transitionEnd.bind(_this);
@@ -331,7 +331,7 @@ define('panel', [
                 var _this = this;
                 _this.removeMainEventListeners();
                 _this.addRemoveListener('add', _this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
-                _this.addRemoveListener('add', _this.panel_body, 'input', _this.bindedInutUserInfo, false);
+                _this.addRemoveListener('add', _this.panel_body, 'input', _this.bindedInputUserInfo, false);
                 _this.addRemoveListener('add', _this.inner_container, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.inner_container, 'input', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
@@ -342,7 +342,7 @@ define('panel', [
             removeMainEventListeners: function() {
                 var _this = this;
                 _this.addRemoveListener('remove', _this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
-                _this.addRemoveListener('remove', _this.panel_body, 'input', _this.bindedInutUserInfo, false);
+                _this.addRemoveListener('remove', _this.panel_body, 'input', _this.bindedInputUserInfo, false);
                 _this.addRemoveListener('remove', _this.inner_container, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.inner_container, 'input', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
@@ -624,7 +624,7 @@ define('panel', [
             inputUserInfo: function(event) {
                 var _this = this;
                 if (_this.config) {
-                    var param = event.target.getAttribute("data-role");
+                    var param = event.target.dataset.role;
                     _this.user[param] = event.target.value;
                 }
             },

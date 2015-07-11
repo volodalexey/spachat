@@ -143,10 +143,7 @@ define('messages', [
                     function(error) {
                         switch (_this.chat.bodyOptions.mode) {
                             case _this.chat.body.MODE.MESSAGES:
-                                if (_this.chat.webrtc && _this.chat.webrtc.dataChannel &&
-                                    _this.chat.webrtc.dataChannel.readyState === "open") {
-                                    _this.chat.webrtc.dataChannel.send(JSON.stringify(message));
-                                }
+                                _this.chat.webrtc.broadcastMessage(JSON.stringify(message));
                                 break;
                         }
 

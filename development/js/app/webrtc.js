@@ -43,11 +43,12 @@ define('webrtc', [
             },
 
             render: function(options, chat) {
-                var _this = this, peerConnection, dataChannel;
+                var _this = this;
                 options = options ? options : {}; // TODO always check on upper level
                 _this.chat = chat;
                 switch (_this.mode) {
                     case _this.MODE.CREATING_OFFER:
+                        var peerConnection, dataChannel;
                         options.onicecandidate = function(_options) {
                             _this.mode = _this.MODE.WAITING;
                             var deviceId = _this.extractDeviceId(_options.peerConnection.localDescription);
@@ -77,14 +78,14 @@ define('webrtc', [
                         );
                         break;
                     case _this.MODE.CREATING_ANSWER:
+                        var offerDeviceId;
                         options.onicecandidate = function(_options) {
                             _this.mode = _this.MODE.WAITING;
-                            _this.connectionsByDeviceId[_options.offerDeviceId] = peerConnection;
-                            peerConnection.ondatachannel = _this.onDataChannel.bind(_this, _options.offerDeviceId, options);
+                            _this.connectionsByDeviceId[offerDeviceId].ondatachannel = _this.onDataChannel.bind(_this, offerDeviceId, options);
                             _this.chat.trigger('throw', 'sendToWebSocket', {
                                 type: 'chat_answer',
                                 userId: _this.chat.userId,
-                                offerDeviceId: _options.offerDeviceId,
+                                offerDeviceId: offerDeviceId,
                                 deviceId: _this.chat.deviceId,
                                 answerDescription: _options.peerConnection.localDescription
                             });
@@ -97,7 +98,8 @@ define('webrtc', [
                                     return;
                                 }
 
-                                peerConnection = _options.peerConnection;
+                                offerDeviceId = _options.offerDeviceId;
+                                _this.connectionsByDeviceId[offerDeviceId] = _options.peerConnection;
                                 _this.chat.trigger('log', { message: 'done: createLocalAnswerAuto' });
                             }
                         );
@@ -163,7 +165,10 @@ define('webrtc', [
                             return;
                         }
 
-                        _this.createLocalAnswer({ peerConnection: peerConnection }, callback);
+                        _this.createLocalAnswer({
+                            peerConnection: peerConnection,
+                            remoteOfferDescription: options.remoteOfferDescription
+                        }, callback);
                     }
                 );
             },
@@ -394,6 +399,22 @@ define('webrtc', [
                 var _this = this;
                 _this.removeEventListeners();
                 _this.removeDataChannelListeners();
+            },
+
+            /**
+             * broadcast for all data channels for current chat
+             * @param broadcastData
+             */
+            broadcastMessage: function(broadcastData) {
+                var _this = this;
+                for (var deviceId in _this.dataChannelsByDeviceId) {
+                    if (_this.dataChannelsByDeviceId[deviceId].readyState === "open") {
+                        _this.dataChannelsByDeviceId[deviceId].send(broadcastData);
+                    } else {
+                        console.log('removed old data channel connection with device id => ', deviceId);
+                        delete _this.dataChannelsByDeviceId[deviceId];
+                    }
+                }
             }
         };
         extend(webrtc, throw_event_core);

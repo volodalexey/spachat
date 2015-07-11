@@ -521,7 +521,7 @@ define('chat', [
                 } else {
                     // I am NOT the creator of server stored answer
                     // Accept answer if I am the offer creator
-                    if (event.deviceId === _this.deviceId) {
+                    if (event.offerDeviceId === _this.deviceId) {
                         _this.switchModes([
                             {
                                 'chat_part': 'webrtc',

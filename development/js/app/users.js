@@ -7,6 +7,7 @@ define('users', [
 
         var users = function() {
             this.collectionDescription = {
+                "id": "users",
                 "db_name": 'users',
                 "table_names": ['users'],
                 "db_version": 1,

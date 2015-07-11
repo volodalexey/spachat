@@ -108,14 +108,14 @@ define('register', [
 
             registerNewUser: function(options, callback){
                 var _this = this;
-                indexeddb.getAll(users.collectionDescription, null, function(getAllErr, users) {
+                indexeddb.getAll(users.collectionDescription, null, function(getAllErr, allUsers) {
                     if (getAllErr) {
                         callback(getAllErr);
                         return;
                     }
                     
                     var user;
-                    users.every(function(_user) {
+                    allUsers.every(function(_user) {
                         if (_user.userName === options.userName) {
                             user = _user;
                         }
