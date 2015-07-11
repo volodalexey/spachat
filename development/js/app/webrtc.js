@@ -25,8 +25,8 @@ define('webrtc', [
                     ]
                 }
             };
-            _this.connectionByDeviceId = {};
-            _this.channel = 'test';
+            _this.connectionsByDeviceId = {};
+            _this.dataChannelsByDeviceId = {};
             _this.bindContexts();
         };
 
@@ -44,159 +44,138 @@ define('webrtc', [
             },
 
             render: function(options, chat) {
-                var _this = this;
+                var _this = this, peerConnection, dataChannel;
                 options = options ? options : {}; // TODO always check on upper level
                 _this.chat = chat;
                 switch (_this.mode) {
                     case _this.MODE.CREATING_OFFER:
-                        options.onicecandidate = function(localOfferDescription) {
+                        options.onicecandidate = function(_options) {
                             _this.mode = _this.MODE.WAITING;
-                            var deviceId = _this.extractDeviceId(localOfferDescription);
-                            _this.trigger('deviceId', deviceId);
-                            console.log('Extracted device id from offer => ', deviceId);
-                            _this.trigger('sendToWebSocket', {
+                            var deviceId = _this.extractDeviceId(_options.peerConnection.localDescription);
+                            _this.connectionsByDeviceId[deviceId] = peerConnection;
+                            _this.dataChannelsByDeviceId[deviceId] = dataChannel;
+                            _this.chat.trigger('setDeviceId', deviceId);
+                            _this.chat.trigger('log',{ message: 'Extracted host device id from offer => ' + deviceId});
+                            _this.chat.trigger('sendToWebSocket', {
                                 type: 'chat_offer',
-                                userId: chat.userId,
-                                deviceId: chat.deviceId,
-                                offerDescription: localOfferDescription
+                                userId: _this.chat.userId,
+                                deviceId: _this.chat.deviceId,
+                                offerDescription: _options.peerConnection.localDescription
                             });
                         };
                         _this.createLocalOfferAuto(
                             options,
-                            function(createError) {
+                            function(createError, _options) {
                                 if (createError) {
-                                    _this.trigger('error', { message: createError });
+                                    _this.chat.trigger('error', { message: createError });
                                     return;
                                 }
+
+                                peerConnection = _options.peerConnection;
+                                dataChannel = _options.dataChannel;
+                                _this.chat.trigger('log', { message: 'done: createLocalOfferAuto' });
                             }
                         );
                         break;
                     case _this.MODE.CREATING_ANSWER:
-                        options.onicecandidate = function(description) {
+                        options.onicecandidate = function(_options) {
                             _this.mode = _this.MODE.WAITING;
-                            _this.localAnswerDescription = description;
-                            _this.trigger('sendToWebSocket', {
-                                type: 'answer',
-                                userId: chat.userId,
-                                answerDescription: _this.localAnswerDescription
+                            _this.connectionsByDeviceId[_options.offerDeviceId] = peerConnection;
+                            peerConnection.ondatachannel = _this.onDataChannel.bind(_this, _options.offerDeviceId, options);
+                            _this.chat.trigger('sendToWebSocket', {
+                                type: 'chat_answer',
+                                userId: _this.chat.userId,
+                                offerDeviceId: _options.offerDeviceId,
+                                deviceId: _this.chat.deviceId,
+                                answerDescription: _options.peerConnection.localDescription
                             });
                         };
                         _this.createLocalAnswerAuto(
                             options,
-                            function(createError) {
+                            function(createError, _options) {
                                 if (createError) {
-                                    _this.trigger('error', { message: createError });
+                                    _this.chat.trigger('error', { message: createError });
                                     return;
                                 }
+
+                                peerConnection = _options.peerConnection;
+                                _this.chat.trigger('log', { message: 'done: createLocalAnswerAuto' });
                             }
                         );
                         break;
                     case _this.MODE.ACCEPTING_ANSWER:
                         _this.acceptRemoteAnswerAuto(
                             options,
-                            function(createError) {
+                            function(createError, _options) {
                                 if (createError) {
-                                    _this.trigger('error', { message: createError });
+                                    _this.chat.trigger('error', { message: createError });
                                     return;
                                 }
 
-                                _this.trigger('sendToWebSocket', {
-                                    type: 'accept',
-                                    userId: chat.userId,
-                                    localOfferDescription: _this.localOfferDescription
-                                });
                                 _this.mode = _this.MODE.WAITING;
+                                _this.chat.trigger('sendToWebSocket', {
+                                    type: 'chat_accept',
+                                    userId: _this.chat.userId,
+                                    deviceId: _this.chat.deviceId,
+                                    answerDeviceId: _options.answerDeviceId
+                                });
                             }
                         );
                     break;
                 }
             },
 
-            renderHanshake: function() {
-                var _this = this;
-                _this.chat.body_container.innerHTML = _this.webrtc_template({data: _this});
-                _this.addEventListeners();
-            },
-
-            renderWaiter: function() {
-                var _this = this;
-                _this.chat.body_container.innerHTML = _this.waiter_template();
-            },
-
-            bindContexts: function() {
-                var _this = this;
-                _this.bindedEventRouter = _this.clickEventRouter.bind(_this);
-            },
-
-            addEventListeners: function() {
-                var _this = this;
-                _this.removeEventListeners();
-                _this.chat.body_container.addEventListener('click', _this.bindedEventRouter, false);
-            },
-
-            removeEventListeners: function() {
-                var _this = this;
-                _this.chat.body_container.removeEventListener('click', _this.bindedEventRouter, false);
-            },
-
-            clickEventRouter: function(event) {
-                var _this = this;
-                var action = event.target.getAttribute('data-action');
-                if (_this[action]) {
-                    _this[action](event);
-                }
-            },
-
             /**
-             * create offer session description protocol and send it to the server
+             * create offer session description protocol (sdp)
+             * when internet connection will be established
+             * sdp will be sent it to the server
              * @param options
              * @param callback
              */
             createLocalOfferAuto: function(options, callback) {
                 var _this = this;
                 _this.createRTCPeerConnection(
-                    {
-                        onicecandidate: options.onicecandidate
-                    },
-                    function(createError) {
+                    options,
+                    function(createError, peerConnection) {
                         if (createError) {
                             callback(createError);
                             return;
                         }
 
-                        _this.createLocalOffer(options, callback);
+                        _this.createLocalOffer({ peerConnection: peerConnection }, callback);
                     }
                 );
             },
 
             /**
-             * create answer session description protocol and send it to the server
+             * create answer session description protocol
+             * when internet connection will be established
+             * sdp will be sent it to the server
              * @param options
              * @param callback
              */
             createLocalAnswerAuto: function(options, callback) {
                 var _this = this;
                 _this.createRTCPeerConnection(
-                    {
-                        onicecandidate: options.onicecandidate
-                    },
-                    function(createError) {
+                    options,
+                    function(createError, peerConnection) {
                         if (createError) {
                             callback(createError);
                             return;
                         }
 
-                        _this.createLocalAnswer(options, callback);
+                        _this.createLocalAnswer({ peerConnection: peerConnection }, callback);
                     }
                 );
             },
 
             acceptRemoteAnswerAuto: function(options, callback) {
                 var _this = this;
-                _this.trigger('log', { message: 'try: acceptRemoteAnswerAuto:setRemoteDescription' });
+                _this.chat.trigger('log', { message: 'try: acceptRemoteAnswerAuto:setRemoteDescription' });
                 try {
-                    _this.remoteAnswerDescription = new RTCSessionDescription(options.remoteAnswerDescription);
-                    _this.peerConnection.setRemoteDescription(_this.remoteAnswerDescription);
+                    var remoteAnswerDescription = new RTCSessionDescription(options.remoteAnswerDescription);
+                    var answerDeviceId = _this.extractDeviceId(remoteAnswerDescription);
+                    _this.connectionsByDeviceId[_this.chat.deviceId].setRemoteDescription(remoteAnswerDescription);
                 } catch (error) {
                     if (callback) {
                         callback(error);
@@ -204,22 +183,47 @@ define('webrtc', [
                     return;
                 }
 
-                _this.trigger('log', { message: 'done: acceptRemoteAnswerAuto:setRemoteDescription' });
+                _this.chat.trigger('log', { message: 'done: acceptRemoteAnswerAuto:setRemoteDescription' });
                 if (callback) {
-                    callback();
+                    callback(null, { answerDeviceId: answerDeviceId });
                 }
             },
 
             /**
-             * create real time communication
+             * each time client tries to define its address
+             * @param peerConnection
+             * @param options
+             * @param event
+             */
+            onICEcandidate: function(peerConnection, options, event) {
+                if (event.candidate == null) {
+                    this.trigger('log', { message: 'done: ICE candidate' });
+                    if (options.onicecandidate) {
+                        options.onicecandidate({
+                            peerConnection: peerConnection
+                        });
+                    }
+                } else {
+                    this.trigger('log', { message: 'next: ICE candidate' });
+                }
+            },
+
+            onDataChannel: function(offerDeviceId, options, event) {
+                this.trigger('log', { message: 'Data Channel established' });
+                this.dataChannelsByDeviceId[offerDeviceId] = event.channel;
+                this.addDataChannelListeners(event.channel);
+            },
+
+            /**
+             * create peer connection and pass it to the device id state
              * @param options
              * @param callback
              */
             createRTCPeerConnection: function(options, callback) {
                 var _this = this;
-                _this.trigger('log', { message: 'try: createRTCPeerConnection' });
+                _this.chat.trigger('log', { message: 'try: createRTCPeerConnection' });
                 try {
-                    _this.peerConnection = new webkitRTCPeerConnection(_this.configuration.RTC, _this.configuration.constraints);
+                    var peerConnection = new webkitRTCPeerConnection(_this.configuration.RTC, _this.configuration.constraints);
                 } catch (error) {
                     if (callback) {
                         callback(error);
@@ -227,100 +231,93 @@ define('webrtc', [
                     return;
                 }
 
-                _this.peerConnection.onicecandidate = function(e) {
-                    if (e.candidate == null) {
-                        _this.trigger('log', { message: 'done: ICE candidate' });
-                        if (options.onicecandidate) {
-                            options.onicecandidate(_this.peerConnection.localDescription);
-                        }
-                    }
-                };
+                peerConnection.onicecandidate = _this.onICEcandidate.bind(_this, peerConnection, options);
 
-                _this.peerConnection.ondatachannel = function(event) {
-                    console.log('Data Channel established');
-                    _this.dataChannel = event.channel;
-                    _this.addDataChannelListeners();
-                };
-                _this.trigger('log', { message: 'done: createRTCPeerConnection' });
+                _this.chat.trigger('log', { message: 'done: createRTCPeerConnection' });
                 if (callback) {
-                    callback(null);
+                    callback(null, peerConnection);
                 }
             },
 
-            addDataChannelListeners: function() {
+            addDataChannelListeners: function(dataChannel) {
                 var _this = this;
-                if (!_this.dataChannel) {
+                if (!dataChannel) {
                     return;
                 }
-                _this.removeDataChannelListeners();
+                _this.removeDataChannelListeners(dataChannel);
 
-                _this.dataChannel.onopen = function() {
-                    console.log('Data channel connection established!!!');
-                    _this.trigger('webrtc:done');
+                dataChannel.onopen = function() {
+                    _this.chat.trigger('Data channel connection established!');
                 };
-                _this.dataChannel.onmessage = function(e) {
-                    var remoteMessage = JSON.parse(e.data);
+                dataChannel.onmessage = function(event) {
+                    var remoteMessage = JSON.parse(event.data);
                     _this.chat.messages.addRemoteMessage(remoteMessage, function(error, message) {
                         _this.chat.messages.renderMessage({ scrollTop : true }, message);
                     });
                 };
             },
 
-            removeDataChannelListeners: function() {
-                var _this = this;
-                if (!_this.dataChannel) {
+            removeDataChannelListeners: function(dataChannel) {
+                if (!dataChannel) {
                     return;
                 }
 
-                _this.dataChannel.onopen = undefined;
-                _this.dataChannel.onmessage = undefined;
+                dataChannel.onopen = null;
+                dataChannel.onmessage = null;
             },
 
-            setupDataChannel: function(options, callback) {
+            /**
+             * create data channel with channel id equal to chat id
+             * @param options
+             * @param callback
+             */
+            createDataChannel: function(options, callback) {
                 var _this = this;
 
                 try {
-                    _this.dataChannel = _this.peerConnection.createDataChannel(_this.channel, {reliable: true});
+                    var dataChannel = options.peerConnection.createDataChannel(_this.chat.chatId, {reliable: true});
                 } catch (error) {
                     callback(error);
                 }
 
-                _this.addDataChannelListeners();
-                callback(null);
+                _this.addDataChannelListeners(dataChannel);
+                callback(null, dataChannel);
             },
 
             createLocalOffer: function(options, callback) {
                 var _this = this;
-                _this.trigger('log', { message: 'try: createLocalOffer' });
-                if (!_this.peerConnection) {
+                _this.chat.trigger('log', { message: 'try: createLocalOffer' });
+                if (!options.peerConnection) {
                     if (callback) {
                         callback(new Error('No peer connection'));
                     }
                     return;
                 }
 
-                _this.trigger('log', { message: 'try: createLocalOffer:setupDataChannel' });
-                _this.setupDataChannel({}, function(setupError) {
+                _this.chat.trigger('log', { message: 'try: createLocalOffer:setupDataChannel' });
+                _this.createDataChannel(options, function(setupError, dataChannel) {
                     if (setupError) {
-                        _this.trigger('log', setupError);
                         if (callback) {
                             callback(setupError);
                         }
                         return;
                     }
-                    _this.trigger('log', { message: 'done: createLocalOffer:setupDataChannel' });
-                    _this.trigger('log', { message: 'try: createLocalOffer:createOffer' });
+                    _this.chat.trigger('log', { message: 'done: createLocalOffer:setupDataChannel' });
+                    _this.chat.trigger('log', { message: 'try: createLocalOffer:createOffer' });
 
-                    _this.peerConnection.createOffer(
-                        function(desc) {
-                            _this.trigger('log', { message: 'done: createLocalOffer:createOffer' });
-                            _this.trigger('log', { message: 'try: createLocalOffer:setLocalDescription' });
-                            _this.peerConnection.setLocalDescription(
-                                desc,
+                    options.peerConnection.createOffer(
+                        function(localDescription) {
+                            _this.chat.trigger('log', { message: 'done: createLocalOffer:createOffer' });
+                            _this.chat.trigger('log', { message: 'try: createLocalOffer:setLocalDescription' });
+                            options.peerConnection.setLocalDescription(
+                                localDescription,
                                 function() {
-                                    _this.trigger('log', { message: 'done: createLocalOffer:setLocalDescription' });
+                                    _this.chat.trigger('log', { message: 'done: createLocalOffer:setLocalDescription' });
                                     if (callback) {
-                                        callback();
+                                        callback(null, {
+                                            peerConnection: options.peerConnection,
+                                            dataChannel: dataChannel
+                                        });
                                     }
                                 },
                                 function(error) {
@@ -341,37 +338,42 @@ define('webrtc', [
 
             createLocalAnswer: function(options, callback) {
                 var _this = this;
-                _this.trigger('log', { message: 'try: createLocalAnswer' });
-                if (!_this.peerConnection) {
+                _this.chat.trigger('log', { message: 'try: createLocalAnswer' });
+                if (!options.peerConnection) {
                     if (callback) {
                         callback(new Error('No peer connection'));
                     }
                     return;
                 }
 
-                _this.trigger('log', { message: 'try: createLocalAnswer:setRemoteDescription' });
+                _this.chat.trigger('log', { message: 'try: createLocalAnswer:setRemoteDescription' });
                 try {
-                    _this.remoteOfferDescription = new RTCSessionDescription(options.remoteOfferDescription);
-                    _this.peerConnection.setRemoteDescription(_this.remoteOfferDescription);
+                    var remoteOfferDescription = new RTCSessionDescription(options.remoteOfferDescription);
+                    var offerDeviceId = _this.extractDeviceId(remoteOfferDescription);
+                    _this.chat.trigger('log',{ message: 'Extracted peer device id from offer => ' + offerDeviceId});
+                    options.peerConnection.setRemoteDescription(remoteOfferDescription);
                 } catch (error) {
                     if (callback) {
                         callback(new Error('No peer connection'));
                     }
                     return;
                 }
-                _this.trigger('log', { message: 'done: createLocalAnswer:setRemoteDescription' });
-                _this.trigger('log', { message: 'try: createLocalAnswer:createAnswer' });
+                _this.chat.trigger('log', { message: 'done: createLocalAnswer:setRemoteDescription' });
+                _this.chat.trigger('log', { message: 'try: createLocalAnswer:createAnswer' });
 
-                _this.peerConnection.createAnswer(
-                    function(desc) {
-                        _this.trigger('log', { message: 'done: createLocalAnswer:createAnswer' });
-                        _this.trigger('log', { message: 'try: createLocalAnswer:setLocalDescription' });
-                        _this.peerConnection.setLocalDescription(
-                            desc,
+                options.peerConnection.createAnswer(
+                    function(localDescription) {
+                        _this.chat.trigger('log', { message: 'done: createLocalAnswer:createAnswer' });
+                        _this.chat.trigger('log', { message: 'try: createLocalAnswer:setLocalDescription' });
+                        options.peerConnection.setLocalDescription(
+                            localDescription,
                             function() {
-                                _this.trigger('log', { message: 'done: createLocalAnswer:setLocalDescription' });
+                                _this.chat.trigger('log', { message: 'done: createLocalAnswer:setLocalDescription' });
                                 if (callback) {
-                                    callback();
+                                    callback(null, {
+                                        peerConnection: options.peerConnection,
+                                        offerDeviceId: offerDeviceId
+                                    });
                                 }
                             },
                             function(error) {

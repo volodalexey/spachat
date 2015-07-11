@@ -427,18 +427,14 @@ define('chat', [
                 var _this = this;
                 _this.removeEventListeners();
                 _this.on('throw', _this.throwRouter, _this);
-                _this.webrtc.on('log', _this.console.log, _this);
-                _this.webrtc.on('sendToWebSocket', _this.sendToWebSocket, _this);
-                _this.webrtc.on('deviceId', _this.setDeviceId, _this);
+                _this.on('log', _this.console.log, _this);
                 _this.on('notifyChat', _this.onMessageRouter, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 _this.off('throw', _this.throwRouter);
-                _this.webrtc.off('log');
-                _this.webrtc.off('sendToWebSocket');
-                _this.webrtc.off('deviceId');
+                _this.off('log');
                 _this.off('notifyChat');
             },
 
@@ -531,7 +527,9 @@ define('chat', [
                                 'chat_part': 'webrtc',
                                 'newMode': _this.webrtc.MODE.ACCEPTING_ANSWER
                             }
-                        ], { remoteAnswerDescription: event.chat_description.answer.answerDescription });
+                        ], {
+                            remoteAnswerDescription: event.chat_description.answer.answerDescription
+                        });
                     } else {
                         console.error(new Error('Offer and Answer do not make sense!'));
                     }
