@@ -556,7 +556,7 @@ define('chat', [
              */
             chatConnectionEstablished: function() {
                 console.log('chatConnectionEstablished');
-            },
+            }
 
             /*toggleShowState: function(_options, toggleObject, _obj) {
                 if (_obj.target && _obj.target.dataset.role === "enablePagination") {
@@ -589,9 +589,6 @@ define('chat', [
                 toggleObject[_options.key] = _options.toggle;
             },
 */
-            setDeviceId: function(deviceId) {
-                this.deviceId = deviceId;
-            }
 
         };
         extend(chat, ajax_core);

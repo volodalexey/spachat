@@ -1,13 +1,15 @@
 define('webrtc', [
         'throw_event_core',
         'template_core',
-
+        'event_bus',
+        //
         'text!../templates/webrtc_template.ejs',
         'text!../templates/waiter_template.ejs'
     ],
     function(throw_event_core,
              template_core,
-
+             event_bus,
+            //
              webrtc_template,
              waiter_template) {
 
@@ -25,6 +27,7 @@ define('webrtc', [
                     ]
                 }
             };
+            _this.readyStatesByDeviceId = {};
             _this.connectionsByDeviceId = {};
             _this.dataChannelsByDeviceId = {};
         };
@@ -44,8 +47,22 @@ define('webrtc', [
 
             render: function(options, chat) {
                 var _this = this;
-                options = options ? options : {}; // TODO always check on upper level
+                if (!options || !options.connectedDevices) {
+                    return;
+                }
                 _this.chat = chat;
+                /**
+                 * _deviceId - temp device id or real device id extracted from ICE SDP
+                 */
+                options.connectedDevices.forEach(function(_deviceId) {
+                    if (_deviceId === event_bus.getDeviceId() && _deviceId === event_bus.getTempDeviceId()) {
+                        return;
+                    }
+                    if (!_this.readyStatesByDeviceId[_deviceId]) {
+                        _this.readyStatesByDeviceId[_deviceId] = _this.MODE.CREATING_OFFER;
+                    }
+                });
+
                 switch (_this.mode) {
                     case _this.MODE.CREATING_OFFER:
                         var peerConnection, dataChannel;
@@ -54,7 +71,7 @@ define('webrtc', [
                             var deviceId = _this.extractDeviceId(_options.peerConnection.localDescription);
                             _this.connectionsByDeviceId[deviceId] = peerConnection;
                             _this.dataChannelsByDeviceId[deviceId] = dataChannel;
-                            _this.chat.trigger('throw', 'setDeviceId', deviceId);
+                            event_bus.setDeviceId(deviceId);
                             _this.chat.trigger('log',{ message: 'Extracted host device id from offer => ' + deviceId});
                             _this.chat.trigger('throw', 'sendToWebSocket', {
                                 type: 'chat_offer',

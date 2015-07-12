@@ -8,7 +8,26 @@ define('event_bus', [
         var Event_bus = function() {
         };
 
-        Event_bus.prototype = {};
+        Event_bus.prototype = {
+            setTempDeviceId: function(tempDeviceId) {
+                this.tempDeviceId = tempDeviceId;
+            },
+
+            getTempDeviceId: function() {
+                return this.tempDeviceId;
+            },
+
+            setDeviceId: function(deviceId) {
+                this.deviceId = deviceId;
+                if (this.tempDeviceId) {
+                    this.tempDeviceId = undefined;
+                }
+            },
+
+            getDeviceId: function() {
+                return this.deviceId;
+            }
+        };
 
         extend(Event_bus, event_core);
 

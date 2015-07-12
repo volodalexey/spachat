@@ -217,9 +217,9 @@ define('indexeddb',
                     return;
                 }
 
-                if (!tables) {
+                //if (!tables) {
                     table_name = options.table_names[0];
-                }
+                //}
 
                 var executeGet = function() {
                     var trans, store, result;
@@ -240,7 +240,7 @@ define('indexeddb',
                     }
                     getCursor.onsuccess = function(event) {
                         if (event.target.result) {
-                            result = event.target.result;
+                            result = event.target.result.value;
                         }
                         callback(null, result);
                     };
