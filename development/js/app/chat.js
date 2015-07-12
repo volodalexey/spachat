@@ -196,7 +196,6 @@ define('chat', [
                 _this.header.render(options, _array, this);
                 _this.pagination.render(options, this, _this.bodyOptions.mode);
                 _this.body.render({scrollTop: true}, this);
-                _this.webrtc.render(options, this);
             },
 
             /**
@@ -416,8 +415,6 @@ define('chat', [
                                     break;
                             }
                             break;
-                        case "webrtc":
-                            _this.webrtc.mode = _obj.newMode;
                     }
                 });
                 _this.render(options, _array);
@@ -494,45 +491,24 @@ define('chat', [
             serverStoredOffer: function(event) {
                 var _this = this;
 
-                if (event.deviceId === _this.deviceId) {
+                if (event.deviceId === event_bus.getDeviceId()) {
                     // I am the creator of server stored offer
                     // Waiting for answer
-                    _this.console.log.call(_this, {message: 'waiting for connection'});
+                    //_this.console.log.call(_this, {message: 'waiting for connection'});
                 } else {
                     // I am NOT the creator of server stored offer
                     // Create answer
-                    _this.switchModes([
-                        {
-                            'chat_part': 'webrtc',
-                            'newMode': _this.webrtc.MODE.CREATING_ANSWER
-                        }
-                    ], {
-                        remoteOfferDescription: event.offerDescription
-                    });
+                    _this.webrtc.remoteOffersByDeviceId[event.deviceId] = event.offerDescription;
                 }
             },
 
             serverStoredAnswer: function(event) {
                 var _this = this;
-                if (event.deviceId === _this.deviceId) {
-                    // I am the creator of server stored answer
-                    // Waiting for accept
-                    _this.console.log.call(_this, {message: 'waiting for accept connection'});
-                } else {
-                    // I am NOT the creator of server stored answer
-                    // Accept answer if I am the offer creator
-                    if (event.offerDeviceId === _this.deviceId) {
-                        _this.switchModes([
-                            {
-                                'chat_part': 'webrtc',
-                                'newMode': _this.webrtc.MODE.ACCEPTING_ANSWER
-                            }
-                        ], {
-                            remoteAnswerDescription: event.answerDescription
-                        });
-                    } else {
-                        console.error(new Error('Offer and Answer do not make sense!'));
-                    }
+                // I am NOT the creator of server stored answer
+                // Accept answer if I am the offer creator
+                if (event.offerDeviceId === event_bus.getDeviceId()) {
+
+                    _this.webrtc.remoteAnswersByDeviceId[event.deviceId] = event.answerDescription;
                 }
             },
 

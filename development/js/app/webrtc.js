@@ -30,117 +30,131 @@ define('webrtc', [
             _this.readyStatesByDeviceId = {};
             _this.connectionsByDeviceId = {};
             _this.dataChannelsByDeviceId = {};
+            _this.remoteOffersByDeviceId = {};
+            _this.remoteAnswersByDeviceId = {};
         };
 
-        webrtc.prototype = {
+        var Connection = function() {
+            this.readyState = this.readyStates.WAITING;
+        };
 
-            MODE: {
+        Connection.prototype = {
+            readyStates: {
+                WAITING: 'WAITING',
                 WAITING: 'WAITING',
                 CREATING_OFFER: 'CREATING_OFFER',
                 CREATING_ANSWER: 'CREATING_ANSWER',
                 ACCEPTING_ANSWER: 'ACCEPTING_ANSWER'
-            },
+            }
+        };
+
+        webrtc.prototype = {
 
             extractDeviceId: function(RTCSessionDescription) {
                 return RTCSessionDescription.sdp.match(/a=fingerprint:sha-256\s*(.+)/)[1];
             },
 
-            render: function(options, chat) {
+            onChangeState: function(options, chat) {
                 var _this = this;
                 if (!options || !options.connectedDevices) {
                     return;
                 }
                 _this.chat = chat;
                 /**
-                 * _deviceId - temp device id or real device id extracted from ICE SDP
+                 * curDeviceId - temp device id or real device id extracted from ICE SDP
                  */
-                options.connectedDevices.forEach(function(_deviceId) {
-                    if (_deviceId === event_bus.getDeviceId() && _deviceId === event_bus.getTempDeviceId()) {
+                options.connectedDevices.forEach(function(curDeviceId) {
+                    if (curDeviceId === event_bus.getDeviceId() && curDeviceId === event_bus.getTempDeviceId()) {
                         return;
                     }
-                    if (!_this.readyStatesByDeviceId[_deviceId]) {
-                        _this.readyStatesByDeviceId[_deviceId] = _this.MODE.CREATING_OFFER;
+                    if (!_this.readyStatesByDeviceId[curDeviceId]) {
+                        _this.readyStatesByDeviceId[curDeviceId] = _this.MODE.CREATING_OFFER;
+                    } else if (_this.remoteOffersByDeviceId[curDeviceId]) {
+                        _this.readyStatesByDeviceId[curDeviceId] = _this.MODE.CREATING_ANSWER;
+                    } else if (_this.remoteAnswersByDeviceId[curDeviceId]) {
+                        _this.readyStatesByDeviceId[curDeviceId] = _this.MODE.ACCEPTING_ANSWER;
+                    }
+
+                    switch (_this.readyStatesByDeviceId[curDeviceId]) {
+                        case _this.MODE.CREATING_OFFER:
+                            _this.createLocalOfferAuto(
+                                {
+                                    curDeviceId: curDeviceId,
+                                    onicecandidate: function(result) {
+                                        var deviceId = _this.extractDeviceId(result.peerConnection.localDescription);
+                                        event_bus.setDeviceId(deviceId);
+                                        _this.chat.trigger('log',{ message: 'Extracted host device id from offer => ' + deviceId});
+
+                                        _this.readyStatesByDeviceId['offer_' + curDeviceId] = _this.MODE.WAITING;
+                                        _this.chat.trigger('throw', 'sendToWebSocket', {
+                                            type: 'chat_offer',
+                                            userId: _this.chat.userId,
+                                            deviceId: event_bus.getDeviceId(),
+                                            offerDescription: result.peerConnection.localDescription
+                                        });
+                                    }
+                                },
+                                function(createError, result) {
+                                    if (createError) {
+                                        _this.chat.trigger('error', { message: createError });
+                                        return;
+                                    }
+
+                                    _this.connectionsByDeviceId['offer_' + curDeviceId] = result.peerConnection;
+                                    _this.dataChannelsByDeviceId['offer_' + curDeviceId] = result.dataChannel;
+                                    _this.chat.trigger('log', { message: 'done: createLocalOfferAuto' });
+                                }
+                            );
+                            break;
+                        case _this.MODE.CREATING_ANSWER:
+                            _this.createLocalAnswerAuto(
+                                {
+                                    offerDeviceId: curDeviceId,
+                                    onicecandidate: function(_options) {
+                                        _this.mode = _this.MODE.WAITING;
+                                        _this.connectionsByDeviceId[curDeviceId].ondatachannel = _this.onDataChannel.bind(_this, curDeviceId, options);
+                                        _this.chat.trigger('throw', 'sendToWebSocket', {
+                                            type: 'chat_answer',
+                                            userId: _this.chat.userId,
+                                            offerDeviceId: curDeviceId,
+                                            deviceId: event_bus.getDeviceId(),
+                                            answerDescription: _options.peerConnection.localDescription
+                                        });
+                                    }
+                                },
+                                function(createError, _options) {
+                                    if (createError) {
+                                        _this.chat.trigger('error', { message: createError });
+                                        return;
+                                    }
+
+                                    offerDeviceId = _options.offerDeviceId;
+                                    _this.connectionsByDeviceId[offerDeviceId] = _options.peerConnection;
+                                    _this.chat.trigger('log', { message: 'done: createLocalAnswerAuto' });
+                                }
+                            );
+                            break;
+                        case _this.MODE.ACCEPTING_ANSWER:
+                            _this.acceptRemoteAnswerAuto(
+                                options,
+                                function(createError, _options) {
+                                    if (createError) {
+                                        _this.chat.trigger('error', { message: createError });
+                                        return;
+                                    }
+
+                                    _this.mode = _this.MODE.WAITING;
+                                    _this.chat.trigger('throw', 'sendToWebSocket', {
+                                        type: 'chat_accept',
+                                        userId: _this.chat.userId,
+                                        deviceId: _this.chat.deviceId,
+                                        answerDeviceId: _options.answerDeviceId
+                                    });
+                                }
+                            );
+                            break;
                     }
                 });
-
-                switch (_this.mode) {
-                    case _this.MODE.CREATING_OFFER:
-                        var peerConnection, dataChannel;
-                        options.onicecandidate = function(_options) {
-                            _this.mode = _this.MODE.WAITING;
-                            var deviceId = _this.extractDeviceId(_options.peerConnection.localDescription);
-                            _this.connectionsByDeviceId[deviceId] = peerConnection;
-                            _this.dataChannelsByDeviceId[deviceId] = dataChannel;
-                            event_bus.setDeviceId(deviceId);
-                            _this.chat.trigger('log',{ message: 'Extracted host device id from offer => ' + deviceId});
-                            _this.chat.trigger('throw', 'sendToWebSocket', {
-                                type: 'chat_offer',
-                                userId: _this.chat.userId,
-                                deviceId: _this.chat.deviceId,
-                                offerDescription: _options.peerConnection.localDescription
-                            });
-                        };
-                        _this.createLocalOfferAuto(
-                            options,
-                            function(createError, _options) {
-                                if (createError) {
-                                    _this.chat.trigger('error', { message: createError });
-                                    return;
-                                }
-
-                                peerConnection = _options.peerConnection;
-                                dataChannel = _options.dataChannel;
-                                _this.chat.trigger('log', { message: 'done: createLocalOfferAuto' });
-                            }
-                        );
-                        break;
-                    case _this.MODE.CREATING_ANSWER:
-                        var offerDeviceId;
-                        options.onicecandidate = function(_options) {
-                            _this.mode = _this.MODE.WAITING;
-                            _this.connectionsByDeviceId[offerDeviceId].ondatachannel = _this.onDataChannel.bind(_this, offerDeviceId, options);
-                            _this.chat.trigger('throw', 'sendToWebSocket', {
-                                type: 'chat_answer',
-                                userId: _this.chat.userId,
-                                offerDeviceId: offerDeviceId,
-                                deviceId: _this.chat.deviceId,
-                                answerDescription: _options.peerConnection.localDescription
-                            });
-                        };
-                        _this.createLocalAnswerAuto(
-                            options,
-                            function(createError, _options) {
-                                if (createError) {
-                                    _this.chat.trigger('error', { message: createError });
-                                    return;
-                                }
-
-                                offerDeviceId = _options.offerDeviceId;
-                                _this.connectionsByDeviceId[offerDeviceId] = _options.peerConnection;
-                                _this.chat.trigger('log', { message: 'done: createLocalAnswerAuto' });
-                            }
-                        );
-                        break;
-                    case _this.MODE.ACCEPTING_ANSWER:
-                        _this.acceptRemoteAnswerAuto(
-                            options,
-                            function(createError, _options) {
-                                if (createError) {
-                                    _this.chat.trigger('error', { message: createError });
-                                    return;
-                                }
-
-                                _this.mode = _this.MODE.WAITING;
-                                _this.chat.trigger('throw', 'sendToWebSocket', {
-                                    type: 'chat_accept',
-                                    userId: _this.chat.userId,
-                                    deviceId: _this.chat.deviceId,
-                                    answerDeviceId: _options.answerDeviceId
-                                });
-                            }
-                        );
-                    break;
-                }
             },
 
             /**
@@ -184,7 +198,7 @@ define('webrtc', [
 
                         _this.createLocalAnswer({
                             peerConnection: peerConnection,
-                            remoteOfferDescription: options.remoteOfferDescription
+                            remoteOfferDescription: _this.remoteOffersByDeviceId[]
                         }, callback);
                     }
                 );
@@ -212,15 +226,12 @@ define('webrtc', [
 
             /**
              * each time client tries to define its address
-             * @param peerConnection
-             * @param options
-             * @param event
              */
-            onICEcandidate: function(peerConnection, options, event) {
+            onICEcandidate: function(peerConnection, onicecandidate, event) {
                 if (event.candidate == null) {
                     this.chat.trigger('log', { message: 'done: ICE candidate' });
-                    if (options.onicecandidate) {
-                        options.onicecandidate({
+                    if (onicecandidate) {
+                        onicecandidate({
                             peerConnection: peerConnection
                         });
                     }
@@ -252,7 +263,7 @@ define('webrtc', [
                     return;
                 }
 
-                peerConnection.onicecandidate = _this.onICEcandidate.bind(_this, peerConnection, options);
+                peerConnection.onicecandidate = _this.onICEcandidate.bind(_this, peerConnection, options.onicecandidate);
 
                 _this.chat.trigger('log', { message: 'done: createRTCPeerConnection' });
                 if (callback) {

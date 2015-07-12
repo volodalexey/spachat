@@ -233,11 +233,7 @@ define('chat_platform', [
                         _this.createChatLayout(
                             event,
                             {
-                                chat_wrapper: _this.chat_wrapper,
-                                modeDescriptions: [{
-                                    'chat_part': 'webrtc',
-                                    'newMode': webrtc.prototype.MODE.CREATING_OFFER
-                                }]
+                                chat_wrapper: _this.chat_wrapper
                             }
                         );
                     }
@@ -310,11 +306,7 @@ define('chat_platform', [
                     event,
                     {
                         chat_wrapper: _this.chat_wrapper,
-                        connectedDevices: event.connectedDevices,
-                        modeDescriptions: [{
-                            'chat_part': 'webrtc',
-                            'newMode': webrtc.prototype.MODE.CREATING_OFFER
-                        }]
+                        connectedDevices: event.connectedDevices
                     }
                 );
             },
