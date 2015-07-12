@@ -104,6 +104,23 @@ define('switcher_core',
 
                 }
                 toggleObject[_options.key] = _options.toggle;
+            },
+
+            toggleText: function(_options, toggleObject, element) {
+                if (!toggleObject.previousSave) {
+                    if (_options.save && _options.save === true) {
+                        toggleObject.previousSave = true;
+                        toggleObject[_options.key] = element.innerHTML;
+                    }
+                }
+                if (_options.restore) {
+                    if (toggleObject.previousSave) {
+                       toggleObject.restore = true;
+                    }
+                    toggleObject.previousSave = false;
+                    return;
+
+                }
             }
 
 

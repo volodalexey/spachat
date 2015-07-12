@@ -135,7 +135,8 @@ define('render_layout_core', [
                     if (_this.MODE && (_this.body_mode === _this.MODE.FILTER ||
                         _this.body_mode === _this.MODE.FORMAT_PANEL || _this.body_mode === _this.MODE.PAGINATION
                         || _this.body_mode === _this.MODE.GO_TO || _this.body_mode === _this.MODE.CHATS_FILTER
-                        || _this.body_mode === _this.MODE.USERS_FILTER)
+                        || _this.body_mode === _this.MODE.USERS_FILTER
+                        || _this.body_mode === _this.MODE.MAIN_PANEL)
                         || (_this.chat && _this.body_mode === _this.chat.body.MODE.SETTING)
                         ) {
                         callback(null, options);

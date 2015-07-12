@@ -114,6 +114,7 @@ define('chat', [
                 last: null,
                 previousStart: 0,
                 previousFinal: 0,
+                restore: false,
                 innerHTML: ""
             }
         };
@@ -290,6 +291,10 @@ define('chat', [
                                         save: true,
                                         toggle: false
                                     }, _this.goToLoggerOptions, _obj);
+                                    _this.toggleText({
+                                        key: 'innerHTML',
+                                        save: true
+                                    }, _this.messagesOptions, _this.editor.message_inner_container);
                                     break;
                                 case _this.body.MODE.CONTACT_LIST:
                                     _this.bodyOptions.mode = _this.body.MODE.CONTACT_LIST;
@@ -320,8 +325,11 @@ define('chat', [
                                         save: true,
                                         toggle: false
                                     }, _this.goToLoggerOptions, _obj);
+                                    _this.toggleText({
+                                        key: 'innerHTML',
+                                        save: true
+                                    }, _this.messagesOptions, _this.editor.message_inner_container);
                                     break;
-
                                 case _this.body.MODE.MESSAGES:
                                     _this.bodyOptions.mode = _this.body.MODE.MESSAGES;
                                     _this.editorOptions.show = true;
@@ -350,6 +358,10 @@ define('chat', [
                                         save: true,
                                         toggle: false
                                     }, _this.goToLoggerOptions, _obj);
+                                    _this.toggleText({
+                                        key: 'innerHTML',
+                                        restore: true
+                                    }, _this.messagesOptions, _this.editor.message_inner_container);
                                     break;
                                 case _this.body.MODE.LOGGER:
                                     _this.bodyOptions.mode = _this.body.MODE.LOGGER;
