@@ -104,7 +104,15 @@ define('editor', [
                         _this.elementMap = {
                             MAIN_PANEL: _this.editor_container
                         };
-                        _this.renderLayout(null, function() {
+                        var data = {
+                            "restore": _this.chat.messagesOptions.restore,
+                            "innerHTML": _this.chat.messagesOptions.innerHTML
+                        }
+                        _this.renderLayout(data, function() {
+                            if (_this.chat.messagesOptions.restore) {
+                                _this.chat.messagesOptions.restore = false;
+                                _this.chat.messagesOptions.innerHTML = "";
+                            }
                             _this.cashElements();
                             _this.addMainEventListener();
                             _this.renderFormatPanel();
@@ -129,7 +137,7 @@ define('editor', [
                     };
                     var data = {
                         "offScroll": _this.chat.formatOptions.offScroll,
-                        "sendEnter": _this.chat.formatOptions.sendEnter,
+                        //"sendEnter": _this.chat.formatOptions.sendEnter,
                         "iSender": _this.chat.formatOptions.iSender
                     };
                     _this.renderLayout(data, null);

@@ -13,5 +13,18 @@
     },
     "name": "",
     "disable": false
+  },
+  {
+    "element": "input",
+    "type": "checkbox",
+    "text": "Send Enter",
+    "class": "btnEdit check-box-size",
+    "title": "Edit_btn",
+    "data": {
+      "key": "sendEnter",
+      "role": "btnEdit",
+      "action": "changeSendEnter",
+      "name": ""
+    }
   }
 ]

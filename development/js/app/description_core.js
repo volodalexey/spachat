@@ -28,7 +28,7 @@ define('description_core', [],
                             if (event.type === 'touchmove' && event.changedTouches) {
                                 clientX = event.changedTouches[0].clientX;
                             }
-                            if (Math.abs(_this.checkReorderClientX - clientX) > 5) {
+                            if (Math.abs(_this.checkReorderClientX - clientX) > 5 && !_this.descriptionShow) {
 
                                 _this.descriptionShow = true;
                                 if (event.target.dataset.description ||
@@ -218,6 +218,7 @@ define('description_core', [],
                     case 'touchend':
                         _this.reorderMouseDown = false;
                         if (_this.descriptionShow) {
+                            _this.descriptionShow = false;
                             description.innerHTML = "";
                             description.style.left = "0px";
                             description.style.top = "0px";

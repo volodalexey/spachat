@@ -161,7 +161,9 @@ define('messages', [
                 _this.chat.body_container.innerHTML += _this.message_template({
                     message: message
                 });
-                _this.chat.messagesOptions.final += 1;
+                //_this.chat.messagesOptions.final += 1;
+                _this.chat.paginationMessageOptions.currentPage = null;
+                _this.chat.render(null, null);
                 _this.scrollTo(options);
             },
 
