@@ -336,6 +336,7 @@ define('webrtc', [
                                 callback(error);
                             }
                         }
+                        //,{ mandatory: { OfferToReceiveVideo: true, OfferToReceiveAudio: true }}
                     );
                 });
             },
@@ -408,11 +409,15 @@ define('webrtc', [
             broadcastMessage: function(broadcastData) {
                 var _this = this;
                 for (var deviceId in _this.dataChannelsByDeviceId) {
-                    if (_this.dataChannelsByDeviceId[deviceId].readyState === "open") {
-                        _this.dataChannelsByDeviceId[deviceId].send(broadcastData);
+                    if (_this.dataChannelsByDeviceId[deviceId]) {
+                        if (_this.dataChannelsByDeviceId[deviceId].readyState === "open") {
+                            _this.dataChannelsByDeviceId[deviceId].send(broadcastData);
+                        } else {
+                            console.log('removed old data channel connection with device id => ', deviceId);
+                            delete _this.dataChannelsByDeviceId[deviceId];
+                        }
                     } else {
-                        console.log('removed old data channel connection with device id => ', deviceId);
-                        delete _this.dataChannelsByDeviceId[deviceId];
+                        console.log('requested device id not found => ', deviceId);
                     }
                 }
             }
