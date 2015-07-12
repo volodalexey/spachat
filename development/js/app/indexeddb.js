@@ -35,18 +35,18 @@ define('indexeddb',
                 var upgraded = false;
 
                 var onSuccess = function(event) {
-                    if (!_this.openDatabases[options.id]) {
-                        _this.openDatabases[options.id] = {};
+                    if (!_this.openDatabases[options.db_name]) {
+                        _this.openDatabases[options.db_name] = {};
                     }
                     if (event && event.target) {
-                        _this.openDatabases[options.id].db = event.target.result;
+                        _this.openDatabases[options.db_name].db = event.target.result;
                     }
-                    _this.openDatabases[options.id].options = options;
+                    _this.openDatabases[options.db_name].options = options;
                     callback(null, upgraded);
                 };
 
-                if (_this.openDatabases[options.id] &&
-                    _this.openDatabases[options.id].db) {
+                if (_this.openDatabases[options.db_name] &&
+                    _this.openDatabases[options.db_name].db) {
                     onSuccess();
                     return;
                 }
@@ -94,7 +94,7 @@ define('indexeddb',
                 var executeAddOrUpdateAll = function() {
                     var trans, store, keyPath = _this.getKeyPath(options);
                     try {
-                        trans = _this.openDatabases[options.id].db.transaction([table_name], "readwrite");
+                        trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readwrite");
                         store = trans.objectStore(table_name);
                     } catch (error) {
                         callback(error);
@@ -142,7 +142,7 @@ define('indexeddb',
                     });
                 };
 
-                if (_this.openDatabases[options.id]) {
+                if (_this.openDatabases[options.db_name]) {
                     executeAddOrUpdateAll();
                 } else {
                     _this.open(options, function(err, upgraded) {
@@ -169,7 +169,7 @@ define('indexeddb',
                 var executeGetAll = function() {
                     var trans, store, openRequest;
                     try {
-                        trans = _this.openDatabases[options.id].db.transaction([table_name], "readonly");
+                        trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readonly");
                         store = trans.objectStore(table_name);
                         openRequest = store.openCursor();
                     } catch (error) {
@@ -193,7 +193,7 @@ define('indexeddb',
                     };
                 };
 
-                if (_this.openDatabases[options.id]) {
+                if (_this.openDatabases[options.db_name]) {
                     executeGetAll();
                 } else {
                     _this.open(options, function(err, upgraded) {
@@ -203,6 +203,62 @@ define('indexeddb',
                             executeGetAll();
                         }
                     });
+                }
+            },
+
+            /**
+             * open indexedDB table and search through for requested key path
+             */
+            getByKeyPath: function(options, getValue, callback) {
+                var _this = this, table_name;
+
+                if (_this.state !== _this.STATES.READY) {
+                    callback(new Error('ErrorState'));
+                    return;
+                }
+
+                if (!tables) {
+                    table_name = options.table_names[0];
+                }
+
+                var executeGet = function() {
+                    var trans, store, result;
+                    try {
+                        trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readonly");
+                        store = trans.objectStore(table_name);
+                    } catch (error) {
+                        callback(error);
+                        return;
+                    }
+
+                    var getCursor;
+                    try {
+                        getCursor = store.openCursor(IDBKeyRange.only(getValue));
+                    } catch (error) {
+                        callback(error);
+                        return;
+                    }
+                    getCursor.onsuccess = function(event) {
+                        if (event.target.result) {
+                            result = event.target.result;
+                        }
+                        callback(null, result);
+                    };
+                    getCursor.onerror = function(e) {
+                        callback(e.currentTarget.error);
+                    };
+                };
+
+                if (_this.openDatabases[options.db_name]) {
+                    executeGet();
+                } else {
+                    _this.open(options, function(err, upgraded) {
+                        if (err) {
+                            callback(err, upgraded);
+                        } else {
+                            executeGet();
+                        }
+                    })
                 }
             }
         };

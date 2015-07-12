@@ -146,7 +146,7 @@ define('chat_platform', [
                         _this.messagesStack.push(parsedMessageData);
                     } else {
                         switch (parsedMessageData.type) {
-                            case 'created':
+                            case 'chat_created':
                                 _this.chatCreateApproved(parsedMessageData);
                                 break;
                             case 'joined':
@@ -179,7 +179,7 @@ define('chat_platform', [
                         chatId: chatId
                     };
                     websocket.sendMessage({
-                        type: "create",
+                        type: "create_chat",
                         userId: _this.navigator.userId,
                         chat_description: chat_description
                     });
@@ -225,7 +225,6 @@ define('chat_platform', [
              */
             chatCreateApproved: function(event) {
                 var _this = this;
-                event.chat_description.userId = _this.navigator.userId;
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
                     null,
@@ -242,6 +241,7 @@ define('chat_platform', [
                         _this.createChatLayout(
                             event,
                             {
+                                tempDeviceId: event.tempDeviceId,
                                 chat_wrapper: _this.chat_wrapper,
                                 modeDescriptions: [{
                                     'chat_part': 'webrtc',
@@ -255,14 +255,14 @@ define('chat_platform', [
 
             /**
              * create chat layout
+             * create tables in indexeddb for chat
              */
             createChatLayout: function(messageData, renderOptions) {
                 var _this = this;
-                messageData.chat_description.userId = messageData.userId;
+                messageData.chat_description.userId = _this.navigator.userId;
                 var newChat = new Chat(messageData.chat_description);
                 Chat.prototype.chatsArray.push(newChat);
                 newChat.collectionDescription = {
-                    "id": newChat.chatId,
                     "db_name": newChat.chatId + '_chat',
                     "table_names": [newChat.chatId + '_logs', newChat.chatId + '_messages'],
                     "db_version": 1,
@@ -310,7 +310,7 @@ define('chat_platform', [
 
             /**
              * join request for this chat was approved by the server
-             * make offer for extracting device id
+             * make offer for each device for this chat
              */
             chatJoinApproved: function(event) {
                 var _this = this;
@@ -318,6 +318,8 @@ define('chat_platform', [
                     event,
                     {
                         chat_wrapper: _this.chat_wrapper,
+                        tempDeviceId: event.tempDeviceId,
+                        connectedDevices: event.connectedDevices,
                         modeDescriptions: [{
                             'chat_part': 'webrtc',
                             'newMode': webrtc.prototype.MODE.CREATING_OFFER
@@ -377,27 +379,17 @@ define('chat_platform', [
 
                 _this.blockUIButton(chatId, 'joinByChatIdAuto__', event.target);
 
-                indexeddb.getAll(
+                indexeddb.getByKeyPath(
                     _this.collectionDescription,
-                    null,
-                    function(getError, chats) {
+                    chatId,
+                    function(getError, chat) {
                         if (getError) {
                             console.error(getError);
                             _this.unBlockUIButton(chatId, 'joinByChatIdAuto__');
                             return;
                         }
 
-                        var chat;
-                        chats.every(function(_chat) {
-                            if (_chat.chatId === chatId) {
-                                chat = _chat;
-                            }
-                            return !chat;
-                        });
-
                         if (chat) {
-                            delete chat.offer;
-                            delete chat.answer;
                             websocket.sendMessage({
                                 type: "chat_join",
                                 userId: _this.navigator.userId,
@@ -416,7 +408,6 @@ define('chat_platform', [
                 Chat.prototype.chatsArray.splice(Chat.prototype.chatsArray.indexOf(chatToDestroy), 1);
                 // TODO close indexeddb connections
             }
-
         };
         extend(chat_platform, overlay_core);
         extend(chat_platform, throw_event_core);

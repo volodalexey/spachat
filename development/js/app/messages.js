@@ -28,7 +28,6 @@ define('messages', [
                 _this.chat = chat;
 
                 _this.collectionDescription = {
-                    "id": _this.chat.chatId,
                     "db_name": _this.chat.chatId + '_chat',
                     "table_names": [],
                     "db_version": 1,
