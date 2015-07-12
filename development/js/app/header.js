@@ -165,6 +165,9 @@ define('header', [
                 var _this = this;
                 _this.optionsDefinition(_this.chat, _this.chat.bodyOptions.mode);
                 if (_this.chat.filterOptions.show) {
+                    if (_this.currentPaginationOptions.perPageValueNull) {
+                        _this.previousFilterShow = false;
+                    }
                     if (!_this.previousFilterShow) {
                         _this.previousFilterShow = true;
                         _this.body_mode = _this.MODE.FILTER;
@@ -192,7 +195,12 @@ define('header', [
                 var _this = this;
                 var value = parseInt(event.target.value);
 
-                if (event.target.value !== "" && event.target.value !== "0" && event.type !== "click") {
+                if (event.type !== "click") {
+                    if (event.target.value === "" || event.target.value === "0") {
+                        _this.currentPaginationOptions.perPageValueNull = true;
+                        return;
+
+                    }
                     if (!_this.currentPaginationOptions.rtePerPage) {
                         _this.currentPaginationOptions.currentPage = null;
                         _this.currentPaginationOptions.perPageValue = value;

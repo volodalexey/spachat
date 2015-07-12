@@ -84,6 +84,8 @@ define('switcher_core',
                     return;
 
                 }
+
+
                 if (!toggleObject.previousSave) {
                     if (_options.save && _options.save === true) {
                         toggleObject.previousSave = true;
@@ -102,8 +104,7 @@ define('switcher_core',
 
                 }
                 toggleObject[_options.key] = _options.toggle;
-            },
-
+            }
 
 
         };

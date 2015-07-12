@@ -124,6 +124,7 @@
     "title": "",
     "data": {
       "role": "userName",
+      "input": true,
       "main": "user_name_input",
       "location": "user_name",
       "key": "userName"
@@ -159,6 +160,7 @@
     "title": "",
     "data": {
       "role": "passwordOld",
+      "input": true,
       "location": "old_password",
       "key": "passwordOld"
     },
@@ -193,6 +195,7 @@
     "title": "",
     "data": {
       "role": "passwordNew",
+      "input": true,
       "location": "new_password",
       "key": "passwordNew"
     },
@@ -227,6 +230,7 @@
     "title": "",
     "data": {
       "role": "passwordConfirm",
+      "input": true,
       "key": "passwordConfirm",
       "location": "confirm_password"
     },

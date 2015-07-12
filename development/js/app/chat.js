@@ -86,6 +86,7 @@ define('chat', [
                 showEnablePagination: false,
                 showChoicePerPage: false,
                 perPageValue: 1,
+                perPageValueNull: false,
                 rtePerPage: true,
                 disableBack: false,
                 disableFirst: false,
@@ -101,6 +102,7 @@ define('chat', [
                 showEnablePagination: false,
                 showChoicePerPage: false,
                 perPageValue: 10,
+                perPageValueNull: false,
                 rtePerPage: true,
                 disableBack: false,
                 disableFirst: false,
@@ -111,7 +113,8 @@ define('chat', [
                 start: 0,
                 last: null,
                 previousStart: 0,
-                previousFinal: 0
+                previousFinal: 0,
+                innerHTML: ""
             }
         };
 

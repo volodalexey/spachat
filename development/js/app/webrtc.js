@@ -398,7 +398,6 @@ define('webrtc', [
 
             destroy: function() {
                 var _this = this;
-                _this.removeEventListeners();
                 _this.removeDataChannelListeners();
             },
 

@@ -370,6 +370,7 @@ define('panel', [
                     _this.previous_z_index = _this.outer_container.style.zIndex;
                     _this.outer_container.style.zIndex = ++panel.prototype.z_index;
                     _this.outer_container.style[_this.type] = "0px";
+                    _this.inner_container.style.maxWidth = _this.calcMaxWidth();
                     _this.fillPanelToolbar();
                     _this.render();
                     if (bigMode === true) {
@@ -395,6 +396,7 @@ define('panel', [
                 _this.bodyOptions.mode = event.target.getAttribute("data-mode");
                 _this.previous_Filter_Options = false;
                 _this.pagination.previousShow = false;
+                _this.panel_body.innerHTML = "";
                 _this.render();
             },
 
@@ -623,9 +625,11 @@ define('panel', [
 
             inputUserInfo: function(event) {
                 var _this = this;
-                if (_this.config) {
-                    var param = event.target.dataset.role;
-                    _this.user[param] = event.target.value;
+                if (event.target.dataset.input) {
+                    if (_this.config) {
+                        var param = event.target.dataset.role;
+                        _this.user[param] = event.target.value;
+                    }
                 }
             },
 
@@ -748,6 +752,7 @@ define('panel', [
             resizePanel: function() {
                 var _this = this;
                 if (_this.outer_container.style[_this.type] === '0px') {
+                    _this.inner_container.style.maxWidth = _this.calcMaxWidth();
                     if (_this.outer_container.clientWidth + _this.togglePanelElement.clientWidth > document.body.clientWidth) {
                         _this.togglePanelElement.classList.add("pull-for-" + _this.type + "-panel");
                         _this.togglePanelElement.classList.remove("panel-button");
@@ -757,6 +762,10 @@ define('panel', [
                         _this.togglePanelElement.classList.add("panel-button");
                     }
                 }
+            },
+
+            calcMaxWidth: function() {
+                return document.body.offsetWidth + 'px';
             }
 
         };

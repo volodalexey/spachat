@@ -129,7 +129,7 @@ define('editor', [
                     };
                     var data = {
                         "offScroll": _this.chat.formatOptions.offScroll,
-                        "sendEnter": _this.chat.formatOptions.sendEnter,
+                        //"sendEnter": _this.chat.formatOptions.sendEnter,
                         "iSender": _this.chat.formatOptions.iSender
                     };
                     _this.renderLayout(data, null);

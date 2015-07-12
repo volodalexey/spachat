@@ -38,17 +38,20 @@ define('settings', [
             bindMainContexts: function() {
                 var _this = this;
                 _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
+                _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
             },
 
             addEventListener: function() {
                 var _this = this;
                 _this.removeEventListeners();
                 _this.addRemoveListener('add', _this.body_container, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('add', _this.body_container, 'click', _this.bindedDataActionRouter, false);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 _this.addRemoveListener('remove', _this.body_container, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('remove', _this.body_container, 'click', _this.bindedDataActionRouter, false);
             },
 
             //override extended throwEvent to use trigger on chat
@@ -69,7 +72,10 @@ define('settings', [
                     _this.elementMap = {
                         "SETTING": _this.body_container
                     };
-                    _this.renderLayout(null, function(){
+                    var data = {
+                        "sendEnter": _this.chat.formatOptions.sendEnter
+                    };
+                    _this.renderLayout(data, function(){
                         _this.addEventListener();
                     });
                 } else {
@@ -79,6 +85,15 @@ define('settings', [
                             'newMode': _this.chat.body.MODE.MESSAGES
                         }
                     ]);
+                }
+            },
+
+            changeSendEnter: function(event) {
+                var _this = this;
+                if (event.target.checked) {
+                    _this.chat.formatOptions.sendEnter = true;
+                } else {
+                    _this.chat.formatOptions.sendEnter = false;
                 }
             },
 
