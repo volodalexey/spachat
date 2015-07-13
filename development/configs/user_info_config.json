@@ -2,9 +2,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "User id",
+    "text": 9,
     "class": "",
-    "title": "",
     "data": {
       "location": "user_id",
       "role": "user_id_label"
@@ -21,7 +20,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "",
     "data": {
       "role": "userId",
       "location": "user_id",
@@ -36,9 +34,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "User name",
+    "text": 36,
     "class": "",
-    "title": "",
     "data": {
       "location": "user_name",
       "role": "user_name_label"
@@ -55,7 +52,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "",
     "data": {
       "key": "userName",
       "location": "user_name",
@@ -70,9 +66,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Change",
+    "text": 37,
     "class": "",
-    "title": "",
     "data": {
       "role": "",
       "action": "changeUserInfo",
@@ -86,9 +81,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Logout",
+    "text": 38,
     "class": "",
-    "title": "",
     "data": {
       "role": "",
       "action": "logout",
@@ -102,9 +96,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "User name",
+    "text": 36,
     "class": "",
-    "title": "",
     "data": {
       "role": "user_name_label",
       "location": "user_name"
@@ -121,7 +114,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "",
     "data": {
       "role": "userName",
       "input": true,
@@ -138,9 +130,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "Old password",
+    "text": 39,
     "class": "",
-    "title": "",
     "data": {
       "role": "user_old_password_label",
       "location": "old_password"
@@ -157,7 +148,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "",
     "data": {
       "role": "passwordOld",
       "input": true,
@@ -173,9 +163,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "New password",
+    "text": 40,
     "class": "",
-    "title": "",
     "data": {
       "role": "user_new_password_label",
       "location": "new_password"
@@ -192,7 +181,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "",
     "data": {
       "role": "passwordNew",
       "input": true,
@@ -208,9 +196,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "Confirm password",
+    "text": 41,
     "class": "",
-    "title": "",
     "data": {
       "role": "user_confirm_password_label",
       "location": "confirm_password"
@@ -227,7 +214,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "",
     "data": {
       "role": "passwordConfirm",
       "input": true,
@@ -243,9 +229,8 @@
   {
     "element": "button",
     "icon": "cancel_icon",
-    "text": "Cancel",
+    "text": 42,
     "class": "",
-    "title": "",
     "data": {
       "role": "",
       "action": "cancelChangeUserInfo",
@@ -259,9 +244,8 @@
   {
     "element": "button",
     "icon": "ok_icon",
-    "text": "Save",
+    "text": 43,
     "class": "",
-    "title": "",
     "data": {
       "role": "",
       "action": "saveChangeUserInfo",

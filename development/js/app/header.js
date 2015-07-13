@@ -220,6 +220,7 @@ define('header', [
 
             changeRTE: function(event) {
                 var _this = this;
+                _this.previousFilterShow = false;
                 if (event.target.checked) {
                     _this.currentPaginationOptions.mode_change = "rte";
                     _this.currentPaginationOptions.rtePerPage = true;

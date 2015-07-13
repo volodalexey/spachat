@@ -4,7 +4,6 @@
     "icon": "",
     "text": "icon",
     "class": "hide",
-    "title": "",
     "data": {
       "role": ""
     },
@@ -15,9 +14,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "From date",
+    "text": 44,
     "class": "",
-    "title": "",
     "data": {
       "role": ""
     },
@@ -31,7 +29,6 @@
     "icon": "",
     "text": "",
     "class": "inputWidth",
-    "title": "",
     "data": {
       "role": ""
     },
@@ -42,9 +39,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Clear",
+    "text": 18,
     "class": "",
-    "title": "",
     "data": {
       "role": ""
     },
@@ -57,7 +53,6 @@
     "icon": "",
     "text": "icon",
     "class": "hide",
-    "title": "",
     "data": {
       "role": ""
     },
@@ -68,9 +63,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "to date",
+    "text": 45,
     "class": "",
-    "title": "",
     "data": {
       "role": ""
     },
@@ -84,7 +78,6 @@
     "icon": "",
     "text": "",
     "class": "inputWidth",
-    "title": "",
     "data": {
       "role": ""
     },
@@ -95,9 +88,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Clear",
+    "text": 18,
     "class": "",
-    "title": "",
     "data": {
       "role": ""
     },
@@ -112,7 +104,6 @@
     "icon": "",
     "text": "",
     "class": "check-box-size",
-    "title": "",
     "data": {
       "throw": "true",
       "role": "enablePagination",
@@ -131,7 +122,6 @@
     "icon": "",
     "text": "icon",
     "class": "hide",
-    "title": "",
     "data": {
       "role": "icon_enable_pagination"
     },
@@ -142,9 +132,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "Enable pagination",
+    "text": 28,
     "class": "",
-    "title": "",
     "data": {
       "role": ""
     },
@@ -161,7 +150,6 @@
     "icon": "",
     "text": "",
     "class": "check-box-size",
-    "title": "",
     "data": {
       "throw": "true",
       "role": "rteShowPerPage",
@@ -179,7 +167,6 @@
     "icon": "",
     "text": "icon",
     "class": "hide",
-    "title": "",
     "data": {
       "role": "icon_show_per_page"
     },
@@ -191,9 +178,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "Show per page",
+    "text": 19,
     "class": "",
-    "title": "",
     "data": {
       "role": ""
     },
@@ -209,7 +195,6 @@
     "icon": "",
     "text": "",
     "class": "inputWidth",
-    "title": "",
     "data": {
       "role": "perPageValue",
       "action": "changePerPage",
@@ -229,7 +214,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "",
     "data": {
       "role": "icon_show_per_page"
     },
@@ -244,7 +228,6 @@
     "icon": "",
     "text": "",
     "class": "check-box-size",
-    "title": "",
     "data": {
       "throw": "true",
       "role": "rteChoicePerPage",
@@ -260,9 +243,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Show per page",
+    "text": 19,
     "class": "",
-    "title": "",
     "data": {
       "throw": "true",
       "role": "show_per_page",
@@ -280,7 +262,6 @@
     "icon": "",
     "text": "",
     "class": "inputWidth",
-    "title": "",
     "data": {
       "role": "perPageValue",
       "action": "changePerPage",

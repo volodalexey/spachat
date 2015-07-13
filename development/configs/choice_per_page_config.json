@@ -5,7 +5,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "",
     "data": {
       "role": "rte_choice_per_page",
       "action": "changeRTE",
@@ -19,9 +18,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Go to",
+    "text": 11,
     "class": "w-50px",
-    "title": "",
     "data": {
       "role": "go_to_page",
       "action": "switchPage"
@@ -37,7 +35,6 @@
     "icon": "",
     "text": "",
     "class": "w-50px",
-    "title": "",
     "data": {
       "role": "choice_per_page",
       "key": "page"
@@ -54,7 +51,6 @@
     "icon": "",
     "text": "",
     "class": "check-box-size",
-    "title": "",
     "data": {
       "role": "rte_choice_per_page",
       "action": "changeRTE",
@@ -68,9 +64,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "Go to",
+    "text": 11,
     "class": "",
-    "title": "",
     "data": {
       "role": "go_to_page"
     },
@@ -85,7 +80,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "",
     "data": {
       "role": "choice_per_page",
       "action": "switchPage",

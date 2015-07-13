@@ -2,9 +2,12 @@
 <button class="<%= _in.config.class%>"
 <% if(_in.config.data) {
     for (var dataKey in _in.config.data) {
-        if (_in.config.data[dataKey] !== "") { %>
+        if (_in.config.data[dataKey] !== "" && dataKey !== "description") { %>
                 <%= 'data-' + dataKey + '=\"' + _in.config.data[dataKey] + '\"' %>
         <% }
+         if (dataKey === "description" && typeof _in.config.data[dataKey] === 'number') { %>
+        <%= 'data-' + dataKey + '=\"' + window.getLocText(_in.config.data[dataKey]) + '\"' %>
+         <%}
     }
 } %>
 <% if (_in.config.disable === true){ %> disabled <%}%>
@@ -34,7 +37,11 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
         <% }
     }
 } %>
-<%= _in.config.text ? _in.config.text : '' %>
+    <%if (_in.config.text) {%>
+    <%= typeof _in.config.text === "number" ? window.getLocText(_in.config.text) : _in.config.text %>
+    <%} else {%>
+        <%= ''%>
+    <% }%>
 <% if (_in.config.data.key) { %>
 <%= _in.data[_in.config.data.key] %>
 <%} %></button>

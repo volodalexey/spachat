@@ -266,7 +266,7 @@ define('pagination', [
             changeRTE: function(event) {
                 var _this = this;
 
-                if (_this.module.bodyOptions.mode === _this.module.MODE.DETAIL_VIEW) {
+                if (_this.module.MODE && _this.module.bodyOptions.mode === _this.module.MODE.DETAIL_VIEW) {
                     _this.module.bodyOptions.mode = _this.module.MODE.CHATS;
                 }
                 _this.optionsDefinition(_this.module, _this.module.bodyOptions.mode);

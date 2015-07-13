@@ -4,7 +4,6 @@
     "icon": "back_arrow",
     "text": "",
     "class": "",
-    "title": "Pagination_btn",
     "data": {
       "role": "back",
       "action": "switchPage",
@@ -17,7 +16,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "Pagination_btn",
     "data": {
       "role": "first",
       "action": "switchPage",
@@ -31,7 +29,6 @@
     "icon": "",
     "text": "...",
     "class": "",
-    "title": "Pagination_btn",
     "data": {
       "throw": "true",
       "role": "choice",
@@ -48,7 +45,6 @@
     "icon": "",
     "text": "",
     "class": "lblStyle",
-    "title": "Pagination_btn",
     "data": {
       "role": "current",
       "key": "currentPage"
@@ -61,7 +57,6 @@
     "icon": "",
     "text": "...",
     "class": "",
-    "title": "Pagination_btn",
     "data": {
       "throw": "true",
       "role": "choice",
@@ -78,7 +73,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "Pagination_btn",
     "data": {
       "role": "last",
       "action": "switchPage",
@@ -92,7 +86,6 @@
     "icon": "forward_arrow",
     "text": "",
     "class": "",
-    "title": "Pagination_btn",
     "data": {
       "role": "forward",
       "action": "switchPage",

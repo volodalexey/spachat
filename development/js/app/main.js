@@ -40,7 +40,8 @@ require.config({
         "navigator": "app/navigator",
         "websocket": "app/websocket",
         "event_bus": "app/event_bus",
-        "users": "app/users"
+        "users": "app/users",
+        "localization": "app/localization"
     }
 });
 
@@ -59,7 +60,13 @@ function extend(Child, Parent) {
 
 
 
-require(['navigator'], function(navigator) {
+require(['navigator', 'localization'], function(navigator, localization) {
     //OK
+    localization.getLocConfig(function(err){
+        if (err) {
+            document.body.innerHTML = err;
+            return;
+        }
+    });
     navigator.navigate();
 });

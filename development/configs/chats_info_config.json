@@ -2,9 +2,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Auto handshake",
+    "text": 3,
     "class": "",
-    "title": "",
     "data": {
       "throw": "true",
       "action": "addNewChatAuto",
@@ -16,9 +15,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Manual handshake",
+    "text": 4,
     "class": "",
-    "title": "",
     "data": {
       "throw": "true",
       "action": "addNewChatManual",
@@ -30,9 +28,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "Chat id",
+    "text": 5,
     "class": "",
-    "title": "",
     "data": {
       "location": "chat_id",
       "role": "chat_id_label",
@@ -48,7 +45,6 @@
     "icon": "",
     "text": "",
     "class": "flex-item-w50p",
-    "title": "",
     "data": {
       "location": "chat_id",
       "role": "chat_id_input",
@@ -61,9 +57,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Join chat by chat id",
+    "text": 6,
     "class": "",
-    "title": "",
     "data": {
       "throw": "true",
       "location": "chat_id_btn",
@@ -76,9 +71,8 @@
   {
     "element": "label",
     "icon": "",
-    "text": "Remote offer",
+    "text": 7,
     "class": "",
-    "title": "",
     "data": {
       "location": "remote_offer",
       "role": "remote_offer_label",
@@ -92,7 +86,6 @@
     "rows": "5",
     "text": "",
     "class": "w-100p",
-    "title": "",
     "data": {
       "location": "remote_offer",
       "role": "remote_offer_textarea",
@@ -103,9 +96,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Join chat by sdp",
+    "text": 8,
     "class": "",
-    "title": "",
     "data": {
       "throw": "true",
       "location": "remote_offer_btn",
@@ -120,7 +112,6 @@
     "icon": "pointer_icon",
     "text": "",
     "class": "",
-    "title": "",
     "data": {
       "mode": "CHATS"
     },
@@ -132,7 +123,6 @@
     "icon": "",
     "text": "",
     "class": "",
-    "title": "",
     "data": {
       "role": "my_chat_id_label",
       "key": "chatId",
@@ -145,9 +135,8 @@
     "element": "label",
     "type": "text",
     "icon": "",
-    "text": "User id",
+    "text": 9,
     "class": "",
-    "title": "",
     "data": {
       "role": "user_id_label",
       "location": "user_id",
@@ -162,7 +151,6 @@
     "icon": "",
     "text": "",
     "class": "flex-item-w50p",
-    "title": "",
     "data": {
       "role": "user_id",
       "key": "userId",
@@ -175,9 +163,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Show chat",
+    "text": 10,
     "class": "",
-    "title": "",
     "data": {
       "throw": "true",
       "action": "showChat",

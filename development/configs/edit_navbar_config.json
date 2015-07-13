@@ -4,7 +4,6 @@
     "icon": "aling_left_icon",
     "text": "",
     "class": "btnEdit",
-    "title": "Edit_btn",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -16,7 +15,6 @@
     "icon": "aling_center_icon",
     "text": "",
     "class": "btnEdit",
-    "title": "Edit_btn",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -29,7 +27,6 @@
     "icon": "aling_right_icon",
     "text": "",
     "class": "btnEdit",
-    "title": "Edit_btn",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -41,7 +38,6 @@
     "icon": "bold_icon",
     "text": "",
     "class": "btnEdit",
-    "title": "Edit_btn",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -53,7 +49,6 @@
     "icon": "italic_icon",
     "text": "",
     "class": "btnEdit",
-    "title": "Edit_btn",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -65,7 +60,6 @@
     "icon": "color_text_icon",
     "text": "",
     "class": "btnEdit",
-    "title": "Edit_btn",
     "data": {
       "role": "btnEdit",
       "name": "ForeColor",
@@ -76,9 +70,8 @@
   {
     "element": "input",
     "type": "checkbox",
-    "text": "Off Scroll",
+    "text": 12,
     "class": "btnEdit check-box-size",
-    "title": "Edit_btn",
     "data": {
       "key": "offScroll",
       "role": "btnEdit",
@@ -89,9 +82,8 @@
   {
     "element": "input",
     "type": "checkbox",
-    "text": "I seder",
+    "text": 13,
     "class": "btnEdit check-box-size",
-    "title": "Edit_btn",
     "data": {
       "key": "iSender",
       "role": "btnEdit",

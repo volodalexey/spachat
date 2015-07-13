@@ -2,11 +2,10 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Create chat",
+    "text": 1,
     "class": "",
-    "title": "",
     "data": {
-      "description": "Button CREATE CHAT",
+      "description": 2,
       "role": "",
       "location": "left_panel",
       "action": "switchPanelMode",
@@ -18,12 +17,10 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Join chat",
+    "text": 29,
     "class": "",
-    "title": "",
     "data": {
       "role": "",
-      "description": "Button JOIN CHAT",
       "location": "left_panel",
       "action": "switchPanelMode",
       "mode": "JOIN_CHAT"
@@ -34,11 +31,10 @@
   {
     "element": "button",
     "icon": "",
-    "text": "My chats",
+    "text": 30,
     "class": "",
-    "title": "",
     "data": {
-      "description": "Button My CHAT",
+      "description": 31,
       "role": "",
       "location": "left_panel",
       "action": "switchPanelMode",
@@ -50,11 +46,9 @@
   {
     "element": "button",
     "icon": "",
-    "text": "My users",
+    "text": 32,
     "class": "",
-    "title": "",
     "data": {
-      "description": "Button My USERS",
       "role": "",
       "location": "left_panel",
       "action": "switchPanelMode",
@@ -69,7 +63,6 @@
     "icon": "",
     "text": "button",
     "class": "floatR",
-    "title": "Panel_btn",
     "data": {
       "role": "",
       "location": "right_panel",
@@ -81,9 +74,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "User info",
+    "text": 33,
     "class": "floatR",
-    "title": "Panel_btn",
     "data": {
       "role": "",
       "location": "right_panel",
