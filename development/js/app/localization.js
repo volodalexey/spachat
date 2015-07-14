@@ -19,6 +19,7 @@ define('localization',[
                     }
                     window.localization_config = JSON.parse(res);
                     window.localization = "ru";
+                    callback();
                 });
             }
         };

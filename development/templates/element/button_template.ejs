@@ -1,5 +1,5 @@
 <% var _in = arguments[0]; %>
-<button class="<%= _in.config.class%>"
+<button class="<%= _in.config.class ? _in.config.class : '' %>"
 <% if(_in.config.data) {
     for (var dataKey in _in.config.data) {
         if (_in.config.data[dataKey] !== "" && dataKey !== "description") { %>
@@ -16,7 +16,7 @@
 disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
 <% var flag = true;%>
 <% } %>
-
+    <% if(_in.config.type){ %> type="<%= _in.config.type%>" <%}%>
     <% if(_in.config.data.key){ %> data-value="<%= _in.data[_in.config.data.key]%>" <%}%>
 ><% if (_in.config.icon) {
     if (_in.icon_config) {

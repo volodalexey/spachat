@@ -1,0 +1,59 @@
+[
+  {
+    "element": "button",
+    "icon": "",
+    "text": 46,
+    "data": {
+      "action": "togglePanel",
+      "role": "mainButtonLeftPanel"
+    },
+    "class": "panel-button left-panel-button"
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": 47,
+    "data": {
+      "action": "togglePanel",
+      "role": "mainButtonRightPanel"
+    },
+    "class": "panel-button right-panel-button"
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "type": "button",
+    "text": 48,
+    "data": {
+      "action": "clickRedirectToRegister",
+      "role": "registerNewUser"
+    },
+    "class": "button_login"
+  },
+  {
+    "element": "label",
+    "text": 49,
+    "class": "flex-item-w50p",
+    "data": {
+      "role": "labelUserName"
+    }
+  },
+  {
+    "element": "label",
+    "text": 50,
+    "class": "flex-item-w50p",
+    "data": {
+      "role": "labelUserPassword"
+    }
+  },
+  {
+    "element": "button",
+    "type": "submit",
+    "text": 51,
+    "data": {
+      "action": "submit",
+      "role": "loginButton"
+    },
+    "class": "button_login"
+  }
+]

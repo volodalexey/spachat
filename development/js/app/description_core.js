@@ -227,6 +227,10 @@ define('description_core', [],
                         }
                         break;
                 }
+            },
+
+            destroy: function() {
+                var _this = this;
             }
         };
 

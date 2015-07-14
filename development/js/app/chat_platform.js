@@ -30,7 +30,6 @@ define('chat_platform', [
         var chat_platform = function() {
             this.link = /chat/;
             this.withPanels = true;
-            this.mainConteiner = document.querySelector('[data-role="main_container"]');
             this.bindContexts();
         };
 
@@ -56,6 +55,7 @@ define('chat_platform', [
                     return;
                 }
                 var _this = this;
+                _this.cashMainElements();
                 _this.navigator = options.navigator;
                 if (!_this.mainConteiner) {
                     return;
@@ -71,9 +71,20 @@ define('chat_platform', [
                 _this.removeEventListeners();
             },
 
+            cashMainElements: function() {
+                var _this = this;
+                _this.mainConteiner = document.querySelector('[data-role="main_container"]');
+            },
+
             cashElements: function() {
                 var _this = this;
                 _this.chat_wrapper = _this.mainConteiner.querySelector('[data-role="chat_wrapper"]');
+            },
+
+            unCashElements: function() {
+                var _this = this;
+                _this.mainConteiner = null;
+                _this.chat_wrapper = null;
             },
 
             addEventListeners: function() {
@@ -415,6 +426,13 @@ define('chat_platform', [
                 var _this = this;
                 Chat.prototype.chatsArray.splice(Chat.prototype.chatsArray.indexOf(chatToDestroy), 1);
                 // TODO close indexeddb connections
+
+            },
+
+            destroy: function() {
+                var _this = this;
+                _this.removeEventListeners();
+                _this.unCashElements();
             }
 
         };

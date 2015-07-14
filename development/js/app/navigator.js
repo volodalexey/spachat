@@ -23,11 +23,6 @@ define('navigator',
             event_bus) {
 
         var navigator = function() {
-            this.cashElements();
-            this.bindContexts();
-            this.login_outer_container = document.querySelector('[data-role="login_outer_container"]');
-            this.main_container = document.querySelector('[data-role="main_container"]');
-            this.addEventListeners();
             this.userId = null;
             this.pages = [chat_platform, login, register];
             this.currentPage = null;
@@ -38,11 +33,15 @@ define('navigator',
             cashElements: function() {
                 var _this = this;
                 _this.button_description = document.querySelector('[data-role="description"]');
+                _this.login_outer_container = document.querySelector('[data-role="login_outer_container"]');
+                _this.main_container = document.querySelector('[data-role="main_container"]');
             },
 
             unCashElements: function() {
                 var _this = this;
                 _this.button_description = null;
+                _this.login_outer_container = null;
+                _this.main_container = null;
             },
 
             bindContexts: function() {
