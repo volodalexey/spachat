@@ -9,7 +9,7 @@
       "location": "topPanel",
       "description": 21
     },
-    "class": "btnEdit",
+    "class": "",
     "name": "CloseChat"
   },
 
@@ -27,7 +27,7 @@
       "location": "bottomPanel",
       "description": 23
     },
-    "class": "btnEdit",
+    "class": "",
     "name": "Setting"
   },
   {
@@ -44,7 +44,7 @@
       "location": "bottomPanel",
       "description": 25
     },
-    "class": "btnEdit",
+    "class": "",
     "name": "ContactList"
   },
   {
@@ -61,7 +61,7 @@
       "location": "bottomPanel",
       "description": 27
     },
-    "class": "btnEdit",
+    "class": "",
     "name": "Filter"
   }
 ]

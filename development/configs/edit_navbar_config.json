@@ -71,7 +71,7 @@
     "element": "input",
     "type": "checkbox",
     "text": 12,
-    "class": "btnEdit check-box-size",
+    "class": "check-box-size",
     "data": {
       "key": "offScroll",
       "role": "btnEdit",
@@ -83,7 +83,7 @@
     "element": "input",
     "type": "checkbox",
     "text": 13,
-    "class": "btnEdit check-box-size",
+    "class": "check-box-size",
     "data": {
       "key": "iSender",
       "role": "btnEdit",

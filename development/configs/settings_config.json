@@ -17,7 +17,7 @@
     "element": "input",
     "type": "checkbox",
     "text": 35,
-    "class": "btnEdit check-box-size",
+    "class": "check-box-size",
     "data": {
       "key": "sendEnter",
       "role": "btnEdit",
