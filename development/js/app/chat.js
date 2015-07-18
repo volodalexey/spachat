@@ -513,6 +513,7 @@ define('chat', [
                 } else {
                     // I am NOT the creator of server stored offer
                     // Create answer
+                    _this.webrtc.readyStatesByDeviceId[event.deviceId] = _this.webrtc.MODE.CREATING_ANSWER;
                     _this.webrtc.remoteOffersByDeviceId[event.deviceId] = event.offerDescription;
                 }
             },

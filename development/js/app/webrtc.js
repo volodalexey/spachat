@@ -39,16 +39,17 @@ define('webrtc', [
         };
 
         Connection.prototype = {
+
+        };
+
+        webrtc.prototype = {
+
             readyStates: {
-                WAITING: 'WAITING',
                 WAITING: 'WAITING',
                 CREATING_OFFER: 'CREATING_OFFER',
                 CREATING_ANSWER: 'CREATING_ANSWER',
                 ACCEPTING_ANSWER: 'ACCEPTING_ANSWER'
-            }
-        };
-
-        webrtc.prototype = {
+            },
 
             extractDeviceId: function(RTCSessionDescription) {
                 return RTCSessionDescription.sdp.match(/a=fingerprint:sha-256\s*(.+)/)[1];
