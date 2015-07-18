@@ -28,7 +28,7 @@ define('chat', [
              Settings,
              Contact_list,
              Messages,
-             Webrtc,
+             webrtc,
              websocket,
              Body,
              event_bus,
@@ -130,7 +130,6 @@ define('chat', [
             this.settings = new Settings({chat: this});
             this.contact_list = new Contact_list({chat: this});
             this.messages = new Messages({chat: this});
-            this.webrtc = new Webrtc({chat: this});
             this.body = new Body({chat: this});
             this.bodyOptions.mode = this.body.MODE.MESSAGES; // TODO move to description
 
@@ -472,8 +471,7 @@ define('chat', [
                     this.contact_list = null;
                     this.messages.destroy();
                     this.messages = null;
-                    this.webrtc.destroy();
-                    this.webrtc = null;
+                    webrtc.destroy(_this);
                     this.body.destroy();
                     this.body = null;
                     _this.chat_element.remove();
@@ -496,36 +494,7 @@ define('chat', [
                 var _this = this;
                 sendData.chat_description = this.valueOf();
                 websocket.sendMessage(sendData);
-                _this.proceedNextMessage();
-            },
-
-            /**
-             * server stored local offer for current chat
-             * need to join this offer of wait for connections if current user is creator
-             */
-            serverStoredOffer: function(event) {
-                var _this = this;
-
-                if (event.deviceId === event_bus.getDeviceId()) {
-                    // I am the creator of server stored offer
-                    // Waiting for answer
-                    //_this.console.log.call(_this, {message: 'waiting for connection'});
-                } else {
-                    // I am NOT the creator of server stored offer
-                    // Create answer
-                    _this.webrtc.readyStatesByDeviceId[event.deviceId] = _this.webrtc.MODE.CREATING_ANSWER;
-                    _this.webrtc.remoteOffersByDeviceId[event.deviceId] = event.offerDescription;
-                }
-            },
-
-            serverStoredAnswer: function(event) {
-                var _this = this;
-                // I am NOT the creator of server stored answer
-                // Accept answer if I am the offer creator
-                if (event.offerDeviceId === event_bus.getDeviceId()) {
-
-                    _this.webrtc.remoteAnswersByDeviceId[event.deviceId] = event.answerDescription;
-                }
+                //_this.proceedNextMessage();
             },
 
             onMessageRouter: function(eventData) {
@@ -536,6 +505,8 @@ define('chat', [
                 } else {
                     if (_this[eventData.notify_data]) {
                         _this[eventData.notify_data](eventData);
+                    } else if (webrtc[eventData.notify_data]) {
+                        webrtc[eventData.notify_data](_this, eventData);
                     } else {
                         console.error(new Error('No message handler'));
                     }

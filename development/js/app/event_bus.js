@@ -26,6 +26,10 @@ define('event_bus', [
 
             getDeviceId: function() {
                 return this.deviceId;
+            },
+
+            isEqualAnyDeviceId: function(deviceId) {
+                return this.deviceId === deviceId || this.tempDeviceId === deviceId;
             }
         };
 

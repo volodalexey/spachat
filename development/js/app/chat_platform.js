@@ -273,9 +273,8 @@ define('chat_platform', [
                     }
                     newChat.initialize(renderOptions);
                     newChat.switchModes(renderOptions.modeDescriptions, renderOptions);
-                    setTimeout(function() {
-                        _this.proceedNextMessage();
-                    }, 0);
+                    //_this.proceedNextMessage();
+                    newChat.serverStoredChat(messageData);
                 });
             },
 
@@ -301,6 +300,8 @@ define('chat_platform', [
                 websocket.sendMessage({
                     type: "chat_join",
                     userId: _this.navigator.userId,
+                    deviceId: event_bus.getDeviceId(),
+                    tempDeviceId: event_bus.getTempDeviceId(),
                     chat_description: chat_description
                 });
             }
@@ -316,8 +317,7 @@ define('chat_platform', [
                 _this.createChatLayout(
                     event,
                     {
-                        chat_wrapper: _this.chat_wrapper,
-                        connectedDevices: event.connectedDevices
+                        chat_wrapper: _this.chat_wrapper
                     }
                 );
             },
@@ -395,7 +395,7 @@ define('chat_platform', [
                 var _this = this;
                 _this.removeEventListeners();
                 _this.unCashElements();
-            }
+            },
 
             destroyChat: function(chatToDestroy) {
                 var _this = this;
