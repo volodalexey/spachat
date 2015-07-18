@@ -55,7 +55,7 @@ define('webrtc', [
             }
         };
 
-        var webrtc = function() {
+        var WebRTC = function() {
             var _this = this;
             _this.configuration = {
                 RTC: {
@@ -72,7 +72,7 @@ define('webrtc', [
             _this.connections = [];
         };
 
-        webrtc.prototype = {
+        WebRTC.prototype = {
 
             createConnection: function(options) {
                 var connection = new Connection(options);
@@ -581,12 +581,12 @@ define('webrtc', [
                 //}
             }
         };
-        extend(webrtc, throw_event_core);
-        extend(webrtc, template_core);
+        extend(WebRTC, throw_event_core);
+        extend(WebRTC, template_core);
 
-        webrtc.prototype.webrtc_template = webrtc.prototype.template(webrtc_template);
-        webrtc.prototype.waiter_template = webrtc.prototype.template(waiter_template);
+        WebRTC.prototype.webrtc_template = WebRTC.prototype.template(webrtc_template);
+        WebRTC.prototype.waiter_template = WebRTC.prototype.template(waiter_template);
 
-        return webrtc;
+        return new WebRTC();
     }
 );

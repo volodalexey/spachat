@@ -228,6 +228,7 @@ define('chat_platform', [
             chatCreateApproved: function(event) {
                 var _this = this;
                 event_bus.setTempDeviceId(event.tempDeviceId);
+                event.chat_description.userId = _this.navigator.userId;
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
                     null,
@@ -272,9 +273,12 @@ define('chat_platform', [
                         console.log(err);
                     }
                     newChat.initialize(renderOptions);
-                    newChat.switchModes(renderOptions.modeDescriptions, renderOptions);
+                    newChat.switchModes([ {
+                        'chat_part':'body',
+                        'newMode': newChat.body.MODE.MESSAGES
+                    } ], renderOptions);
                     //_this.proceedNextMessage();
-                    newChat.serverStoredChat(messageData);
+                    webrtc.serverStoredChat(newChat, messageData);
                 });
             },
 
