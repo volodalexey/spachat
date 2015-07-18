@@ -2,9 +2,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Filter chats",
+    "text": 26,
     "class": "",
-    "title": "",
     "data": {
       "action": "changeMode",
       "role": "btn_Filter",

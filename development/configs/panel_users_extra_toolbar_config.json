@@ -2,11 +2,11 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Filter users",
+    "text": 26,
     "class": "",
-    "title": "",
     "data": {
       "action": "changeMode",
+      "description": 27,
       "role": "btn_Filter",
       "toggle": true,
       "chat_part": "filter",

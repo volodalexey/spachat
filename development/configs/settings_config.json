@@ -2,9 +2,8 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Console log",
+    "text": 34,
     "class": "",
-    "title": "",
     "data": {
       "throw": "true",
       "action": "changeMode",
@@ -17,9 +16,8 @@
   {
     "element": "input",
     "type": "checkbox",
-    "text": "Send Enter",
-    "class": "btnEdit check-box-size",
-    "title": "Edit_btn",
+    "text": 35,
+    "class": "check-box-size",
     "data": {
       "key": "sendEnter",
       "role": "btnEdit",

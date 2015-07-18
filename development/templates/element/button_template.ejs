@@ -1,10 +1,13 @@
 <% var _in = arguments[0]; %>
-<button class="<%= _in.config.class%>"
+<button class="<%= _in.config.class ? _in.config.class : '' %>"
 <% if(_in.config.data) {
     for (var dataKey in _in.config.data) {
-        if (_in.config.data[dataKey] !== "") { %>
+        if (_in.config.data[dataKey] !== "" && dataKey !== "description") { %>
                 <%= 'data-' + dataKey + '=\"' + _in.config.data[dataKey] + '\"' %>
         <% }
+         if (dataKey === "description" && typeof _in.config.data[dataKey] === 'number') { %>
+        <%= 'data-' + dataKey + '=\"' + window.getLocText(_in.config.data[dataKey]) + '\"' %>
+         <%}
     }
 } %>
 <% if (_in.config.disable === true){ %> disabled <%}%>
@@ -13,7 +16,7 @@
 disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
 <% var flag = true;%>
 <% } %>
-
+    <% if(_in.config.type){ %> type="<%= _in.config.type%>" <%}%>
     <% if(_in.config.data.key){ %> data-value="<%= _in.data[_in.config.data.key]%>" <%}%>
 ><% if (_in.config.icon) {
     if (_in.icon_config) {
@@ -27,14 +30,18 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
         if (icon) {
 
             if (flag)  { %>
-                  <div class="opacity-05">   <%= icon.svg %></div>
+                  <div class="opacity-05 cursor-not-allowed">   <%= icon.svg %></div>
            <% } else { %>
             <%= icon.svg %>
     <%}%>
         <% }
     }
 } %>
-<%= _in.config.text ? _in.config.text : '' %>
+    <%if (_in.config.text) {%>
+    <%= typeof _in.config.text === "number" ? window.getLocText(_in.config.text) : _in.config.text %>
+    <%} else {%>
+        <%= ''%>
+    <% }%>
 <% if (_in.config.data.key) { %>
 <%= _in.data[_in.config.data.key] %>
 <%} %></button>

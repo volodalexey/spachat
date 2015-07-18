@@ -62,7 +62,6 @@ define('settings', [
             renderSettings: function(options, chat) {
                 var _this = this;
                 _this.chat = chat;
-
                 if (!_this.chat.body.previousMode || _this.chat.body.previousMode !== _this.chat.bodyOptions.mode) {
                     _this.chat.messagesOptions.previousFinal = 0;
                     _this.chat.messagesOptions.previousStart = 0;

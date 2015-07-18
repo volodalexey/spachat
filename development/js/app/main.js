@@ -40,7 +40,9 @@ require.config({
         "navigator": "app/navigator",
         "websocket": "app/websocket",
         "event_bus": "app/event_bus",
-        "users": "app/users"
+        "users": "app/users",
+        "localization": "app/localization",
+        "main_layout": "app/main_layout"
     }
 });
 
@@ -57,9 +59,15 @@ function extend(Child, Parent) {
     Child.prototype[Parent.prototype.__class_name] = Parent.prototype;
 }
 
-
-
-require(['navigator'], function(navigator) {
+require(['main_layout', 'localization'
+], function(main_layout, localization) {
     //OK
-    navigator.navigate();
+    localization.getLocConfig(function(err) {
+        if (err) {
+            document.body.innerHTML = err;
+            return;
+        }
+        main_layout.render();
+    });
+
 });

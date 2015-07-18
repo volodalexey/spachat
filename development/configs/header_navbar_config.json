@@ -2,22 +2,21 @@
   {
     "element": "button",
     "icon": "",
-    "text": "Close",
+    "text": 20,
     "data": {
       "throw": "true",
       "action": "destroyChat",
       "location": "topPanel",
-      "description": "Description Close button"
+      "description": 21
     },
-    "class": "btnEdit",
-    "title": "Header_btn",
+    "class": "",
     "name": "CloseChat"
   },
 
   {
     "element": "button",
     "icon": "",
-    "text": "Setting",
+    "text": 22,
     "data": {
       "throw": "true",
       "chat_part": "body",
@@ -26,16 +25,15 @@
       "role": "btnHeader",
       "toggle_reset_header": true,
       "location": "bottomPanel",
-      "description": "Description Setting button"
+      "description": 23
     },
-    "class": "btnEdit",
-    "title": "Header_btn",
+    "class": "",
     "name": "Setting"
   },
   {
     "element": "button",
     "icon": "",
-    "text": "ContactList",
+    "text": 24,
     "data": {
       "throw": "true",
       "mode_to": "CONTACT_LIST",
@@ -44,16 +42,15 @@
       "role": "btnHeader",
       "toggle_reset_header": true,
       "location": "bottomPanel",
-      "description": "Description Contact_list button"
+      "description": 25
     },
-    "class": "btnEdit",
-    "title": "Header_btn",
+    "class": "",
     "name": "ContactList"
   },
   {
     "element": "button",
     "icon": "",
-    "text": "Filter",
+    "text": 26,
     "data": {
       "throw": "true",
       "mode_to": "FILTER",
@@ -62,10 +59,9 @@
       "role": "btnHeader",
       "toggle": true,
       "location": "bottomPanel",
-      "description": "Description Filter button"
+      "description": 27
     },
-    "class": "btnEdit",
-    "title": "Header_btn",
+    "class": "",
     "name": "Filter"
   }
 ]

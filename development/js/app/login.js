@@ -18,13 +18,25 @@ define('login', [
          */
         var login = function() {
             this.link = /login/; // is used for navigator
-            this.login_outer_container = document.querySelector('[data-role="login_outer_container"]');
-            this.loginForm = this.login_outer_container.querySelector('[data-role="loginForm"]');
-            this.redirectToRegisterElement = this.loginForm.querySelector('[data-action="clickRedirectToRegister"]');
+
             this.bindContexts();
         };
 
         login.prototype = {
+
+            cashElements: function() {
+                var _this = this;
+                _this.login_outer_container = document.querySelector('[data-role="login_outer_container"]');
+                _this.loginForm = _this.login_outer_container.querySelector('[data-role="loginForm"]');
+                _this.redirectToRegisterElement = _this.loginForm.querySelector('[data-action="clickRedirectToRegister"]');
+            },
+
+            unCashElements: function() {
+                var _this = this;
+                _this.login_outer_container = null;
+                _this.loginForm = null;
+                _this.redirectToRegisterElement = null;
+            },
 
             render: function(options) {
                 if (!options || !options.navigator) {
@@ -32,6 +44,7 @@ define('login', [
                     return;
                 }
                 var _this = this;
+                _this.cashElements();
                 _this.navigator = options.navigator;
                 _this.login_outer_container.classList.remove("hidden");
                 _this.addEventListeners();
@@ -101,6 +114,12 @@ define('login', [
                 var _this = this;
                 history.pushState(null, null, 'register');
                 _this.navigator.navigate();
+            },
+
+            destroy: function() {
+                var _this = this;
+                _this.removeEventListeners();
+                _this.unCashElements();
             }
         };
 
