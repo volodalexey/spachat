@@ -1,10 +1,12 @@
-<div class="flex p-l-5px background-blue">
+<div class="flex background-blue">
     <div class="flex-wrap width-40px" data-role="controls_container">
-        <div class="modal-main-btn background-blue" style="margin-right: 5px;">
+        <div class="modal-main-btn background-blue padding-l-r">
             <% var _in = arguments[0]; %>
+            <%console.log("ddd")%>
             <% _in.config.forEach(function (_config) { %>
             <%= _in.triple_element_template({
                 config: _config,
+                icon_config: _in.icon_config,
                 button_template: _in.button_template,
                 input_template: _in.input_template,
                 label_template: _in.label_template,
