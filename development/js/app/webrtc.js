@@ -56,6 +56,13 @@ define('webrtc', [
                 if (this.tempDeviceId) {
                     this.tempDeviceId = undefined;
                 }
+            },
+
+            getAllDeviceId: function() {
+                return {
+                    deviceId: this.deviceId,
+                    tempDeviceId: this.tempDeviceId
+                }
             }
         };
 
@@ -205,6 +212,7 @@ define('webrtc', [
                                         type: 'chat_offer',
                                         userId: curChat.userId,
                                         deviceId: event_bus.getDeviceId(),
+                                        toDevice: curConnection.getAllDeviceId(),
                                         offerDescription: result.peerConnection.localDescription
                                     });
                                 }
@@ -275,13 +283,13 @@ define('webrtc', [
 
                                     curConnection.passive.peerConnection.ondatachannel = _this.onDataChannel.bind(_this, curChat, curConnection);
                                     curConnection.passive.readyState = Connection.prototype.readyStates.WAITING;
-                                    //curChat.trigger('throw', 'sendToWebSocket', {
-                                    //    type: 'chat_answer',
-                                    //    userId: curChat.userId,
-                                    //    offerDeviceId: curConnection.getDeviceId(),
-                                    //    deviceId: event_bus.getDeviceId(),
-                                    //    answerDescription: result.peerConnection.localDescription
-                                    //});
+                                    curChat.trigger('throw', 'sendToWebSocket', {
+                                        type: 'chat_answer',
+                                        userId: curChat.userId,
+                                        offerDeviceId: curConnection.getDeviceId(),
+                                        deviceId: event_bus.getDeviceId(),
+                                        answerDescription: result.peerConnection.localDescription
+                                    });
                                 }
                             },
                             function(createError, result) {
