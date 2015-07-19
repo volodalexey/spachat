@@ -2,18 +2,22 @@ define('messages', [
         'throw_event_core',
         'template_core',
         'id_core',
-
+        //
         'indexeddb',
         'message',
-
+        'webrtc',
+        //
         'text!../templates/body/message_template.ejs',
         'text!../templates/body/log_message_template.ejs'
     ],
     function(throw_event_core,
              template_core,
              id_core,
+             //
              indexeddb,
              Message,
+             webrtc,
+             //
              message_template,
              log_message_template) {
 
@@ -147,7 +151,7 @@ define('messages', [
 
                         switch (_this.chat.bodyOptions.mode) {
                             case _this.chat.body.MODE.MESSAGES:
-                                //webrtc.broadcastMessage(JSON.stringify(message));
+                                webrtc.broadcastMessage(JSON.stringify(message));
                                 break;
                         }
 
@@ -172,7 +176,7 @@ define('messages', [
                 _this.scrollTo(options);
             },
 
-            addRemoteMessage: function(remoteMessage, callback) {
+            addRemoteMessage: function(log, remoteMessage, callback) {
                 var _this = this;
                 // TODO distinct this chat messages from other
                 var message = new Message(remoteMessage);

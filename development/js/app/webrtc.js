@@ -401,6 +401,10 @@ define('webrtc', [
 
             onDataChannel: function(curChat, curConnection, event) {
                 curChat.trigger('log', { message: 'Data Channel received' });
+                if (!curConnection.passive) {
+                    this.removeDataChannelListeners(event.channel);
+                    return;
+                }
                 curConnection.passive.dataChannel = event.channel;
                 this.addDataChannelListeners(curConnection.passive.dataChannel, curChat, curConnection, 'passive');
             },
@@ -446,7 +450,11 @@ define('webrtc', [
                 };
                 dataChannel.onmessage = function(event) {
                     var remoteMessage = JSON.parse(event.data);
-                    curChat.messages.addRemoteMessage(remoteMessage, function(error, message) {
+                    curChat.messages.addRemoteMessage(curChat.body.MODE.MESSAGES, remoteMessage, function(error, message) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
                         curChat.messages.renderMessage({ scrollTop : true }, message);
                     });
                 };
@@ -599,19 +607,24 @@ define('webrtc', [
              * @param broadcastData
              */
             broadcastMessage: function(broadcastData) {
-                var _this = this;
-                //for (var deviceId in _this.dataChannelsByDeviceId) {
-                //    if (_this.dataChannelsByDeviceId[deviceId]) {
-                //        if (_this.dataChannelsByDeviceId[deviceId].readyState === "open") {
-                //            _this.dataChannelsByDeviceId[deviceId].send(broadcastData);
-                //        } else {
-                //            console.log('removed old data channel connection with device id => ', deviceId);
-                //            delete _this.dataChannelsByDeviceId[deviceId];
-                //        }
-                //    } else {
-                //        console.log('requested device id not found => ', deviceId);
-                //    }
-                //}
+                var _this = this, unused = [];
+                _this.connections.forEach(function(_connection) {
+                    if (_connection.dataChannel && _connection.dataChannel.readyState === "open") {
+                        _connection.dataChannel.send(broadcastData);
+                    } else if (_connection.dataChannel) {
+                        unused.push(_connection);
+                    }
+                });
+                while (unused.length) {
+                    var toRemoveConnection = unused.shift();
+                    var removeIndex = _this.connections.indexOf(toRemoveConnection);
+                    if (removeIndex === -1) {
+                        console.log('removed old client connection',
+                            'deviceId => ', _this.connections[removeIndex].deviceId,
+                            'tempDeviceId => ', _this.connections[removeIndex].tempDeviceId);
+                        _this.connections.splice(removeIndex, 1);
+                    }
+                }
             }
         };
         extend(WebRTC, throw_event_core);
