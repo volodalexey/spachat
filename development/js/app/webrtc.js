@@ -177,7 +177,7 @@ define('webrtc', [
                     return;
                 }
 
-                if (messageData.offerDeviceId === event_bus.getDeviceId()) {
+                if (event_bus.isEqualAnyDeviceId(messageData.toDevice)) {
                     // Accept answer if I am the offer creator
                     connection.active.readyState = Connection.prototype.readyStates.WILL_ACCEPT_ANSWER;
                     connection.active.remoteAnswerDescription = event.answerDescription;
@@ -286,7 +286,7 @@ define('webrtc', [
                                     curChat.trigger('throw', 'sendToWebSocket', {
                                         type: 'chat_answer',
                                         userId: curChat.userId,
-                                        offerDeviceId: curConnection.getDeviceId(),
+                                        toDevice: curConnection.getAllDeviceId(),
                                         deviceId: event_bus.getDeviceId(),
                                         answerDescription: result.peerConnection.localDescription
                                     });
