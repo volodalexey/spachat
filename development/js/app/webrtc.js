@@ -15,6 +15,7 @@ define('webrtc', [
 
         var Connection = function(options) {
             this.deviceId = options.deviceId;
+            this.tempDeviceId = options.tempDeviceId;
             this.active = {
                 readyState: options.active && options.active.readyState ? options.active.readyState : this.readyStates.WAITING
             };
@@ -109,6 +110,7 @@ define('webrtc', [
                             // if connection with such deviceId not found create offer for this connection
                             _this.onActiveChangeState(curChat, _this.createConnection({
                                 deviceId : devDescription.deviceId,
+                                tempDeviceId : devDescription.tempDeviceId,
                                 active: {
                                     readyState: Connection.prototype.readyStates.WILL_CREATE_OFFER
                                 }
@@ -124,7 +126,7 @@ define('webrtc', [
              */
             serverStoredOffer: function(curChat, messageData) {
                 var _this = this;
-                if (event_bus.getDeviceId() !== messageData.deviceId) {
+                if (event_bus.getDeviceId() === messageData.deviceId) {
                     // the information about myself
                     return;
                 }
@@ -138,6 +140,7 @@ define('webrtc', [
                     // if connection with such deviceId not found create answer for offer
                     _this.onPassiveChangeState(curChat, _this.createConnection({
                         deviceId : messageData.deviceId,
+                        tempDeviceId : messageData.tempDeviceId,
                         passive: {
                             remoteOfferDescription: messageData.offerDescription,
                             readyState: Connection.prototype.readyStates.WILL_CREATE_ANSWER
@@ -154,7 +157,7 @@ define('webrtc', [
             serverStoredAnswer: function(curChat, messageData) {
                 var _this = this;
                 // I am NOT the creator of server stored answer
-                if (event_bus.getDeviceId() !== messageData.deviceId) {
+                if (event_bus.getDeviceId() === messageData.deviceId) {
                     // the information about myself
                     return;
                 }
@@ -439,17 +442,22 @@ define('webrtc', [
              * @param options
              * @param callback
              */
-            createDataChannel: function(options, callback) {
+            createDataChannel: function(peerConnection, options, callback) {
                 var _this = this;
 
                 try {
-                    var dataChannel = options.peerConnection.createDataChannel(options.curConnection.getAnyDeviceId(), {reliable: true});
+                    var dataChannel = peerConnection.createDataChannel(options.curConnection.getAnyDeviceId(), {reliable: true});
                 } catch (error) {
-                    callback(error);
+                    if (callback) {
+                        callback(error);
+                    }
+                    return;
                 }
 
                 _this.addDataChannelListeners(dataChannel, options.curChat, options.curConnection, 'active');
-                callback(null, dataChannel);
+                if (callback) {
+                    callback(null, dataChannel);
+                }
             },
 
             createLocalOffer: function(peerConnection, options, callback) {
@@ -463,7 +471,7 @@ define('webrtc', [
                 }
 
                 options.curChat.trigger('log', { message: 'try: createLocalOffer:setupDataChannel' });
-                _this.createDataChannel(options, function(setupError, dataChannel) {
+                _this.createDataChannel(peerConnection, options, function(setupError, dataChannel) {
                     if (setupError) {
                         if (callback) {
                             callback(setupError);

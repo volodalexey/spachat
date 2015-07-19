@@ -140,9 +140,14 @@ define('messages', [
                         message
                     ],
                     function(error) {
+                        if (error && callback) {
+                            callback(error);
+                            return;
+                        }
+
                         switch (_this.chat.bodyOptions.mode) {
                             case _this.chat.body.MODE.MESSAGES:
-                                _this.chat.webrtc.broadcastMessage(JSON.stringify(message));
+                                //webrtc.broadcastMessage(JSON.stringify(message));
                                 break;
                         }
 

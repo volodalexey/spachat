@@ -304,14 +304,14 @@ define('chat_platform', [
                     "chatId": input.value
                 };
 
-                var tempId = Chat.prototype.generateId();
-                var deviceId = event_bus.getDeviceId();
-                var tempDeviceId = event_bus.getTempDeviceId();
+                if (!event_bus.getDeviceId() && !event_bus.getTempDeviceId()) {
+                    event_bus.setTempDeviceId(Chat.prototype.generateId());
+                }
                 websocket.sendMessage({
                     type: "chat_join",
                     userId: _this.navigator.userId,
-                    deviceId: deviceId,
-                    tempDeviceId: (!deviceId && !tempDeviceId ? tempId : tempDeviceId),
+                    deviceId: event_bus.getDeviceId(),
+                    tempDeviceId: event_bus.getTempDeviceId(),
                     chat_description: chat_description
                 });
             }
@@ -339,7 +339,7 @@ define('chat_platform', [
 
                         if (!chat) {
                             _this.addNewChatToIndexedDB(event);
-                        } else {
+                        } else if (!_this.isChatOpened(event.chat_description.chatId)) {
                             _this.chatWorkflow(event);
                         }
                     }
@@ -400,14 +400,14 @@ define('chat_platform', [
                         }
 
                         if (chat) {
-                            var tempId = Chat.prototype.generateId();
-                            var deviceId = event_bus.getDeviceId();
-                            var tempDeviceId = event_bus.getTempDeviceId();
+                            if (!event_bus.getDeviceId() && !event_bus.getTempDeviceId()) {
+                                event_bus.setTempDeviceId(Chat.prototype.generateId());
+                            }
                             websocket.sendMessage({
                                 type: "chat_join",
                                 userId: _this.navigator.userId,
-                                deviceId: deviceId,
-                                tempDeviceId: (!deviceId && !tempDeviceId ? tempId : tempDeviceId),
+                                deviceId: event_bus.getDeviceId(),
+                                tempDeviceId: event_bus.getTempDeviceId(),
                                 chat_description: chat
                             });
                         } else {
