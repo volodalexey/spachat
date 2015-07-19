@@ -114,8 +114,13 @@ define('webrtc', [
                             // the information about myself
                             return;
                         }
-                        
-                        if (!_this.getConnection(devDescription)) {
+
+                        var connection = _this.getConnection(devDescription);
+                        if (connection && connection.dataChannel && connection.dataChannel.readyState === "open") {
+                            // connection with this device is already established
+                            return;
+                        }
+                        if (!connection) {
                             // if connection with such deviceId not found create offer for this connection
                             _this.onActiveChangeState(curChat, _this.createConnection({
                                 deviceId : devDescription.deviceId,
@@ -124,6 +129,10 @@ define('webrtc', [
                                     readyState: Connection.prototype.readyStates.WILL_CREATE_OFFER
                                 }
                             }));
+                        } else {
+                            // perhaps active connection will be overridden
+                            connection.active.readyState = Connection.prototype.readyStates.WILL_CREATE_OFFER;
+                            _this.onActiveChangeState(curChat, connection);
                         }
                     });
                 }
@@ -180,7 +189,7 @@ define('webrtc', [
                 if (event_bus.isEqualAnyDeviceId(messageData.toDevice)) {
                     // Accept answer if I am the offer creator
                     connection.active.readyState = Connection.prototype.readyStates.WILL_ACCEPT_ANSWER;
-                    connection.active.remoteAnswerDescription = event.answerDescription;
+                    connection.active.remoteAnswerDescription = messageData.answerDescription;
                     _this.onActiveChangeState(curChat, connection);
                 }
             },
@@ -212,6 +221,7 @@ define('webrtc', [
                                         type: 'chat_offer',
                                         userId: curChat.userId,
                                         deviceId: event_bus.getDeviceId(),
+                                        tempDeviceId: event_bus.getTempDeviceId(),
                                         toDevice: curConnection.getAllDeviceId(),
                                         offerDescription: result.peerConnection.localDescription
                                     });
@@ -359,7 +369,7 @@ define('webrtc', [
                 options.curChat.trigger('log', { message: 'try: acceptRemoteAnswerAuto:setRemoteDescription' });
                 try {
                     var remoteAnswerDescription = new RTCSessionDescription(options.curConnection.active.remoteAnswerDescription);
-                    options.curConnection.active.setRemoteDescription(remoteAnswerDescription);
+                    options.curConnection.active.peerConnection.setRemoteDescription(remoteAnswerDescription);
                 } catch (error) {
                     if (callback) {
                         callback(error);
@@ -390,7 +400,7 @@ define('webrtc', [
             },
 
             onDataChannel: function(curChat, curConnection, event) {
-                curChat.trigger('log', { message: 'Data Channel established' });
+                curChat.trigger('log', { message: 'Data Channel received' });
                 curConnection.passive.dataChannel = event.channel;
                 this.addDataChannelListeners(curConnection.passive.dataChannel, curChat, curConnection, 'passive');
             },
