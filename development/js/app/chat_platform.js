@@ -339,8 +339,10 @@ define('chat_platform', [
 
                         if (!chat) {
                             _this.addNewChatToIndexedDB(event);
-                        } else if (!_this.isChatOpened(event.chat_description.chatId)) {
+                        } else if (chat && !_this.isChatOpened(event.chat_description.chatId)) {
                             _this.chatWorkflow(event);
+                        } else if (chat) {
+                            webrtc.serverStoredChat(_this.isChatOpened(event.chat_description.chatId), event);
                         }
                     }
                 );

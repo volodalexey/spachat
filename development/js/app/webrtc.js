@@ -17,10 +17,12 @@ define('webrtc', [
             this.deviceId = options.deviceId;
             this.tempDeviceId = options.tempDeviceId;
             this.active = {
-                readyState: options.active && options.active.readyState ? options.active.readyState : this.readyStates.WAITING
+                readyState: options.active && options.active.readyState ? options.active.readyState : this.readyStates.WAITING,
+                remoteAnswerDescription: options.active && options.active.remoteAnswerDescription ? options.active.remoteAnswerDescription : null
             };
             this.passive = {
-                readyState: options.passive && options.passive.readyState ? options.passive.readyState : this.readyStates.WAITING
+                readyState: options.passive && options.passive.readyState ? options.passive.readyState : this.readyStates.WAITING,
+                remoteOfferDescription: options.passive && options.passive.remoteOfferDescription ? options.passive.remoteOfferDescription : null
             }
         };
 
@@ -267,15 +269,19 @@ define('webrtc', [
                                         console.error(new Error('Aborted create answer!'));
                                         return;
                                     }
+                                    var deviceId = _this.extractDeviceId(result.peerConnection.localDescription);
+                                    event_bus.setDeviceId(deviceId);
+                                    curChat.trigger('log',{ message: 'Extracted host device id from offer => ' + deviceId});
+
                                     curConnection.passive.peerConnection.ondatachannel = _this.onDataChannel.bind(_this, curChat, curConnection);
                                     curConnection.passive.readyState = Connection.prototype.readyStates.WAITING;
-                                    curChat.trigger('throw', 'sendToWebSocket', {
-                                        type: 'chat_answer',
-                                        userId: _this.chat.userId,
-                                        offerDeviceId: curConnection.getDeviceId(),
-                                        deviceId: event_bus.getDeviceId(),
-                                        answerDescription: result.peerConnection.localDescription
-                                    });
+                                    //curChat.trigger('throw', 'sendToWebSocket', {
+                                    //    type: 'chat_answer',
+                                    //    userId: curChat.userId,
+                                    //    offerDeviceId: curConnection.getDeviceId(),
+                                    //    deviceId: event_bus.getDeviceId(),
+                                    //    answerDescription: result.peerConnection.localDescription
+                                    //});
                                 }
                             },
                             function(createError, result) {
