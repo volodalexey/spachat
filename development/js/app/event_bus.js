@@ -28,8 +28,17 @@ define('event_bus', [
                 return this.deviceId;
             },
 
-            isEqualAnyDeviceId: function(deviceId) {
-                return this.deviceId === deviceId || this.tempDeviceId === deviceId;
+            isEqualAnyDeviceId: function(options) {
+                return (options.deviceId && this.deviceId === options.deviceId) ||
+                    (options.tempDeviceId && this.tempDeviceId === options.tempDeviceId);
+            },
+
+            setAnyDeviceId: function(options) {
+                if (options.deviceId) {
+                    this.setDeviceId(options.deviceId);
+                } else if (options.tempDeviceId) {
+                    this.setTempDeviceId(options.tempDeviceId);
+                }
             }
         };
 

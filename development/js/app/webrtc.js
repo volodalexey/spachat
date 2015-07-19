@@ -35,8 +35,9 @@ define('webrtc', [
                 WILL_ACCEPT_ANSWER: 'WILL_ACCEPT_ANSWER'
             },
 
-            isEqualAnyDeviceId: function(deviceId) {
-                return this.deviceId === deviceId || this.tempDeviceId === deviceId;
+            isEqualAnyDeviceId: function(options) {
+                return (options.deviceId && this.deviceId === options.deviceId) ||
+                    (options.tempDeviceId && this.tempDeviceId === options.tempDeviceId);
             },
             
             getAnyDeviceId: function() {
@@ -80,10 +81,10 @@ define('webrtc', [
                 return connection;
             },
 
-            getConnection: function(deviceId) {
+            getConnection: function(options) {
                 var connection;
                 this.connections.every(function(_connection) {
-                    if (_connection.isEqualAnyDeviceId(deviceId)) {
+                    if (_connection.isEqualAnyDeviceId(options)) {
                         connection = _connection;
                     }
                     return !connection;
@@ -99,12 +100,12 @@ define('webrtc', [
                 if (messageData.connectedDevices) {
                     var _this = this;
                     messageData.connectedDevices.forEach(function(devDescription) {
-                        if (event_bus.isEqualAnyDeviceId(devDescription.deviceId || devDescription.tempDeviceId)) {
+                        if (event_bus.isEqualAnyDeviceId(devDescription)) {
                             // the information about myself
                             return;
                         }
                         
-                        if (!_this.getConnection(devDescription.deviceId || devDescription.tempDeviceId)) {
+                        if (!_this.getConnection(devDescription)) {
                             // if connection with such deviceId not found create offer for this connection
                             _this.onActiveChangeState(curChat, _this.createConnection({
                                 deviceId : devDescription.deviceId,
@@ -127,7 +128,7 @@ define('webrtc', [
                     // the information about myself
                     return;
                 }
-                var connection = _this.getConnection(messageData.deviceId);
+                var connection = _this.getConnection(messageData);
                 if (connection && connection.dataChannel && connection.dataChannel.readyState === "open") {
                     // connection with this device is already established
                     return;
@@ -158,7 +159,7 @@ define('webrtc', [
                     return;
                 }
 
-                var connection = _this.getConnection(messageData.deviceId);
+                var connection = _this.getConnection(messageData);
                 if (connection && connection.dataChannel && connection.dataChannel.readyState === "open") {
                     // connection with this device is already established
                     return;

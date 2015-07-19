@@ -31,6 +31,7 @@ define('chat_platform', [
             this.link = /chat/;
             this.withPanels = true;
             this.bindContexts();
+            this.UIbuttonsByChatId = {};
         };
 
         chat_platform.prototype = {
@@ -91,28 +92,23 @@ define('chat_platform', [
                 var _this = this;
                 _this.removeEventListeners();
                 event_bus.on('throw', _this.bindedOnThrowEvent, false);
-
                 event_bus.on('addNewChatAuto', _this.addNewChatAuto, _this);
+                event_bus.on('destroyChat', _this.destroyChat, _this);
+                websocket.on('message', _this.onMessageRouter, _this);
                 _this.on('resize', _this.resizeChats, _this);
                 _this.on('joinByChatIdAuto', _this.joinByChatIdAuto, _this);
                 _this.on('showChat', _this.showChat, _this);
-                websocket.on('message', _this.onMessageRouter, _this);
-                _this.UIbuttonsByChatId = {};
-                event_bus.on('destroyChat', _this.destroyChat, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 event_bus.off('throw', _this.bindedOnThrowEvent);
-
-
-                _this.off('addNewChatAuto');
+                event_bus.off('addNewChatAuto', _this.addNewChatAuto);
+                event_bus.off('destroyChat', _this.destroyChat);
+                websocket.off('message', _this.onMessageRouter);
                 _this.off('resize');
                 _this.off('joinByChatIdAuto');
                 _this.off('showChat');
-                websocket.off('message');
-                _this.UIbuttonsByChatId = {};
-                event_bus.off('destroyChat');
             },
 
             /**
@@ -227,7 +223,12 @@ define('chat_platform', [
              */
             chatCreateApproved: function(event) {
                 var _this = this;
-                event_bus.setTempDeviceId(event.tempDeviceId);
+                event_bus.setAnyDeviceId(event);
+                _this.addNewChatToIndexedDB(event);
+            },
+
+            addNewChatToIndexedDB: function(event) {
+                var _this = this;
                 event.chat_description.userId = _this.navigator.userId;
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
@@ -240,14 +241,16 @@ define('chat_platform', [
                             console.error(error);
                             return;
                         }
-                        // chat create was approved
-                        // create offer
-                        _this.createChatLayout(
-                            event,
-                            {
-                                chat_wrapper: _this.chat_wrapper
-                            }
-                        );
+                        _this.chatWorkflow(event);
+                    }
+                );
+            },
+
+            chatWorkflow: function(event) {
+                this.createChatLayout(
+                    event,
+                    {
+                        chat_wrapper: this.chat_wrapper
                     }
                 );
             },
@@ -294,18 +297,21 @@ define('chat_platform', [
                     return;
                 }
 
-                _this['joinByChatIdAuto__'] = event.target;
+                _this['joinByChatIdAuto_'] = event.target;
                 event.target.disabled = true;
 
                 var chat_description = {
                     "chatId": input.value
                 };
 
+                var tempId = Chat.prototype.generateId();
+                var deviceId = event_bus.getDeviceId();
+                var tempDeviceId = event_bus.getTempDeviceId();
                 websocket.sendMessage({
                     type: "chat_join",
                     userId: _this.navigator.userId,
-                    deviceId: event_bus.getDeviceId(),
-                    tempDeviceId: event_bus.getTempDeviceId(),
+                    deviceId: deviceId,
+                    tempDeviceId: (!deviceId && !tempDeviceId ? tempId : tempDeviceId),
                     chat_description: chat_description
                 });
             }
@@ -317,11 +323,25 @@ define('chat_platform', [
              */
             chatJoinApproved: function(event) {
                 var _this = this;
-                event_bus.setTempDeviceId(event.tempDeviceId);
-                _this.createChatLayout(
-                    event,
-                    {
-                        chat_wrapper: _this.chat_wrapper
+                if (event_bus.isEqualAnyDeviceId(event)) {
+                    // if join request created this device
+                    event_bus.setAnyDeviceId(event);
+                }
+
+                indexeddb.getByKeyPath(
+                    _this.collectionDescription,
+                    event.chat_description.chatId,
+                    function(getError, chat) {
+                        if (getError) {
+                            console.error(getError);
+                            return;
+                        }
+
+                        if (!chat) {
+                            _this.addNewChatToIndexedDB(event);
+                        } else {
+                            _this.chatWorkflow(event);
+                        }
                     }
                 );
             },
@@ -367,7 +387,7 @@ define('chat_platform', [
                     return;
                 }
 
-                _this.blockUIButton(chatId, 'joinByChatIdAuto__', event.target);
+                _this.blockUIButton(chatId, 'showChat_', event.target);
 
                 indexeddb.getByKeyPath(
                     _this.collectionDescription,
@@ -375,21 +395,24 @@ define('chat_platform', [
                     function(getError, chat) {
                         if (getError) {
                             console.error(getError);
-                            _this.unBlockUIButton(chatId, 'joinByChatIdAuto__');
+                            _this.unBlockUIButton(chatId, 'showChat_');
                             return;
                         }
 
                         if (chat) {
+                            var tempId = Chat.prototype.generateId();
+                            var deviceId = event_bus.getDeviceId();
+                            var tempDeviceId = event_bus.getTempDeviceId();
                             websocket.sendMessage({
                                 type: "chat_join",
                                 userId: _this.navigator.userId,
-                                deviceId: event_bus.getDeviceId(),
-                                tempDeviceId: event_bus.getTempDeviceId(),
+                                deviceId: deviceId,
+                                tempDeviceId: (!deviceId && !tempDeviceId ? tempId : tempDeviceId),
                                 chat_description: chat
                             });
                         } else {
                             console.error(new Error('Chat with such id not found in the database!'));
-                            _this.unBlockUIButton(chatId, 'joinByChatIdAuto__');
+                            _this.unBlockUIButton(chatId, 'showChat_');
                         }
                     }
                 );
@@ -399,6 +422,7 @@ define('chat_platform', [
                 var _this = this;
                 _this.removeEventListeners();
                 _this.unCashElements();
+                _this.UIbuttonsByChatId = {};
             },
 
             destroyChat: function(chatToDestroy) {
