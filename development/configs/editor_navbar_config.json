@@ -1,9 +1,9 @@
 [
   {
     "element": "button",
-    "icon": "",
+    "icon": "setting_icon",
     "text": 14,
-    "class": "",
+    "class": "button-editor",
     "data": {
       "throw": "true",
       "action": "changeMode",
@@ -20,9 +20,9 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "send_icon",
     "text": 16,
-    "class": "",
+    "class": "button-editor",
     "data": {
       "throw": "true",
       "action": "sendMessage",
