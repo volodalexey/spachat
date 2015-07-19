@@ -255,7 +255,7 @@ define('webrtc', [
                                     type: 'chat_accept',
                                     userId: curChat.userId,
                                     deviceId: event_bus.getDeviceId(),
-                                    answerDeviceId: curConnection.getDeviceId()
+                                    toDevice: curConnection.getAllDeviceId()
                                 });
                             }
                         );
