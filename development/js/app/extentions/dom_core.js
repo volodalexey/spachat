@@ -35,7 +35,6 @@ define('dom_core',
             getDataAction: function(element) {
                 var action, n = 3, parent, options, _throw;
                 var _getAction = function(element, n){
-                    //action = element.getAttribute('data-action');
                     action = element.dataset.action;
                     _throw = element.dataset.throw;
                     if (element.disabled) {

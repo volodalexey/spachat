@@ -36,29 +36,6 @@ define('throw_event_core', [
             },
 
             dataActionRouter: function(event) {
-/*                var _this = this, action, n = 3, parent;
-                var element = event.target;
-                var getDataAction =  function(element, n) {
-                    action = element.getAttribute('data-action');
-                    if (element.disabled) {
-                        action = null;
-                        return;
-
-                    }
-                    if (!action && n > 0) {
-                        parent = element.parentNode;
-                        getDataAction(parent, n-1);
-                    }
-                };
-                getDataAction(element, n);
-                if (_this[action]) {
-                    if(!parent){
-                        _this[action](event);
-                    } else {
-                        _this[action]({'target': parent});
-                    }
-                }*/
-
                 var _this = this, options;
                 var element = event.target;
 
@@ -72,7 +49,6 @@ define('throw_event_core', [
                         }
                     }
                 }
-
             },
 
             throwEventRouter: function(event) {
@@ -85,14 +61,9 @@ define('throw_event_core', [
                             _this.throwEvent(options.action, event);
                         } else {
                             _this.throwEvent(options.action, options.parent);
-                            //_this[options.action]({'target': options.parent});
                         }
-
                     }
                 }
-                //var action = event.target.dataset.action;
-
-
             },
 
             throwEvent: function(name, data) {

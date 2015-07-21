@@ -382,12 +382,13 @@ define('panel', [
                         _this.bodyOptions.mode = _this.MODE.CHATS;
                     }
                     _this.outer_container.style.zIndex = _this.previous_z_index;
+                    _this.panel_body.innerHTML = "";
                     _this.outer_container.style[_this.type] = (-_this.outer_container.offsetWidth) + 'px';
                     if (bigMode === true) {
                         _this.togglePanelElement.classList.remove("pull-for-" + _this.type + "-panel");
                         _this.togglePanelElement.classList.add("panel-button");
                     }
-                    _this.panel_body.innerHTML = "";
+
                 }
             },
 
