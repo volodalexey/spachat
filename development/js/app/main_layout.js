@@ -2,6 +2,7 @@ define('main_layout', [
         'template_core',
         'ajax_core',
         'navigator',
+        'dom_core',
         //
         'text!../templates/index_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -11,6 +12,7 @@ define('main_layout', [
     function(template_core,
              ajax_core,
              navigator,
+             dom_core,
             //
              index_template,
              triple_element_template,
@@ -37,13 +39,7 @@ define('main_layout', [
                         document.body.innerHTML = e;
                         return;
                     }
-                    _this.sendRequest("/templates/icon/description_icon.html", function(err, res) {
-                        if (err) {
-                            console.error(err);
-                            return;
-                        }
-
-                        // add to already existing waiter layout
+                    _this.getDescriptionIcon(function(res){
                         document.body.innerHTML += _this.index_template({
                             config: indexed_config,
                             icon_config: [{svg: res, name: 'description_icon'}],
@@ -57,13 +53,12 @@ define('main_layout', [
                         navigator.addEventListeners();
                         navigator.navigate();
                     });
-
-
                 });
             }
         };
         extend(Main_layout, ajax_core);
         extend(Main_layout, template_core);
+        extend(Main_layout, dom_core);
         Main_layout.prototype.index_template = Main_layout.prototype.template(index_template);
         Main_layout.prototype.triple_element_template = Main_layout.prototype.template(triple_element_template);
         Main_layout.prototype.button_template = Main_layout.prototype.template(button_template);

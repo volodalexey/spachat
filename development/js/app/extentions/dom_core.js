@@ -1,5 +1,6 @@
-define('dom_core',
-    function () {
+define('dom_core',[
+    'ajax_core'],
+    function (ajax_core) {
 
         var dom_core = function() {};
 
@@ -32,29 +33,33 @@ define('dom_core',
                 return {offsetLeft: offsetLeft, offsetTop:offsetTop};
             },
 
-            getDataAction: function(element) {
-                var action, n = 3, parent, options, _throw;
-                var _getAction = function(element, n){
-                    action = element.dataset.action;
-                    _throw = element.dataset.throw;
-                    if (element.disabled) {
-                        action = null;
+            getDataAction: function(element, _n) {
+                if (element.disabled) {
+                    return null;
+                }
+                var n = _n ? _n : 3 ;
+
+                if (!element.dataset.action && n > 0) {
+                    return this.getDataAction(element.parentNode, n-1);
+                } else if (element.dataset.action) {
+                    return element;
+                }
+                return null;
+            },
+
+            getDescriptionIcon: function(callback){
+                var _this = this;
+                _this.sendRequest("/templates/icon/description_icon.html", function(err, res) {
+                    if (err) {
+                        console.error(err);
                         return;
-
                     }
-                    if (!action && n > 0) {
-                        parent = element.parentNode;
-                        _getAction(parent, n-1);
-                    }
-                    options = {action: action, parent: parent, throw: _throw};
-
-                };
-                _getAction(element, n);
-
-                return options;
-
+                    callback(res);
+                });
             }
         };
+
+        extend(dom_core, ajax_core);
 
         return dom_core;
     }

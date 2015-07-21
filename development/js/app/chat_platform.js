@@ -369,9 +369,9 @@ define('chat_platform', [
              * find chat in the database and send chat id to the server
              * to receive approved join message
              */
-            showChat: function(event) {
+            showChat: function(element) {
                 var _this = this;
-                var parentElement = _this.traverseUpToDataset(event.target, 'role', 'chatWrapper');
+                var parentElement = _this.traverseUpToDataset(element, 'role', 'chatWrapper');
                 if (!parentElement) {
                     console.error(new Error('Parent element not found!'));
                     return;
@@ -389,7 +389,7 @@ define('chat_platform', [
                     return;
                 }
 
-                _this.blockUIButton(chatId, 'showChat_', event.target);
+                _this.blockUIButton(chatId, 'showChat_', element);
 
                 indexeddb.getByKeyPath(
                     _this.collectionDescription,

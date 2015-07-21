@@ -36,32 +36,24 @@ define('throw_event_core', [
             },
 
             dataActionRouter: function(event) {
-                var _this = this, options;
-                var element = event.target;
-
-                options = _this.getDataAction(element);
-                if (options) {
-                    if (_this[options.action]) {
-                        if(!options.parent){
-                            _this[options.action](event);
-                        } else {
-                            _this[options.action]({'target': options.parent});
-                        }
+                var _this = this, element = _this.getDataAction(event.target);
+                if (element) {
+                    if (_this[element.dataset.action]) {
+                        _this[element.dataset.action](element);
                     }
                 }
             },
 
             throwEventRouter: function(event) {
-                var _this = this, options, element = event.target;
-                options = _this.getDataAction(element);
-
-                if (options) {
-                    if (options.action && options.throw) {
-                        if(!options.parent){
-                            _this.throwEvent(options.action, event);
+                var _this = this, element = _this.getDataAction(event.target);
+                if (element) {
+                    if (element.dataset.action && element.dataset.throw) {
+                        _this.throwEvent(element.dataset.action, element);
+/*                        if(!element.parent){
+                            _this.throwEvent(element.action, event);
                         } else {
-                            _this.throwEvent(options.action, options.parent);
-                        }
+                            _this.throwEvent(element.action, element.parent);
+                        }*/
                     }
                 }
             },

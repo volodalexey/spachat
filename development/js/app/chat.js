@@ -187,7 +187,7 @@ define('chat', [
             initialize: function(options) {
                 var _this = this;
                 _this.chat_wrapper = options && options.chat_wrapper ? options.chat_wrapper : _this.chat_wrapper;
-                _this.chat_wrapper.insertAdjacentHTML( 'beforeend', _this.chat_template({ chat: this}) );
+                _this.chat_wrapper.insertAdjacentHTML('beforeend', _this.chat_template({chat: this}));
                 _this.cashElements();
                 _this.header_waiter_container.innerHTML = _this.waiter_template();
                 _this.addEventListeners();
@@ -203,28 +203,16 @@ define('chat', [
 
             /**
              * prepare change mode from UI event
-             * @param event - UI event
              */
-            changeMode: function(event) {
+            changeMode: function(element) {
                 var _this = this;
-                if (event.target) {
-                    _this.switchModes([
-                        {
-                            chat_part: event.target.dataset.chat_part,
-                            newMode: event.target.dataset.mode_to,
-                            target: event.target
-                        }
-                    ]);
-                } else {
-                    _this.switchModes([
-                        {
-                            chat_part: event.dataset.chat_part,
-                            newMode: event.dataset.mode_to,
-                            target: event
-                        }
-                    ]);
-                }
-
+                _this.switchModes([
+                    {
+                        chat_part: element.dataset.chat_part,
+                        newMode: element.dataset.mode_to,
+                        target: element
+                    }
+                ]);
             },
 
             /**
@@ -244,7 +232,8 @@ define('chat', [
                                         _obj.target.dataset.toggle = !bool_Value;
                                     }
                                     switch (_this.bodyOptions.mode) {
-                                        case _this.body.MODE.SETTING: case _this.body.MODE.CONTACT_LIST:
+                                        case _this.body.MODE.SETTING:
+                                        case _this.body.MODE.CONTACT_LIST:
                                             _this.bodyOptions.mode = _this.body.MODE.MESSAGES;
                                             _this.toggleShowState({
                                                 key: 'show',
@@ -315,9 +304,9 @@ define('chat', [
                                         toggle: false
                                     }, _this.paginationMessageOptions, _obj);
                                     _this.toggleShowState({
-                                            key: 'show',
-                                            save: true,
-                                            toggle: false
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
                                     }, _this.formatOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
@@ -429,7 +418,10 @@ define('chat', [
                                             _this.messagesOptions.final = null;
                                         }
                                     }
-                                    _this.toggleShowState({key: 'show', toggle: false}, _this.currentPaginationOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        toggle: false
+                                    }, _this.currentPaginationOptions, _obj);
                                     break;
                                 case _this.pagination.MODE.GO_TO:
                                     _this.optionsDefinition(_this, _this.bodyOptions.mode);

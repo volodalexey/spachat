@@ -392,9 +392,9 @@ define('panel', [
                 }
             },
 
-            switchPanelMode: function(event) {
+            switchPanelMode: function(element) {
                 var _this = this;
-                _this.bodyOptions.mode = event.target.getAttribute("data-mode");
+                _this.bodyOptions.mode = element.dataset.mode;
                 _this.previous_Filter_Options = false;
                 _this.pagination.previousShow = false;
                 _this.panel_body.innerHTML = "";
@@ -607,12 +607,7 @@ define('panel', [
                         }
 
                         _this.panel_config = JSON.parse(res);
-                        _this.sendRequest("/templates/icon/description_icon.html", function(err, res) {
-                            if (err) {
-                                console.error(err);
-                                return;
-                            }
-
+                        _this.getDescriptionIcon(function(res){
                             _this.description_icon = res;
                             _this.togglePanel();
                         });
@@ -715,10 +710,9 @@ define('panel', [
                 _this.navigator.navigate();
             },
 
-            show_more_info: function(event) {
-                var _this = this, chat_id_value, element;
-                element = event.target;
-                chat_id_value = event.target.getAttribute("value");
+            show_more_info: function(element) {
+                var _this = this, chat_id_value;
+                chat_id_value = element.dataset.chatid;
                 var detail_view = element.querySelector('[data-role="detail_view_container"]');
                 var pointer = element.querySelector('[data-role="pointer"]');
                 if (detail_view.dataset.state) {
@@ -750,7 +744,7 @@ define('panel', [
             },
 
             transitionEnd: function(event) {
-                var action = event.target.getAttribute('data-role');
+                var action = event.target.dataset.role;
                 if (action === 'detail_view_container') {
                     if (event.target.style.maxHeight === '0em') {
                         delete event.target.dataset.state;
