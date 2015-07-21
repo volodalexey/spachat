@@ -44,4 +44,18 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
     <% }%>
 <% if (_in.config.data.key) { %>
 <%= _in.data[_in.config.data.key] %>
-<%} %></button>
+<%} %>
+
+<%if (_in.config.data.description && _in.icon_config) {
+    var icon_description;
+    _in.icon_config.every(function(_icon) {
+        if (_icon.name === "description_icon") {
+            icon_description = _icon;
+        }
+        return !icon_description;
+    } );%>
+
+    <%= icon_description.svg %>
+    <%}%>
+
+</button>

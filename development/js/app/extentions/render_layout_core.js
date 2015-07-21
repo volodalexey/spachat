@@ -14,7 +14,7 @@ define('render_layout_core', [
 
             renderLayout: function(options, callback) {
                 var _this = this;
-                _this.iconsArray = [];
+                _this.iconsArray = [{icon: '/templates/icon/description_icon.html', name: 'description_icon'}];
                 _this.loadBodyConfig(null, options, function(confErr) {
                     _this.loadBodyData(confErr, options, function(dataErr, data) {
                         _this.fillBody(dataErr, data, function(templErr) {

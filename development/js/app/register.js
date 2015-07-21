@@ -68,15 +68,24 @@ define('register', [
                         return;
                     }
                     var registe_config = JSON.parse(res);
-                    _this.navigator.main_container.innerHTML = _this.register_template({
-                        config: registe_config,
-                        triple_element_template: _this.triple_element_template,
-                        button_template: _this.button_template,
-                        label_template: _this.label_template
+                    _this.sendRequest("/templates/icon/description_icon.html", function(err, res) {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
+
+                        _this.navigator.main_container.innerHTML = _this.register_template({
+                            config: registe_config,
+                            icon_config: [{svg: res, name: 'description_icon'}],
+                            triple_element_template: _this.triple_element_template,
+                            button_template: _this.button_template,
+                            label_template: _this.label_template
+                        });
+                        _this.cashMainElements();
+                        _this.addEventListeners();
+                        _this.toggleWaiter();
                     });
-                    _this.cashMainElements();
-                    _this.addEventListeners();
-                    _this.toggleWaiter();
+
                 });
 
             },

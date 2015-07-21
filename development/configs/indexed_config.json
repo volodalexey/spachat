@@ -25,6 +25,7 @@
     "type": "button",
     "text": 48,
     "data": {
+      "description": 54,
       "action": "clickRedirectToRegister",
       "role": "registerNewUser"
     },

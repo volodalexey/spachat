@@ -37,19 +37,28 @@ define('main_layout', [
                         document.body.innerHTML = e;
                         return;
                     }
+                    _this.sendRequest("/templates/icon/description_icon.html", function(err, res) {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
 
-                    // add to already existing waiter layout
-                    document.body.innerHTML += _this.index_template({
-                        config: indexed_config,
-                        triple_element_template: _this.triple_element_template,
-                        button_template: _this.button_template,
-                        label_template: _this.label_template
+                        // add to already existing waiter layout
+                        document.body.innerHTML += _this.index_template({
+                            config: indexed_config,
+                            icon_config: [{svg: res, name: 'description_icon'}],
+                            triple_element_template: _this.triple_element_template,
+                            button_template: _this.button_template,
+                            label_template: _this.label_template
+                        });
+
+                        navigator.cashElements();
+                        navigator.bindContexts();
+                        navigator.addEventListeners();
+                        navigator.navigate();
                     });
 
-                    navigator.cashElements();
-                    navigator.bindContexts();
-                    navigator.addEventListeners();
-                    navigator.navigate();
+
                 });
             }
         };

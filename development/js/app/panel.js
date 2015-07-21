@@ -607,7 +607,15 @@ define('panel', [
                         }
 
                         _this.panel_config = JSON.parse(res);
-                        _this.togglePanel();
+                        _this.sendRequest("/templates/icon/description_icon.html", function(err, res) {
+                            if (err) {
+                                console.error(err);
+                                return;
+                            }
+
+                            _this.description_icon = res;
+                            _this.togglePanel();
+                        });
                     });
                 }
             },
@@ -616,6 +624,7 @@ define('panel', [
                 var _this = this;
                 _this.panel_toolbar.innerHTML = _this['panel_' + _this.type + '_template']({
                     config: _this.panel_config,
+                    icon_config: [{svg: _this.description_icon, name: 'description_icon'}],
                     triple_element_template: _this.triple_element_template,
                     button_template: _this.button_template,
                     input_template: _this.input_template,

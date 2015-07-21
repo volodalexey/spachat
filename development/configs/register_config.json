@@ -38,6 +38,7 @@
     "type": "submit",
     "text": 53,
     "data": {
+      "description": 55,
       "action": "register",
       "role": "registerButton"
     },
