@@ -30,6 +30,30 @@ define('dom_core',
                     offsetTop  += element.offsetTop;
                 } while (element = element.offsetParent);
                 return {offsetLeft: offsetLeft, offsetTop:offsetTop};
+            },
+
+            getDataAction: function(element) {
+                var action, n = 3, parent, options, _throw;
+                var _getAction = function(element, n){
+                    //action = element.getAttribute('data-action');
+                    action = element.dataset.action;
+                    _throw = element.dataset.throw;
+                    if (element.disabled) {
+                        action = null;
+                        return;
+
+                    }
+                    if (!action && n > 0) {
+                        parent = element.parentNode;
+                        _getAction(parent, n-1);
+                    }
+                    options = {action: action, parent: parent, throw: _throw};
+
+                };
+                _getAction(element, n);
+
+                return options;
+
             }
         };
 

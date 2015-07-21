@@ -1,24 +1,18 @@
 <% var _in = arguments[0]; %>
-<div class="flex-sp-around">
-    <div class="fotoFormat">
-        <%if (_in.message.ids[_in.message.id].sender) {%>
-         <img src="img\app\6.ico" width="35px" height="35px"></div>
-        <%} else {%>
-            <img src="img\app\3.ico" width="35px" height="35px"></div>
-        <%}%>
-
-
+<div class="flex-sp-around marginT">
     <%if (_in.message.ids[_in.message.id].sender) {%>
         <div class="message myMessage flex-item-1-auto flex-dir-col flex-sp-between">
             <div><%= _in.message.innerHTML %></div>
-                <div class="dateFormat">
-                    <%if (_in.message.ids[_in.message.id].dateTime) { %>
-                    <% var time = new Date(_in.message.ids[_in.message.id].dateTime);%>
-                    <%= time.toISOString()%>
-                    <%}%>
-                </div>
+            <div class="dateFormat">
+                <%if (_in.message.ids[_in.message.id].dateTime) { %>
+                <% var time = new Date(_in.message.ids[_in.message.id].dateTime);%>
+                <%= time.toISOString()%>
+                <%}%>
+            </div>
         </div>
+    <div class="width-40px flex-just-center"><img src="img\app\6.ico" width="35px" height="35px" class="border-radius-5"></div>
     <%} else {%>
+        <div class="width-40px flex-just-center"><img src="img\app\3.ico" width="35px" height="35px" class="border-radius-5"></div>
         <div class="message flex-item-1-auto flex-dir-col flex-sp-between">
             <div><%= _in.message.innerHTML %></div>
             <div class="dateFormat">
@@ -29,5 +23,4 @@
             </div>
         </div>
     <%}%>
-
 </div>

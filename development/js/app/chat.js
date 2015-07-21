@@ -207,13 +207,24 @@ define('chat', [
              */
             changeMode: function(event) {
                 var _this = this;
-                _this.switchModes([
-                    {
-                        chat_part: event.target.dataset.chat_part,
-                        newMode: event.target.dataset.mode_to,
-                        target: event.target
-                    }
-                ]);
+                if (event.target) {
+                    _this.switchModes([
+                        {
+                            chat_part: event.target.dataset.chat_part,
+                            newMode: event.target.dataset.mode_to,
+                            target: event.target
+                        }
+                    ]);
+                } else {
+                    _this.switchModes([
+                        {
+                            chat_part: event.dataset.chat_part,
+                            newMode: event.dataset.mode_to,
+                            target: event
+                        }
+                    ]);
+                }
+
             },
 
             /**
@@ -520,38 +531,6 @@ define('chat', [
             chatConnectionEstablished: function() {
                 console.log('chatConnectionEstablished');
             }
-
-            /*toggleShowState: function(_options, toggleObject, _obj) {
-                if (_obj.target && _obj.target.dataset.role === "enablePagination") {
-                    toggleObject[_options.key] = _obj.target.checked;
-                    return;
-
-                }
-                if (_obj.target && _obj.target.dataset.role === 'choice') {
-                    toggleObject[_options.key] = _obj.target.dataset.toggle === "true";
-                    return;
-
-                }
-                if (!toggleObject.previousSave) {
-                    if (_options.save && _options.save === true) {
-                        toggleObject.previousSave = true;
-                        toggleObject.previousShow = toggleObject[_options.key];
-                    }
-                }
-                if (_options.restore) {
-                    if (toggleObject.previousSave) {
-                        toggleObject[_options.key] = toggleObject.previousShow;
-
-                    } else {
-                        toggleObject[_options.key] = toggleObject.show;
-                    }
-                    toggleObject.previousSave = false;
-                    return;
-
-                }
-                toggleObject[_options.key] = _options.toggle;
-            },
-*/
 
         };
         extend(chat, ajax_core);

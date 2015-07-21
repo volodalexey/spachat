@@ -5,8 +5,8 @@
 <% var array_per_page_rte = array_per_page.filter( function(obj){ return obj.redraw_mode === "rte" } ) %>
 
 
-<div class="flex-item flex background-blue">
-    <div class="elements flex-align-c">
+<div class="flex-item flex-wrap background-blue">
+    <div class="elements flex-align-c flex-item-auto">
         <% array_pagination.forEach(function (_config) { %>
         <%= array.triple_element_template({
         config: _config,
@@ -17,7 +17,7 @@
         }) %>
         <% }) %>
     </div>
-    <div class="elements flex-align-c">
+    <div class="elements flex-align-c flex-item-auto">
 
         <% if(array.data.mode_change === 'nrte') { %>
             <% array_per_page_nrte.forEach(function (_config) { %>

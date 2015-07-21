@@ -7,7 +7,7 @@
 <% var array_per_page_rte = array_per_page.filter( function(obj){ return obj.redraw_mode === "rte" } ) %>
 
 
-<div class="flex-item flex">
+<div class="flex-item flex-wrap">
     <div class="elements">
         <% array_date_from.forEach(function (_config) { %>
         <%= array.triple_element_template({
@@ -30,8 +30,8 @@
     </div>
 </div>
 
-<div class="flex-item flex">
-    <div class="elements flex-align-c">
+<div class="flex-item flex-wrap">
+    <div class="elements flex-align-c flex-item-auto">
         <% array_pagination.forEach(function (_config) { %>
         <%= array.triple_element_template({
         config: _config,
@@ -42,7 +42,7 @@
         }) %>
         <% }) %>
     </div>
-    <div class="elements flex-align-c">
+    <div class="elements flex-align-c flex-item-auto">
 
         <% if(array.data.mode_change === 'nrte') { %>
             <% array_per_page_nrte.forEach(function (_config) { %>

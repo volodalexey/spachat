@@ -1,11 +1,13 @@
 define('throw_event_core', [
         'event_core',
-        'event_bus'
+        'event_bus',
+        'dom_core'
 
     ],
     function (
         event_core,
-        event_bus
+        event_bus,
+        dom_core
 ) {
 
         var throw_event_core = function() {};
@@ -34,7 +36,7 @@ define('throw_event_core', [
             },
 
             dataActionRouter: function(event) {
-                var _this = this, action, n = 3, parent;
+/*                var _this = this, action, n = 3, parent;
                 var element = event.target;
                 var getDataAction =  function(element, n) {
                     action = element.getAttribute('data-action');
@@ -55,15 +57,42 @@ define('throw_event_core', [
                     } else {
                         _this[action]({'target': parent});
                     }
+                }*/
+
+                var _this = this, options;
+                var element = event.target;
+
+                options = _this.getDataAction(element);
+                if (options) {
+                    if (_this[options.action]) {
+                        if(!options.parent){
+                            _this[options.action](event);
+                        } else {
+                            _this[options.action]({'target': options.parent});
+                        }
+                    }
                 }
+
             },
 
             throwEventRouter: function(event) {
-                var _this = this;
-                var action = event.target.dataset.action;
-                if (action && event.target.dataset.throw) {
-                    _this.throwEvent(action, event);
+                var _this = this, options, element = event.target;
+                options = _this.getDataAction(element);
+
+                if (options) {
+                    if (options.action && options.throw) {
+                        if(!options.parent){
+                            _this.throwEvent(options.action, event);
+                        } else {
+                            _this.throwEvent(options.action, options.parent);
+                            //_this[options.action]({'target': options.parent});
+                        }
+
+                    }
                 }
+                //var action = event.target.dataset.action;
+
+
             },
 
             throwEvent: function(name, data) {
@@ -79,6 +108,7 @@ define('throw_event_core', [
         };
 
         extend(throw_event_core, event_core);
+        extend(throw_event_core, dom_core);
 
         return throw_event_core;
     }
