@@ -23,7 +23,6 @@ define('panel', [
         'text!../templates/filter_my_chats_template.ejs',
         'text!../templates/panel_extra_toolbar_template.ejs'
 
-
     ],
     function(throw_event_core,
              ajax_core,
@@ -32,12 +31,9 @@ define('panel', [
              extend_core,
              switcher_core,
              users,
-
              Pagination,
              Body,
-
              indexeddb,
-
              panel_left_template,
              panel_right_template,
              triple_element_template,
@@ -404,8 +400,8 @@ define('panel', [
             render: function(options) {
                 var _this = this;
 
-                _this.renderExtraToolbar(function(){
-                    _this.renderFilter(function(){
+                _this.renderExtraToolbar(function() {
+                    _this.renderFilter(function() {
                         _this.pagination.render(options, _this, _this.bodyOptions.mode);
                         _this.body.render(options, _this);
                     });
@@ -425,7 +421,7 @@ define('panel', [
                         _this.bodyOptions.mode !== _this.MODE.DETAIL_VIEW) {
                         _this.body_mode = _this.bodyOptions.mode + "_EXTRA_TOOLBAR";
                         _this.previousExtraToolbar = _this.bodyOptions.mode;
-                        _this.renderLayout(null, function(){
+                        _this.renderLayout(null, function() {
                             _this.cashExtraToolbarElement();
                             _callback();
                         });
@@ -478,15 +474,15 @@ define('panel', [
                 }
             },
 
-            changeMode: function(event) {
+            changeMode: function(element) {
                 var _this = this;
                 if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
                     _this.bodyOptions.mode = _this.MODE.CHATS;
                 }
                 _this.switch_Panel_Body_Mode({
-                    chat_part: event.target.dataset.chat_part,
-                    newMode: event.target.dataset.mode_to,
-                    target: event.target
+                    chat_part: element.dataset.chat_part,
+                    newMode: element.dataset.mode_to,
+                    target: element
                 })
             },
 
@@ -515,7 +511,10 @@ define('panel', [
                                         _this.messagesOptions.final = null;
                                     }
                                 }
-                                _this.toggleShowState({key: 'show', toggle: false}, _this.currentPaginationOptions, obj);
+                                _this.toggleShowState({
+                                    key: 'show',
+                                    toggle: false
+                                }, _this.currentPaginationOptions, obj);
                                 break;
                             case  _this.MODE.GO_TO:
                                 _this.optionsDefinition(_this, _this.bodyOptions.mode);
@@ -530,38 +529,36 @@ define('panel', [
                 _this.render();
             },
 
-            changePerPage: function(event) {
+            changePerPage: function(element) {
                 var _this = this;
-                var value = parseInt(event.target.value);
+                var value = parseInt(element.value);
                 if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
                     _this.bodyOptions.mode = _this.MODE.CHATS;
                 }
                 _this.optionsDefinition(_this, _this.bodyOptions.mode);
 
-                if (event.type !== "click") {
-                    if (event.target.value === "" || event.target.value === "0") {
-                        _this.currentPaginationOptions.perPageValueNull = true;
-                        return;
+                if (element.value === "" || element.value === "0") {
+                    _this.currentPaginationOptions.perPageValueNull = true;
+                    return;
+                }
 
-                    }
-                    if (!_this.currentPaginationOptions.rtePerPage) {
-                        _this.currentPaginationOptions.currentPage = null;
-                        _this.currentPaginationOptions.perPageValue = value;
-                        return;
-
-                    }
-                    _this.currentPaginationOptions.perPageValueNull = false;
-                    _this.currentPaginationOptions.perPageValue = value;
+                if (!_this.currentPaginationOptions.rtePerPage) {
                     _this.currentPaginationOptions.currentPage = null;
-                    if (_this.currentPaginationOptions.showEnablePagination) {
-                        _this.pagination.countQuantityPages(function() {
-                            _this.render();
-                        });
-                    }
+                    _this.currentPaginationOptions.perPageValue = value;
+                    return;
+                }
+
+                _this.currentPaginationOptions.perPageValueNull = false;
+                _this.currentPaginationOptions.perPageValue = value;
+                _this.currentPaginationOptions.currentPage = null;
+                if (_this.currentPaginationOptions.showEnablePagination) {
+                    _this.pagination.countQuantityPages(function() {
+                        _this.render();
+                    });
                 }
             },
 
-            changeRTE_Filer: function(event) {
+            changeRTE_Filer: function(element) {
                 var _this = this;
                 if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
                     _this.bodyOptions.mode = _this.MODE.CHATS;
@@ -569,7 +566,7 @@ define('panel', [
                 _this.optionsDefinition(_this, _this.bodyOptions.mode);
                 _this.previous_Filter_Options = false;
 
-                if (event.target.checked) {
+                if (element.checked) {
                     _this.currentPaginationOptions.mode_change = "rte";
                     _this.currentPaginationOptions.rtePerPage = true;
                 } else {
@@ -607,7 +604,7 @@ define('panel', [
                         }
 
                         _this.panel_config = JSON.parse(res);
-                        _this.getDescriptionIcon(function(res){
+                        _this.getDescriptionIcon(function(res) {
                             _this.description_icon = res;
                             _this.togglePanel();
                         });

@@ -58,19 +58,7 @@
     "disable": false
   },
 
-  {
-    "element": "button",
-    "icon": "",
-    "text": "button",
-    "class": "floatR",
-    "data": {
-      "role": "",
-      "location": "right_panel",
-      "action": ""
-    },
-    "name": "",
-    "disable": false
-  },
+  
   {
     "element": "button",
     "icon": "",

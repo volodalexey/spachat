@@ -70,7 +70,8 @@ define('editor', [
             removeMainEventListeners: function() {
                 var _this = this;
                 _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
-                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedDataActionRouter, false);                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.controls_container, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('remove', _this.btnEditPanel, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.btnEditPanel, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.message_inner_container, 'keypress', _this.bindedSendEnter, false);
@@ -137,20 +138,18 @@ define('editor', [
                     };
                     var data = {
                         "offScroll": _this.chat.formatOptions.offScroll,
-                        //"sendEnter": _this.chat.formatOptions.sendEnter,
                         "iSender": _this.chat.formatOptions.iSender
                     };
                     _this.renderLayout(data, null);
                 } else {
                     _this.btnEditPanel.innerHTML = "";
-
                 }
             },
 
-            addEdit: function(event) {
+            addEdit: function(element) {
                 var _this = this;
-                var command = event.target.dataset.name;
-                var param = event.target.dataset.param;
+                var command = element.dataset.name;
+                var param = element.dataset.param;
                 _this.message_inner_container.focus();
                 if (param) {
                     document.execCommand(command, null, "red");
@@ -159,18 +158,18 @@ define('editor', [
                 }
             },
 
-            changeSendEnter: function(event) {
+            changeSendEnter: function(element) {
                 var _this = this;
-                if (event.target.checked) {
+                if (element.checked) {
                     _this.chat.formatOptions.sendEnter = true;
                 } else {
                     _this.chat.formatOptions.sendEnter = false;
                 }
             },
 
-            changeSender: function(event) {
+            changeSender: function(element) {
                 var _this = this;
-                if (event.target.checked) {
+                if (element.checked) {
                     _this.chat.formatOptions.iSender = true;
                 } else {
                     _this.chat.formatOptions.iSender = false;

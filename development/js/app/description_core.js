@@ -1,5 +1,5 @@
-define('description_core', [],
-    function() {
+define('description_core', ['dom_core'],
+    function(dom_core) {
 
         var description_core = function() {
         };
@@ -29,19 +29,15 @@ define('description_core', [],
                                 clientX = event.changedTouches[0].clientX;
                             }
                             if (Math.abs(_this.checkReorderClientX - clientX) > 5 && !_this.descriptionShow) {
-
                                 _this.descriptionShow = true;
-                                if (event.target.dataset.description ||
-                                    ( event.changedTouches && event.changedTouches[0].target.dataset.description)) {
-                                    var element;
-                                    if (event.type === 'touchmove' && event.changedTouches) {
-                                        description.innerHTML = event.changedTouches[0].target.dataset.description;
-                                        element = event.changedTouches[0].target;
-
-                                    } else {
-                                        description.innerHTML = event.target.dataset.description;
-                                        element = event.target;
-                                    }
+                                var element;
+                                if (event.type === 'touchmove' && event.changedTouches) {
+                                    element = _this.getDataParameter(event.changedTouches[0].target, 'description');
+                                } else {
+                                    element = _this.getDataParameter(event.target, 'description');
+                                }
+                                if (element && element.dataset.description) {
+                                    description.innerHTML = element.dataset.description;
                                     var result = _this.getOffset(element);
                                     var positionFound = false, checkLeft, checkTop;
                                     var futureTop = result.offsetTop - description.offsetHeight;
@@ -233,6 +229,7 @@ define('description_core', [],
                 var _this = this;
             }
         };
+        extend(description_core, dom_core);
 
         return new description_core();
     });

@@ -191,12 +191,12 @@ define('header', [
                 }
             },
 
-            changePerPage: function(event) {
+            changePerPage: function(element) {
                 var _this = this;
-                var value = parseInt(event.target.value);
+                var value = parseInt(element.value);
 
-                if (event.type !== "click") {
-                    if (event.target.value === "" || event.target.value === "0") {
+                //if (event.type !== "click") {
+                    if (element.value === "" || element.value === "0") {
                         _this.currentPaginationOptions.perPageValueNull = true;
                         return;
 
@@ -204,7 +204,7 @@ define('header', [
                     if (!_this.currentPaginationOptions.rtePerPage) {
                         _this.currentPaginationOptions.currentPage = null;
                         _this.currentPaginationOptions.perPageValue = value;
-                        event.target.focus();
+                        element.focus();
                         return;
 
                     }
@@ -215,13 +215,13 @@ define('header', [
                             _this.chat.render(null, null);
                         });
                     }
-                }
+                //}
             },
 
-            changeRTE: function(event) {
+            changeRTE: function(element) {
                 var _this = this;
                 _this.previousFilterShow = false;
-                if (event.target.checked) {
+                if (element.checked) {
                     _this.currentPaginationOptions.mode_change = "rte";
                     _this.currentPaginationOptions.rtePerPage = true;
                 } else {

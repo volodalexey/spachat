@@ -110,6 +110,7 @@ define('panel_platform', [
                 panel.prototype.panelArray.forEach(function(_panel) {
                     _panel.dispose();
                 });
+                panel.prototype.panelArray = [];
             },
 
             addEventListeners: function() {

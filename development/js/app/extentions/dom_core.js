@@ -33,15 +33,14 @@ define('dom_core',[
                 return {offsetLeft: offsetLeft, offsetTop:offsetTop};
             },
 
-            getDataAction: function(element, _n) {
-                if (element.disabled) {
+            getDataParameter: function(element, param, _n) {
+                if (element.disabled && param !== "description") {
                     return null;
                 }
-                var n = _n ? _n : 3 ;
-
-                if (!element.dataset.action && n > 0) {
-                    return this.getDataAction(element.parentNode, n-1);
-                } else if (element.dataset.action) {
+                var n = !( _n === undefined || _n === null ) ? _n : 3 ;
+                if (!element.dataset[param] && n > 0) {
+                    return this.getDataParameter(element.parentNode, param, n-1);
+                } else if (element.dataset[param]) {
                     return element;
                 }
                 return null;

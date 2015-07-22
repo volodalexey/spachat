@@ -87,9 +87,9 @@ define('settings', [
                 }
             },
 
-            changeSendEnter: function(event) {
+            changeSendEnter: function(element) {
                 var _this = this;
-                if (event.target.checked) {
+                if (element.checked) {
                     _this.chat.formatOptions.sendEnter = true;
                 } else {
                     _this.chat.formatOptions.sendEnter = false;

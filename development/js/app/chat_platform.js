@@ -289,16 +289,16 @@ define('chat_platform', [
              * sends current chat description to the server
              * @param event - click event
              */
-            joinByChatIdAuto: function(event) {
+            joinByChatIdAuto: function(element) {
                 var _this = this;
-                var wrapper = event.target.parentNode.parentNode;
+                var wrapper = element.parentNode.parentNode;
                 var input = wrapper.querySelector('[data-role="chat_id_input"]');
                 if (!_this.mainConteiner || !websocket || !wrapper || !input || !input.value) {
                     return;
                 }
 
-                _this['joinByChatIdAuto_'] = event.target;
-                event.target.disabled = true;
+                _this['joinByChatIdAuto_'] = element;
+                element.disabled = true;
 
                 var chat_description = {
                     "chatId": input.value

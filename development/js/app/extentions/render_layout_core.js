@@ -1,10 +1,12 @@
 define('render_layout_core', [
         'indexeddb',
-        'async_core'
+        'async_core',
+        'dom_core'
 
     ],
     function(indexeddb,
-             async_core) {
+             async_core,
+             dom_core) {
 
         var render_layout_core = function() {
         };
@@ -14,21 +16,26 @@ define('render_layout_core', [
 
             renderLayout: function(options, callback) {
                 var _this = this;
-                _this.iconsArray = [{icon: '/templates/icon/description_icon.html', name: 'description_icon'}];
+                _this.icon_config = [];
+                _this.iconsArray = [];
                 _this.loadBodyConfig(null, options, function(confErr) {
                     _this.loadBodyData(confErr, options, function(dataErr, data) {
-                        _this.fillBody(dataErr, data, function(templErr) {
-                            if (templErr) {
-                                console.error(templErr);
-                                return;
-                            }
+                        _this.getDescriptionIcon(function(res) {
+                            _this.icon_config.push({svg: res, name: 'description_icon'});
+                            _this.fillBody(dataErr, data, function(templErr) {
+                                if (templErr) {
+                                    console.error(templErr);
+                                    return;
+                                }
 
-                            // success
-                            if (callback) {
-                                callback();
-                            }
+                                // success
+                                if (callback) {
+                                    callback();
+                                }
+                            });
                         });
                     });
+
                 });
             },
 
@@ -138,7 +145,7 @@ define('render_layout_core', [
                         || _this.body_mode === _this.MODE.USERS_FILTER
                         || _this.body_mode === _this.MODE.MAIN_PANEL)
                         || (_this.chat && _this.body_mode === _this.chat.body.MODE.SETTING)
-                        ) {
+                    ) {
                         callback(null, options);
                         return;
 
@@ -180,6 +187,7 @@ define('render_layout_core', [
 
         };
         extend(render_layout_core, async_core);
+        extend(render_layout_core, dom_core);
 
         return render_layout_core;
     }

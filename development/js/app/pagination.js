@@ -94,8 +94,6 @@ define('pagination', [
                 var _this = this;
                 _this.buttons_show_choice = null;
                 _this.input_choose_page = null;
-                //_this.pagination_container = null;
-                //_this.go_to_container = null;
             },
 
             render: function(options, _module, mode) {
@@ -106,9 +104,6 @@ define('pagination', [
                     _this.bodyOptionsMode = _this.module.MODE.CHATS;
                 }
                 _this.optionsDefinition(_this.module, _this.bodyOptionsMode);
-
-                //_this.module.pagination_container = _this.chat.chat_element.querySelector('[data-role="pagination_container"]');
-                //_this.module.go_to_container = _this.chat.chat_element.querySelector('[data-role="go_to_container"]');
                 if (_this.currentPaginationOptions.show) {
                     _this.countQuantityPages(function(){
                         _this.disableButtonsPagination();
@@ -206,32 +201,32 @@ define('pagination', [
                 });
             },
 
-            switchPage: function(event) {
+            switchPage: function(element) {
                 var _this = this;
                 if (_this.module.MODE && _this.module.bodyOptions.mode === _this.module.MODE.DETAIL_VIEW) {
                     _this.module.bodyOptions.mode = _this.module.MODE.CHATS;
                 }
-                if (event.target.dataset.role === "first" || event.target.dataset.role === "last") {
-                    _this.currentPaginationOptions.currentPage = parseInt(event.target.dataset.value);
+                if (element.dataset.role === "first" || element.dataset.role === "last") {
+                    _this.currentPaginationOptions.currentPage = parseInt(element.dataset.value);
                 }
-                if (event.target.dataset.role === "back") {
+                if (element.dataset.role === "back") {
                     _this.currentPaginationOptions.currentPage = parseInt(_this.currentPaginationOptions.currentPage) - 1;
                 }
-                if (event.target.dataset.role === "forward") {
+                if (element.dataset.role === "forward") {
                     _this.currentPaginationOptions.currentPage = parseInt(_this.currentPaginationOptions.currentPage) + 1;
                 }
 
-                if (_this.currentGoToOptions.rteChoicePage && event.target.dataset.role === "choice_per_page") {
-                    if (event.target.value === "" ){
+                if (_this.currentGoToOptions.rteChoicePage && element.dataset.role === "choice_per_page") {
+                    if (element.value === "" ){
                         _this.currentGoToOptions.page = null;
                     } else {
-                        var value = parseInt(event.target.value);
+                        var value = parseInt(element.value);
                         _this.currentPaginationOptions.currentPage = value;
                         _this.currentGoToOptions.page = value;
                     }
                 }
 
-                if (!_this.currentGoToOptions.rteChoicePage && event.target.dataset.role === "go_to_page") {
+                if (!_this.currentGoToOptions.rteChoicePage && element.dataset.role === "go_to_page") {
                     if (_this.input_choose_page.value === "" ){
                         _this.currentGoToOptions.page = null;
                     } else {
@@ -263,7 +258,7 @@ define('pagination', [
                 }
             },
 
-            changeRTE: function(event) {
+            changeRTE: function(element) {
                 var _this = this;
 
                 if (_this.module.MODE && _this.module.bodyOptions.mode === _this.module.MODE.DETAIL_VIEW) {
@@ -272,7 +267,7 @@ define('pagination', [
                 _this.optionsDefinition(_this.module, _this.module.bodyOptions.mode);
                 _this.module.previous_Filter_Options = false;
 
-                if (event.target.checked) {
+                if (element.checked) {
                     _this.currentGoToOptions.mode_change = "rte";
                     _this.currentGoToOptions.rteChoicePage = true;
                 } else {
