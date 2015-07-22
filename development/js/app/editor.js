@@ -6,7 +6,8 @@ define('editor', [
         'indexeddb',
         'render_layout_core',
         'description_core',
-
+        'overlay_core',
+        //
         'text!../templates/editor_template.ejs',
         'text!../templates/editor_format_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -21,7 +22,8 @@ define('editor', [
              indexeddb,
              render_layout_core,
              description_core,
-
+             overlay_core,
+             //
              editor_template,
              format_template,
              triple_element_template,
@@ -100,6 +102,7 @@ define('editor', [
                 _this.editor_container = _this.chat.chat_element.querySelector('[data-role="editor_container"]');
                 if (_this.chat.editorOptions.show) {
                     if (!_this.previousEditorShow) {
+                        _this.showSpinner(_this.editor_container);
                         _this.previousEditorShow = true;
                         _this.body_mode = _this.MODE.MAIN_PANEL;
                         _this.elementMap = {
@@ -131,6 +134,7 @@ define('editor', [
             renderFormatPanel: function() {
                 var _this = this;
                 if (_this.chat.formatOptions.show) {
+                    _this.showSpinner(_this.btnEditPanel);
                     _this.buttonFormat.dataset.toggle = false;
                     _this.body_mode = _this.MODE.FORMAT_PANEL;
                     _this.elementMap = {
@@ -235,6 +239,7 @@ define('editor', [
         extend(editor, ajax_core);
         extend(editor, template_core);
         extend(editor, render_layout_core);
+        extend(editor, overlay_core);
 
         editor.prototype.editor_template = editor.prototype.template(editor_template);
         editor.prototype.format_template = editor.prototype.template(format_template);

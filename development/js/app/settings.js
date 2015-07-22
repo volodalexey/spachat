@@ -5,6 +5,7 @@ define('settings', [
         'template_core',
         'indexeddb',
         'render_layout_core',
+        'overlay_core',
 
         'text!../templates/setting_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -18,6 +19,7 @@ define('settings', [
              template_core,
              indexeddb,
              render_layout_core,
+             overlay_core,
 
              setting_template,
              triple_element_template,
@@ -63,9 +65,10 @@ define('settings', [
                 var _this = this;
                 _this.chat = chat;
                 if (!_this.chat.body.previousMode || _this.chat.body.previousMode !== _this.chat.bodyOptions.mode) {
+                    _this.body_container = _this.chat.body_container;
+                    _this.showSpinner(_this.body_container);
                     _this.chat.messagesOptions.previousFinal = 0;
                     _this.chat.messagesOptions.previousStart = 0;
-                    _this.body_container = _this.chat.body_container;
                     _this.body_container.classList.add('background');
                     _this.body_mode = _this.chat.bodyOptions.mode;
                     _this.elementMap = {
@@ -107,6 +110,7 @@ define('settings', [
         extend(settings, ajax_core);
         extend(settings, template_core);
         extend(settings, render_layout_core);
+        extend(settings, overlay_core);
 
         settings.prototype.setting_template = settings.prototype.template(setting_template);
         settings.prototype.triple_element_template = settings.prototype.template(triple_element_template);

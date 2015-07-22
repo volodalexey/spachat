@@ -5,7 +5,8 @@ define('pagination', [
         'render_layout_core',
         'indexeddb',
         "switcher_core",
-
+        'overlay_core',
+        //
         'text!../templates/pagination_template.ejs',
         'text!../templates/choice_per_page_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -19,7 +20,8 @@ define('pagination', [
              render_layout_core,
              indexeddb,
              switcher_core,
-
+             overlay_core,
+             //
              pagination_template,
              choice_per_page_template,
              triple_element_template,
@@ -105,6 +107,7 @@ define('pagination', [
                 }
                 _this.optionsDefinition(_this.module, _this.bodyOptionsMode);
                 if (_this.currentPaginationOptions.show) {
+                    _this.showSpinner(_this.module.pagination_container);
                     _this.countQuantityPages(function(){
                         _this.disableButtonsPagination();
                         _this.body_mode = _this.MODE.PAGINATION;
@@ -147,6 +150,7 @@ define('pagination', [
                 var _this = this;
                 if (_this.currentGoToOptions.show){
                     if (!_this.previousShow) {
+                        _this.showSpinner(_this.module.go_to_container);
                         _this.previousShow = true;
                         _this.buttons_show_choice.forEach(function(btn){
                             btn.dataset.toggle = false;
@@ -290,7 +294,7 @@ define('pagination', [
         extend(pagination, template_core);
         extend(pagination, render_layout_core);
         extend(pagination, switcher_core);
-
+        extend(pagination, overlay_core);
 
         pagination.prototype.pagination_template = pagination.prototype.template(pagination_template);
         pagination.prototype.choice_per_page_template = pagination.prototype.template(choice_per_page_template);

@@ -2,6 +2,7 @@ define('messages', [
         'throw_event_core',
         'template_core',
         'id_core',
+        'overlay_core',
         //
         'indexeddb',
         'message',
@@ -13,6 +14,7 @@ define('messages', [
     function(throw_event_core,
              template_core,
              id_core,
+             overlay_core,
              //
              indexeddb,
              Message,
@@ -89,7 +91,7 @@ define('messages', [
                         }
                         if (_this.chat.messagesOptions.previousStart !== _this.chat.messagesOptions.start ||
                             _this.chat.messagesOptions.previousFinal !== _this.chat.messagesOptions.final) {
-                            _this.chat.body_container.innerHTML = "";
+                            _this.showSpinner(_this.chat.body_container);
                             _this.chat.messagesOptions.previousStart = _this.chat.messagesOptions.start;
                             _this.chat.messagesOptions.previousFinal = _this.chat.messagesOptions.final;
 
@@ -201,6 +203,7 @@ define('messages', [
         extend(messages, throw_event_core);
         extend(messages, template_core);
         extend(messages, id_core);
+        extend(messages, overlay_core);
 
         messages.prototype.message_template = messages.prototype.template(message_template);
         messages.prototype.log_message_template = messages.prototype.template(log_message_template);

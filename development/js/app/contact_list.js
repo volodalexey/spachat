@@ -4,7 +4,8 @@ define('contact_list', [
         'template_core',
         'indexeddb',
         'render_layout_core',
-
+        'overlay_core',
+        //
         'text!../templates/contact_list_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
@@ -16,7 +17,8 @@ define('contact_list', [
              template_core,
              indexeddb,
              render_layout_core,
-
+             overlay_core,
+             //
              contact_list_template,
              triple_element_template,
              button_template,
@@ -39,9 +41,10 @@ define('contact_list', [
                 _this.chat = chat;
 
                 if (!_this.chat.body.previousMode || _this.chat.body.previousMode !== _this.chat.bodyOptions.mode) {
+                    _this.body_container = _this.chat.body_container;
+                    _this.showSpinner(_this.body_container);
                     _this.chat.messagesOptions.previousFinal = 0;
                     _this.chat.messagesOptions.previousStart = 0;
-                    _this.body_container = _this.chat.body_container;
                     _this.body_container.classList.add('background');
                     _this.body_mode = _this.chat.bodyOptions.mode;
                     _this.elementMap = {
@@ -67,6 +70,7 @@ define('contact_list', [
         extend(contact_list, ajax_core);
         extend(contact_list, template_core);
         extend(contact_list, render_layout_core);
+        extend(contact_list, overlay_core);
 
         contact_list.prototype.contact_list_template = contact_list.prototype.template(contact_list_template);
         contact_list.prototype.triple_element_template = contact_list.prototype.template(triple_element_template);

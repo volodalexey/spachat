@@ -1,5 +1,14 @@
-define('overlay_core', [],
-    function() {
+define('overlay_core', [
+        'template_core',
+        //
+        'text!../templates/spinner_template.ejs',
+        'text!../templates/horizontal_spinner_template.ejs'
+    ],
+    function(
+        template_core,
+        //
+        spinner_template,
+        horizontal_spinner_template) {
 
         var overlay_core = function() {
         };
@@ -16,8 +25,23 @@ define('overlay_core', [],
                 var _this = this;
                 _this.waiter_outer_container = document.querySelector('[data-role="waiter_outer_container"]');
                 _this.waiter_outer_container.classList[(show === true ? 'remove' : 'add')]('hide');
+            },
+
+            showSpinner: function(element){
+                var _this = this;
+                element.innerHTML = _this.spinner_template();
+            },
+
+            showHorizontalSpinner: function(element){
+                var _this = this;
+                element.innerHTML = _this.horizontal_spinner_template();
             }
         };
+
+        extend(overlay_core, template_core);
+
+        overlay_core.prototype.spinner_template = overlay_core.prototype.template(spinner_template);
+        overlay_core.prototype.horizontal_spinner_template = overlay_core.prototype.template(horizontal_spinner_template);
 
         return overlay_core;
     }

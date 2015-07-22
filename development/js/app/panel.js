@@ -5,6 +5,7 @@ define('panel', [
         'render_layout_core',
         'extend_core',
         'switcher_core',
+        'overlay_core',
         'users',
 
         'pagination',
@@ -30,6 +31,7 @@ define('panel', [
              render_layout_core,
              extend_core,
              switcher_core,
+             overlay_core,
              users,
              Pagination,
              Body,
@@ -362,6 +364,7 @@ define('panel', [
 
             openOrClosePanel: function(bigMode, forceClose) {
                 var _this = this;
+                _this.showSpinner(_this.panel_body);
                 if (!forceClose && _this.outer_container.style[_this.type] !== '0px') {
                     _this.previous_z_index = _this.outer_container.style.zIndex;
                     _this.outer_container.style.zIndex = ++panel.prototype.z_index;
@@ -393,7 +396,7 @@ define('panel', [
                 _this.bodyOptions.mode = element.dataset.mode;
                 _this.previous_Filter_Options = false;
                 _this.pagination.previousShow = false;
-                _this.panel_body.innerHTML = "";
+                _this.showSpinner(_this.panel_body);
                 _this.render();
             },
 
@@ -419,6 +422,7 @@ define('panel', [
                 if (_this.current_Extra_Toolbar_Options.show) {
                     if (_this.previousExtraToolbar !== _this.bodyOptions.mode &&
                         _this.bodyOptions.mode !== _this.MODE.DETAIL_VIEW) {
+                        _this.showHorizontalSpinner(_this.extra_toolbar_container);
                         _this.body_mode = _this.bodyOptions.mode + "_EXTRA_TOOLBAR";
                         _this.previousExtraToolbar = _this.bodyOptions.mode;
                         _this.renderLayout(null, function() {
@@ -437,7 +441,6 @@ define('panel', [
 
             renderFilter: function(callback) {
                 var _this = this;
-
                 if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
                     _this.optionsDefinition(_this, _this.MODE.CHATS);
                 } else {
@@ -453,6 +456,7 @@ define('panel', [
                     }
                     if (!_this.previous_Filter_Options &&
                         _this.bodyOptions.mode !== _this.MODE.DETAIL_VIEW) {
+                        _this.showHorizontalSpinner(_this.filter_container);
                         _this.previous_Filter_Options = true;
                         _this.body_mode = _this.bodyOptions.mode + "_FILTER";
                         var data = {
@@ -614,6 +618,7 @@ define('panel', [
 
             fillPanelToolbar: function() {
                 var _this = this;
+                _this.showSpinner(_this.panel_toolbar);
                 _this.panel_toolbar.innerHTML = _this['panel_' + _this.type + '_template']({
                     config: _this.panel_config,
                     icon_config: [{svg: _this.description_icon, name: 'description_icon'}],
@@ -776,6 +781,7 @@ define('panel', [
         extend(panel, render_layout_core);
         extend(panel, extend_core);
         extend(panel, switcher_core);
+        extend(panel, overlay_core);
 
         panel.prototype.panel_left_template = panel.prototype.template(panel_left_template);
         panel.prototype.panel_right_template = panel.prototype.template(panel_right_template);

@@ -6,6 +6,7 @@ define('header', [
         'indexeddb',
         'render_layout_core',
         "switcher_core",
+        'overlay_core',
 
         'pagination',
 
@@ -23,9 +24,8 @@ define('header', [
              indexeddb,
              render_layout_core,
              switcher_core,
-
+             overlay_core,
              pagination,
-
              filter_template,
              header_template,
              triple_element_template,
@@ -126,6 +126,7 @@ define('header', [
                                 });
                             }
                             if (!_this.previousMode || _this.previousMode !== _this.chat.headerOptions.mode) {
+                                _this.showSpinner(_this.chat.header_container);
                                 _this.previousMode = _this.MODE.TAB;
                                 _this.body_mode = _this.MODE.TAB;
                                 _this.description = _this.MODE_DESCRIPTION[_this.body_mode];
@@ -143,6 +144,7 @@ define('header', [
                             }
                             break;
                         case _this.MODE.WEBRTC:
+                            _this.showSpinner(_this.chat.header_container.querySelector('[data-role="webrtc_container"]'));
                             _this.body_mode = _this.MODE.WEBRTC;
                             _this.previousMode = _this.MODE.WEBRTC;
                             _this.description = _this.MODE_DESCRIPTION[_this.body_mode];
@@ -169,6 +171,7 @@ define('header', [
                         _this.previousFilterShow = false;
                     }
                     if (!_this.previousFilterShow) {
+                        _this.showSpinner(_this.filter_container);
                         _this.previousFilterShow = true;
                         _this.body_mode = _this.MODE.FILTER;
                         _this.elementMap = {
@@ -195,27 +198,25 @@ define('header', [
                 var _this = this;
                 var value = parseInt(element.value);
 
-                //if (event.type !== "click") {
-                    if (element.value === "" || element.value === "0") {
-                        _this.currentPaginationOptions.perPageValueNull = true;
-                        return;
+                if (element.value === "" || element.value === "0") {
+                    _this.currentPaginationOptions.perPageValueNull = true;
+                    return;
+                }
 
-                    }
-                    if (!_this.currentPaginationOptions.rtePerPage) {
-                        _this.currentPaginationOptions.currentPage = null;
-                        _this.currentPaginationOptions.perPageValue = value;
-                        element.focus();
-                        return;
-
-                    }
-                    _this.currentPaginationOptions.perPageValue = value;
+                if (!_this.currentPaginationOptions.rtePerPage) {
                     _this.currentPaginationOptions.currentPage = null;
-                    if (_this.currentPaginationOptions.showEnablePagination) {
-                        _this.chat.pagination.countQuantityPages(function() {
-                            _this.chat.render(null, null);
-                        });
-                    }
-                //}
+                    _this.currentPaginationOptions.perPageValue = value;
+                    element.focus();
+                    return;
+                }
+
+                _this.currentPaginationOptions.perPageValue = value;
+                _this.currentPaginationOptions.currentPage = null;
+                if (_this.currentPaginationOptions.showEnablePagination) {
+                    _this.chat.pagination.countQuantityPages(function() {
+                        _this.chat.render(null, null);
+                    });
+                }
             },
 
             changeRTE: function(element) {
@@ -255,6 +256,7 @@ define('header', [
         extend(header, template_core);
         extend(header, render_layout_core);
         extend(header, switcher_core);
+        extend(header, overlay_core);
 
         header.prototype.header_template = header.prototype.template(header_template);
         header.prototype.filter_template = header.prototype.template(filter_template);
