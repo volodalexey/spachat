@@ -67,7 +67,7 @@
     "element": "button",
     "icon": "",
     "text": 37,
-    "class": "",
+    "class": "button-convex",
     "data": {
       "role": "",
       "action": "changeUserInfo",
@@ -82,7 +82,7 @@
     "element": "button",
     "icon": "",
     "text": 38,
-    "class": "",
+    "class": "button-convex",
     "data": {
       "role": "",
       "action": "logout",
@@ -230,7 +230,7 @@
     "element": "button",
     "icon": "cancel_icon",
     "text": 42,
-    "class": "",
+    "class": "button-convex",
     "data": {
       "role": "",
       "action": "cancelChangeUserInfo",
@@ -245,7 +245,7 @@
     "element": "button",
     "icon": "ok_icon",
     "text": 43,
-    "class": "",
+    "class": "button-convex",
     "data": {
       "role": "",
       "action": "saveChangeUserInfo",

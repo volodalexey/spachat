@@ -107,7 +107,7 @@ define('pagination', [
                 }
                 _this.optionsDefinition(_this.module, _this.bodyOptionsMode);
                 if (_this.currentPaginationOptions.show) {
-                    _this.showSpinner(_this.module.pagination_container);
+                    _this.showHorizontalSpinner(_this.module.pagination_container);
                     _this.countQuantityPages(function(){
                         _this.disableButtonsPagination();
                         _this.body_mode = _this.MODE.PAGINATION;
@@ -150,7 +150,7 @@ define('pagination', [
                 var _this = this;
                 if (_this.currentGoToOptions.show){
                     if (!_this.previousShow) {
-                        _this.showSpinner(_this.module.go_to_container);
+                        _this.showHorizontalSpinner(_this.module.go_to_container);
                         _this.previousShow = true;
                         _this.buttons_show_choice.forEach(function(btn){
                             btn.dataset.toggle = false;

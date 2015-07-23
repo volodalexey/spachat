@@ -1,0 +1,91 @@
+button{
+  position: relative;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.button-margin-height{
+  box-shadow: 0px 15px 5px 2px rgba(253, 253, 253, 0.5) inset;
+  border-radius: 0.4em;
+  height: 1.6em;
+  margin: 0.2em;
+}
+
+.button-inset{
+  min-width: 180px;
+  padding: 2px 6px 2px;
+  border: none;
+  border-bottom: 1px solid rgba(0,0,0,0.75);
+  border-radius: 0.4em;
+  box-shadow:0 0 3px 1px rgba(0,0,0,0.5) inset;
+  &:active{
+    top: -1px;
+  }
+  &:hover{
+    background-color: lightblue;
+  }
+}
+
+.button-convex{
+  border-radius: 0.4em;
+  box-shadow: 2px -1px 3px 1px rgba(0,0,0,0.25);
+  &:active{
+    top: 1px;
+  }
+}
+
+.button-inset-square {
+  box-shadow: 0 0 3px 1px rgba(0,0,0,0.5) inset;
+  &:active{
+    top: 1px;
+  }
+}
+
+.button-inset-white{
+  box-shadow: 0px -2px 3px 1px rgba(255, 255, 255, 0.75) inset;
+  border-radius: 0.4em;
+  &:active{
+    top: 1px;
+  }
+}
+
+.button-small-not-padding{
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  margin-top: 0.3em;
+}
+
+.button-margin{
+  box-shadow: 0px 1px 5px 1px rgba(253, 253, 253, 0.5) inset;
+  border-radius: 0.4em;
+  margin: 0.2em;
+}
+
+.panel-button {
+  position: absolute;
+  height: 50px;
+  outline: none;
+  &.right-panel-button {
+    right: 100%;
+    margin: 0 0 0.2em 0.2em;
+    border-radius: 0.4em 0 0 0.4em;
+    border: 2px ridge buttonface;
+    border-right: none;
+  }
+  &.left-panel-button {
+    left: 100%;
+    margin: 0 0.2em 0.2em 0;
+    border-radius: 0 0.4em 0.4em 0;
+    border: 2px ridge buttonface;
+    border-left: none;
+  }
+  &:active{
+    border-style: inset;
+  }
+}
+
+button:disabled{
+  cursor: not-allowed;
+}

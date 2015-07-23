@@ -29,7 +29,7 @@
       "action": "clickRedirectToRegister",
       "role": "registerNewUser"
     },
-    "class": "button_login"
+    "class": "button-inset"
   },
   {
     "element": "label",
@@ -55,6 +55,6 @@
       "action": "submit",
       "role": "loginButton"
     },
-    "class": "button_login"
+    "class": "button-inset"
   }
 ]

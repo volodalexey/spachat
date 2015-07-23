@@ -618,7 +618,7 @@ define('panel', [
 
             fillPanelToolbar: function() {
                 var _this = this;
-                _this.showSpinner(_this.panel_toolbar);
+                _this.showHorizontalSpinner(_this.panel_toolbar);
                 _this.panel_toolbar.innerHTML = _this['panel_' + _this.type + '_template']({
                     config: _this.panel_config,
                     icon_config: [{svg: _this.description_icon, name: 'description_icon'}],

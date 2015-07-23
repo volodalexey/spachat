@@ -171,7 +171,7 @@ define('header', [
                         _this.previousFilterShow = false;
                     }
                     if (!_this.previousFilterShow) {
-                        _this.showSpinner(_this.filter_container);
+                        _this.showHorizontalSpinner(_this.filter_container);
                         _this.previousFilterShow = true;
                         _this.body_mode = _this.MODE.FILTER;
                         _this.elementMap = {

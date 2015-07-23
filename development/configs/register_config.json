@@ -7,7 +7,7 @@
       "action": "redirectToLogin",
       "role": "loginButton"
     },
-    "class": "button_login"
+    "class": "button-inset"
   },
   {
     "element": "label",
@@ -42,6 +42,6 @@
       "action": "register",
       "role": "registerButton"
     },
-    "class": "button_login"
+    "class": "button-inset"
   }
 ]

@@ -9,8 +9,21 @@
       "location": "topPanel",
       "description": 21
     },
-    "class": "",
+    "class": "button-margin-height",
     "name": "CloseChat"
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": 56,
+    "data": {
+      "throw": "true",
+      "action": "destroyChat",
+      "location": "topPanel",
+      "description": 57
+    },
+    "class": "button-margin-height",
+    "name": "SaveCloseChat"
   },
 
   {
@@ -27,7 +40,7 @@
       "location": "bottomPanel",
       "description": 23
     },
-    "class": "",
+    "class": "button-margin-height",
     "name": "Setting"
   },
   {
@@ -44,7 +57,7 @@
       "location": "bottomPanel",
       "description": 25
     },
-    "class": "",
+    "class": "button-margin-height",
     "name": "ContactList"
   },
   {
@@ -61,7 +74,7 @@
       "location": "bottomPanel",
       "description": 27
     },
-    "class": "",
+    "class": "button-margin-height",
     "name": "Filter"
   }
 ]

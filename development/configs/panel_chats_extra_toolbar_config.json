@@ -3,7 +3,7 @@
     "element": "button",
     "icon": "",
     "text": 26,
-    "class": "",
+    "class": "button-inset-square",
     "data": {
       "action": "changeMode",
       "role": "btn_Filter",

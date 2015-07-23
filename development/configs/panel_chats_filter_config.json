@@ -145,7 +145,7 @@
     "element": "button",
     "icon": "",
     "text": 19,
-    "class": "",
+    "class": "button-inset-white",
     "data": {
       "throw": "true",
       "role": "show_per_page",

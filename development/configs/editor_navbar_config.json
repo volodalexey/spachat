@@ -2,8 +2,8 @@
   {
     "element": "button",
     "icon": "setting_icon",
-    "text": 14,
-    "class": "button-editor",
+    "text": "",
+    "class": "button-small-not-padding",
     "data": {
       "throw": "true",
       "action": "changeMode",
@@ -21,8 +21,8 @@
   {
     "element": "button",
     "icon": "send_icon",
-    "text": 16,
-    "class": "button-editor",
+    "text": "",
+    "class": "button-small-not-padding",
     "data": {
       "throw": "true",
       "action": "sendMessage",

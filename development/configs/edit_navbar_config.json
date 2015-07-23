@@ -3,7 +3,7 @@
     "element": "button",
     "icon": "aling_left_icon",
     "text": "",
-    "class": "btnEdit",
+    "class": "button-margin",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -14,7 +14,7 @@
     "element": "button",
     "icon": "aling_center_icon",
     "text": "",
-    "class": "btnEdit",
+    "class": "button-margin",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -26,7 +26,7 @@
     "element": "button",
     "icon": "aling_right_icon",
     "text": "",
-    "class": "btnEdit",
+    "class": "button-margin",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -37,7 +37,7 @@
     "element": "button",
     "icon": "bold_icon",
     "text": "",
-    "class": "btnEdit",
+    "class": "button-margin",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -48,7 +48,7 @@
     "element": "button",
     "icon": "italic_icon",
     "text": "",
-    "class": "btnEdit",
+    "class": "button-margin",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -59,7 +59,7 @@
     "element": "button",
     "icon": "color_text_icon",
     "text": "",
-    "class": "btnEdit",
+    "class": "button-margin",
     "data": {
       "role": "btnEdit",
       "name": "ForeColor",

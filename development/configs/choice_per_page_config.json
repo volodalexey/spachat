@@ -4,7 +4,7 @@
     "type": "checkbox",
     "icon": "",
     "text": "",
-    "class": "",
+    "class": "check-box-size",
     "data": {
       "role": "rte_choice_per_page",
       "action": "changeRTE",
@@ -19,7 +19,7 @@
     "element": "button",
     "icon": "",
     "text": 11,
-    "class": "w-50px",
+    "class": "w-50px button-inset-white",
     "data": {
       "role": "go_to_page",
       "action": "switchPage"

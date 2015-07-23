@@ -3,7 +3,7 @@
     "element": "button",
     "icon": "",
     "text": 1,
-    "class": "",
+    "class": "button-margin-height",
     "data": {
       "description": 2,
       "role": "",
@@ -18,7 +18,7 @@
     "element": "button",
     "icon": "",
     "text": 29,
-    "class": "",
+    "class": "button-margin-height",
     "data": {
       "role": "",
       "location": "left_panel",
@@ -32,7 +32,7 @@
     "element": "button",
     "icon": "",
     "text": 30,
-    "class": "",
+    "class": "button-margin-height",
     "data": {
       "description": 31,
       "role": "",
@@ -47,7 +47,7 @@
     "element": "button",
     "icon": "",
     "text": 32,
-    "class": "",
+    "class": "button-margin-height",
     "data": {
       "role": "",
       "location": "left_panel",
@@ -63,7 +63,7 @@
     "element": "button",
     "icon": "",
     "text": 33,
-    "class": "floatR",
+    "class": "floatR button-margin-height",
     "data": {
       "role": "",
       "location": "right_panel",

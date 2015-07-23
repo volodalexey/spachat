@@ -134,7 +134,7 @@ define('editor', [
             renderFormatPanel: function() {
                 var _this = this;
                 if (_this.chat.formatOptions.show) {
-                    _this.showSpinner(_this.btnEditPanel);
+                    _this.showHorizontalSpinner(_this.btnEditPanel);
                     _this.buttonFormat.dataset.toggle = false;
                     _this.body_mode = _this.MODE.FORMAT_PANEL;
                     _this.elementMap = {

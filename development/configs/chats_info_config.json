@@ -3,7 +3,7 @@
     "element": "button",
     "icon": "",
     "text": 3,
-    "class": "",
+    "class": "button-inset-square",
     "data": {
       "throw": "true",
       "action": "addNewChatAuto",
@@ -16,7 +16,7 @@
     "element": "button",
     "icon": "",
     "text": 4,
-    "class": "",
+    "class": "button-inset-square",
     "data": {
       "throw": "true",
       "action": "addNewChatManual",
@@ -58,7 +58,7 @@
     "element": "button",
     "icon": "",
     "text": 6,
-    "class": "",
+    "class": "button-inset-square",
     "data": {
       "throw": "true",
       "location": "chat_id_btn",
@@ -97,7 +97,7 @@
     "element": "button",
     "icon": "",
     "text": 8,
-    "class": "",
+    "class": "button-inset-square",
     "data": {
       "throw": "true",
       "location": "remote_offer_btn",
@@ -164,7 +164,21 @@
     "element": "button",
     "icon": "",
     "text": 10,
-    "class": "",
+    "class": "button-convex",
+    "data": {
+      "throw": "true",
+      "action": "showChat",
+      "mode": "DETAIL_VIEW",
+      "location": "navbar"
+    },
+    "name": "",
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": 58,
+    "class": "button-convex",
     "data": {
       "throw": "true",
       "action": "showChat",

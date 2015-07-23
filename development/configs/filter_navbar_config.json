@@ -40,7 +40,7 @@
     "element": "button",
     "icon": "",
     "text": 18,
-    "class": "",
+    "class": "button-inset-white",
     "data": {
       "role": ""
     },
@@ -89,7 +89,7 @@
     "element": "button",
     "icon": "",
     "text": 18,
-    "class": "",
+    "class": "button-inset-white",
     "data": {
       "role": ""
     },
@@ -244,7 +244,7 @@
     "element": "button",
     "icon": "",
     "text": 19,
-    "class": "",
+    "class": "button-inset-white",
     "data": {
       "throw": "true",
       "role": "show_per_page",
