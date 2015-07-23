@@ -9,6 +9,7 @@ define('chat', [
         'websocket',
         'body',
         'event_bus',
+        'indexeddb',
         //
         'ajax_core',
         'template_core',
@@ -32,6 +33,7 @@ define('chat', [
              websocket,
              Body,
              event_bus,
+             indexeddb,
              //
              ajax_core,
              template_core,
@@ -119,9 +121,15 @@ define('chat', [
             }
         };
 
-        var chat = function(options) {
-            this.extend(this, defaultOptions);
-
+        var chat = function(options, restore_chat_state) {
+            this.body = new Body({chat: this});
+            if (!restore_chat_state || !options.options) {
+                this.extend(this, defaultOptions);
+                this.bodyOptions.mode = this.body.MODE.MESSAGES;
+            } else {
+                this.extend(this, options.options);
+                this.bodyOptions.mode = options.options.bodyOptions.mode;
+            }
             this.header = new Header({chat: this});
             this.headerOptions.mode = this.header.MODE.TAB;
             this.editor = new Editor({chat: this});
@@ -130,8 +138,6 @@ define('chat', [
             this.settings = new Settings({chat: this});
             this.contact_list = new Contact_list({chat: this});
             this.messages = new Messages({chat: this});
-            this.body = new Body({chat: this});
-            this.bodyOptions.mode = this.body.MODE.MESSAGES; // TODO move to description
 
             this.extend(this, options);
             this.bindContexts();
@@ -458,28 +464,74 @@ define('chat', [
                 }
             },
 
-            destroyChat: function(event) {
+            destroyChat: function() {
+                var _this = this;
+                _this.removeEventListeners();
+                this.header.destroy();
+                this.header = null;
+                this.editor.destroy();
+                this.editor = null;
+                this.pagination.destroy();
+                this.pagination = null;
+                this.settings.destroy();
+                this.settings = null;
+                this.contact_list.destroy();
+                this.contact_list = null;
+                this.messages.destroy();
+                this.messages = null;
+                webrtc.destroy(_this);
+                this.body.destroy();
+                this.body = null;
+                _this.chat_element.remove();
+                _this.unCashElements();
+                event_bus.trigger('destroyChat', _this);
+            },
+
+            saveStatesChats: function() {
+                var _this = this;
+                if (confirm("Save settings this chat and close it ?")) {
+                    var options = {
+                        padding: _this.padding,
+                        headerOptions: _this.headerOptions,
+                        filterOptions: _this.filterOptions,
+                        bodyOptions: _this.bodyOptions,
+                        editorOptions: _this.editorOptions,
+                        goToMessageOptions: _this.goToMessageOptions,
+                        goToLoggerOptions: _this.goToLoggerOptions,
+                        formatOptions: _this.formatOptions,
+                        paginationLoggerOptions: _this.paginationLoggerOptions,
+                        paginationMessageOptions: _this.paginationMessageOptions,
+                        messagesOptions: _this.messagesOptions
+                    };
+
+                    indexeddb.addOrUpdateAll(
+                        {
+                            "id": 'chats',
+                            "db_name": 'chats',
+                            "table_names": ['chats'],
+                            "db_version": 1,
+                            "keyPath": "chatId"
+                        },
+                        null,
+                        [
+                            {chatId: _this.chatId, options: options, userId: _this.userId}
+                        ],
+                        function(error) {
+                            if (error){
+                                console.error(error);
+                                return;
+                            }
+
+                            _this.destroyChat();
+                        }
+                    );
+                }
+            },
+
+            closeChat: function() {
                 var _this = this;
                 if (confirm("Close this chat ?")) {
-                    _this.removeEventListeners();
-                    this.header.destroy();
-                    this.header = null;
-                    this.editor.destroy();
-                    this.editor = null;
-                    this.pagination.destroy();
-                    this.pagination = null;
-                    this.settings.destroy();
-                    this.settings = null;
-                    this.contact_list.destroy();
-                    this.contact_list = null;
-                    this.messages.destroy();
-                    this.messages = null;
-                    webrtc.destroy(_this);
-                    this.body.destroy();
-                    this.body = null;
-                    _this.chat_element.remove();
-                    _this.unCashElements();
-                    event_bus.trigger('destroyChat', _this);
+                    _this.destroyChat();
                 }
             },
 

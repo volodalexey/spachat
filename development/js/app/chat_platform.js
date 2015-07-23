@@ -262,7 +262,29 @@ define('chat_platform', [
             createChatLayout: function(messageData, renderOptions) {
                 var _this = this;
                 messageData.chat_description.userId = _this.navigator.userId;
-                var newChat = new Chat(messageData.chat_description);
+                if (messageData.type === "chat_joined") {
+                    indexeddb.getByKeyPath(
+                        _this.collectionDescription,
+                        messageData.chat_description.chatId,
+                        function(getError, chat) {
+                            if (getError) {
+                                console.error(getError);
+                                return;
+                            }
+
+                            if (chat) {
+                                messageData.chat_description.options = chat.options;
+                            }
+                            _this.handleChat(messageData, renderOptions, false);
+                        }
+                    );
+                } else {
+                    _this.handleChat(messageData, renderOptions, true);
+                }
+            },
+
+            handleChat: function(messageData, renderOptions, new_chat) {
+                var newChat = new Chat(messageData.chat_description, messageData.restore_chat_state);
                 Chat.prototype.chatsArray.push(newChat);
                 newChat.collectionDescription = {
                     "db_name": newChat.chatId + '_chat',
@@ -276,10 +298,18 @@ define('chat_platform', [
                         console.log(err);
                     }
                     newChat.initialize(renderOptions);
-                    newChat.switchModes([ {
-                        'chat_part':'body',
-                        'newMode': newChat.body.MODE.MESSAGES
-                    } ], renderOptions);
+                    if (new_chat || ( !messageData.chat_description.options && !new_chat) || !messageData.restore_chat_state) {
+                        newChat.switchModes( [{
+                            'chat_part': 'body',
+                            'newMode': newChat.body.MODE.MESSAGES
+                        }], renderOptions);
+                    } else {
+                        newChat.switchModes( [{
+                            'chat_part': 'body',
+                            'newMode': messageData.chat_description.options.bodyOptions.mode
+                        }], renderOptions);
+                    }
+
                     //_this.proceedNextMessage();
                     webrtc.serverStoredChat(newChat, messageData);
                 });
@@ -372,6 +402,7 @@ define('chat_platform', [
             showChat: function(element) {
                 var _this = this;
                 var parentElement = _this.traverseUpToDataset(element, 'role', 'chatWrapper');
+                var restore_options = element.dataset.restore_chat_state;
                 if (!parentElement) {
                     console.error(new Error('Parent element not found!'));
                     return;
@@ -410,7 +441,8 @@ define('chat_platform', [
                                 userId: _this.navigator.userId,
                                 deviceId: event_bus.getDeviceId(),
                                 tempDeviceId: event_bus.getTempDeviceId(),
-                                chat_description: chat
+                                chat_description: chat,
+                                restore_chat_state: restore_options
                             });
                         } else {
                             console.error(new Error('Chat with such id not found in the database!'));
@@ -419,7 +451,7 @@ define('chat_platform', [
                     }
                 );
             },
-            
+
             destroy: function() {
                 var _this = this;
                 _this.removeEventListeners();

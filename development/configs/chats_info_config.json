@@ -181,6 +181,7 @@
     "class": "button-convex",
     "data": {
       "throw": "true",
+      "restore_chat_state": true,
       "action": "showChat",
       "mode": "DETAIL_VIEW",
       "location": "navbar"
