@@ -111,6 +111,7 @@ define('chat_platform', [
                 _this.off('showChat');
             },
 
+
             /**
              * invoke each chat to resize its view
              */
@@ -378,21 +379,26 @@ define('chat_platform', [
                 );
             },
 
-            blockUIButton: function(chatId, buttonId, buttonElement) {
+            blockUIButton: function(chatId, buttonsElement) {
                 var _this = this;
                 if (!_this.UIbuttonsByChatId[chatId]) {
                     _this.UIbuttonsByChatId[chatId] = {};
+                    _this.UIbuttonsByChatId[chatId].buttons = [];
                 }
-                _this.UIbuttonsByChatId[chatId][buttonId] = buttonElement;
-                buttonElement.disabled = true;
+                buttonsElement.forEach(function(buttonElement){
+                    _this.UIbuttonsByChatId[chatId].buttons.push(buttonElement);
+                    buttonElement.disabled = true;
+                });
             },
 
-            unBlockUIButton: function(chatId, buttonId) {
+            unBlockUIButton: function(chatId) {
                 var _this = this;
-                if (_this.UIbuttonsByChatId[chatId] && _this.UIbuttonsByChatId[chatId][buttonId]) {
-                    _this.UIbuttonsByChatId[chatId][buttonId].disabled = false;
-                    delete _this.UIbuttonsByChatId[chatId][buttonId];
+                if (_this.UIbuttonsByChatId[chatId] && _this.UIbuttonsByChatId[chatId].buttons) {
+                    _this.UIbuttonsByChatId[chatId].buttons.forEach(function(button) {
+                        button.disabled = false;
+                    });
                 }
+                _this.UIbuttonsByChatId[chatId].buttons = [];
             },
 
             /**
@@ -402,6 +408,7 @@ define('chat_platform', [
             showChat: function(element) {
                 var _this = this;
                 var parentElement = _this.traverseUpToDataset(element, 'role', 'chatWrapper');
+                var control_buttons = Array.prototype.slice.call(parentElement.querySelectorAll('[data-action="showChat"]'));
                 var restore_options = element.dataset.restore_chat_state;
                 if (!parentElement) {
                     console.error(new Error('Parent element not found!'));
@@ -420,7 +427,7 @@ define('chat_platform', [
                     return;
                 }
 
-                _this.blockUIButton(chatId, 'showChat_', element);
+                _this.blockUIButton(chatId, control_buttons);
 
                 indexeddb.getByKeyPath(
                     _this.collectionDescription,
@@ -428,7 +435,7 @@ define('chat_platform', [
                     function(getError, chat) {
                         if (getError) {
                             console.error(getError);
-                            _this.unBlockUIButton(chatId, 'showChat_');
+                            _this.unBlockUIButton(chatId);
                             return;
                         }
 
@@ -446,7 +453,7 @@ define('chat_platform', [
                             });
                         } else {
                             console.error(new Error('Chat with such id not found in the database!'));
-                            _this.unBlockUIButton(chatId, 'showChat_');
+                            _this.unBlockUIButton(chatId);
                         }
                     }
                 );
