@@ -4,8 +4,8 @@
         <div class="message myMessage flex-item-1-auto flex-dir-col flex-sp-between">
             <div><%= _in.message.innerHTML %></div>
             <div class="dateFormat">
-                <%if (_in.message.deviceIds[_in.deviceId].dateTime) { %>
-                <% var time = new Date(_in.message.deviceIds[_in.message.id].dateTime);%>
+                <%if (_in.message.deviceIds[_in.deviceId] && _in.message.deviceIds[_in.deviceId].dateTime) { %>
+                <% var time = new Date(_in.message.deviceIds[_in.deviceId].dateTime);%>
                 <%= time.toISOString()%>
                 <%}%>
             </div>
@@ -16,7 +16,7 @@
         <div class="message flex-item-1-auto flex-dir-col flex-sp-between">
             <div><%= _in.message.innerHTML %></div>
             <div class="dateFormat">
-                <%if (_in.message.deviceIds[_in.deviceId].dateTime) { %>
+                <%if (_in.message.deviceIds[_in.deviceId] && _in.message.deviceIds[_in.deviceId].dateTime) { %>
                 <% var time = new Date(_in.message.deviceIds[_in.deviceId].dateTime);%>
                 <%= time.toISOString()%>
                 <%}%>

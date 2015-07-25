@@ -4,7 +4,8 @@ require.config({
     "paths": {
         "text": "lib/text",
         //
-        "message": "app/model/message",
+        "html_message": "app/model/html_message",
+        "html_log_message": "app/model/html_log_message",
         //
         "async_core": "app/extentions/async_core",
         "ajax_core": "app/extentions/ajax_core",

@@ -1,4 +1,4 @@
-define('message', [
+define('html_message', [
         'id_core',
         'extend_core',
         'users_bus',
@@ -14,10 +14,10 @@ define('message', [
             innerHTML : ""
         };
         /**
-         * Message model
+         * HTML_message model
          * @param options - options to override basic parameters
          */
-        var Message = function(options) {
+        var HTML_message = function(options) {
             if (!options.id) {
                 this.id = this.generateId();
             }
@@ -31,7 +31,7 @@ define('message', [
             this.pushDeviceId();
         };
 
-        Message.prototype = {
+        HTML_message.prototype = {
 
             READYSTATES: {
                 CREATED: 'CREATED',
@@ -78,7 +78,7 @@ define('message', [
                 var deviceIdKey;
                 var message = _message ? _message : this;
                 for (deviceIdKey in message.deviceIds) {
-                    if (message.deviceIds[deviceIdKey].readyState === Message.prototype.READYSTATES.CREATED) {
+                    if (message.deviceIds[deviceIdKey].readyState === HTML_message.prototype.READYSTATES.CREATED) {
                         return deviceIdKey;
                     }
                 }
@@ -88,7 +88,7 @@ define('message', [
 
             isOwnMessage: function(_message) {
                 var message = _message ? _message : this;
-                var creatorId = Message.prototype.getCreator(message);
+                var creatorId = HTML_message.prototype.getCreator(message);
                 return !creatorId || (creatorId === event_bus.getDeviceId() ||
                     message.deviceIds[creatorId].userId === users_bus.getUserId());
             },
@@ -96,14 +96,15 @@ define('message', [
             toJSON: function() {
                 return {
                     id: this.id,
-                    deviceIds: this.deviceIds
+                    deviceIds: this.deviceIds,
+                    innerHTML: this.innerHTML
                 }
             }
 
         };
 
-        extend(Message, id_core);
-        extend(Message, extend_core);
+        extend(HTML_message, id_core);
+        extend(HTML_message, extend_core);
 
-        return Message;
+        return HTML_message;
     });
