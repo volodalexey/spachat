@@ -2,7 +2,7 @@
 <div class="flex background-blue">
     <div data-role="message_container" class="modal-controls message_conteiner">
         <div data-role="message_inner_container" class="container" contenteditable="true">
-            <% if (_in.data.restore) { %>
+            <% if (_in.data && _in.data.restore) { %>
             <%= _in.data.innerHTML %>
             <% } %>
         </div>

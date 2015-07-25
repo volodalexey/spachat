@@ -3,8 +3,8 @@
     <div class="message flex-item-1-auto">
         <%= _in.message.innerHTML %>
         <div class="dateFormat">
-            <%if (_in.message.ids[_in.message.id].dateTime) { %>
-            <% var time = new Date(_in.message.ids[_in.message.id].dateTime);%>
+            <%if (_in.message.deviceIds[_in.deviceId].dateTime) { %>
+            <% var time = new Date(_in.message.deviceIds[_in.deviceId].dateTime);%>
             <%= time.toISOString()%>
             <%}%>
         </div>

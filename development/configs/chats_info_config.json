@@ -153,7 +153,7 @@
     "class": "flex-item-w50p",
     "data": {
       "role": "user_id",
-      "key": "userId",
+      "key": "userIds",
       "mode": "DETAIL_VIEW",
       "location": "user_id"
     },

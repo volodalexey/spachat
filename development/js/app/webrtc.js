@@ -460,14 +460,14 @@ define('webrtc', [
                     delete curConnection.passive;
                 };
                 dataChannel.onmessage = function(event) {
-                    var remoteMessage = JSON.parse(event.data);
-                    curChat.messages.addRemoteMessage(curChat.body.MODE.MESSAGES, remoteMessage, function(error, message) {
-                        if (error) {
-                            console.error(error);
-                            return;
-                        }
-                        curChat.messages.renderMessage({ scrollTop : true }, message);
-                    });
+                    try {
+                        var remoteMessage = JSON.parse(event.data);
+                    } catch (e) {
+                        console.error(e);
+                        return;
+                    }
+
+                    curChat.messages.addRemoteMessage(remoteMessage);
                 };
             },
 

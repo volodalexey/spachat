@@ -110,7 +110,9 @@ define('messages', [
 
                             for (var i = _this.chat.messagesOptions.start; i < _this.chat.messagesOptions.final; i++) {
                                 generatedMessages.push(currentTemplate({
-                                    message: messages[i]
+                                    message: messages[i],
+                                    deviceId: event_bus.getDeviceId(),
+                                    messageConstructor: Message.prototype
                                 }));
                             }
                             _this.chat.body_container.innerHTML = generatedMessages.join('');
@@ -130,11 +132,7 @@ define('messages', [
             addMessage: function(log, options, callback) {
                 var _this = this;
                 // TODO distinct this chat messages from other
-                var message = new Message({innerHTML: options.messageInnerHTML});
-
-                //if (message.ids) {
-                //
-                //}
+                var message = (new Message({innerHTML: options.messageInnerHTML})).toJSON();
 
                 _this.tableDefinition(log);
                 indexeddb.addOrUpdateAll(
@@ -144,15 +142,18 @@ define('messages', [
                         message
                     ],
                     function(error) {
-                        if (error && callback) {
-                            callback(error);
+                        if (error) {
+                            if (callback) {
+                                callback(error);
+                            } else {
+                                console.error(error);
+                            }
                             return;
                         }
 
-                        switch (_this.chat.bodyOptions.mode) {
-                            case _this.chat.body.MODE.MESSAGES:
-                                webrtc.broadcastMessage(JSON.stringify(message));
-                                break;
+                        if (_this.chat.bodyOptions.mode === _this.chat.body.MODE.MESSAGES &&
+                            log === _this.chat.body.MODE.MESSAGES) {
+                            webrtc.broadcastMessage(JSON.stringify(message));
                         }
 
                         callback && callback(error, message);
@@ -169,7 +170,8 @@ define('messages', [
                 // TODO check which page is current
                 _this.chat.body_container.innerHTML += _this.message_template({
                     message: message,
-                    deviceId: event_bus.getDeviceId()
+                    deviceId: event_bus.getDeviceId(),
+                    messageConstructor: Message.prototype
                 });
                 //_this.chat.messagesOptions.final += 1;
                 _this.chat.paginationMessageOptions.currentPage = null;
@@ -177,20 +179,31 @@ define('messages', [
                 _this.scrollTo(options);
             },
 
-            addRemoteMessage: function(log, remoteMessage, callback) {
+            addRemoteMessage: function(remoteMessage, callback) {
                 var _this = this;
                 // TODO distinct this chat messages from other
-                var message = new Message(remoteMessage);
-                _this.tableDefinition(log);
+                var message = (new Message(remoteMessage)).toJSON();
+                _this.tableDefinition(_this.chat.body.MODE.MESSAGES);
 
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
                     null,
                     [
-                        message
+                        message.toJSON()
                     ],
                     function(error) {
-                        callback && callback(error, message);
+                        if (error) {
+                            if (callback) {
+                                callback(error);
+                            } else {
+                                console.error(error);
+                            }
+                            return;
+                        }
+
+                        if (_this.chat.bodyOptions.mode === _this.chat.body.MODE.MESSAGES) {
+                            this.renderMessage({ scrollTop : true }, message);
+                        }
                     }
                 );
             },

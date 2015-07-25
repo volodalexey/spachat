@@ -150,7 +150,7 @@ define('render_layout_core', [
                         return;
 
                     }
-                    callback();
+                    callback(null, options);
                 }
             },
 

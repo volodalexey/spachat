@@ -12,7 +12,7 @@ define('extend_core', [],
                 var _this = this;
                 var keys = Object.keys(parent);
                 keys.forEach(function(key) {
-                    if (typeof parent[key] === 'object' && parent[key] !== null) {
+                    if (typeof parent[key] === 'object' && !Array.isArray(parent[key]) && parent[key] !== null) {
                         child[key] = {};
                         _this.extend(child[key], parent[key]);
                     } else {

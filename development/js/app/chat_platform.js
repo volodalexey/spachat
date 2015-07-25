@@ -164,6 +164,12 @@ define('chat_platform', [
                                 _this.chatCreateApproved(parsedMessageData);
                                 break;
                             case 'chat_joined':
+                                // TODO temp {{
+                                var chat_id_input = document.querySelector('[data-role="chat_id_input"]');
+                                if (chat_id_input) {
+                                    chat_id_input.value = parsedMessageData.chat_description.chatId;
+                                }
+                                // TODO temp }}
                                 _this.chatJoinApproved(parsedMessageData);
                                 break;
                             default :
@@ -244,7 +250,7 @@ define('chat_platform', [
                     _this.collectionDescription,
                     null,
                     [
-                        chat
+                        chat.toChatDescription()
                     ],
                     function(error) {
                         if (error) {
@@ -271,7 +277,6 @@ define('chat_platform', [
              */
             createChatLayout: function(messageData, renderOptions) {
                 var _this = this;
-                messageData.chat_description.userId = users_bus.getUserId();
                 if (messageData.type === "chat_joined") {
                     indexeddb.getByKeyPath(
                         _this.collectionDescription,

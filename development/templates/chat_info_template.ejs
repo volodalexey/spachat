@@ -102,7 +102,7 @@ var array_my_chats_help_toolbar = array.config.filter(function(config) {
 <div>
     <% array.data.data.forEach(function (chat) { %>
     <% var result = array.data.openChatsInfoArray.indexOf(chat.chatId); %>
-    <div data-action="show_more_info" value="<%= chat.chatId %>" data-role="chatWrapper"
+    <div data-action="show_more_info" data-role="chatWrapper"
          data-chatid="<%= chat.chatId %>">
         <% array_my_chats.forEach(function (config) { %>
         <% var element = array.triple_element_template({

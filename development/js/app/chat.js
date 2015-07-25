@@ -127,7 +127,6 @@ define('chat', [
             if (!options.userIds) {
                 this.userIds = {};
             }
-            this.userIds[users_bus.getUserId()] = 'userChatRole';
             this.body = new Body({chat: this});
             if (!restore_chat_state || !options.options) {
                 this.extend(this, defaultOptions);
@@ -147,13 +146,26 @@ define('chat', [
 
             this.extend(this, options);
             this.bindContexts();
+
+            this.userIds[users_bus.getUserId()] = 'userChatRole';
         };
 
         chat.prototype = {
 
+            valueOfKeys: ['chatId'],
+
             bindContexts: function() {
                 var _this = this;
                 //_this.bindedThrowRouter = _this.throwRouter.bind(_this);
+            },
+
+            valueOfChat: function() {
+                var toStringObject = {};
+                var _this = this;
+                _this.valueOfKeys.forEach(function(key) {
+                    toStringObject[key] = _this[key];
+                });
+                return toStringObject;
             },
 
             chatsArray: [],
@@ -514,7 +526,7 @@ define('chat', [
 
             sendToWebSocket: function(sendData) {
                 var _this = this;
-                sendData.chat_description = this.valueOf();
+                sendData.chat_description = this.valueOfChat();
                 websocket.sendMessage(sendData);
                 //_this.proceedNextMessage();
             },

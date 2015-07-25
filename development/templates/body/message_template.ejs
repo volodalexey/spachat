@@ -1,11 +1,11 @@
 <% var _in = arguments[0]; %>
 <div class="flex-sp-around margin-t-b">
-    <%if (_in.message.ids[_in.message.id].sender) {%>
+    <%if (_in.messageConstructor.isOwnMessage(_in.message)) {%>
         <div class="message myMessage flex-item-1-auto flex-dir-col flex-sp-between">
             <div><%= _in.message.innerHTML %></div>
             <div class="dateFormat">
-                <%if (_in.message.ids[_in.message.id].dateTime) { %>
-                <% var time = new Date(_in.message.ids[_in.message.id].dateTime);%>
+                <%if (_in.message.deviceIds[_in.deviceId].dateTime) { %>
+                <% var time = new Date(_in.message.deviceIds[_in.message.id].dateTime);%>
                 <%= time.toISOString()%>
                 <%}%>
             </div>
@@ -16,8 +16,8 @@
         <div class="message flex-item-1-auto flex-dir-col flex-sp-between">
             <div><%= _in.message.innerHTML %></div>
             <div class="dateFormat">
-                <%if (_in.message.ids[_in.message.id].dateTime) { %>
-                <% var time = new Date(_in.message.ids[_in.message.id].dateTime);%>
+                <%if (_in.message.deviceIds[_in.deviceId].dateTime) { %>
+                <% var time = new Date(_in.message.deviceIds[_in.deviceId].dateTime);%>
                 <%= time.toISOString()%>
                 <%}%>
             </div>
