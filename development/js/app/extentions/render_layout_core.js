@@ -19,10 +19,10 @@ define('render_layout_core', [
                 _this.icon_config = [];
                 _this.iconsArray = [];
                 _this.loadBodyConfig(null, options, function(confErr) {
-                    _this.loadBodyData(confErr, options, function(dataErr, data) {
-                        _this.getDescriptionIcon(function(res) {
+                    _this.loadBodyData(confErr, options, function(dataErr, options, data) {
+                        _this.getDescriptionIcon(dataErr, options, data, function(res) {
                             _this.icon_config.push({svg: res, name: 'description_icon'});
-                            _this.fillBody(dataErr, data, function(templErr) {
+                            _this.fillBody(dataErr, options, data, function(templErr) {
                                 if (templErr) {
                                     console.error(templErr);
                                     return;
@@ -132,9 +132,9 @@ define('render_layout_core', [
                             callback(getAllErr);
                         } else {
                             if (_this.dataHandlerMap[_this.body_mode]) {
-                                callback(null, _this.dataHandlerMap[_this.body_mode].call(_this, options, data));
+                                callback(null, options, _this.dataHandlerMap[_this.body_mode].call(_this, options, data));
                             } else {
-                                callback(null, data);
+                                callback(null, options, data);
                             }
                         }
                     });
@@ -146,7 +146,7 @@ define('render_layout_core', [
                         || _this.body_mode === _this.MODE.MAIN_PANEL)
                         || (_this.chat && _this.body_mode === _this.chat.body.MODE.SETTING)
                     ) {
-                        callback(null, options);
+                        callback(null, null, options);
                         return;
 
                     }
@@ -154,7 +154,7 @@ define('render_layout_core', [
                 }
             },
 
-            fillBody: function(_err, data, callback) {
+            fillBody: function(_err, options, data, callback) {
                 var _this = this;
                 if (_err) {
                     callback(_err);
@@ -168,6 +168,7 @@ define('render_layout_core', [
                         icon_config: _this.icon_config,
                         mode: _this.body_mode,
                         data: data,
+                        options: options,
                         description: _this.description,
                         triple_element_template: _this.triple_element_template,
                         button_template: _this.button_template,

@@ -1,25 +1,24 @@
-<% var array = arguments[0]; %>
+<% var _in = arguments[0]; %>
 
-<% var array_detail_view = array.config.filter( function(config){ return config.data.mode === "DETAIL_VIEW" } ) %>
+<% var _in_detail_view = _in.config.filter( function(config){ return config.data.mode === "DETAIL_VIEW" } ) %>
 
 <% var byDataLocation = {};
-array_detail_view.forEach(function(_config) {
+_in_detail_view.forEach(function(_config) {
     if (!byDataLocation[_config.data.location]) {
         byDataLocation[_config.data.location] = [];
     }
     byDataLocation[_config.data.location].push(_config);
 }); %>
 
-
 <% if (byDataLocation['user_id'] && byDataLocation['user_id'].length) { %>
 <div class="w-100p flex-sp-between">
     <% byDataLocation['user_id'].forEach(function (config) { %>
-    <%= array.triple_element_template({
+    <%= _in.triple_element_template({
     config: config,
-    data: array.data,
-    button_template: array.button_template,
-    input_template: array.input_template,
-    label_template: array.label_template
+    data: _in.data,
+    button_template: _in.button_template,
+    input_template: _in.input_template,
+    label_template: _in.label_template
     }) %>
     <% }) %>
 </div>
@@ -28,12 +27,13 @@ array_detail_view.forEach(function(_config) {
 <% if (byDataLocation['navbar'] && byDataLocation['navbar'].length) { %>
 <div class="w-100p flex-sp-around">
     <% byDataLocation['navbar'].forEach(function (config) { %>
-    <%= array.triple_element_template({
+    <%= _in.triple_element_template({
     config: config,
-    data: array.data,
-    button_template: array.button_template,
-    input_template: array.input_template,
-    label_template: array.label_template
+    data: _in.data,
+    button_template: _in.button_template,
+    input_template: _in.input_template,
+    label_template: _in.label_template,
+    options: _in.options
     }) %>
     <% }) %>
 </div>

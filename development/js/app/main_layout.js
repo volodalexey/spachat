@@ -39,7 +39,7 @@ define('main_layout', [
                         document.body.innerHTML = e;
                         return;
                     }
-                    _this.getDescriptionIcon(function(res){
+                    _this.getDescriptionIcon(null, null, null, function(res){
                         document.body.innerHTML += _this.index_template({
                             config: indexed_config,
                             icon_config: [{svg: res, name: 'description_icon'}],

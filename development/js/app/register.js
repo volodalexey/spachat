@@ -68,7 +68,7 @@ define('register', [
                         return;
                     }
                     var registe_config = JSON.parse(res);
-                    _this.getDescriptionIcon(function(res){
+                    _this.getDescriptionIcon(null, null, null, function(res){
                         _this.navigator.main_container.innerHTML = _this.register_template({
                             config: registe_config,
                             icon_config: [{svg: res, name: 'description_icon'}],

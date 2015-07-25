@@ -6,7 +6,6 @@ define('body', [
         'ajax_core',
         'users',
 
-
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
@@ -23,8 +22,6 @@ define('body', [
              render_layout_core,
              ajax_core,
              users,
-
-
              triple_element_template,
              button_template,
              label_template,
@@ -49,14 +46,14 @@ define('body', [
                 "USERS": '/configs/users_info_config.json',
                 "DETAIL_VIEW": '/configs/chats_info_config.json'
             },
-/*
-            collectionDescriptionChats: {
-                "id": 'chats',
-                "db_name": 'chats',
-                "table_names": ['chats'],
-                "db_version": 1,
-                "keyPath": "chatId"
-            },*/
+            /*
+             collectionDescriptionChats: {
+             "id": 'chats',
+             "db_name": 'chats',
+             "table_names": ['chats'],
+             "db_version": 1,
+             "keyPath": "chatId"
+             },*/
 
             MODE: {
                 SETTING: 'SETTING',
@@ -86,12 +83,13 @@ define('body', [
                         case _this.MODE.CONTACT_LIST:
                             _this.module.contact_list.renderContactList(options, _module);
                             break;
-                        case _this.MODE.MESSAGES: case _this.MODE.LOGGER:
+                        case _this.MODE.MESSAGES:
+                        case _this.MODE.LOGGER:
                             _this.module.messages.render(options, _module);
                             break;
                         case _this.MODE.USER_INFO_SHOW:
                             _this.elementMap = {
-                                "USER_INFO_SHOW":  _this.module.panel_body
+                                "USER_INFO_SHOW": _this.module.panel_body
                             };
                             _this.dataMap = {
                                 "USER_INFO_SHOW": users.collectionDescription
@@ -101,13 +99,13 @@ define('body', [
                             break;
                         case _this.MODE.USER_INFO_EDIT:
                             _this.elementMap = {
-                                "USER_INFO_EDIT":  _this.module.panel_body
+                                "USER_INFO_EDIT": _this.module.panel_body
                             };
                             _this.dataMap = {
                                 "USER_INFO_EDIT": users.collectionDescription
                             };
                             _this.body_mode = _this.MODE.USER_INFO_EDIT;
-                            var data= {
+                            var data = {
                                 "user": _this.module.user
                             };
                             _this.renderLayout(data, function() {
@@ -116,49 +114,48 @@ define('body', [
                             break;
                         case _this.MODE.CREATE_CHAT:
                             _this.elementMap = {
-                                "CREATE_CHAT":  _this.module.panel_body
+                                "CREATE_CHAT": _this.module.panel_body
                             };
                             _this.body_mode = _this.MODE.CREATE_CHAT;
                             _this.renderLayout(null, null);
                             break;
                         case _this.MODE.JOIN_CHAT:
                             _this.elementMap = {
-                            "JOIN_CHAT":  _this.module.panel_body
+                                "JOIN_CHAT": _this.module.panel_body
                             };
                             _this.body_mode = _this.MODE.JOIN_CHAT;
                             _this.renderLayout(null, null);
                             break;
                         case _this.MODE.CHATS:
                             _this.elementMap = {
-                                "CHATS":  _this.module.panel_body
+                                "CHATS": _this.module.panel_body
                             };
                             _this.dataMap = {
                                 "CHATS": _this.module.collectionDescription
                             };
                             _this.body_mode = _this.MODE.CHATS;
-                            _this.renderLayout(null, null);
+                            _this.renderLayout(options, null);
                             break;
                         case _this.MODE.USERS:
                             _this.elementMap = {
-                                "USERS":  _this.module.panel_body
+                                "USERS": _this.module.panel_body
                             };
                             _this.body_mode = _this.MODE.USERS;
                             _this.renderLayout(null, null);
                             break;
                         case _this.MODE.DETAIL_VIEW:
                             _this.elementMap = {
-                                "DETAIL_VIEW":  options.detail_view
+                                "DETAIL_VIEW": options.detail_view
                             };
                             _this.dataMap = {
                                 "DETAIL_VIEW": _this.module.collectionDescription
                             };
                             _this.body_mode = _this.MODE.DETAIL_VIEW;
-                            _this.renderLayout({chat_id_value: options.chat_id_value}, function(){
+                            _this.renderLayout(options, function() {
                                 _this.module.rotatePointer(options);
                             });
                             break;
                     }
-
                     _this.previousMode = _this.module.bodyOptions.mode;
                 }
             },
@@ -170,18 +167,13 @@ define('body', [
                         _this.module.messagesOptions.final = data.length;
                     }
                 }
-
                 if (_this.module.messagesOptions.previousStart !== _this.module.messagesOptions.start ||
                     _this.module.messagesOptions.previousFinal !== _this.module.messagesOptions.final) {
                     _this.module.panel_body.innerHTML = "";
                     _this.module.messagesOptions.previousStart = _this.module.messagesOptions.start;
                     _this.module.messagesOptions.previousFinal = _this.module.messagesOptions.final;
                 }
-
-
-
-                    data = data.slice(_this.module.messagesOptions.start, _this.module.messagesOptions.final);
-
+                data = data.slice(_this.module.messagesOptions.start, _this.module.messagesOptions.final);
                 return data;
             },
 
@@ -207,14 +199,14 @@ define('body', [
                 return chat_info;
             },
 
-            transferData: function(options, data){
+            transferData: function(options, data) {
                 var _this = this;
 
                 data = this.limitationQuantityRecords(data);
                 var dataUpdated = {
                     "data": data,
                     "detail_view_template": _this.detail_view_container_template,
-                    "openChatsArray": _this.module.openChatsArray
+                    "openChatsInfoArray": _this.module.openChatsInfoArray
                 };
                 return dataUpdated;
             },
@@ -240,7 +232,6 @@ define('body', [
         body.prototype.panel_users_template = body.prototype.template(panel_users_template);
         body.prototype.detail_view_container_template = body.prototype.template(detail_view_container_template);
 
-
         body.prototype.dataMap = {
             "USER_INFO_EDIT": '',
             "USER_INFO_SHOW": '',
@@ -248,7 +239,7 @@ define('body', [
             'JOIN_CHAT': '',
             "CHATS": '',
             "USERS": '',
-            "DETAIL_VIEW":'',
+            "DETAIL_VIEW": '',
             "FILTER_MY_CHATS": ''
         };
 

@@ -94,6 +94,7 @@ define('chat_platform', [
                 event_bus.on('throw', _this.bindedOnThrowEvent, false);
                 event_bus.on('addNewChatAuto', _this.addNewChatAuto, _this);
                 event_bus.on('destroyChat', _this.destroyChat, _this);
+                event_bus.on('getOpenChats', _this.getOpenChats, _this);
                 websocket.on('message', _this.onMessageRouter, _this);
                 _this.on('resize', _this.resizeChats, _this);
                 _this.on('joinByChatIdAuto', _this.joinByChatIdAuto, _this);
@@ -105,12 +106,20 @@ define('chat_platform', [
                 event_bus.off('throw', _this.bindedOnThrowEvent);
                 event_bus.off('addNewChatAuto', _this.addNewChatAuto);
                 event_bus.off('destroyChat', _this.destroyChat);
+                event_bus.off('getOpenChats', _this.getOpenChats);
                 websocket.off('message', _this.onMessageRouter);
                 _this.off('resize');
                 _this.off('joinByChatIdAuto');
                 _this.off('showChat');
             },
 
+            getOpenChats: function(callback) {
+                var openChats = {};
+                Chat.prototype.chatsArray.forEach(function(chat) {
+                    openChats[chat.chatId] = true;
+                });
+                callback(openChats);
+            },
 
             /**
              * invoke each chat to resize its view

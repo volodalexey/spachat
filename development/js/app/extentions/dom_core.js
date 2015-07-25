@@ -46,14 +46,14 @@ define('dom_core',[
                 return null;
             },
 
-            getDescriptionIcon: function(callback){
+            getDescriptionIcon: function(dataErr, options, data, callback){
                 var _this = this;
                 _this.sendRequest("/templates/icon/description_icon.html", function(err, res) {
                     if (err) {
                         console.error(err);
                         return;
                     }
-                    callback(res);
+                    callback(res, dataErr, options, data);
                 });
             }
         };

@@ -7,6 +7,7 @@ define('panel', [
         'switcher_core',
         'overlay_core',
         'users',
+        'event_bus',
 
         'pagination',
         'body',
@@ -33,6 +34,7 @@ define('panel', [
              switcher_core,
              overlay_core,
              users,
+             event_bus,
              Pagination,
              Body,
              indexeddb,
@@ -214,7 +216,7 @@ define('panel', [
 
             panelArray: [],
 
-            openChatsArray: [],
+            openChatsInfoArray: [],
 
             configMap: {
                 "CHATS_FILTER": '/configs/panel_chats_filter_config.json',
@@ -387,7 +389,6 @@ define('panel', [
                         _this.togglePanelElement.classList.remove("pull-for-" + _this.type + "-panel");
                         _this.togglePanelElement.classList.add("panel-button");
                     }
-
                 }
             },
 
@@ -402,7 +403,21 @@ define('panel', [
 
             render: function(options) {
                 var _this = this;
+                if (!options) {
+                    options = {};
+                }
+                if (_this.bodyOptions.mode === _this.MODE.CHATS || _this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
+                    event_bus.trigger('getOpenChats', function(openChats) {
+                        options.openChats = openChats;
+                        _this.proceed(options);
+                    });
+                } else {
+                    _this.proceed(options);
+                }
+            },
 
+            proceed: function(options) {
+                var _this = this;
                 _this.renderExtraToolbar(function() {
                     _this.renderFilter(function() {
                         _this.pagination.render(options, _this, _this.bodyOptions.mode);
@@ -608,7 +623,7 @@ define('panel', [
                         }
 
                         _this.panel_config = JSON.parse(res);
-                        _this.getDescriptionIcon(function(res) {
+                        _this.getDescriptionIcon(null, null, null, function(res) {
                             _this.description_icon = res;
                             _this.togglePanel();
                         });
@@ -718,7 +733,7 @@ define('panel', [
                 var detail_view = element.querySelector('[data-role="detail_view_container"]');
                 var pointer = element.querySelector('[data-role="pointer"]');
                 if (detail_view.dataset.state) {
-                    _this.openChatsArray.splice(_this.openChatsArray.indexOf(chat_id_value), 1);
+                    _this.openChatsInfoArray.splice(_this.openChatsInfoArray.indexOf(chat_id_value), 1);
                     detail_view.classList.remove("max-height-auto");
                     pointer.classList.remove("rotate-90");
                     detail_view.style.maxHeight = '0em';
@@ -742,7 +757,7 @@ define('panel', [
                 options.detail_view.classList.add("max-height-auto");
                 options.detail_view.style.maxHeight = '15em';
                 options.pointer.classList.add("rotate-90");
-                _this.openChatsArray.push(options.chat_id_value);
+                _this.openChatsInfoArray.push(options.chat_id_value);
             },
 
             transitionEnd: function(event) {

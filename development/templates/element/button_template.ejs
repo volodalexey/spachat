@@ -16,6 +16,14 @@
 disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
 <% var flag = true;%>
 <% } %>
+
+<%if (_in.options && _in.options.openChats){
+    if (_in.options.openChats[_in.data.chatId] ? true : false) { %>
+        disabled = "true"
+  <%  }
+}%>
+
+
     <% if(_in.config.type){ %> type="<%= _in.config.type%>" <%}%>
     <% if(_in.config.data.key){ %> data-value="<%= _in.data[_in.config.data.key]%>" <%}%>
 ><% if (_in.config.icon) {
