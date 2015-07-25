@@ -1,10 +1,12 @@
 define('message', [
         'id_core',
-        'extend_core'
+        'extend_core',
+        'event_bus'
     ],
     function(
         id_core,
-        extend_core
+        extend_core,
+        event_bus
     ) {
         var defaultOptions = {
             innerHTML : ""
@@ -14,7 +16,9 @@ define('message', [
          * @param options - options to override basic parameters
          */
         var Message = function(options) {
-            this.id = this.generateId();
+            if (!options.id) {
+                this.id = this.generateId();
+            }
             this.extend(this, defaultOptions);
             this.extend(this, options);
 
@@ -22,17 +26,7 @@ define('message', [
                 this.ids = {};
             }
 
-            if (!this.ids[this.id]) {
-                this.ids[this.id] = {};
-            }
-
-            if (!this.ids[this.id].dateTime) {
-                this.ids[this.id].dateTime = Date.now();
-            }
-
-            if (!this.ids[this.id].readyState) {
-                this.ids[this.id].readyState = this.READYSTATES.CREATED;
-            }
+            this.pushDeviceId();
         };
 
         Message.prototype = {
@@ -41,6 +35,38 @@ define('message', [
                 CREATED: 'CREATED',
                 SENDING: 'SENDING',
                 SENT: 'SENT'
+            },
+
+            pushDeviceId: function() {
+                if (!event_bus.getDeviceId()) {
+                    return;
+                }
+
+                if (!this.ids[event_bus.getDeviceId()]) {
+                    this.ids[event_bus.getDeviceId()] = {};
+                }
+
+                if (!this.ids[event_bus.getDeviceId()].dateTime) {
+                    this.ids[event_bus.getDeviceId()].dateTime = Date.now();
+                }
+
+                this.onMessageCreate();
+            },
+
+            onMessageCreate: function() {
+                if (!event_bus.getDeviceId()) {
+                    return;
+                }
+
+                if (!this.ids[event_bus.getDeviceId()].readyState) {
+                    this.ids[event_bus.getDeviceId()].readyState = this.READYSTATES.CREATED;
+                }
+            },
+
+            prepareToSend: function() {
+                this.pushDeviceId();
+
+                this.ids[event_bus.getDeviceId()].readyState = this.READYSTATES.SENDING;
             }
 
         };

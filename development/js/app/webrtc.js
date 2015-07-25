@@ -63,6 +63,17 @@ define('webrtc', [
                     deviceId: this.deviceId,
                     tempDeviceId: this.tempDeviceId
                 }
+            },
+
+            canApplyNextState: function() {
+                if (this.dataChannel && this.dataChannel.readyState === "open") {
+                    // connection with this device is already established
+                    return false;
+                } else if (this.active && this.active.readyState === Connection.prototype.readyStates.ACCEPTING_ANSWER) {
+                    // connection with this device is establishing through p2p
+                    return false;
+                }
+                return true;
             }
         };
 
@@ -116,8 +127,7 @@ define('webrtc', [
                         }
 
                         var connection = _this.getConnection(devDescription);
-                        if (connection && connection.dataChannel && connection.dataChannel.readyState === "open") {
-                            // connection with this device is already established
+                        if (connection && connection.canApplyNextState() === false) {
                             return;
                         }
                         if (!connection) {
@@ -149,8 +159,7 @@ define('webrtc', [
                     return;
                 }
                 var connection = _this.getConnection(messageData);
-                if (connection && connection.dataChannel && connection.dataChannel.readyState === "open") {
-                    // connection with this device is already established
+                if (connection && connection.canApplyNextState() === false) {
                     return;
                 }
                 
@@ -181,8 +190,7 @@ define('webrtc', [
                 }
 
                 var connection = _this.getConnection(messageData);
-                if (connection && connection.dataChannel && connection.dataChannel.readyState === "open") {
-                    // connection with this device is already established
+                if (connection && connection.canApplyNextState() === false) {
                     return;
                 }
 
@@ -260,7 +268,6 @@ define('webrtc', [
                                     return;
                                 }
 
-                                curConnection.active.readyState = Connection.prototype.readyStates.WAITING;
                                 curChat.trigger('throw', 'sendToWebSocket', {
                                     type: 'chat_accept',
                                     userId: curChat.userId,

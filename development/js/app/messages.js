@@ -7,6 +7,7 @@ define('messages', [
         'indexeddb',
         'message',
         'webrtc',
+        'event_bus',
         //
         'text!../templates/body/message_template.ejs',
         'text!../templates/body/log_message_template.ejs'
@@ -19,6 +20,7 @@ define('messages', [
              indexeddb,
              Message,
              webrtc,
+             event_bus,
              //
              message_template,
              log_message_template) {
@@ -124,19 +126,15 @@ define('messages', [
 
             /**
              * add message to the database
-             * @param options
-             * @param messageInnerHTML
              */
-            addLocalMessage: function(log, options, callback) {
+            addMessage: function(log, options, callback) {
                 var _this = this;
                 // TODO distinct this chat messages from other
                 var message = new Message({innerHTML: options.messageInnerHTML});
 
-                if (_this.chat.formatOptions.iSender){
-                    message.ids[message.id].sender = 1 ;
-                } else {
-                    message.ids[message.id].sender = 0;
-                }
+                //if (message.ids) {
+                //
+                //}
 
                 _this.tableDefinition(log);
                 indexeddb.addOrUpdateAll(
@@ -170,7 +168,8 @@ define('messages', [
                 var _this = this;
                 // TODO check which page is current
                 _this.chat.body_container.innerHTML += _this.message_template({
-                    message: message
+                    message: message,
+                    deviceId: event_bus.getDeviceId()
                 });
                 //_this.chat.messagesOptions.final += 1;
                 _this.chat.paginationMessageOptions.currentPage = null;

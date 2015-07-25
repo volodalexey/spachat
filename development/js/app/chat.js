@@ -185,7 +185,7 @@ define('chat', [
                 log: function(event) {
                     var _this = this;
                     var txt = _this.console_log_template(event);
-                    _this.messages.addLocalMessage(_this.body.MODE.LOGGER,
+                    _this.messages.addMessage(_this.body.MODE.LOGGER,
                         {scrollTop: true, messageInnerHTML: txt}, null);
                 }
             },
