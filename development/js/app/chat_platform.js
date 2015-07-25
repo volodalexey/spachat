@@ -3,11 +3,12 @@ define('chat_platform', [
         'websocket',
         'webrtc',
         'event_bus',
+        'indexeddb',
+        'users_bus',
         //
         'overlay_core',
         'throw_event_core',
         'template_core',
-        'indexeddb',
         'message_core',
         'dom_core',
         //
@@ -17,11 +18,12 @@ define('chat_platform', [
              websocket,
              webrtc,
              event_bus,
+             indexeddb,
+             users_bus,
              //
              overlay_core,
              throw_event_core,
              template_core,
-             indexeddb,
              message_core,
              dom_core,
              //
@@ -192,7 +194,7 @@ define('chat_platform', [
                     };
                     websocket.sendMessage({
                         type: "create_chat",
-                        userId: _this.navigator.userId,
+                        userId: users_bus.getUserId(),
                         deviceId: event_bus.getDeviceId(),
                         tempDeviceId: event_bus.getTempDeviceId(),
                         chat_description: chat_description
@@ -237,12 +239,12 @@ define('chat_platform', [
 
             addNewChatToIndexedDB: function(event) {
                 var _this = this;
-                event.chat_description.userId = _this.navigator.userId;
+                var chat = new Chat(event.chat_description);
                 indexeddb.addOrUpdateAll(
                     _this.collectionDescription,
                     null,
                     [
-                        event.chat_description
+                        chat
                     ],
                     function(error) {
                         if (error) {
@@ -269,7 +271,7 @@ define('chat_platform', [
              */
             createChatLayout: function(messageData, renderOptions) {
                 var _this = this;
-                messageData.chat_description.userId = _this.navigator.userId;
+                messageData.chat_description.userId = users_bus.getUserId();
                 if (messageData.type === "chat_joined") {
                     indexeddb.getByKeyPath(
                         _this.collectionDescription,
@@ -347,7 +349,7 @@ define('chat_platform', [
                 }
                 websocket.sendMessage({
                     type: "chat_join",
-                    userId: _this.navigator.userId,
+                    userId: users_bus.getUserId(),
                     deviceId: event_bus.getDeviceId(),
                     tempDeviceId: event_bus.getTempDeviceId(),
                     chat_description: chat_description
@@ -451,7 +453,7 @@ define('chat_platform', [
                             }
                             websocket.sendMessage({
                                 type: "chat_join",
-                                userId: _this.navigator.userId,
+                                userId: users_bus.getUserId(),
                                 deviceId: event_bus.getDeviceId(),
                                 tempDeviceId: event_bus.getTempDeviceId(),
                                 chat_description: chat,

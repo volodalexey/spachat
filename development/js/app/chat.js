@@ -10,6 +10,7 @@ define('chat', [
         'body',
         'event_bus',
         'indexeddb',
+        'users_bus',
         //
         'ajax_core',
         'template_core',
@@ -34,6 +35,7 @@ define('chat', [
              Body,
              event_bus,
              indexeddb,
+             users_bus,
              //
              ajax_core,
              template_core,
@@ -122,6 +124,10 @@ define('chat', [
         };
 
         var chat = function(options, restore_chat_state) {
+            if (!options.userIds) {
+                this.userIds = {};
+            }
+            this.userIds[users_bus.getUserId()] = 'userChatRole';
             this.body = new Body({chat: this});
             if (!restore_chat_state || !options.options) {
                 this.extend(this, defaultOptions);
@@ -145,20 +151,9 @@ define('chat', [
 
         chat.prototype = {
 
-            valueOfKeys: ['chatId', 'userId'],
-
             bindContexts: function() {
                 var _this = this;
                 //_this.bindedThrowRouter = _this.throwRouter.bind(_this);
-            },
-
-            valueOf: function() {
-                var toStringObject = {};
-                var _this = this;
-                _this.valueOfKeys.forEach(function(key) {
-                    toStringObject[key] = _this[key];
-                });
-                return toStringObject;
             },
 
             chatsArray: [],
@@ -490,7 +485,7 @@ define('chat', [
                 var _this = this;
                 return {
                     chatId: _this.chatId,
-                    userId: _this.userId,
+                    userIds: _this.userIds,
                     options: {
                         padding: _this.padding,
                         headerOptions: _this.headerOptions,

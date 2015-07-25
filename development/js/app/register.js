@@ -5,7 +5,7 @@ define('register', [
         'ajax_core',
 
         'id_core',
-        'users',
+        'users_bus',
 
         'indexeddb',
 
@@ -20,7 +20,7 @@ define('register', [
              ajax_core,
 
              id_core,
-             users,
+             users_bus,
 
              indexeddb,
 
@@ -128,13 +128,13 @@ define('register', [
                                     return;
                                 }
 
-                                _this.navigator.userId = account.userId;
+                                users_bus.setUserId(account.userId);
                                 history.pushState(null, null, 'chat');
                                 _this.navigator.navigate();
                             }
                         );
                     } else {
-                        _this.navigator.userId = null;
+                        users_bus.setUserId(null);
                         _this.registerForm.reset();
                         console.error(new Error('Passwords don\'t match!'));
                     }
@@ -143,7 +143,7 @@ define('register', [
 
             registerNewUser: function(options, callback) {
                 var _this = this;
-                indexeddb.getAll(users.collectionDescription, null, function(getAllErr, allUsers) {
+                indexeddb.getAll(users_bus.collectionDescription, null, function(getAllErr, allUsers) {
                     if (getAllErr) {
                         callback(getAllErr);
                         return;
@@ -169,7 +169,7 @@ define('register', [
                     };
 
                     indexeddb.addOrUpdateAll(
-                        users.collectionDescription,
+                        users_bus.collectionDescription,
                         null,
                         [
                             account

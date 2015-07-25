@@ -1,4 +1,4 @@
-define('users', [
+define('users_bus', [
 
     ],
     function(
@@ -6,6 +6,7 @@ define('users', [
     ) {
 
         var users = function() {
+            this.userId = null;
             this.collectionDescription = {
                 "db_name": 'users',
                 "table_names": ['users'],
@@ -14,7 +15,17 @@ define('users', [
             };
         };
 
-        users.prototype = {};
+        users.prototype = {
+
+            setUserId: function(userId) {
+                this.userId = userId;
+            },
+
+            getUserId: function() {
+                return this.userId;
+            }
+
+        };
 
 
         return new users();

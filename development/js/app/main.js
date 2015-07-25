@@ -40,7 +40,7 @@ require.config({
         "navigator": "app/navigator",
         "websocket": "app/websocket",
         "event_bus": "app/event_bus",
-        "users": "app/users",
+        "users_bus": "app/users_bus",
         "localization": "app/localization",
         "main_layout": "app/main_layout"
     }

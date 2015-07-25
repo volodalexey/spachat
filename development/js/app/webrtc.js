@@ -1,14 +1,18 @@
 define('webrtc', [
         'throw_event_core',
         'template_core',
+        //
         'event_bus',
+        'users_bus',
         //
         'text!../templates/webrtc_template.ejs',
         'text!../templates/waiter_template.ejs'
     ],
     function(throw_event_core,
              template_core,
+             //
              event_bus,
+             users_bus,
             //
              webrtc_template,
              waiter_template) {
@@ -227,7 +231,7 @@ define('webrtc', [
                                     curConnection.active.readyState = Connection.prototype.readyStates.WAITING;
                                     curChat.trigger('throw', 'sendToWebSocket', {
                                         type: 'chat_offer',
-                                        userId: curChat.userId,
+                                        userId: users_bus.getUserId(),
                                         deviceId: event_bus.getDeviceId(),
                                         tempDeviceId: event_bus.getTempDeviceId(),
                                         toDevice: curConnection.getAllDeviceId(),
@@ -270,7 +274,7 @@ define('webrtc', [
 
                                 curChat.trigger('throw', 'sendToWebSocket', {
                                     type: 'chat_accept',
-                                    userId: curChat.userId,
+                                    userId: users_bus.getUserId(),
                                     deviceId: event_bus.getDeviceId(),
                                     toDevice: curConnection.getAllDeviceId()
                                 });
@@ -302,7 +306,7 @@ define('webrtc', [
                                     curConnection.passive.readyState = Connection.prototype.readyStates.WAITING;
                                     curChat.trigger('throw', 'sendToWebSocket', {
                                         type: 'chat_answer',
-                                        userId: curChat.userId,
+                                        userId: users_bus.getUserId(),
                                         toDevice: curConnection.getAllDeviceId(),
                                         deviceId: event_bus.getDeviceId(),
                                         answerDescription: result.peerConnection.localDescription

@@ -4,26 +4,25 @@ define('navigator',
         'panel_platform',
         'login',
         'register',
-
+        'users_bus',
+        //
         'description_core',
         'throw_event_core',
-        'dom_core',
-
-        'event_bus'
+        'dom_core'
     ],
-    function(chat_platform,
-             panel_platform,
-             login,
-             register,
-
-             description_core,
-             throw_event_core,
-             dom_core,
-
-            event_bus) {
+    function (
+        chat_platform,
+        panel_platform,
+        login,
+        register,
+        users_bus,
+        //
+        description_core,
+        throw_event_core,
+        dom_core
+    ) {
 
         var navigator = function() {
-            this.userId = null;
             this.pages = [chat_platform, login, register];
             this.currentPage = null;
         };
@@ -108,7 +107,7 @@ define('navigator',
                         panel_platform.disposePanels();
                     }
                 }
-                if(!(_this.currentPage === login || _this.currentPage === register) && !_this.userId ) {
+                if(!(_this.currentPage === login || _this.currentPage === register) && !users_bus.getUserId() ) {
                     _this.redirectToLogin();
                 } else if (_this.currentPage) {
                     if (_this.currentPage !== login) {

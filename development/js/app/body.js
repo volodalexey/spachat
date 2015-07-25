@@ -1,11 +1,11 @@
 define('body', [
-        'chat',
         'throw_event_core',
         'template_core',
         'render_layout_core',
         'ajax_core',
-        'users',
-
+        //
+        'users_bus',
+        //
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
@@ -16,21 +16,24 @@ define('body', [
         'text!../templates/panel_users_template.ejs',
         'text!../templates/user_info_template.ejs'
     ],
-    function(chat,
-             throw_event_core,
-             template_core,
-             render_layout_core,
-             ajax_core,
-             users,
-             triple_element_template,
-             button_template,
-             label_template,
-             input_template,
-             textarea_template,
-             detail_view_container_template,
-             chat_info_template,
-             panel_users_template,
-             user_info_template) {
+    function(
+        throw_event_core,
+        template_core,
+        render_layout_core,
+        ajax_core,
+        //
+        users_bus,
+        //
+        triple_element_template,
+        button_template,
+        label_template,
+        input_template,
+        textarea_template,
+        detail_view_container_template,
+        chat_info_template,
+        panel_users_template,
+        user_info_template
+    ) {
 
         var body = function(options) {
         };
@@ -92,7 +95,7 @@ define('body', [
                                 "USER_INFO_SHOW": _this.module.panel_body
                             };
                             _this.dataMap = {
-                                "USER_INFO_SHOW": users.collectionDescription
+                                "USER_INFO_SHOW": users_bus.collectionDescription
                             };
                             _this.body_mode = _this.MODE.USER_INFO_SHOW;
                             _this.renderLayout(null, null);
@@ -102,7 +105,7 @@ define('body', [
                                 "USER_INFO_EDIT": _this.module.panel_body
                             };
                             _this.dataMap = {
-                                "USER_INFO_EDIT": users.collectionDescription
+                                "USER_INFO_EDIT": users_bus.collectionDescription
                             };
                             _this.body_mode = _this.MODE.USER_INFO_EDIT;
                             var data = {
@@ -180,7 +183,7 @@ define('body', [
             usersFilter: function(options, users) {
                 var _this = this;
                 users.every(function(_user) {
-                    if (_user.userId === _this.module.navigator.userId) {
+                    if (_user.userId === users_bus.getUserId()) {
                         _this.module.user = _user;
                     }
                     return !_this.module.user;

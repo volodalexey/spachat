@@ -1,15 +1,17 @@
 define('login', [
         'overlay_core',
         'throw_event_core',
-        'users',
-
+        //
+        'users_bus',
         'indexeddb'
     ],
-    function(overlay_core,
-             throw_event_core,
-             users,
-
-             indexeddb) {
+    function(
+        overlay_core,
+        throw_event_core,
+        //
+        users_bus,
+        indexeddb
+    ) {
 
         /**
          * login constructor
@@ -82,7 +84,7 @@ define('login', [
                 var userPassword = _this.loginForm.elements.userPassword.value;
                 if (userName && userPassword) {
                     _this.toggleWaiter(true);
-                    indexeddb.getAll(users.collectionDescription, null,  function(getAllErr, users) {
+                    indexeddb.getAll(users_bus.collectionDescription, null,  function(getAllErr, users) {
                         _this.toggleWaiter();
                         if (getAllErr) {
                             console.error(getAllErr);
@@ -98,11 +100,11 @@ define('login', [
                         });
 
                         if (user) {
-                            _this.navigator.userId = user.userId;
+                            users_bus.setUserId(user.userId);
                             history.pushState(null, null, 'chat');
                             _this.navigator.navigate();
                         } else {
-                            _this.navigator.userId = null;
+                            users_bus.setUserId(null);
                             _this.loginForm.reset();
                             console.error(new Error('User with such username or password not found!'));
                         }

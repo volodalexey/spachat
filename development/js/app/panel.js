@@ -6,7 +6,7 @@ define('panel', [
         'extend_core',
         'switcher_core',
         'overlay_core',
-        'users',
+        'users_bus',
         'event_bus',
 
         'pagination',
@@ -33,7 +33,7 @@ define('panel', [
              extend_core,
              switcher_core,
              overlay_core,
-             users,
+             users_bus,
              event_bus,
              Pagination,
              Body,
@@ -706,12 +706,12 @@ define('panel', [
             updateUserInfo: function(callback) {
                 var _this = this;
                 var account = {
-                    userId: _this.navigator.userId,
+                    userId: users_bus.getUserId(),
                     userPassword: _this.new_password.value,
                     userName: _this.user_name.value
                 };
                 indexeddb.addOrUpdateAll(
-                    users.collectionDescription,
+                    users_bus.collectionDescription,
                     null,
                     [
                         account
@@ -734,7 +734,7 @@ define('panel', [
 
             logout: function() {
                 var _this = this;
-                _this.navigator.userId = null;
+                users_bus.setUserId(null);
                 _this.bodyOptions.mode = _this.MODE.USER_INFO_SHOW;
                 _this.removeMainEventListeners();
                 _this.removeToolbarEventListeners();
