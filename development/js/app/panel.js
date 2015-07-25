@@ -360,14 +360,16 @@ define('panel', [
             onChatDestroed: function(chatId) {
                 var _this = this;
                 if (_this.type === "left" && _this.bodyOptions.mode === this.MODE.CHATS) {
-                    _this.bodyOptions.mode = _this.MODE.DETAIL_VIEW;
                     var chat_info_container = _this.panel_body.querySelector('[data-chatid="' + chatId + '"]');
-                    var detail_view = chat_info_container.querySelector('[data-role="detail_view_container"]');
-                    var pointer = chat_info_container.querySelector('[data-role="pointer"]');
-                    _this.render({
-                        "detail_view": detail_view,
-                        "pointer": pointer,
-                        "chat_id_value": chatId});
+                    if (chat_info_container) {
+                        _this.bodyOptions.mode = _this.MODE.DETAIL_VIEW;
+                        var detail_view = chat_info_container.querySelector('[data-role="detail_view_container"]');
+                        var pointer = chat_info_container.querySelector('[data-role="pointer"]');
+                        _this.render({
+                            "detail_view": detail_view,
+                            "pointer": pointer,
+                            "chat_id_value": chatId});
+                    }
                 }
             },
 

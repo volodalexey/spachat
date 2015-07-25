@@ -438,6 +438,9 @@ define('webrtc', [
                 }
 
                 peerConnection.onicecandidate = _this.onICEcandidate.bind(options, peerConnection, options.onicecandidate);
+                peerConnection.oniceconnectionstatechange = function(ev) { console.log('oniceconnectionstatechange', ev.target.iceConnectionState); };
+                //peerConnection.onnegotiationneeded = function(ev) { console.log('onnegotiationneeded', ev); };
+                peerConnection.onsignalingstatechange = function(ev) { console.log('onsignalingstatechange', ev.target.signalingState); };
 
                 options.curChat.trigger('log', { message: 'done: createRTCPeerConnection' });
                 if (callback) {
@@ -468,6 +471,12 @@ define('webrtc', [
                     }
 
                     curChat.messages.addRemoteMessage(remoteMessage);
+                };
+                dataChannel.onclose = function(event) {
+                    console.log('onclose', event);
+                };
+                dataChannel.onerror = function(event) {
+                    console.log('onerror', event);
                 };
             },
 

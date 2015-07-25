@@ -164,12 +164,6 @@ define('chat_platform', [
                                 _this.chatCreateApproved(parsedMessageData);
                                 break;
                             case 'chat_joined':
-                                // TODO temp {{
-                                var chat_id_input = document.querySelector('[data-role="chat_id_input"]');
-                                if (chat_id_input) {
-                                    chat_id_input.value = parsedMessageData.chat_description.chatId;
-                                }
-                                // TODO temp }}
                                 _this.chatJoinApproved(parsedMessageData);
                                 break;
                             default :
