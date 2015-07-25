@@ -337,6 +337,7 @@ define('panel', [
                 _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('add', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.on('throw', _this.throwRouter, _this);
+                event_bus.on('chatDestroed', _this.onChatDestroed, _this);
             },
 
             removeMainEventListeners: function() {
@@ -353,6 +354,20 @@ define('panel', [
             throwRouter: function(action, event) {
                 if (this[action]) {
                     this[action](event);
+                }
+            },
+
+            onChatDestroed: function(chatId) {
+                var _this = this;
+                if (_this.type === "left") {
+                    _this.bodyOptions.mode = _this.MODE.DETAIL_VIEW;
+                    var chat_info_container = _this.panel_body.querySelector('[value="' + [chatId] + '"]');
+                    var detail_view = chat_info_container.querySelector('[data-role="detail_view_container"]');
+                    var pointer = chat_info_container.querySelector('[data-role="pointer"]');
+                    _this.render({
+                        "detail_view": detail_view,
+                        "pointer": pointer,
+                        "chat_id_value": chatId});
                 }
             },
 

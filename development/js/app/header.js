@@ -7,6 +7,7 @@ define('header', [
         'render_layout_core',
         "switcher_core",
         'overlay_core',
+        'event_bus',
 
         'pagination',
 
@@ -25,6 +26,8 @@ define('header', [
              render_layout_core,
              switcher_core,
              overlay_core,
+             event_bus,
+             //
              pagination,
              filter_template,
              header_template,
@@ -68,7 +71,12 @@ define('header', [
 
             //override extended throwEvent to use trigger on chat
             throwEvent: function(name, data) {
-                this.chat && this.chat.trigger('throw', name, data);
+                var _this = this;
+                if (data.dataset.target) {
+                    event_bus.trigger('throw', data.dataset.action, _this.chat);
+                } else {
+                    this.chat && this.chat.trigger('throw', name, data);
+                }
             },
 
             addToolbarEventListener: function() {

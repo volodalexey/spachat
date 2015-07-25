@@ -484,13 +484,14 @@ define('chat', [
                 this.body = null;
                 _this.chat_element.remove();
                 _this.unCashElements();
-                event_bus.trigger('destroyChat', _this);
             },
 
-            saveStatesChats: function() {
+            toChatDescription: function() {
                 var _this = this;
-                if (confirm("Save settings this chat and close it ?")) {
-                    var options = {
+                return {
+                    chatId: _this.chatId,
+                    userId: _this.userId,
+                    options: {
                         padding: _this.padding,
                         headerOptions: _this.headerOptions,
                         filterOptions: _this.filterOptions,
@@ -502,37 +503,8 @@ define('chat', [
                         paginationLoggerOptions: _this.paginationLoggerOptions,
                         paginationMessageOptions: _this.paginationMessageOptions,
                         messagesOptions: _this.messagesOptions
-                    };
-
-                    indexeddb.addOrUpdateAll(
-                        {
-                            "id": 'chats',
-                            "db_name": 'chats',
-                            "table_names": ['chats'],
-                            "db_version": 1,
-                            "keyPath": "chatId"
-                        },
-                        null,
-                        [
-                            {chatId: _this.chatId, options: options, userId: _this.userId}
-                        ],
-                        function(error) {
-                            if (error){
-                                console.error(error);
-                                return;
-                            }
-
-                            _this.destroyChat();
-                        }
-                    );
-                }
-            },
-
-            closeChat: function() {
-                var _this = this;
-                if (confirm("Close this chat ?")) {
-                    _this.destroyChat();
-                }
+                    }
+                };
             },
 
             renderPagination: function() {

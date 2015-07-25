@@ -5,6 +5,7 @@
     "text": 20,
     "data": {
       "throw": "true",
+      "target": "event_bus",
       "action": "closeChat",
       "location": "topPanel",
       "description": 21
@@ -18,6 +19,7 @@
     "text": 56,
     "data": {
       "throw": "true",
+      "target": "event_bus",
       "action": "saveStatesChats",
       "location": "topPanel",
       "description": 57

@@ -93,7 +93,6 @@ define('chat_platform', [
                 _this.removeEventListeners();
                 event_bus.on('throw', _this.bindedOnThrowEvent, false);
                 event_bus.on('addNewChatAuto', _this.addNewChatAuto, _this);
-                event_bus.on('destroyChat', _this.destroyChat, _this);
                 event_bus.on('getOpenChats', _this.getOpenChats, _this);
                 websocket.on('message', _this.onMessageRouter, _this);
                 _this.on('resize', _this.resizeChats, _this);
@@ -105,7 +104,6 @@ define('chat_platform', [
                 var _this = this;
                 event_bus.off('throw', _this.bindedOnThrowEvent);
                 event_bus.off('addNewChatAuto', _this.addNewChatAuto);
-                event_bus.off('destroyChat', _this.destroyChat);
                 event_bus.off('getOpenChats', _this.getOpenChats);
                 websocket.off('message', _this.onMessageRouter);
                 _this.off('resize');
@@ -430,7 +428,6 @@ define('chat_platform', [
                 }
 
                 var chatId = parentElement.dataset.chatid;
-
                 if (_this.isChatOpened(chatId)) {
                     console.error(new Error('Chat is already opened!'));
                     return;
@@ -475,9 +472,40 @@ define('chat_platform', [
                 _this.UIbuttonsByChatId = {};
             },
 
-            destroyChat: function(chatToDestroy) {
+            saveStatesChats: function(chatToDestroy) {
                 var _this = this;
+                if (confirm("Save settings this chat and close it ?")) {
+
+                    var chatDescription = chatToDestroy.toChatDescription();
+
+                    indexeddb.addOrUpdateAll(
+                        _this.collectionDescription,
+                        null,
+                        [
+                            chatDescription
+                        ],
+                        function(error) {
+                            if (error){
+                                console.error(error);
+                                return;
+                            }
+                            _this.destroyChat(chatToDestroy);
+                        }
+                    );
+                }
+            },
+
+            closeChat: function(chatToDestroy) {
+                var _this = this;
+                if (confirm("Close this chat ?")) {
+                    _this.destroyChat(chatToDestroy);
+                }
+            },
+
+            destroyChat: function(chatToDestroy) {
                 Chat.prototype.chatsArray.splice(Chat.prototype.chatsArray.indexOf(chatToDestroy), 1);
+                chatToDestroy.destroyChat();
+                event_bus.trigger('chatDestroed', chatToDestroy.chatId);
                 // TODO close indexeddb connections
             },
 
