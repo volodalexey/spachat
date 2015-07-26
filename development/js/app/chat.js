@@ -19,6 +19,7 @@ define('chat', [
         'message_core',
         'throw_event_core',
         "switcher_core",
+        'app/extensions/model_core',
         //
         'text!../templates/chat_template.ejs',
         'text!../templates/waiter_template.ejs',
@@ -44,6 +45,7 @@ define('chat', [
              message_core,
              throw_event_core,
              switcher_core,
+             model_core,
              //
              chat_template,
              waiter_template,
@@ -141,6 +143,8 @@ define('chat', [
             this.messages = new Messages({chat: this});
 
             this.bindContexts();
+            this.setCreator();
+            this.addMyUserId();
         };
 
         chat.prototype = {
@@ -501,6 +505,10 @@ define('chat', [
                 var _this = this;
                 return {
                     chatId: _this.chatId,
+                    createdDatetime: _this.createdDatetime,
+                    createdByUserId: _this.createdByUserId,
+                    receivedDatetime: _this.receivedDatetime,
+                    userIds: _this.userIds,
                     collectionDescription: _this.collectionDescription,
                     padding: _this.padding,
                     headerOptions: _this.headerOptions,
@@ -565,6 +573,7 @@ define('chat', [
         extend(chat, message_core);
         extend(chat, throw_event_core);
         extend(chat, switcher_core);
+        extend(chat, model_core);
 
         chat.prototype.chat_template = chat.prototype.template(chat_template);
         chat.prototype.waiter_template = chat.prototype.template(waiter_template);

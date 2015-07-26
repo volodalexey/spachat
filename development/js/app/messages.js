@@ -140,7 +140,7 @@ define('messages', [
              */
             addMessage: function(mode, options, callback) {
                 var _this = this;
-                var Message = this.getMessageConstructor(mode);
+                var Message = _this.getMessageConstructor(mode);
                 var message = (new Message({innerHTML: options.messageInnerHTML})).toJSON();
 
                 indexeddb.addAll(

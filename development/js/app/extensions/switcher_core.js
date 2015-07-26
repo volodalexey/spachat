@@ -22,13 +22,11 @@ define('switcher_core',
                     case _module.body.MODE.SETTINGS:
                     case _module.body.MODE.CONTACT_LIST:
                         _this.previousModeSwitcher = _module.body.MODE.MESSAGES;
-                        _module.collectionDescription.table_names = [_module.chatId + '_messages'];
                         _this.currentPaginationOptions = _module.paginationMessageOptions;
                         _this.currentGoToOptions = _module.goToMessageOptions;
                         break;
                     case _module.body.MODE.LOGGER:
                         _this.previousModeSwitcher = _module.body.MODE.LOGGER;
-                        _module.collectionDescription.table_names = [_module.chatId + '_logs'];
                         _this.currentPaginationOptions = _module.paginationLoggerOptions;
                         _this.currentGoToOptions = _module.goToLoggerOptions;
                         break;
