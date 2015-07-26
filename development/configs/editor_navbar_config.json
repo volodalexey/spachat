@@ -1,6 +1,24 @@
 [
   {
     "element": "button",
+    "icon": "send_icon",
+    "text": "",
+    "class": "button-small-not-padding",
+    "data": {
+      "throw": "true",
+      "action": "sendMessage",
+      "mode_to": "",
+      "chat_part": "",
+      "description": 17
+    },
+    "name": "",
+    "for": "",
+    "service_id": "",
+    "sort": 2,
+    "redraw_mode": ""
+  },
+  {
+    "element": "button",
     "icon": "setting_icon",
     "text": "",
     "class": "button-small-not-padding",
@@ -16,24 +34,6 @@
     "for": "",
     "service_id": "",
     "sort": 1,
-    "redraw_mode": ""
-  },
-  {
-    "element": "button",
-    "icon": "send_icon",
-    "text": "",
-    "class": "button-small-not-padding",
-    "data": {
-      "throw": "true",
-      "action": "sendMessage",
-      "mode_to": "",
-      "chat_part": "",
-      "description": 17
-    },
-    "name": "",
-    "for": "",
-    "service_id": "",
-    "sort": 2,
     "redraw_mode": ""
   }
 ]
