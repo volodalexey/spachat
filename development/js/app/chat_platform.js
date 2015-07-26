@@ -275,14 +275,14 @@ define('chat_platform', [
                     indexeddb.getByKeyPath(
                         _this.collectionDescription,
                         messageData.chat_description.chatId,
-                        function(getError, chat) {
+                        function(getError, localChatDescription) {
                             if (getError) {
                                 console.error(getError);
                                 return;
                             }
 
-                            if (chat) {
-                                messageData.chat_description.options = chat.options;
+                            if (localChatDescription && messageData.restore_chat_state) {
+                                messageData.chat_description = localChatDescription;
                             }
                             _this.handleChat(messageData, renderOptions, false);
                         }
@@ -293,33 +293,28 @@ define('chat_platform', [
             },
 
             handleChat: function(messageData, renderOptions, new_chat) {
-                var newChat = new Chat(messageData.chat_description, messageData.restore_chat_state);
+                var newChat = new Chat(messageData.chat_description);
                 Chat.prototype.chatsArray.push(newChat);
-                newChat.collectionDescription = {
-                    "db_name": newChat.chatId + '_chat',
-                    "table_names": ['messages', 'log_messages'],
-                    "table_options": [{ autoIncrement: true, keyPath: "id" }, { keyPath: "id" }],
-                    "db_version": 1
-                };
 
                 indexeddb.open(newChat.collectionDescription, function(err) {
                     if (err) {
                         console.log(err);
                     }
                     newChat.initialize(renderOptions);
-                    if (new_chat || ( !messageData.chat_description.options && !new_chat) || !messageData.restore_chat_state) {
+                    if (messageData.restore_chat_state &&
+                        messageData.chat_description.bodyOptions &&
+                        messageData.chat_description.bodyOptions.mode) {
                         newChat.switchModes( [{
                             'chat_part': 'body',
-                            'newMode': newChat.body.MODE.MESSAGES
+                            'newMode': messageData.chat_description.bodyOptions.mode
                         }], renderOptions);
                     } else {
                         newChat.switchModes( [{
                             'chat_part': 'body',
-                            'newMode': messageData.chat_description.options.bodyOptions.mode
+                            'newMode': newChat.body.MODE.MESSAGES
                         }], renderOptions);
                     }
 
-                    //_this.proceedNextMessage();
                     webrtc.serverStoredChat(newChat, messageData);
                 });
             },
@@ -506,7 +501,7 @@ define('chat_platform', [
             destroyChat: function(chatToDestroy) {
                 Chat.prototype.chatsArray.splice(Chat.prototype.chatsArray.indexOf(chatToDestroy), 1);
                 chatToDestroy.destroyChat();
-                event_bus.trigger('chatDestroed', chatToDestroy.chatId);
+                event_bus.trigger('chatDestroyed', chatToDestroy.chatId);
                 // TODO close indexeddb connections
             },
 

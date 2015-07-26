@@ -159,77 +159,74 @@ define('indexeddb',
                 }
             },
 
-            getAll: function(options, tables, callback) {
-                var returnData = [], _this = this, table_name;
+            getAll: function(options, table_name, callback) {
+                var _this = this, cur_table_name;
 
                 if (_this.state !== _this.STATES.READY) {
                     callback(new Error('ErrorState'));
                     return;
                 }
-                if (!tables) {
-                    table_name = options.table_names[0];
-                }
 
-                var executeGetAll = function() {
-                    var trans, store, openRequest;
-                    try {
-                        trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readonly");
-                        store = trans.objectStore(table_name);
-                        openRequest = store.openCursor();
-                    } catch (error) {
-                        callback(error);
-                        return;
-                    }
-
-                    openRequest.onsuccess = function(e) {
-                        var result = e.target.result;
-                        if(!!result === false) {
-                            callback(null, returnData);
-                            return;
-                        }
-                        returnData.push(result.value);
-
-                        result.continue();
-                    };
-
-                    openRequest.onerror = function(e) {
-                        callback(e.currentTarget.error);
-                    };
-                };
+                cur_table_name = _this.defineCurrentTable(options, table_name);
 
                 if (_this.openDatabases[options.db_name]) {
-                    executeGetAll();
+                    _this._executeGetAll(options, cur_table_name, callback);
                 } else {
                     _this.open(options, function(err, upgraded) {
                         if (err) {
                             callback(err, upgraded);
                         } else {
-                            executeGetAll();
+                            _this._executeGetAll(options, cur_table_name, callback);
                         }
                     });
                 }
+            },
+
+            _executeGetAll: function(options, table_name, callback) {
+                var _this = this, trans, store, openRequest, returnData = [];
+                try {
+                    trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readonly");
+                    store = trans.objectStore(table_name);
+                    openRequest = store.openCursor();
+                } catch (error) {
+                    callback(error);
+                    return;
+                }
+
+                openRequest.onsuccess = function(e) {
+                    var result = e.target.result;
+                    if(!!result === false) {
+                        callback(null, returnData);
+                        return;
+                    }
+                    returnData.push(result.value);
+
+                    result.continue();
+                };
+
+                openRequest.onerror = function(e) {
+                    callback(e.currentTarget.error);
+                };
             },
 
             /**
              * open indexedDB table and search through for requested key path
              */
             getByKeyPath: function(options, getValue, callback) {
-                var _this = this, table_name;
+                var _this = this, cur_table_name;
 
                 if (_this.state !== _this.STATES.READY) {
                     callback(new Error('ErrorState'));
                     return;
                 }
 
-                //if (!tables) {
-                    table_name = options.table_names[0];
-                //}
+                cur_table_name = _this.defineCurrentTable(options);
 
                 var executeGet = function() {
                     var trans, store, result;
                     try {
-                        trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readonly");
-                        store = trans.objectStore(table_name);
+                        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_name], "readonly");
+                        store = trans.objectStore(cur_table_name);
                     } catch (error) {
                         callback(error);
                         return;
@@ -266,26 +263,24 @@ define('indexeddb',
                 }
             },
 
-            addAll: function(options, tables, toAdd, callback) {
-                var _this = this, table_name;
+            addAll: function(options, table_name, toAdd, callback) {
+                var _this = this, cur_table_name;
 
                 if (_this.state !== _this.STATES.READY) {
                     callback(new Error('ErrorState'));
                     return;
                 }
 
-                if (!tables) {
-                    table_name = options.table_names[0];
-                }
+                cur_table_name = _this.defineCurrentTable(options, table_name);
 
                 if (_this.openDatabases[options.db_name]) {
-                    _this._executeAddAll(options, table_name, toAdd, callback);
+                    _this._executeAddAll(options, cur_table_name, toAdd, callback);
                 } else {
                     _this.open(options, function(err, upgraded) {
                         if (err) {
                             callback(err, upgraded);
                         } else {
-                            _this._executeAddAll(options, table_name, toAdd, callback);
+                            _this._executeAddAll(options, cur_table_name, toAdd, callback);
                         }
                     })
                 }
@@ -316,6 +311,13 @@ define('indexeddb',
                         callback(null);
                     }
                 });
+            },
+
+            defineCurrentTable: function(options, table_name) {
+                if (table_name) {
+                    return table_name;
+                }
+                return options.table_names[0];
             }
         };
         extend(indexeddb, async_core);

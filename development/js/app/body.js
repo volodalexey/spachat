@@ -49,17 +49,9 @@ define('body', [
                 "USERS": '/configs/users_info_config.json',
                 "DETAIL_VIEW": '/configs/chats_info_config.json'
             },
-            /*
-             collectionDescriptionChats: {
-             "id": 'chats',
-             "db_name": 'chats',
-             "table_names": ['chats'],
-             "db_version": 1,
-             "keyPath": "chatId"
-             },*/
 
             MODE: {
-                SETTING: 'SETTING',
+                SETTINGS: 'SETTINGS',
                 MESSAGES: 'MESSAGES',
                 CONTACT_LIST: 'CONTACT_LIST',
                 LOGGER: 'LOGGER',
@@ -80,7 +72,7 @@ define('body', [
                 _this.module = _module;
                 if (_this.module.bodyOptions.show) {
                     switch (_this.module.bodyOptions.mode) {
-                        case _this.MODE.SETTING:
+                        case _this.MODE.SETTINGS:
                             _this.module.settings.renderSettings(options, _module);
                             break;
                         case _this.MODE.CONTACT_LIST:

@@ -54,16 +54,19 @@ define('chat', [
                 bottom: 5
             },
             headerOptions: {
-                show: true
+                show: true,
+                mode: Header.prototype.MODE.TAB
             },
             filterOptions: {
                 show: false
             },
             bodyOptions: {
-                show: true
+                show: true,
+                mode: Body.prototype.MODE.MESSAGES
             },
             editorOptions: {
-                show: true
+                show: true,
+                mode: Editor.prototype.MODE.MAIN_PANEL
             },
             formatOptions: {
                 show: false,
@@ -124,33 +127,34 @@ define('chat', [
         };
 
         var chat = function(options, restore_chat_state) {
-            if (!options.userIds) {
-                this.userIds = {};
+            this.extend(this, defaultOptions);
+            if (options) {
+                this.extend(this, options);
             }
+            this.setCollectionDescription();
             this.body = new Body({chat: this});
-            if (!restore_chat_state || !options.options) {
-                this.extend(this, defaultOptions);
-                this.bodyOptions.mode = this.body.MODE.MESSAGES;
-            } else {
-                this.extend(this, options.options);
-                this.bodyOptions.mode = options.options.bodyOptions.mode;
-            }
             this.header = new Header({chat: this});
-            this.headerOptions.mode = this.header.MODE.TAB;
             this.editor = new Editor({chat: this});
-            this.editorOptions.mode = this.editor.MODE.MAIN_PANEL;
             this.pagination = new Pagination({chat: this});
             this.settings = new Settings({chat: this});
             this.contact_list = new Contact_list({chat: this});
             this.messages = new Messages({chat: this});
 
-            this.extend(this, options);
             this.bindContexts();
-
-            this.userIds[users_bus.getUserId()] = 'userChatRole';
         };
 
         chat.prototype = {
+
+            setCollectionDescription: function() {
+                if (!this.collectionDescription) {
+                    this.collectionDescription = {
+                        "db_name": this.chatId + '_chat',
+                        "table_names": ['messages', 'log_messages'],
+                        "table_options": [{ autoIncrement: true, keyPath: "id" }, { keyPath: "id" }],
+                        "db_version": 1
+                    };
+                }
+            },
 
             valueOfKeys: ['chatId'],
 
@@ -245,7 +249,7 @@ define('chat', [
                                         _obj.target.dataset.toggle = !bool_Value;
                                     }
                                     switch (_this.bodyOptions.mode) {
-                                        case _this.body.MODE.SETTING:
+                                        case _this.body.MODE.SETTINGS:
                                         case _this.body.MODE.CONTACT_LIST:
                                             _this.bodyOptions.mode = _this.body.MODE.MESSAGES;
                                             _this.toggleShowState({
@@ -273,8 +277,8 @@ define('chat', [
                             break;
                         case "body":
                             switch (_obj.newMode) {
-                                case _this.body.MODE.SETTING:
-                                    _this.bodyOptions.mode = _this.body.MODE.SETTING;
+                                case _this.body.MODE.SETTINGS:
+                                    _this.bodyOptions.mode = _this.body.MODE.SETTINGS;
                                     _this.filterOptions.show = false;
                                     _this.editorOptions.show = false;
                                     _this.toggleShowState({
@@ -497,20 +501,18 @@ define('chat', [
                 var _this = this;
                 return {
                     chatId: _this.chatId,
-                    userIds: _this.userIds,
-                    options: {
-                        padding: _this.padding,
-                        headerOptions: _this.headerOptions,
-                        filterOptions: _this.filterOptions,
-                        bodyOptions: _this.bodyOptions,
-                        editorOptions: _this.editorOptions,
-                        goToMessageOptions: _this.goToMessageOptions,
-                        goToLoggerOptions: _this.goToLoggerOptions,
-                        formatOptions: _this.formatOptions,
-                        paginationLoggerOptions: _this.paginationLoggerOptions,
-                        paginationMessageOptions: _this.paginationMessageOptions,
-                        messagesOptions: _this.messagesOptions
-                    }
+                    collectionDescription: _this.collectionDescription,
+                    padding: _this.padding,
+                    headerOptions: _this.headerOptions,
+                    filterOptions: _this.filterOptions,
+                    bodyOptions: _this.bodyOptions,
+                    editorOptions: _this.editorOptions,
+                    goToMessageOptions: _this.goToMessageOptions,
+                    goToLoggerOptions: _this.goToLoggerOptions,
+                    formatOptions: _this.formatOptions,
+                    paginationLoggerOptions: _this.paginationLoggerOptions,
+                    paginationMessageOptions: _this.paginationMessageOptions,
+                    messagesOptions: _this.messagesOptions
                 };
             },
 

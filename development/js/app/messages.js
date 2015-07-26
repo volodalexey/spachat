@@ -37,28 +37,21 @@ define('messages', [
 
                 _this.chat = chat;
 
-                _this.collectionDescription = {
-                    "db_name": _this.chat.chatId + '_chat',
-                    "table_names": [],
-                    "db_version": 1,
-                    "keyPath": "id"
-                };
-
-                _this.tableDefinition(_this.chat.bodyOptions.mode);
                 _this.fillListMessage(options);
             },
 
             tableDefinition: function(mode){
-                var _this = this;
+                var _this = this, table_name;
 
                 switch (mode) {
                     case _this.chat.body.MODE.MESSAGES:
-                        _this.collectionDescription.table_names = ['messages'];
+                        table_name = ['messages'];
                         break;
                     case _this.chat.body.MODE.LOGGER:
-                        _this.collectionDescription.table_names = ['log_messages'];
+                        table_name = ['log_messages'];
                         break;
                 }
+                return table_name;
             },
 
             getMessageConstructor: function(mode) {
@@ -92,8 +85,8 @@ define('messages', [
                     return;
                 }
                 indexeddb.getAll(
-                    _this.collectionDescription,
-                    null,
+                    _this.chat.collectionDescription,
+                    _this.tableDefinition(_this.chat.bodyOptions.mode),
                     function(getAllErr, messages) {
                         if (getAllErr) {
                             _this.chat.body_container.innerHTML = getAllErr.message || getAllErr;
@@ -150,10 +143,9 @@ define('messages', [
                 var Message = this.getMessageConstructor(mode);
                 var message = (new Message({innerHTML: options.messageInnerHTML})).toJSON();
 
-                _this.tableDefinition(mode);
                 indexeddb.addAll(
-                    _this.collectionDescription,
-                    null,
+                    _this.chat.collectionDescription,
+                    _this.tableDefinition(mode),
                     [
                         message
                     ],
@@ -199,11 +191,10 @@ define('messages', [
                 var _this = this;
                 // TODO distinct this chat messages from other
                 var message = (new HTML_message(remoteMessage)).toJSON();
-                _this.tableDefinition(_this.chat.body.MODE.MESSAGES);
 
                 indexeddb.addAll(
-                    _this.collectionDescription,
-                    null,
+                    _this.chat.collectionDescription,
+                    _this.tableDefinition(_this.chat.body.MODE.MESSAGES),
                     [
                         message
                     ],

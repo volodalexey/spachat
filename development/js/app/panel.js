@@ -325,6 +325,7 @@ define('panel', [
                 _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
                 _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
                 _this.bindedTransitionEnd = _this.transitionEnd.bind(_this);
+                _this.bindedOnChatDestroyed = _this.onChatDestroyed.bind(_this);
             },
 
             addMainEventListener: function() {
@@ -337,7 +338,7 @@ define('panel', [
                 _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('add', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.on('throw', _this.throwRouter, _this);
-                event_bus.on('chatDestroed', _this.onChatDestroed, _this);
+                event_bus.on('chatDestroyed', _this.bindedOnChatDestroyed, _this);
             },
 
             removeMainEventListeners: function() {
@@ -349,6 +350,7 @@ define('panel', [
                 _this.addRemoveListener('remove', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.off('throw', _this.throwRouter);
+                event_bus.off('chatDestroyed', _this.bindedOnChatDestroyed);
             },
 
             throwRouter: function(action, event) {
@@ -357,9 +359,10 @@ define('panel', [
                 }
             },
 
-            onChatDestroed: function(chatId) {
+            onChatDestroyed: function(chatId) {
                 var _this = this;
-                if (_this.type === "left" && _this.bodyOptions.mode === this.MODE.CHATS) {
+                if (_this.type === "left" &&
+                    (_this.bodyOptions.mode === this.MODE.CHATS || _this.bodyOptions.mode === this.MODE.DETAIL_VIEW)) {
                     var chat_info_container = _this.panel_body.querySelector('[data-chatid="' + chatId + '"]');
                     if (chat_info_container) {
                         _this.bodyOptions.mode = _this.MODE.DETAIL_VIEW;

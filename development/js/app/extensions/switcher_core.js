@@ -19,7 +19,7 @@ define('switcher_core',
                 }
                 switch (mode) {
                     case _module.body.MODE.MESSAGES:
-                    case _module.body.MODE.SETTING:
+                    case _module.body.MODE.SETTINGS:
                     case _module.body.MODE.CONTACT_LIST:
                         _this.previousModeSwitcher = _module.body.MODE.MESSAGES;
                         _module.collectionDescription.table_names = [_module.chatId + '_messages'];

@@ -34,7 +34,7 @@ define('settings', [
         settings.prototype = {
 
             configMap: {
-                SETTING: '/configs/settings_config.json'
+                SETTINGS: '/configs/settings_config.json'
             },
 
             bindMainContexts: function() {
@@ -72,7 +72,7 @@ define('settings', [
                     _this.body_container.classList.add('background');
                     _this.body_mode = _this.chat.bodyOptions.mode;
                     _this.elementMap = {
-                        "SETTING": _this.body_container
+                        "SETTINGS": _this.body_container
                     };
                     var data = {
                         "sendEnter": _this.chat.formatOptions.sendEnter
@@ -119,11 +119,11 @@ define('settings', [
         settings.prototype.input_template = settings.prototype.template(input_template);
 
         settings.prototype.dataMap = {
-            "SETTING": ""
+            "SETTINGS": ""
         };
 
         settings.prototype.templateMap = {
-            "SETTING": settings.prototype.setting_template
+            "SETTINGS": settings.prototype.setting_template
         };
 
         return settings;

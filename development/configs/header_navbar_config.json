@@ -35,7 +35,7 @@
     "data": {
       "throw": "true",
       "chat_part": "body",
-      "mode_to": "SETTING",
+      "mode_to": "SETTINGS",
       "action": "changeMode",
       "role": "btnHeader",
       "toggle_reset_header": true,
