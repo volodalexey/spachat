@@ -53,10 +53,10 @@ define('messages', [
 
                 switch (mode) {
                     case _this.chat.body.MODE.MESSAGES:
-                        _this.collectionDescription.table_names = [_this.chat.chatId + '_messages'];
+                        _this.collectionDescription.table_names = ['messages'];
                         break;
                     case _this.chat.body.MODE.LOGGER:
-                        _this.collectionDescription.table_names = [_this.chat.chatId + '_logs'];
+                        _this.collectionDescription.table_names = ['log_messages'];
                         break;
                 }
             },
@@ -151,7 +151,7 @@ define('messages', [
                 var message = (new Message({innerHTML: options.messageInnerHTML})).toJSON();
 
                 _this.tableDefinition(mode);
-                indexeddb.addOrUpdateAll(
+                indexeddb.addAll(
                     _this.collectionDescription,
                     null,
                     [
@@ -201,7 +201,7 @@ define('messages', [
                 var message = (new HTML_message(remoteMessage)).toJSON();
                 _this.tableDefinition(_this.chat.body.MODE.MESSAGES);
 
-                indexeddb.addOrUpdateAll(
+                indexeddb.addAll(
                     _this.collectionDescription,
                     null,
                     [

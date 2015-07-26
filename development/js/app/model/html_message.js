@@ -1,12 +1,14 @@
 define('html_message', [
         'id_core',
         'extend_core',
+        'app/extensions/model_core',
         'users_bus',
         'event_bus'
     ],
     function(
         id_core,
         extend_core,
+        model_core,
         users_bus,
         event_bus
     ) {
@@ -18,85 +20,25 @@ define('html_message', [
          * @param options - options to override basic parameters
          */
         var HTML_message = function(options) {
-            if (!options.id) {
-                this.id = this.generateId();
+            if (!options.messageId) {
+                this.messageId = this.generateId();
             }
             this.extend(this, defaultOptions);
             this.extend(this, options);
 
-            if (!this.deviceIds) {
-                this.deviceIds = {};
-            }
-
-            this.pushDeviceId();
+            this.setCreator();
+            this.addMyUserId();
         };
 
         HTML_message.prototype = {
 
-            READYSTATES: {
-                CREATED: 'CREATED',
-                RECEIVED: 'RECEIVED',
-                SENDING: 'SENDING',
-                SENT: 'SENT'
-            },
-
-            pushDeviceId: function() {
-                if (!event_bus.getDeviceId()) {
-                    return;
-                }
-
-                if (!this.deviceIds[event_bus.getDeviceId()]) {
-                    this.deviceIds[event_bus.getDeviceId()] = {};
-                }
-
-                if (!this.deviceIds[event_bus.getDeviceId()].dateTime) {
-                    this.deviceIds[event_bus.getDeviceId()].dateTime = Date.now();
-                }
-
-                if (!this.deviceIds[event_bus.getDeviceId()].userId) {
-                    this.deviceIds[event_bus.getDeviceId()].userId = users_bus.getUserId();
-                }
-
-                this.onMessageCreate();
-            },
-
-            onMessageCreate: function() {
-                if (!event_bus.getDeviceId()) {
-                    return;
-                }
-
-                if (!this.deviceIds[event_bus.getDeviceId()].readyState) {
-                    this.deviceIds[event_bus.getDeviceId()].readyState = this.READYSTATES.CREATED;
-                }
-            },
-
-            prepareToSend: function() {
-                this.pushDeviceId();
-            },
-
-            getCreator: function(_message) {
-                var deviceIdKey;
-                var message = _message ? _message : this;
-                for (deviceIdKey in message.deviceIds) {
-                    if (message.deviceIds[deviceIdKey].readyState === HTML_message.prototype.READYSTATES.CREATED) {
-                        return deviceIdKey;
-                    }
-                }
-                deviceIdKey = null;
-                return deviceIdKey;
-            },
-
-            isOwnMessage: function(_message) {
-                var message = _message ? _message : this;
-                var creatorId = HTML_message.prototype.getCreator(message);
-                return !creatorId || (creatorId === event_bus.getDeviceId() ||
-                    message.deviceIds[creatorId].userId === users_bus.getUserId());
-            },
-
             toJSON: function() {
                 return {
-                    id: this.id,
-                    deviceIds: this.deviceIds,
+                    createdDatetime: this.createdDatetime,
+                    createdByUserId: this.createdByUserId,
+                    receivedDatetime: this.receivedDatetime,
+                    messageId: this.messageId,
+                    userIds: this.userIds,
                     innerHTML: this.innerHTML
                 }
             }
@@ -105,6 +47,7 @@ define('html_message', [
 
         extend(HTML_message, id_core);
         extend(HTML_message, extend_core);
+        extend(HTML_message, model_core);
 
         return HTML_message;
     });

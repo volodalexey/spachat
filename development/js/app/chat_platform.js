@@ -297,9 +297,9 @@ define('chat_platform', [
                 Chat.prototype.chatsArray.push(newChat);
                 newChat.collectionDescription = {
                     "db_name": newChat.chatId + '_chat',
-                    "table_names": [newChat.chatId + '_logs', newChat.chatId + '_messages'],
-                    "db_version": 1,
-                    "keyPath": "id"
+                    "table_names": ['messages', 'log_messages'],
+                    "table_options": [{ autoIncrement: true, keyPath: "id" }, { keyPath: "id" }],
+                    "db_version": 1
                 };
 
                 indexeddb.open(newChat.collectionDescription, function(err) {

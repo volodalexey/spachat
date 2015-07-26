@@ -66,11 +66,15 @@ define('indexeddb',
                         callback(e.currentTarget.error);
                     };
 
-                    options.table_names.forEach(function(_table_name){
+                    options.table_names.forEach(function(_table_name, ind){
                         if(db.objectStoreNames.contains(_table_name)) {
                             db.deleteObjectStore(_table_name);
                         }
-                        db.createObjectStore(_table_name, { keyPath : keyPath });
+                        if (options.table_options && options.table_options[ind]) {
+                            db.createObjectStore(_table_name, options.table_options[ind]);
+                        } else {
+                            db.createObjectStore(_table_name, { keyPath : keyPath });
+                        }
                     });
                 };
 
@@ -260,6 +264,58 @@ define('indexeddb',
                         }
                     })
                 }
+            },
+
+            addAll: function(options, tables, toAdd, callback) {
+                var _this = this, table_name;
+
+                if (_this.state !== _this.STATES.READY) {
+                    callback(new Error('ErrorState'));
+                    return;
+                }
+
+                if (!tables) {
+                    table_name = options.table_names[0];
+                }
+
+                if (_this.openDatabases[options.db_name]) {
+                    _this._executeAddAll(options, table_name, toAdd, callback);
+                } else {
+                    _this.open(options, function(err, upgraded) {
+                        if (err) {
+                            callback(err, upgraded);
+                        } else {
+                            _this._executeAddAll(options, table_name, toAdd, callback);
+                        }
+                    })
+                }
+            },
+
+            _executeAddAll: function(options, table_name, toAdd, callback) {
+                var _this = this, trans, store, keyPath = _this.getKeyPath(options);
+                try {
+                    trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readwrite");
+                    store = trans.objectStore(table_name);
+                } catch (error) {
+                    callback(error);
+                    return;
+                }
+
+                _this.async_eachSeries(toAdd, function(curAdd, _callback) {
+                    var putRequest = store.put(curAdd);
+                    putRequest.onerror = function(e) {
+                        _callback(e.currentTarget.error);
+                    };
+                    putRequest.onsuccess = function() {
+                        _callback();
+                    };
+                }, function(err) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null);
+                    }
+                });
             }
         };
         extend(indexeddb, async_core);

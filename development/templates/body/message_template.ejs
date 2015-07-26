@@ -1,11 +1,11 @@
 <% var _in = arguments[0]; %>
 <div class="flex-sp-around margin-t-b">
-    <%if (_in.messageConstructor.isOwnMessage(_in.message)) {%>
+    <%if (_in.messageConstructor.amICreator(_in.message)) {%>
         <div class="message myMessage flex-item-1-auto flex-dir-col flex-sp-between">
             <div><%= _in.message.innerHTML %></div>
             <div class="dateFormat">
-                <%if (_in.message.deviceIds[_in.deviceId] && _in.message.deviceIds[_in.deviceId].dateTime) { %>
-                <% var time = new Date(_in.message.deviceIds[_in.deviceId].dateTime);%>
+                <%if (_in.message.createdDatetime) { %>
+                <% var time = new Date(_in.message.createdDatetime);%>
                 <%= time.toISOString()%>
                 <%}%>
             </div>
@@ -16,8 +16,14 @@
         <div class="message flex-item-1-auto flex-dir-col flex-sp-between">
             <div><%= _in.message.innerHTML %></div>
             <div class="dateFormat">
-                <%if (_in.message.deviceIds[_in.deviceId] && _in.message.deviceIds[_in.deviceId].dateTime) { %>
-                <% var time = new Date(_in.message.deviceIds[_in.deviceId].dateTime);%>
+                <%if (_in.message.createdDatetime) { %>
+                <% var time = new Date(_in.message.createdDatetime);%>
+                <%= time.toISOString()%>
+                <%}%>
+            </div>
+            <div class="dateFormat">
+                <%if (_in.message.receivedDatetime) { %>
+                <% var time = new Date(_in.message.receivedDatetime);%>
                 <%= time.toISOString()%>
                 <%}%>
             </div>
