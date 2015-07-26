@@ -25,10 +25,7 @@ define('indexeddb',
             open: function(options, callback) {
                 var _this = this;
 
-                if (_this.state !== _this.STATES.READY) {
-                    callback(new Error('ErrorState'));
-                    return;
-                }
+                if (_this.canNotProceed(callback)) { return; }
 
                 var keyPath = _this.getKeyPath(options);
                 var version = _this.getVersion(options);
@@ -86,10 +83,7 @@ define('indexeddb',
             addOrUpdateAll: function(options, tables, addOrUpdateData, callback) {
                 var _this = this, table_name;
 
-                if (_this.state !== _this.STATES.READY) {
-                    callback(new Error('ErrorState'));
-                    return;
-                }
+                if (_this.canNotProceed(callback)) { return; }
 
                 if (!tables) {
                     table_name = options.table_names[0];
@@ -162,10 +156,7 @@ define('indexeddb',
             getAll: function(options, table_name, callback) {
                 var _this = this, cur_table_name;
 
-                if (_this.state !== _this.STATES.READY) {
-                    callback(new Error('ErrorState'));
-                    return;
-                }
+                if (_this.canNotProceed(callback)) { return; }
 
                 cur_table_name = _this.defineCurrentTable(options, table_name);
 
@@ -215,10 +206,7 @@ define('indexeddb',
             getByKeyPath: function(options, getValue, callback) {
                 var _this = this, cur_table_name;
 
-                if (_this.state !== _this.STATES.READY) {
-                    callback(new Error('ErrorState'));
-                    return;
-                }
+                if (_this.canNotProceed(callback)) { return; }
 
                 cur_table_name = _this.defineCurrentTable(options);
 
@@ -266,10 +254,7 @@ define('indexeddb',
             addAll: function(options, table_name, toAdd, callback) {
                 var _this = this, cur_table_name;
 
-                if (_this.state !== _this.STATES.READY) {
-                    callback(new Error('ErrorState'));
-                    return;
-                }
+                if (_this.canNotProceed(callback)) { return; }
 
                 cur_table_name = _this.defineCurrentTable(options, table_name);
 
@@ -288,6 +273,8 @@ define('indexeddb',
 
             _executeAddAll: function(options, table_name, toAdd, callback) {
                 var _this = this, trans, store, keyPath = _this.getKeyPath(options);
+                if (_this.canNotProceed(callback)) { return; }
+
                 try {
                     trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readwrite");
                     store = trans.objectStore(table_name);
@@ -297,17 +284,20 @@ define('indexeddb',
                 }
 
                 _this.async_eachSeries(toAdd, function(curAdd, _callback) {
+                    if (_this.canNotProceed(callback)) { return; }
                     var putRequest = store.put(curAdd);
                     putRequest.onerror = function(e) {
                         _callback(e.currentTarget.error);
                     };
                     putRequest.onsuccess = function() {
+                        if (_this.canNotProceed(callback)) { return; }
                         _callback();
                     };
                 }, function(err) {
                     if (err) {
                         callback(err);
                     } else {
+                        if (_this.canNotProceed(callback)) { return; }
                         callback(null);
                     }
                 });
@@ -318,6 +308,15 @@ define('indexeddb',
                     return table_name;
                 }
                 return options.table_names[0];
+            },
+
+            canNotProceed: function(callback) {
+                var _this = this;
+                if (_this.state !== _this.STATES.READY) {
+                    callback(new Error('ErrorState'));
+                    return true;
+                }
+                return false;
             }
         };
         extend(indexeddb, async_core);
