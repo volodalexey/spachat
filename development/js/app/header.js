@@ -50,8 +50,8 @@ define('header', [
             },
 
             MODE_DESCRIPTION: {
-                WEBRTC: 'Web RTC Initialization',
-                TAB: 'Chat Messages',
+                WEBRTC: 60,
+                TAB: 59,
                 WAITER: ''
             },
 

@@ -288,5 +288,15 @@
     "id": 58,
     "en": "Restore and show chat",
     "ru": "Восстановить и показать чат"
+  },
+  {
+    "id": 59,
+    "en": "Chat Messages",
+    "ru": "Чат сообщений"
+  },
+  {
+    "id": 60,
+    "en": "Web RTC Initialization",
+    "ru": "Web RTC инициализация"
   }
 ]

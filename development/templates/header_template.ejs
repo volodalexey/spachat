@@ -27,7 +27,13 @@
             <%}%>
         </div>
         <div data-role="header_description">
-            <div><%= _in.description %></div>
+            <div>
+            <% if (_in.description && typeof _in.description === 'number' ) { %>
+                <%= window.getLocText(_in.description)%>
+            <% } else {%>
+                <%= _in.description %>
+                <%}%>
+            </div>
             <hr/>
         </div>
         <div data-role="btnHeaderPanel">
