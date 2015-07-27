@@ -54,7 +54,7 @@
     "data": {
       "throw": "true",
       "role": "rteShowPerPage",
-      "action": "changeRTE_Filer",
+      "action": "changeRTE",
       "key": "rtePerPage"
     },
     "name": "",
@@ -132,7 +132,7 @@
     "data": {
       "throw": "true",
       "role": "rteChoicePerPage",
-      "action": "changeRTE_Filer",
+      "action": "changeRTE",
       "key": "rtePerPage"
     },
     "name": "",

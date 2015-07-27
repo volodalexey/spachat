@@ -99,7 +99,6 @@ define('header', [
             cashToolbarElement: function() {
                 var _this = this;
                 _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
-                _this.button_filter = _this.chat.header_container.querySelector('[data-toggle]');
             },
 
             cashBodyElement: function() {
@@ -114,7 +113,6 @@ define('header', [
             unCashElements: function() {
                 var _this = this;
                 _this.filter_container = null;
-                _this.button_filter = null;
                 _this.enablePagination = null;
                 _this.perPageValue = null;
                 _this.rteShowPerPage = null;
@@ -126,13 +124,6 @@ define('header', [
                 if (_this.chat.headerOptions.show) {
                     switch (_this.chat.headerOptions.mode) {
                         case _this.MODE.TAB:
-                            if (_array) {
-                                _array.forEach(function(_obj) {
-                                    if (_obj.target && _obj.target.dataset.toggle_reset_header) {
-                                        _this.button_filter.dataset.toggle = true;
-                                    }
-                                });
-                            }
                             if (!_this.previousMode || _this.previousMode !== _this.chat.headerOptions.mode) {
                                 _this.showSpinner(_this.chat.header_container);
                                 _this.previousMode = _this.MODE.TAB;
@@ -202,54 +193,54 @@ define('header', [
                 }
             },
 
-            changePerPage: function(element) {
-                var _this = this;
-                var value = parseInt(element.value);
-
-                if (element.value === "" || element.value === "0") {
-                    _this.currentPaginationOptions.perPageValueNull = true;
-                    return;
-                }
-
-                if (!_this.currentPaginationOptions.rtePerPage) {
-                    _this.currentPaginationOptions.currentPage = null;
-                    _this.currentPaginationOptions.perPageValue = value;
-                    element.focus();
-                    return;
-                }
-
-                _this.currentPaginationOptions.perPageValue = value;
-                _this.currentPaginationOptions.currentPage = null;
-                if (_this.currentPaginationOptions.showEnablePagination) {
-                    _this.chat.pagination.countQuantityPages(function() {
-                        _this.chat.render(null, null);
-                    });
-                }
-            },
-
-            changeRTE: function(element) {
-                var _this = this;
-                _this.previousFilterShow = false;
-                if (element.checked) {
-                    _this.currentPaginationOptions.mode_change = "rte";
-                    _this.currentPaginationOptions.rtePerPage = true;
-                } else {
-                    _this.currentPaginationOptions.mode_change = "nrte";
-                    _this.currentPaginationOptions.rtePerPage = false;
-                }
-                _this.chat.render(null, null);
-            },
-
-            showPerPage: function() {
-                var _this = this;
-                _this.currentPaginationOptions.currentPage = null;
-
-                if (_this.currentPaginationOptions.showEnablePagination) {
-                    _this.chat.pagination.countQuantityPages(function() {
-                        _this.chat.render(null, null);
-                    });
-                }
-            },
+            //changePerPage: function(element) {
+            //    var _this = this;
+            //    var value = parseInt(element.value);
+            //
+            //    if (element.value === "" || element.value === "0") {
+            //        _this.currentPaginationOptions.perPageValueNull = true;
+            //        return;
+            //    }
+            //
+            //    if (!_this.currentPaginationOptions.rtePerPage) {
+            //        _this.currentPaginationOptions.currentPage = null;
+            //        _this.currentPaginationOptions.perPageValue = value;
+            //        element.focus();
+            //        return;
+            //    }
+            //
+            //    _this.currentPaginationOptions.perPageValue = value;
+            //    _this.currentPaginationOptions.currentPage = null;
+            //    if (_this.currentPaginationOptions.showEnablePagination) {
+            //        _this.chat.pagination.countQuantityPages(function() {
+            //            _this.chat.render(null, null);
+            //        });
+            //    }
+            //},
+            //
+            //changeRTE: function(element) {
+            //    var _this = this;
+            //    _this.previousFilterShow = false;
+            //    if (element.checked) {
+            //        _this.currentPaginationOptions.mode_change = "rte";
+            //        _this.currentPaginationOptions.rtePerPage = true;
+            //    } else {
+            //        _this.currentPaginationOptions.mode_change = "nrte";
+            //        _this.currentPaginationOptions.rtePerPage = false;
+            //    }
+            //    _this.chat.render(null, null);
+            //},
+            //
+            //showPerPage: function() {
+            //    var _this = this;
+            //    _this.currentPaginationOptions.currentPage = null;
+            //
+            //    if (_this.currentPaginationOptions.showEnablePagination) {
+            //        _this.chat.pagination.countQuantityPages(function() {
+            //            _this.chat.render(null, null);
+            //        });
+            //    }
+            //},
 
             destroy: function() {
                 var _this = this;

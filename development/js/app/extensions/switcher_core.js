@@ -18,55 +18,70 @@ define('switcher_core',
                     _module.messagesOptions.final = null;
                 }
                 switch (mode) {
-                    case _module.body.MODE.MESSAGES:
                     case _module.body.MODE.SETTINGS:
+                        _this.previousModeSwitcher = _module.body.MODE.MESSAGES;
+                        _module.currentPaginationOptions = _module.settings_PaginationOptions;
+                        _module.currentGoToOptions = _module.settings_GoToOptions;
+                        _module.current_Extra_Toolbar_Options = _module.settings_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.settings_FilterOptions;
+                        break;
+                    case _module.body.MODE.MESSAGES:
+                        _this.previousModeSwitcher = _module.body.MODE.MESSAGES;
+                        _module.currentPaginationOptions = _module.messages_PaginationOptions;
+                        _module.currentGoToOptions = _module.messages_GoToOptions;
+                        _module.current_Extra_Toolbar_Options = _module.messages_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.messages_FilterOptions;
+                        break;
                     case _module.body.MODE.CONTACT_LIST:
                         _this.previousModeSwitcher = _module.body.MODE.MESSAGES;
-                        _this.currentPaginationOptions = _module.paginationMessageOptions;
-                        _this.currentGoToOptions = _module.goToMessageOptions;
+                        _module.currentPaginationOptions = _module.contactList_PaginationOptions;
+                        _module.currentGoToOptions = _module.contactList_GoToOptions;
+                        _module.current_Extra_Toolbar_Options = _module.contactList_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.contactList_FilterOptions;
                         break;
                     case _module.body.MODE.LOGGER:
                         _this.previousModeSwitcher = _module.body.MODE.LOGGER;
-                        _this.currentPaginationOptions = _module.paginationLoggerOptions;
-                        _this.currentGoToOptions = _module.goToLoggerOptions;
+                        _module.currentPaginationOptions = _module.logger_PaginationOptions;
+                        _module.currentGoToOptions = _module.logger_GoToOptions;
+                        _module.current_Extra_Toolbar_Options = _module.logger_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.logger_FilterOptions;
                         break;
                     case _module.MODE.CHATS:
                         _this.previousModeSwitcher = _module.MODE.CHATS;
-                        //_module.body.collectionDescription.table_names = ['users'];
-                        _this.currentPaginationOptions = _module.chatsPaginationOptions;
-                        _this.currentGoToOptions = _module.chatsGoToOptions;
-                        _module.current_Extra_Toolbar_Options = _module.chats_Extra_Toolbar_Options;
-                        _module.currnetFilterOptions = _module.chats_Filter_Options;
+                        _module.currentPaginationOptions = _module.chats_PaginationOptions;
+                        _module.currentGoToOptions = _module.chats_GoToOptions;
+                        _module.current_Extra_Toolbar_Options = _module.chats_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.chats_FilterOptions;
                         break;
                     case _module.MODE.CREATE_CHAT:
-                        _module.current_Extra_Toolbar_Options = _module.create_Chat_Extra_Toolbar_Options;
-                        _module.currnetFilterOptions = _module.create_Chat_Filter_Options;
-                        _this.currentPaginationOptions = _module.createChatPaginationOptions;
-                        _this.currentGoToOptions = _module.createChatGoToOptions;
+                        _module.current_Extra_Toolbar_Options = _module.createChat_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.createChat_FilterOptions;
+                        _module.currentPaginationOptions = _module.createChat_PaginationOptions;
+                        _module.currentGoToOptions = _module.createChat_GoToOptions;
                         break;
                     case _module.MODE.JOIN_CHAT:
-                        _module.current_Extra_Toolbar_Options = _module.join_Chat_Extra_Toolbar_Options;
-                        _module.currnetFilterOptions = _module.join_Chat_Filter_Options;
-                        _this.currentPaginationOptions = _module.joinChatPaginationOptions;
-                        _this.currentGoToOptions = _module.joinChatGoToOptions;
+                        _module.current_Extra_Toolbar_Options = _module.joinChat_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.joinChat_FilterOptions;
+                        _module.currentPaginationOptions = _module.joinChat_PaginationOptions;
+                        _module.currentGoToOptions = _module.joinChat_GoToOptions;
                         break;
                     case _module.MODE.USERS:
-                        _module.current_Extra_Toolbar_Options = _module.users_Extra_Toolbar_Options;
-                        _module.currnetFilterOptions = _module.users_Filter_Options;
-                        _this.currentPaginationOptions = _module.usersPaginationOptions;
-                        _this.currentGoToOptions = _module.usersGoToOptions;
+                        _module.current_Extra_Toolbar_Options = _module.users_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.users_FilterOptions;
+                        _module.currentPaginationOptions = _module.users_PaginationOptions;
+                        _module.currentGoToOptions = _module.users_GoToOptions;
                         break;
                     case _module.MODE.USER_INFO_EDIT:
-                        _module.current_Extra_Toolbar_Options = _module.user_info_edit_Extra_Toolbar_Options;
-                        _module.currnetFilterOptions = _module.user_info_edit_Filter_Options;
-                        _this.currentPaginationOptions = _module.user_Info_Edit_Pagination_Options;
-                        _this.currentGoToOptions = _module.user_Info_Edit_Go_To_Options;
+                        _module.current_Extra_Toolbar_Options = _module.userInfoEdit_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.userInfoEdit_FilterOptions;
+                        _module.currentPaginationOptions = _module.userInfoEdit_PaginationOptions;
+                        _module.currentGoToOptions = _module.userInfoEdit_GoToOptions;
                         break;
                     case _module.MODE.USER_INFO_SHOW:
-                        _module.current_Extra_Toolbar_Options = _module.user_info_show_Extra_Toolbar_Options;
-                        _module.currnetFilterOptions = _module.user_info_show_Filter_Options;
-                        _this.currentPaginationOptions = _module.user_Info_Show_Pagination_Options;
-                        _this.currentGoToOptions = _module.user_Info_Show_Go_To_Options;
+                        _module.current_Extra_Toolbar_Options = _module.userInfoShow_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.userInfoShow_FilterOptions;
+                        _module.currentPaginationOptions = _module.userInfoShow_PaginationOptions;
+                        _module.currentGoToOptions = _module.userInfoShow_GoToOptions;
                         break;
                 }
             },
@@ -75,14 +90,12 @@ define('switcher_core',
                 if (_obj.target && _obj.target.dataset.role === "enablePagination") {
                     toggleObject[_options.key] = _obj.target.checked;
                     return;
-
                 }
+
                 if (_obj.target && _obj.target.dataset.role === 'choice') {
                     toggleObject[_options.key] = _obj.target.dataset.toggle === "true";
                     return;
-
                 }
-
 
                 if (!toggleObject.previousSave) {
                     if (_options.save && _options.save === true) {
@@ -93,14 +106,13 @@ define('switcher_core',
                 if (_options.restore) {
                     if (toggleObject.previousSave) {
                         toggleObject[_options.key] = toggleObject.previousShow;
-
                     } else {
                         toggleObject[_options.key] = toggleObject.show;
                     }
                     toggleObject.previousSave = false;
                     return;
-
                 }
+
                 toggleObject[_options.key] = _options.toggle;
             },
 
@@ -117,7 +129,6 @@ define('switcher_core',
                     }
                     toggleObject.previousSave = false;
                     return;
-
                 }
             }
 

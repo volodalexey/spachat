@@ -43,7 +43,9 @@ require.config({
         "event_bus": "app/event_bus",
         "users_bus": "app/users_bus",
         "localization": "app/localization",
-        "main_layout": "app/main_layout"
+        "main_layout": "app/main_layout",
+        "extra_toolbar": "app/extra_toolbar",
+        "filter": "app/filter"
     }
 });
 

@@ -149,7 +149,6 @@
     "text": "",
     "class": "check-box-size",
     "data": {
-      "throw": "true",
       "role": "rteShowPerPage",
       "action": "changeRTE",
       "key": "rtePerPage"

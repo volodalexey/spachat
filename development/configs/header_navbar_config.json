@@ -31,19 +31,19 @@
   {
     "element": "button",
     "icon": "",
-    "text": 22,
+    "text": 61,
     "data": {
       "throw": "true",
       "chat_part": "body",
-      "mode_to": "SETTINGS",
+      "mode_to": "MESSAGES",
       "action": "changeMode",
       "role": "btnHeader",
-      "toggle_reset_header": true,
+      "toggle_reset_header": false,
       "location": "bottomPanel",
-      "description": 23
+      "description": 62
     },
     "class": "button-margin-height",
-    "name": "Setting"
+    "name": "Messages"
   },
   {
     "element": "button",
@@ -65,18 +65,18 @@
   {
     "element": "button",
     "icon": "",
-    "text": 26,
+    "text": 22,
     "data": {
       "throw": "true",
-      "mode_to": "FILTER",
-      "chat_part": "header",
+      "chat_part": "body",
+      "mode_to": "SETTINGS",
       "action": "changeMode",
       "role": "btnHeader",
-      "toggle": true,
+      "toggle_reset_header": true,
       "location": "bottomPanel",
-      "description": 27
+      "description": 23
     },
     "class": "button-margin-height",
-    "name": "Filter"
+    "name": "Setting"
   }
 ]

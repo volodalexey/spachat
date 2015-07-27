@@ -106,7 +106,7 @@ define('pagination', [
                     _this.bodyOptionsMode = _this.module.MODE.CHATS;
                 }
                 _this.optionsDefinition(_this.module, _this.bodyOptionsMode);
-                if (_this.currentPaginationOptions.show) {
+                if (_this.module.currentPaginationOptions.show) {
                     _this.showHorizontalSpinner(_this.module.pagination_container);
                     _this.countQuantityPages(function(){
                         _this.disableButtonsPagination();
@@ -115,19 +115,19 @@ define('pagination', [
                             PAGINATION: _this.module.pagination_container
                         };
                         var data = {
-                            firstPage: _this.currentPaginationOptions.firstPage,
-                            currentPage: _this.currentPaginationOptions.currentPage,
-                            lastPage:  _this.currentPaginationOptions.lastPage,
-                            disableBack: _this.currentPaginationOptions.disableBack,
-                            disableFirst: _this.currentPaginationOptions.disableFirst,
-                            disableLast: _this.currentPaginationOptions.disableLast,
-                            disableForward: _this.currentPaginationOptions.disableForward
+                            firstPage: _this.module.currentPaginationOptions.firstPage,
+                            currentPage: _this.module.currentPaginationOptions.currentPage,
+                            lastPage:  _this.module.currentPaginationOptions.lastPage,
+                            disableBack: _this.module.currentPaginationOptions.disableBack,
+                            disableFirst: _this.module.currentPaginationOptions.disableFirst,
+                            disableLast: _this.module.currentPaginationOptions.disableLast,
+                            disableForward: _this.module.currentPaginationOptions.disableForward
                         };
                         _this.renderLayout(data, function(){
                             _this.addMainEventListener();
                             _this.cashMainElements();
                             _this.renderGoTo();
-                            if (_this.buttons_show_choice && _this.currentGoToOptions.show) {
+                            if (_this.buttons_show_choice && _this.module.currentGoToOptions.show) {
                                 _this.buttons_show_choice.forEach(function(btn){
                                     btn.dataset.toggle = false;
                                 });
@@ -148,7 +148,7 @@ define('pagination', [
 
             renderGoTo: function() {
                 var _this = this;
-                if (_this.currentGoToOptions.show){
+                if (_this.module.currentGoToOptions.show){
                     if (!_this.previousShow) {
                         _this.showHorizontalSpinner(_this.module.go_to_container);
                         _this.previousShow = true;
@@ -159,9 +159,9 @@ define('pagination', [
                             GO_TO: _this.module.go_to_container
                         };
                         var data = {
-                            mode_change: _this.currentGoToOptions.mode_change,
-                            rteChoicePage: _this.currentGoToOptions.rteChoicePage,
-                            page: _this.currentGoToOptions.page
+                            mode_change: _this.module.currentGoToOptions.mode_change,
+                            rteChoicePage: _this.module.currentGoToOptions.rteChoicePage,
+                            page: _this.module.currentGoToOptions.page
                         };
                         _this.body_mode = _this.MODE.GO_TO;
                         _this.renderLayout(data, function(){
@@ -186,19 +186,19 @@ define('pagination', [
                 indexeddb.getAll(_this.module.collectionDescription, null, function(getAllErr, messages) {
                     var quantityMessage = messages.length;
                     if (quantityMessage !== 0) {
-                        quantityPages = Math.ceil(quantityMessage / _this.currentPaginationOptions.perPageValue);
+                        quantityPages = Math.ceil(quantityMessage / _this.module.currentPaginationOptions.perPageValue);
                     } else {
                         quantityPages = 1;
                     }
-                    if (_this.currentPaginationOptions.currentPage === null) {
-                        _this.module.messagesOptions.start = quantityPages * _this.currentPaginationOptions.perPageValue - _this.currentPaginationOptions.perPageValue;
-                        _this.module.messagesOptions.final = quantityPages * _this.currentPaginationOptions.perPageValue;
-                        _this.currentPaginationOptions.currentPage = quantityPages;
+                    if (_this.module.currentPaginationOptions.currentPage === null) {
+                        _this.module.messagesOptions.start = quantityPages * _this.module.currentPaginationOptions.perPageValue - _this.module.currentPaginationOptions.perPageValue;
+                        _this.module.messagesOptions.final = quantityPages * _this.module.currentPaginationOptions.perPageValue;
+                        _this.module.currentPaginationOptions.currentPage = quantityPages;
                     } else {
-                        _this.module.messagesOptions.start = (_this.currentPaginationOptions.currentPage - 1) * _this.currentPaginationOptions.perPageValue;
-                        _this.module.messagesOptions.final = (_this.currentPaginationOptions.currentPage - 1) * _this.currentPaginationOptions.perPageValue + _this.currentPaginationOptions.perPageValue;
+                        _this.module.messagesOptions.start = (_this.module.currentPaginationOptions.currentPage - 1) * _this.module.currentPaginationOptions.perPageValue;
+                        _this.module.messagesOptions.final = (_this.module.currentPaginationOptions.currentPage - 1) * _this.module.currentPaginationOptions.perPageValue + _this.module.currentPaginationOptions.perPageValue;
                     }
-                    _this.currentPaginationOptions.lastPage = quantityPages;
+                    _this.module.currentPaginationOptions.lastPage = quantityPages;
                     if (callback) {
                         callback();
                     }
@@ -211,32 +211,32 @@ define('pagination', [
                     _this.module.bodyOptions.mode = _this.module.MODE.CHATS;
                 }
                 if (element.dataset.role === "first" || element.dataset.role === "last") {
-                    _this.currentPaginationOptions.currentPage = parseInt(element.dataset.value);
+                    _this.module.currentPaginationOptions.currentPage = parseInt(element.dataset.value);
                 }
                 if (element.dataset.role === "back") {
-                    _this.currentPaginationOptions.currentPage = parseInt(_this.currentPaginationOptions.currentPage) - 1;
+                    _this.module.currentPaginationOptions.currentPage = parseInt(_this.module.currentPaginationOptions.currentPage) - 1;
                 }
                 if (element.dataset.role === "forward") {
-                    _this.currentPaginationOptions.currentPage = parseInt(_this.currentPaginationOptions.currentPage) + 1;
+                    _this.module.currentPaginationOptions.currentPage = parseInt(_this.module.currentPaginationOptions.currentPage) + 1;
                 }
 
-                if (_this.currentGoToOptions.rteChoicePage && element.dataset.role === "choice_per_page") {
+                if (_this.module.currentGoToOptions.rteChoicePage && element.dataset.role === "choice_per_page") {
                     if (element.value === "" ){
-                        _this.currentGoToOptions.page = null;
+                        _this.module.currentGoToOptions.page = null;
                     } else {
                         var value = parseInt(element.value);
-                        _this.currentPaginationOptions.currentPage = value;
-                        _this.currentGoToOptions.page = value;
+                        _this.module.currentPaginationOptions.currentPage = value;
+                        _this.module.currentGoToOptions.page = value;
                     }
                 }
 
-                if (!_this.currentGoToOptions.rteChoicePage && element.dataset.role === "go_to_page") {
+                if (!_this.module.currentGoToOptions.rteChoicePage && element.dataset.role === "go_to_page") {
                     if (_this.input_choose_page.value === "" ){
-                        _this.currentGoToOptions.page = null;
+                        _this.module.currentGoToOptions.page = null;
                     } else {
                         var value = parseInt(_this.input_choose_page.value);
-                        _this.currentPaginationOptions.currentPage = value;
-                        _this.currentGoToOptions.page = value;
+                        _this.module.currentPaginationOptions.currentPage = value;
+                        _this.module.currentGoToOptions.page = value;
                     }
                     _this.previousShow = false;
                 }
@@ -246,19 +246,19 @@ define('pagination', [
 
             disableButtonsPagination: function() {
                 var _this = this;
-                if (_this.currentPaginationOptions.currentPage === _this.currentPaginationOptions.firstPage) {
-                    _this.currentPaginationOptions.disableBack = true;
-                    _this.currentPaginationOptions.disableFirst = true;
+                if (_this.module.currentPaginationOptions.currentPage === _this.module.currentPaginationOptions.firstPage) {
+                    _this.module.currentPaginationOptions.disableBack = true;
+                    _this.module.currentPaginationOptions.disableFirst = true;
                 } else {
-                    _this.currentPaginationOptions.disableBack = false;
-                    _this.currentPaginationOptions.disableFirst = false;
+                    _this.module.currentPaginationOptions.disableBack = false;
+                    _this.module.currentPaginationOptions.disableFirst = false;
                 }
-                if (_this.currentPaginationOptions.currentPage === _this.currentPaginationOptions.lastPage){
-                    _this.currentPaginationOptions.disableForward = true;
-                    _this.currentPaginationOptions.disableLast = true;
+                if (_this.module.currentPaginationOptions.currentPage === _this.module.currentPaginationOptions.lastPage){
+                    _this.module.currentPaginationOptions.disableForward = true;
+                    _this.module.currentPaginationOptions.disableLast = true;
                 } else {
-                    _this.currentPaginationOptions.disableForward = false;
-                    _this.currentPaginationOptions.disableLast = false;
+                    _this.module.currentPaginationOptions.disableForward = false;
+                    _this.module.currentPaginationOptions.disableLast = false;
                 }
             },
 
@@ -272,11 +272,11 @@ define('pagination', [
                 _this.module.previous_Filter_Options = false;
 
                 if (element.checked) {
-                    _this.currentGoToOptions.mode_change = "rte";
-                    _this.currentGoToOptions.rteChoicePage = true;
+                    _this.module.currentGoToOptions.mode_change = "rte";
+                    _this.module.currentGoToOptions.rteChoicePage = true;
                 } else {
-                    _this.currentGoToOptions.mode_change = "nrte";
-                    _this.currentGoToOptions.rteChoicePage = false;
+                    _this.module.currentGoToOptions.mode_change = "nrte";
+                    _this.module.currentGoToOptions.rteChoicePage = false;
                 }
                 _this.previousShow = false;
                 _this.module.render(null, null);

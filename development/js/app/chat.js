@@ -11,6 +11,8 @@ define('chat', [
         'event_bus',
         'indexeddb',
         'users_bus',
+        'extra_toolbar',
+        'filter',
         //
         'ajax_core',
         'template_core',
@@ -20,10 +22,18 @@ define('chat', [
         'throw_event_core',
         "switcher_core",
         'app/extensions/model_core',
+        'overlay_core',
+        'render_layout_core',
         //
         'text!../templates/chat_template.ejs',
         'text!../templates/waiter_template.ejs',
-        'text!../templates/console_log_template.ejs'
+        'text!../templates/console_log_template.ejs',
+        'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/button_template.ejs',
+        'text!../templates/element/label_template.ejs',
+        'text!../templates/element/input_template.ejs',
+        'text!../templates/filter_template.ejs'
+
     ],
     function(Header,
              Editor,
@@ -37,6 +47,8 @@ define('chat', [
              event_bus,
              indexeddb,
              users_bus,
+             Extra_toolbar,
+             Filter,
              //
              ajax_core,
              template_core,
@@ -46,10 +58,17 @@ define('chat', [
              throw_event_core,
              switcher_core,
              model_core,
+             overlay_core,
+             render_layout_core,
              //
              chat_template,
              waiter_template,
-             console_log_template) {
+             console_log_template,
+             triple_element_template,
+             button_template,
+             label_template,
+             input_template,
+             filter_template) {
 
         var defaultOptions = {
             padding: {
@@ -76,17 +95,23 @@ define('chat', [
                 sendEnter: false,
                 iSender: true
             },
-            goToMessageOptions: {
+            messagesOptions: {
+                start: 0,
+                last: null,
+                previousStart: 0,
+                previousFinal: 0,
+                restore: false,
+                innerHTML: ""
+            },
+
+            messages_GoToOptions: {
+                text: "mes",
                 show: false,
                 rteChoicePage: true,
                 mode_change: "rte"
             },
-            goToLoggerOptions: {
-                show: false,
-                rteChoicePage: true,
-                mode_change: "rte"
-            },
-            paginationMessageOptions: {
+            messages_PaginationOptions: {
+                text: "mes",
                 show: false,
                 mode_change: "rte",
                 currentPage: null,
@@ -102,7 +127,20 @@ define('chat', [
                 disableLast: false,
                 disableForward: false
             },
-            paginationLoggerOptions: {
+            messages_FilterOptions: {
+                show: false
+            },
+            messages_ExtraToolbarOptions: {
+                show: true
+            },
+
+            logger_GoToOptions: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+            logger_PaginationOptions: {
+                text: "log",
                 show: false,
                 mode_change: "rte",
                 currentPage: null,
@@ -118,13 +156,54 @@ define('chat', [
                 disableLast: false,
                 disableForward: false
             },
-            messagesOptions: {
-                start: 0,
-                last: null,
-                previousStart: 0,
-                previousFinal: 0,
-                restore: false,
-                innerHTML: ""
+            logger_FilterOptions: {
+                show: false
+            },
+            logger_ExtraToolbarOptions: {
+                show: true
+            },
+
+            contactList_FilterOptions: {
+                show: false
+            },
+            contactList_ExtraToolbarOptions: {
+                show: true
+            },
+            contactList_PaginationOptions: {
+                text: "contact",
+                show: false,
+                mode_change: "rte",
+                currentPage: null,
+                firstPage: 1,
+                lastPage: null,
+                showEnablePagination: false,
+                showChoicePerPage: false,
+                perPageValue: 50,
+                perPageValueNull: false,
+                rtePerPage: true,
+                disableBack: false,
+                disableFirst: false,
+                disableLast: false,
+                disableForward: false
+            },
+            contactList_GoToOptions: {
+                text: "contact",
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+
+            settings_ExtraToolbarOptions: {
+                show: false
+            },
+            settings_FilterOptions: {
+                show: false
+            },
+            settings_PaginationOptions: {
+                show: false
+            },
+            settings_GoToOptions: {
+                show: false
             }
         };
 
@@ -141,6 +220,8 @@ define('chat', [
             this.settings = new Settings({chat: this});
             this.contact_list = new Contact_list({chat: this});
             this.messages = new Messages({chat: this});
+            this.extra_toolbar = new Extra_toolbar({chat: this});
+            this.filter = new Filter({chat: this});
 
             this.bindContexts();
             this.setCreator();
@@ -183,9 +264,16 @@ define('chat', [
                 _this.chat_element = _this.chat_wrapper.querySelector('section[data-chat_id="' + _this.chatId + '"]');
                 _this.header_container = _this.chat_element.querySelector('[data-role="header_container"]');
                 _this.header_waiter_container = _this.chat_element.querySelector('[data-role="waiter_container"]');
+                _this.extra_toolbar_container = _this.chat_element.querySelector('[data-role="extra_toolbar_container"]');
+                _this.filter_container = _this.chat_element.querySelector('[data-role="filter_container"]');
                 _this.body_container = _this.chat_element.querySelector('[data-role="body_container"]');
                 _this.pagination_container = _this.chat_element.querySelector('[data-role="pagination_container"]');
                 _this.go_to_container = _this.chat_element.querySelector('[data-role="go_to_container"]');
+            },
+
+            cashExtraToolbarElement: function() {
+                var _this = this;
+                _this.btn_Filter = _this.extra_toolbar_container.querySelector('[data-role="btn_Filter"]');
             },
 
             unCashElements: function() {
@@ -194,6 +282,7 @@ define('chat', [
                 _this.header_container = null;
                 _this.header_waiter_container = null;
                 _this.body_container = null;
+                _this.btn_Filter = null;
             },
 
             console: {
@@ -216,10 +305,14 @@ define('chat', [
 
             render: function(options, _array) {
                 var _this = this;
-                _this.editor.render(options, this);
-                _this.header.render(options, _array, this);
-                _this.pagination.render(options, this, _this.bodyOptions.mode);
-                _this.body.render({scrollTop: true}, this);
+                _this.editor.render(options, _this);
+                _this.header.render(options, _array, _this);
+                _this.extra_toolbar.renderExtraToolbar(_this, _this.bodyOptions.mode, function(){
+                    _this.filter.renderFilter(_this, _this.bodyOptions.mode, function() {
+                        _this.pagination.render(options, _this, _this.bodyOptions.mode);
+                        _this.body.render({scrollTop: true}, _this);
+                    });
+                });
             },
 
             /**
@@ -244,52 +337,12 @@ define('chat', [
                 var _this = this;
                 _array.forEach(function(_obj) {
                     switch (_obj.chat_part) {
-                        case "header":
-                            switch (_obj.newMode) {
-                                case _this.header.MODE.FILTER:
-                                    if (_obj.target) {
-                                        var bool_Value = _obj.target.dataset.toggle === "true";
-                                        _this.filterOptions.show = bool_Value;
-                                        _obj.target.dataset.toggle = !bool_Value;
-                                    }
-                                    switch (_this.bodyOptions.mode) {
-                                        case _this.body.MODE.SETTINGS:
-                                        case _this.body.MODE.CONTACT_LIST:
-                                            _this.bodyOptions.mode = _this.body.MODE.MESSAGES;
-                                            _this.toggleShowState({
-                                                key: 'show',
-                                                restore: true,
-                                                toggle: true
-                                            }, _this.paginationMessageOptions, _obj);
-                                            _this.toggleShowState({
-                                                key: 'show',
-                                                restore: true,
-                                                toggle: true
-                                            }, _this.formatOptions, _obj);
-                                            _this.toggleShowState({
-                                                key: 'show',
-                                                restore: true,
-                                                toggle: true
-                                            }, _this.goToMessageOptions, _obj);
-                                            _this.editorOptions.show = true;
-                                            break;
-                                        case  _this.body.MODE.LOGGER:
-                                            break;
-                                    }
-                                    break;
-                            }
-                            break;
                         case "body":
                             switch (_obj.newMode) {
                                 case _this.body.MODE.SETTINGS:
                                     _this.bodyOptions.mode = _this.body.MODE.SETTINGS;
-                                    _this.filterOptions.show = false;
+                                    //_this.filterOptions.show = false;
                                     _this.editorOptions.show = false;
-                                    _this.toggleShowState({
-                                        key: 'show',
-                                        save: true,
-                                        toggle: false
-                                    }, _this.paginationMessageOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
@@ -299,17 +352,42 @@ define('chat', [
                                         key: 'show',
                                         save: true,
                                         toggle: false
-                                    }, _this.goToMessageOptions, _obj);
+                                    }, _this.messages_PaginationOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
                                         toggle: false
-                                    }, _this.paginationLoggerOptions, _obj);
+                                    }, _this.messages_GoToOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
                                         toggle: false
-                                    }, _this.goToLoggerOptions, _obj);
+                                    }, _this.messages_FilterOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.logger_PaginationOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.logger_GoToOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.contactList_FilterOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.contactList_PaginationOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.contactList_GoToOptions, _obj);
                                     _this.toggleText({
                                         key: 'innerHTML',
                                         save: true
@@ -317,13 +395,7 @@ define('chat', [
                                     break;
                                 case _this.body.MODE.CONTACT_LIST:
                                     _this.bodyOptions.mode = _this.body.MODE.CONTACT_LIST;
-                                    _this.filterOptions.show = false;
                                     _this.editorOptions.show = false;
-                                    _this.toggleShowState({
-                                        key: 'show',
-                                        save: true,
-                                        toggle: false
-                                    }, _this.paginationMessageOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
@@ -333,17 +405,43 @@ define('chat', [
                                         key: 'show',
                                         save: true,
                                         toggle: false
-                                    }, _this.goToMessageOptions, _obj);
+                                    }, _this.messages_PaginationOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
                                         toggle: false
-                                    }, _this.paginationLoggerOptions, _obj);
+                                    }, _this.messages_GoToOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
                                         toggle: false
-                                    }, _this.goToLoggerOptions, _obj);
+                                    }, _this.messages_FilterOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.logger_PaginationOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.logger_GoToOptions, _obj);
+
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        restore: true,
+                                        toggle: true
+                                    }, _this.contactList_FilterOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        restore: true,
+                                        toggle: true
+                                    }, _this.contactList_PaginationOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        restore: true,
+                                        toggle: true
+                                    }, _this.contactList_GoToOptions, _obj);
                                     _this.toggleText({
                                         key: 'innerHTML',
                                         save: true
@@ -356,27 +454,47 @@ define('chat', [
                                         key: 'show',
                                         restore: true,
                                         toggle: true
-                                    }, _this.paginationMessageOptions, _obj);
-                                    _this.toggleShowState({
-                                        key: 'show',
-                                        restore: true,
-                                        toggle: true
                                     }, _this.formatOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         restore: true,
                                         toggle: true
-                                    }, _this.goToMessageOptions, _obj);
+                                    }, _this.messages_PaginationOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        restore: true,
+                                        toggle: true
+                                    }, _this.messages_GoToOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        restore: true,
+                                        toggle: true
+                                    }, _this.messages_FilterOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
                                         toggle: false
-                                    }, _this.paginationLoggerOptions, _obj);
+                                    }, _this.logger_PaginationOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
                                         toggle: false
-                                    }, _this.goToLoggerOptions, _obj);
+                                    }, _this.logger_GoToOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.contactList_FilterOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.contactList_PaginationOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.contactList_GoToOptions, _obj);
                                     _this.toggleText({
                                         key: 'innerHTML',
                                         restore: true
@@ -384,30 +502,48 @@ define('chat', [
                                     break;
                                 case _this.body.MODE.LOGGER:
                                     _this.bodyOptions.mode = _this.body.MODE.LOGGER;
-                                    _this.filterOptions.show = false;
                                     _this.editorOptions.show = false;
                                     _this.messagesOptions.final = null;
-
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
                                         toggle: false
-                                    }, _this.paginationMessageOptions, _obj);
+                                    }, _this.messages_PaginationOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
                                         toggle: false
-                                    }, _this.goToMessageOptions, _obj);
+                                    }, _this.messages_GoToOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.messages_FilterOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         restore: true,
                                         toggle: true
-                                    }, _this.paginationLoggerOptions, _obj);
+                                    }, _this.logger_PaginationOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         restore: true,
                                         toggle: true
-                                    }, _this.goToLoggerOptions, _obj);
+                                    }, _this.logger_GoToOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.contactList_FilterOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.contactList_PaginationOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.contactList_GoToOptions, _obj);
                                     break;
                             }
                             break;
@@ -453,6 +589,18 @@ define('chat', [
                                     break;
                             }
                             break;
+                        case "filter":
+                            switch (_obj.newMode) {
+                                case _this.filter.MODE.MESSAGES_FILTER: case _this.filter.MODE.CONTACT_LIST_FILTER:
+                                    if (_obj.target) {
+                                        var bool_Value = _obj.target.dataset.toggle === "true";
+                                        _this.optionsDefinition(_this, _this.bodyOptions.mode);
+                                        _this.currnetFilterOptions.show = bool_Value;
+                                        _obj.target.dataset.toggle = !bool_Value;
+                                    }
+                                    break;
+                            }
+                            break;
                     }
                 });
                 _this.render(options, _array);
@@ -494,6 +642,10 @@ define('chat', [
                 this.contact_list = null;
                 this.messages.destroy();
                 this.messages = null;
+                this.extra_toolbar.destroy();
+                this.extra_toolbar = null;
+                this.filter.destroy();
+                this.filter = null;
                 webrtc.destroy(_this);
                 this.body.destroy();
                 this.body = null;
@@ -515,11 +667,11 @@ define('chat', [
                     filterOptions: _this.filterOptions,
                     bodyOptions: _this.bodyOptions,
                     editorOptions: _this.editorOptions,
-                    goToMessageOptions: _this.goToMessageOptions,
-                    goToLoggerOptions: _this.goToLoggerOptions,
+                    messages_GoToOptions: _this.messages_GoToOptions,
+                    logger_GoToOptions: _this.logger_GoToOptions,
                     formatOptions: _this.formatOptions,
-                    paginationLoggerOptions: _this.paginationLoggerOptions,
-                    paginationMessageOptions: _this.paginationMessageOptions,
+                    logger_PaginationOptions: _this.logger_PaginationOptions,
+                    messages_PaginationOptions: _this.messages_PaginationOptions,
                     messagesOptions: _this.messagesOptions
                 };
             },
@@ -574,10 +726,17 @@ define('chat', [
         extend(chat, throw_event_core);
         extend(chat, switcher_core);
         extend(chat, model_core);
+        extend(chat, render_layout_core);
+        extend(chat, overlay_core);
 
         chat.prototype.chat_template = chat.prototype.template(chat_template);
         chat.prototype.waiter_template = chat.prototype.template(waiter_template);
         chat.prototype.console_log_template = chat.prototype.template(console_log_template);
+        chat.prototype.triple_element_template = chat.prototype.template(triple_element_template);
+        chat.prototype.button_template = chat.prototype.template(button_template);
+        chat.prototype.label_template = chat.prototype.template(label_template);
+        chat.prototype.input_template = chat.prototype.template(input_template);
+        chat.prototype.filter_template = chat.prototype.template(filter_template);
 
         return chat;
     });

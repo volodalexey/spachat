@@ -8,6 +8,8 @@ define('panel', [
         'overlay_core',
         'users_bus',
         'event_bus',
+        'extra_toolbar',
+        'filter',
 
         'pagination',
         'body',
@@ -20,11 +22,7 @@ define('panel', [
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs',
-        'text!../templates/element/textarea_template.ejs',
-
-        'text!../templates/filter_my_chats_template.ejs',
-        'text!../templates/panel_extra_toolbar_template.ejs'
-
+        'text!../templates/element/textarea_template.ejs'
     ],
     function(throw_event_core,
              ajax_core,
@@ -35,6 +33,9 @@ define('panel', [
              overlay_core,
              users_bus,
              event_bus,
+             Extra_toolbar,
+             Filter,
+             //
              Pagination,
              Body,
              indexeddb,
@@ -44,9 +45,7 @@ define('panel', [
              button_template,
              label_template,
              input_template,
-             textarea_template,
-             filter_my_chats_template,
-             panel_extra_toolbar_template) {
+             textarea_template) {
 
         var defaultOptions = {
 
@@ -58,13 +57,14 @@ define('panel', [
                 "keyPath": "chatId"
             },
 
-            chatsGoToOptions: {
+            chats_GoToOptions: {
                 show: false,
                 rteChoicePage: true,
                 mode_change: "rte",
                 "chat": null
             },
-            chatsPaginationOptions: {
+            chats_PaginationOptions: {
+                text: "chats",
                 show: false,
                 mode_change: "rte",
                 currentPage: null,
@@ -80,26 +80,27 @@ define('panel', [
                 disableLast: false,
                 disableForward: false
             },
-            chats_Extra_Toolbar_Options: {
+            chats_ExtraToolbarOptions: {
                 show: true
             },
-            chats_Filter_Options: {
+            chats_FilterOptions: {
                 show: false
             },
 
-            users_Extra_Toolbar_Options: {
+            users_ExtraToolbarOptions: {
                 show: true
             },
-            users_Filter_Options: {
+            users_FilterOptions: {
                 show: false
             },
-            usersGoToOptions: {
+            users_GoToOptions: {
+                text: "users",
                 show: false,
                 rteChoicePage: true,
                 mode_change: "rte",
                 "user": null
             },
-            usersPaginationOptions: {
+            users_PaginationOptions: {
                 show: false,
                 mode_change: "rte",
                 currentPage: null,
@@ -116,61 +117,61 @@ define('panel', [
                 disableForward: false
             },
 
-            create_Chat_Extra_Toolbar_Options: {
+            createChat_ExtraToolbarOptions: {
                 show: false
             },
-            create_Chat_Filter_Options: {
+            createChat_FilterOptions: {
                 show: false
             },
-            createChatPaginationOptions: {
+            createChat_PaginationOptions: {
                 show: false
             },
-            createChatGoToOptions: {
+            createChat_GoToOptions: {
                 show: false,
                 rteChoicePage: true,
                 mode_change: "rte"
             },
 
-            join_Chat_Extra_Toolbar_Options: {
+            joinChat_ExtraToolbarOptions: {
                 show: false
             },
-            join_Chat_Filter_Options: {
+            joinChat_FilterOptions: {
                 show: false
             },
-            joinChatPaginationOptions: {
+            joinChat_PaginationOptions: {
                 show: false
             },
-            joinChatGoToOptions: {
+            joinChat_GoToOptions: {
                 show: false,
                 rteChoicePage: true,
                 mode_change: "rte"
             },
 
-            user_info_edit_Extra_Toolbar_Options: {
+            userInfoEdit_ExtraToolbarOptions: {
                 show: false
             },
-            user_info_edit_Filter_Options: {
+            userInfoEdit_FilterOptions: {
                 show: false
             },
-            user_Info_Edit_Pagination_Options: {
+            userInfoEdit_PaginationOptions: {
                 show: false
             },
-            user_Info_Edit_Go_To_Options: {
+            userInfoEdit_GoToOptions: {
                 show: false,
                 rteChoicePage: true,
                 mode_change: "rte"
             },
 
-            user_info_show_Extra_Toolbar_Options: {
+            userInfoShow_ExtraToolbarOptions: {
                 show: false
             },
-            user_info_show_Filter_Options: {
+            userInfoShow_FilterOptions: {
                 show: false
             },
-            user_Info_Show_Pagination_Options: {
+            userInfoShow_PaginationOptions: {
                 show: false
             },
-            user_Info_Show_Go_To_Options: {
+            userInfoShow_GoToOptions: {
                 show: false,
                 rteChoicePage: true,
                 mode_change: "rte"
@@ -210,6 +211,8 @@ define('panel', [
             this.pagination = new Pagination();
             this.body = new Body();
             this.bodyOptions.mode = description.body_mode;
+            this.extraToolbar = new Extra_toolbar({panel: this});
+            this.filter = new Filter({panel: this});
         };
 
         panel.prototype = {
@@ -218,12 +221,7 @@ define('panel', [
 
             openChatsInfoArray: [],
 
-            configMap: {
-                "CHATS_FILTER": '/configs/panel_chats_filter_config.json',
-                "CHATS_EXTRA_TOOLBAR": '/configs/panel_chats_extra_toolbar_config.json',
-                "USERS_FILTER": '/configs/panel_users_filter_config.json',
-                "USERS_EXTRA_TOOLBAR": '/configs/panel_users_extra_toolbar_config.json'
-            },
+
 
             MODE: {
                 CREATE_CHAT: 'CREATE_CHAT',
@@ -234,12 +232,6 @@ define('panel', [
                 USER_INFO_EDIT: 'USER_INFO_EDIT',
                 USER_INFO_SHOW: 'USER_INFO_SHOW',
                 DETAIL_VIEW: 'DETAIL_VIEW',
-
-                CHATS_FILTER: 'CHATS_FILTER',
-                CHATS_EXTRA_TOOLBAR: 'CHATS_EXTRA_TOOLBAR',
-
-                USERS_FILTER: 'USERS_FILTER',
-                USERS_EXTRA_TOOLBAR: ' USERS_EXTRA_TOOLBAR',
 
                 PAGINATION: "PAGINATION",
                 GO_TO: "GO_TO",
@@ -254,17 +246,9 @@ define('panel', [
                     return;
                 }
                 var _this = this;
-
                 _this.navigator = options.navigator;
-
                 _this.cashElements();
-                _this.elementMap = {
-                    "CHATS_FILTER": _this.filter_container,
-                    "CHATS_EXTRA_TOOLBAR": _this.extra_toolbar_container,
-                    "USERS_FILTER": _this.filter_container,
-                    "USERS_EXTRA_TOOLBAR": _this.extra_toolbar_container
-
-                };
+                _this.elementMap = {};
                 _this.addMainEventListener();
                 _this.outer_container.classList.remove("hide");
                 _this.outer_container.style.maxWidth = window.innerWidth + 'px';
@@ -335,7 +319,8 @@ define('panel', [
                 _this.addRemoveListener('add', _this.panel_body, 'input', _this.bindedInputUserInfo, false);
                 _this.addRemoveListener('add', _this.inner_container, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.inner_container, 'input', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
+                //_this.addRemoveListener('add', _this.inner_container, 'change', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.inner_container, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('add', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.on('throw', _this.throwRouter, _this);
                 event_bus.on('chatDestroyed', _this.bindedOnChatDestroyed, _this);
@@ -347,6 +332,7 @@ define('panel', [
                 _this.addRemoveListener('remove', _this.panel_body, 'input', _this.bindedInputUserInfo, false);
                 _this.addRemoveListener('remove', _this.inner_container, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.inner_container, 'input', _this.bindedDataActionRouter, false);
+                //_this.addRemoveListener('remove', _this.inner_container, 'change', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.off('throw', _this.throwRouter);
@@ -365,13 +351,15 @@ define('panel', [
                     (_this.bodyOptions.mode === this.MODE.CHATS || _this.bodyOptions.mode === this.MODE.DETAIL_VIEW)) {
                     var chat_info_container = _this.panel_body.querySelector('[data-chatid="' + chatId + '"]');
                     if (chat_info_container) {
-                        _this.bodyOptions.mode = _this.MODE.DETAIL_VIEW;
                         var detail_view = chat_info_container.querySelector('[data-role="detail_view_container"]');
-                        var pointer = chat_info_container.querySelector('[data-role="pointer"]');
-                        _this.render({
-                            "detail_view": detail_view,
-                            "pointer": pointer,
-                            "chat_id_value": chatId});
+                        if (detail_view.dataset.state) {
+                            _this.bodyOptions.mode = _this.MODE.DETAIL_VIEW;
+                            var pointer = chat_info_container.querySelector('[data-role="pointer"]');
+                            _this.render({
+                                "detail_view": detail_view,
+                                "pointer": pointer,
+                                "chat_id_value": chatId});
+                        }
                     }
                 }
             },
@@ -438,79 +426,12 @@ define('panel', [
 
             proceed: function(options) {
                 var _this = this;
-                _this.renderExtraToolbar(function() {
-                    _this.renderFilter(function() {
+                _this.extraToolbar.renderExtraToolbar(_this, _this.bodyOptions.mode, function() {
+                    _this.filter.renderFilter(_this, _this.bodyOptions.mode, function() {
                         _this.pagination.render(options, _this, _this.bodyOptions.mode);
                         _this.body.render(options, _this);
                     });
                 });
-            },
-
-            renderExtraToolbar: function(_callback) {
-                var _this = this;
-                if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
-                    _this.optionsDefinition(_this, _this.MODE.CHATS);
-                } else {
-                    _this.optionsDefinition(_this, _this.bodyOptions.mode);
-                }
-
-                if (_this.current_Extra_Toolbar_Options.show) {
-                    if (_this.previousExtraToolbar !== _this.bodyOptions.mode &&
-                        _this.bodyOptions.mode !== _this.MODE.DETAIL_VIEW) {
-                        _this.showHorizontalSpinner(_this.extra_toolbar_container);
-                        _this.body_mode = _this.bodyOptions.mode + "_EXTRA_TOOLBAR";
-                        _this.previousExtraToolbar = _this.bodyOptions.mode;
-                        _this.renderLayout(null, function() {
-                            _this.cashExtraToolbarElement();
-                            _callback();
-                        });
-                    } else {
-                        _callback();
-                    }
-                } else {
-                    _this.previousExtraToolbar = _this.bodyOptions.mode;
-                    _this.extra_toolbar_container.innerHTML = "";
-                    _callback();
-                }
-            },
-
-            renderFilter: function(callback) {
-                var _this = this;
-                if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
-                    _this.optionsDefinition(_this, _this.MODE.CHATS);
-                } else {
-                    _this.optionsDefinition(_this, _this.bodyOptions.mode);
-                }
-
-                if (_this.currnetFilterOptions.show) {
-                    if (_this.btn_Filter) {
-                        _this.btn_Filter.dataset.toggle = false;
-                    }
-                    if (_this.currentPaginationOptions.perPageValueNull) {
-                        _this.previous_Filter_Options = false;
-                    }
-                    if (!_this.previous_Filter_Options &&
-                        _this.bodyOptions.mode !== _this.MODE.DETAIL_VIEW) {
-                        _this.showHorizontalSpinner(_this.filter_container);
-                        _this.previous_Filter_Options = true;
-                        _this.body_mode = _this.bodyOptions.mode + "_FILTER";
-                        var data = {
-                            "perPageValue": _this.currentPaginationOptions.perPageValue,
-                            "showEnablePagination": _this.currentPaginationOptions.showEnablePagination,
-                            "rtePerPage": _this.currentPaginationOptions.rtePerPage,
-                            "mode_change": _this.currentPaginationOptions.mode_change
-                        };
-                        _this.renderLayout(data, function() {
-                            callback();
-                        });
-                    } else {
-                        callback();
-                    }
-                } else {
-                    _this.filter_container.innerHTML = "";
-                    _this.previous_Filter_Options = false;
-                    callback();
-                }
             },
 
             changeMode: function(element) {
@@ -826,16 +747,7 @@ define('panel', [
         panel.prototype.input_template = panel.prototype.template(input_template);
         panel.prototype.textarea_template = panel.prototype.template(textarea_template);
 
-        panel.prototype.filter_my_chats_template = panel.prototype.template(filter_my_chats_template);
-        panel.prototype.panel_extra_toolbar_template = panel.prototype.template(panel_extra_toolbar_template);
-
-        panel.prototype.templateMap = {
-            "CHATS_FILTER": panel.prototype.filter_my_chats_template,
-            "CHATS_EXTRA_TOOLBAR": panel.prototype.panel_extra_toolbar_template,
-            "USERS_FILTER": panel.prototype.filter_my_chats_template,
-            "USERS_EXTRA_TOOLBAR": panel.prototype.panel_extra_toolbar_template
-        };
-
+        panel.prototype.templateMap = {};
         panel.prototype.dataHandlerMap = {};
         panel.prototype.dataMap = {};
 

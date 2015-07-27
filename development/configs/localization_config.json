@@ -298,5 +298,15 @@
     "id": 60,
     "en": "Web RTC Initialization",
     "ru": "Web RTC инициализация"
+  },
+  {
+    "id": 61,
+    "en": "Messages",
+    "ru": "Сообщения"
+  },
+  {
+    "id": 62,
+    "en": "Show chat messages",
+    "ru": "Показать сообщения чата"
   }
 ]

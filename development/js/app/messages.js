@@ -182,7 +182,7 @@ define('messages', [
                     messageConstructor: HTML_message.prototype
                 });
                 //_this.chat.messagesOptions.final += 1;
-                _this.chat.paginationMessageOptions.currentPage = null;
+                _this.chat.messages_PaginationOptions.currentPage = null;
                 _this.chat.render(null, null);
                 _this.scrollTo(options);
             },
