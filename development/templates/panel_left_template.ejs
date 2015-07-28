@@ -2,12 +2,62 @@
 var array_left_panel = _in.config.filter(function(obj) {
     return obj.data.location === "left_panel"
 }); %>
-<% array_left_panel.forEach(function (_config) { %>
-<%= _in.triple_element_template({
-    config: _config,
-    icon_config: _in.icon_config,
-    button_template: _in.button_template,
-    input_template: _in.input_template,
-    label_template: _in.label_template
-}) %>
-<% }) %>
+
+<% var byDataLocationGroup = {}; %>
+<% array_left_panel.forEach(function(_config) { %>
+<%  if (!byDataLocationGroup[_config.data.location_group]) { %>
+<%  byDataLocationGroup[_config.data.location_group] = []; %>
+<% }%>
+<%  byDataLocationGroup[_config.data.location_group].push(_config); %>
+<% }); %>
+
+<% if (byDataLocationGroup['blogs'].length) { %>
+<div>
+    <% byDataLocationGroup['blogs'].forEach(function (config) { %>
+
+    <%= _in.triple_element_template({
+        config: config,
+        icon_config: _in.icon_config,
+        button_template: _in.button_template,
+        input_template: _in.input_template,
+        label_template: _in.label_template
+    }) %>
+
+    <%})%>
+</div>
+<%}%>
+
+<% if (byDataLocationGroup['chats'].length) { %>
+<div>
+    <% byDataLocationGroup['chats'].forEach(function (config) { %>
+
+    <%= _in.triple_element_template({
+        config: config,
+        icon_config: _in.icon_config,
+        button_template: _in.button_template,
+        input_template: _in.input_template,
+        label_template: _in.label_template
+    }) %>
+
+    <%})%>
+</div>
+<%}%>
+
+
+<% if (byDataLocationGroup['users'].length) { %>
+<div>
+    <% byDataLocationGroup['users'].forEach(function (config) { %>
+
+    <%= _in.triple_element_template({
+        config: config,
+        icon_config: _in.icon_config,
+        button_template: _in.button_template,
+        input_template: _in.input_template,
+        label_template: _in.label_template
+    }) %>
+
+    <%})%>
+</div>
+<%}%>
+
+

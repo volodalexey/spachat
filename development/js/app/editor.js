@@ -175,15 +175,6 @@ define('editor', [
                 }
             },
 
-            changeSender: function(element) {
-                var _this = this;
-                if (element.checked) {
-                    _this.chat.formatOptions.iSender = true;
-                } else {
-                    _this.chat.formatOptions.iSender = false;
-                }
-            },
-
             sendEnter: function(event){
                 var _this = this;
                 if (event.keyCode === 13) {

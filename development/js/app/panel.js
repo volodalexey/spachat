@@ -383,6 +383,7 @@ define('panel', [
                     if (bigMode === true) {
                         _this.resizePanel();
                     }
+                    _this.resizePanel();
                 } else {
                     panel.prototype.z_index--;
                     if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {

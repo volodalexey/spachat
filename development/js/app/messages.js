@@ -27,15 +27,14 @@ define('messages', [
              message_template,
              log_message_template) {
 
-        var messages = function() {
+        var messages = function(options) {
+            this.chat = options.chat;
         };
 
         messages.prototype = {
 
             render: function(options, chat) {
                 var _this = this;
-
-                _this.chat = chat;
 
                 _this.fillListMessage(options);
             },

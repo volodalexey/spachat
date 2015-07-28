@@ -2,12 +2,56 @@
   {
     "element": "button",
     "icon": "",
+    "text": 63,
+    "class": "button-margin-height",
+    "data": {
+      "role": "",
+      "location": "left_panel",
+      "location_group": "blogs",
+      "action": "switchPanelMode",
+      "mode": ""
+    },
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": 64,
+    "class": "button-margin-height",
+    "data": {
+      "role": "",
+      "location": "left_panel",
+      "location_group": "blogs",
+      "action": "switchPanelMode",
+      "mode": ""
+    },
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": 65,
+    "class": "button-margin-height",
+    "data": {
+      "role": "",
+      "location": "left_panel",
+      "location_group": "blogs",
+      "action": "switchPanelMode",
+      "mode": ""
+    },
+    "disable": false
+  },
+
+  {
+    "element": "button",
+    "icon": "",
     "text": 1,
     "class": "button-margin-height",
     "data": {
       "description": 2,
       "role": "",
       "location": "left_panel",
+      "location_group": "chats",
       "action": "switchPanelMode",
       "mode": "CREATE_CHAT"
     },
@@ -22,6 +66,7 @@
     "data": {
       "role": "",
       "location": "left_panel",
+      "location_group": "chats",
       "action": "switchPanelMode",
       "mode": "JOIN_CHAT"
     },
@@ -37,12 +82,30 @@
       "description": 31,
       "role": "",
       "location": "left_panel",
+      "location_group": "chats",
       "action": "switchPanelMode",
       "mode": "CHATS"
     },
     "name": "",
     "disable": false
   },
+
+  {
+    "element": "button",
+    "icon": "",
+    "text": 66,
+    "class": "button-margin-height",
+    "data": {
+      "role": "",
+      "location": "left_panel",
+      "location_group": "users",
+      "action": "switchPanelMode",
+      "mode": "USERS"
+    },
+    "name": "",
+    "disable": false
+  },
+
   {
     "element": "button",
     "icon": "",
@@ -51,6 +114,7 @@
     "data": {
       "role": "",
       "location": "left_panel",
+      "location_group": "users",
       "action": "switchPanelMode",
       "mode": "USERS"
     },

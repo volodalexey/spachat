@@ -78,17 +78,5 @@
       "action": "changeEdit",
       "name": "ControlScrollMessage"
     }
-  },
-  {
-    "element": "input",
-    "type": "checkbox",
-    "text": 13,
-    "class": "check-box-size",
-    "data": {
-      "key": "iSender",
-      "role": "btnEdit",
-      "action": "changeSender",
-      "name": ""
-    }
   }
 ]
