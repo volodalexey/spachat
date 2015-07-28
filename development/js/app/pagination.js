@@ -74,11 +74,6 @@ define('pagination', [
                 _this.addRemoveListener('remove', _this.module.pagination_container, 'click', _this.bindedDataActionRouter, false);
             },
 
-            cashContextElements: function() {
-                var _this = this;
-                _this.input_choose_page = _this.module.go_to_container.querySelector('[data-role="choice_per_page"]');
-            },
-
             addContextEventListener: function() {
                 var _this = this;
                 _this.removeContextEventListeners();
@@ -95,7 +90,6 @@ define('pagination', [
             unCashElements: function() {
                 var _this = this;
                 _this.buttons_show_choice = null;
-                _this.input_choose_page = null;
             },
 
             render: function(options, _module, mode) {
@@ -107,33 +101,40 @@ define('pagination', [
                 }
                 _this.optionsDefinition(_this.module, _this.bodyOptionsMode);
                 if (_this.module.currentPaginationOptions.show) {
-                    _this.showHorizontalSpinner(_this.module.pagination_container);
-                    _this.countQuantityPages(function(){
-                        _this.disableButtonsPagination();
-                        _this.body_mode = _this.MODE.PAGINATION;
-                        _this.elementMap = {
-                            PAGINATION: _this.module.pagination_container
-                        };
-                        var data = {
-                            firstPage: _this.module.currentPaginationOptions.firstPage,
-                            currentPage: _this.module.currentPaginationOptions.currentPage,
-                            lastPage:  _this.module.currentPaginationOptions.lastPage,
-                            disableBack: _this.module.currentPaginationOptions.disableBack,
-                            disableFirst: _this.module.currentPaginationOptions.disableFirst,
-                            disableLast: _this.module.currentPaginationOptions.disableLast,
-                            disableForward: _this.module.currentPaginationOptions.disableForward
-                        };
-                        _this.renderLayout(data, function(){
-                            _this.addMainEventListener();
-                            _this.cashMainElements();
-                            _this.renderGoTo();
-                            if (_this.buttons_show_choice && _this.module.currentGoToOptions.show) {
-                                _this.buttons_show_choice.forEach(function(btn){
-                                    btn.dataset.toggle = false;
-                                });
-                            }
+                    if(!_this.previousShow_Pagination || _this.previous_Pagination_mode !== _this.bodyOptionsMode){
+                        _this.showHorizontalSpinner(_this.module.pagination_container);
+                        _this.previousShow_Pagination = true;
+                        _this.previous_Pagination_mode = _this.bodyOptionsMode;
+                        _this.countQuantityPages(function(){
+                            _this.disableButtonsPagination();
+                            _this.body_mode = _this.MODE.PAGINATION;
+                            _this.elementMap = {
+                                PAGINATION: _this.module.pagination_container
+                            };
+                            var data = {
+                                firstPage: _this.module.currentPaginationOptions.firstPage,
+                                currentPage: _this.module.currentPaginationOptions.currentPage,
+                                lastPage:  _this.module.currentPaginationOptions.lastPage,
+                                disableBack: _this.module.currentPaginationOptions.disableBack,
+                                disableFirst: _this.module.currentPaginationOptions.disableFirst,
+                                disableLast: _this.module.currentPaginationOptions.disableLast,
+                                disableForward: _this.module.currentPaginationOptions.disableForward
+                            };
+                            _this.renderLayout(data, function(){
+                                _this.addMainEventListener();
+                                _this.cashMainElements();
+                                _this.renderGoTo();
+                                if (_this.buttons_show_choice && _this.module.currentGoToOptions.show) {
+                                    _this.buttons_show_choice.forEach(function(btn){
+                                        btn.dataset.toggle = false;
+                                    });
+                                }
+                            });
                         });
-                    });
+                    } else {
+                        _this.renderGoTo();
+                    }
+
                 } else {
                     _this.module.pagination_container.innerHTML = "";
                     _this.module.go_to_container.innerHTML = "";
@@ -143,15 +144,17 @@ define('pagination', [
                         });
                     }
                     _this.previousShow = false;
+                    _this.previousShow_Pagination = false;
                 }
             },
 
             renderGoTo: function() {
                 var _this = this;
                 if (_this.module.currentGoToOptions.show){
-                    if (!_this.previousShow) {
+                    if (!_this.previousShow || _this.previous_GoTo_mode !== _this.bodyOptionsMode) {
                         _this.showHorizontalSpinner(_this.module.go_to_container);
                         _this.previousShow = true;
+                        _this.previous_GoTo_mode = _this.bodyOptionsMode;
                         _this.buttons_show_choice.forEach(function(btn){
                             btn.dataset.toggle = false;
                         });
@@ -166,7 +169,6 @@ define('pagination', [
                         _this.body_mode = _this.MODE.GO_TO;
                         _this.renderLayout(data, function(){
                             _this.addContextEventListener();
-                            _this.cashContextElements();
                         });
                     }
                 } else {
@@ -205,8 +207,27 @@ define('pagination', [
                 });
             },
 
+            changePage: function(element) {
+                var _this = this, value = parseInt(element.value);
+                if (element.value === "" || element.value === "0"){
+                    _this.module.currentGoToOptions.page = null;
+                    return;
+                }
+
+                if (!_this.module.currentGoToOptions.rteChoicePage) {
+                        _this.module.currentPaginationOptions.currentPage = value;
+                        _this.module.currentGoToOptions.page = value;
+                    return;
+                }
+                _this.previousShow_Pagination = false;
+                _this.module.currentPaginationOptions.currentPage = value;
+                _this.module.currentGoToOptions.page = value;
+                _this.module.render(null, null);
+            },
+
             switchPage: function(element) {
                 var _this = this;
+
                 if (_this.module.MODE && _this.module.bodyOptions.mode === _this.module.MODE.DETAIL_VIEW) {
                     _this.module.bodyOptions.mode = _this.module.MODE.CHATS;
                 }
@@ -220,27 +241,10 @@ define('pagination', [
                     _this.module.currentPaginationOptions.currentPage = parseInt(_this.module.currentPaginationOptions.currentPage) + 1;
                 }
 
-                if (_this.module.currentGoToOptions.rteChoicePage && element.dataset.role === "choice_per_page") {
-                    if (element.value === "" ){
-                        _this.module.currentGoToOptions.page = null;
-                    } else {
-                        var value = parseInt(element.value);
-                        _this.module.currentPaginationOptions.currentPage = value;
-                        _this.module.currentGoToOptions.page = value;
-                    }
-                }
-
                 if (!_this.module.currentGoToOptions.rteChoicePage && element.dataset.role === "go_to_page") {
-                    if (_this.input_choose_page.value === "" ){
-                        _this.module.currentGoToOptions.page = null;
-                    } else {
-                        var value = parseInt(_this.input_choose_page.value);
-                        _this.module.currentPaginationOptions.currentPage = value;
-                        _this.module.currentGoToOptions.page = value;
-                    }
                     _this.previousShow = false;
                 }
-
+                _this.previousShow_Pagination = false;
                 _this.module.render(null, null);
             },
 

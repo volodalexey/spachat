@@ -37,6 +37,7 @@
     "class": "w-50px",
     "data": {
       "role": "choice_per_page",
+      "action": "changePage",
       "key": "page"
     },
     "name": "",
@@ -82,7 +83,7 @@
     "class": "",
     "data": {
       "role": "choice_per_page",
-      "action": "switchPage",
+      "action": "changePage",
       "key": "page"
     },
     "name": "",

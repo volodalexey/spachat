@@ -182,7 +182,6 @@
       "role": ""
     },
     "name": "",
-    "for": "show_per_page",
     "service_id": "per_page",
     "sort": 2,
     "redraw_mode": "rte"
@@ -199,7 +198,6 @@
       "key": "perPageValue"
     },
     "name": "",
-    "id": "show_per_page",
     "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
     "service_id": "per_page",
     "sort": 3,
@@ -249,7 +247,6 @@
       "action": "showPerPage"
     },
     "name": "",
-    "for": "show_per_page",
     "service_id": "per_page",
     "sort": 2,
     "redraw_mode": "nrte"
@@ -266,7 +263,6 @@
       "key": "perPageValue"
     },
     "name": "",
-    "id": "show_per_page",
     "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
     "service_id": "per_page",
     "sort": 3,

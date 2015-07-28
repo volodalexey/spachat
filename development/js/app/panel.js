@@ -205,6 +205,7 @@ define('panel', [
             this.body_mode = description.body_mode;
             this.filter_container = description.filter_container;
             this.go_to_container = description.go_to_container;
+            this.panel_toolbar = description.panel_toolbar;
             this.pagination_container = description.pagination_container;
             this.extra_toolbar_container = description.extra_toolbar_container;
 
@@ -220,8 +221,6 @@ define('panel', [
             panelArray: [],
 
             openChatsInfoArray: [],
-
-
 
             MODE: {
                 CREATE_CHAT: 'CREATE_CHAT',
@@ -275,7 +274,7 @@ define('panel', [
                 var _this = this;
                 _this.togglePanelElement = _this.outer_container.querySelector('[data-action="togglePanel"]');
                 _this.panel_body = _this.outer_container.querySelector('[data-role="panel_body"]');
-                _this.panel_toolbar = _this.outer_container.querySelector('[data-role="panel_toolbar"]');
+                //_this.panel_toolbar = _this.outer_container.querySelector('[data-role="panel_toolbar"]');
             },
 
             cashBodyElement: function() {
@@ -317,10 +316,9 @@ define('panel', [
                 _this.removeMainEventListeners();
                 _this.addRemoveListener('add', _this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
                 _this.addRemoveListener('add', _this.panel_body, 'input', _this.bindedInputUserInfo, false);
-                _this.addRemoveListener('add', _this.inner_container, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('add', _this.inner_container, 'input', _this.bindedDataActionRouter, false);
-                //_this.addRemoveListener('add', _this.inner_container, 'change', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('add', _this.inner_container, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('add', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.on('throw', _this.throwRouter, _this);
                 event_bus.on('chatDestroyed', _this.bindedOnChatDestroyed, _this);
@@ -330,10 +328,9 @@ define('panel', [
                 var _this = this;
                 _this.addRemoveListener('remove', _this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'input', _this.bindedInputUserInfo, false);
-                _this.addRemoveListener('remove', _this.inner_container, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('remove', _this.inner_container, 'input', _this.bindedDataActionRouter, false);
-                //_this.addRemoveListener('remove', _this.inner_container, 'change', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('remove', _this.panel_body, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.off('throw', _this.throwRouter);
                 event_bus.off('chatDestroyed', _this.bindedOnChatDestroyed);
@@ -358,7 +355,8 @@ define('panel', [
                             _this.render({
                                 "detail_view": detail_view,
                                 "pointer": pointer,
-                                "chat_id_value": chatId});
+                                "chat_id_value": chatId
+                            });
                         }
                     }
                 }

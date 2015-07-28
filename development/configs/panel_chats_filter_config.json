@@ -14,7 +14,6 @@
       "key": "showEnablePagination"
     },
     "name": "",
-    "id": "enable_pagination",
     "service_id": "pagination",
     "sort": 3
   },
@@ -39,7 +38,6 @@
       "role": ""
     },
     "name": "",
-    "for": "enable_pagination",
     "service_id": "pagination",
     "sort": 2
   },
@@ -147,7 +145,6 @@
     "text": 19,
     "class": "button-inset-white",
     "data": {
-      "throw": "true",
       "role": "show_per_page",
       "action": "showPerPage"
     },

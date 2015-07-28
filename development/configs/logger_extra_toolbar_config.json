@@ -1,0 +1,18 @@
+[
+  {
+    "element": "button",
+    "icon": "",
+    "text": 28,
+    "class": "button-inset-square",
+    "data": {
+      "throw": "true",
+      "action": "changeMode",
+      "role": "btn_Filter",
+      "toggle": true,
+      "chat_part": "filter",
+      "mode_to": "MESSAGES_FILTER"
+    },
+    "name": "",
+    "disabled": false
+  }
+]

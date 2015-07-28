@@ -148,7 +148,7 @@ define('chat', [
                 lastPage: null,
                 showEnablePagination: false,
                 showChoicePerPage: false,
-                perPageValue: 10,
+                perPageValue: 25,
                 perPageValueNull: false,
                 rtePerPage: true,
                 disableBack: false,
@@ -341,7 +341,6 @@ define('chat', [
                             switch (_obj.newMode) {
                                 case _this.body.MODE.SETTINGS:
                                     _this.bodyOptions.mode = _this.body.MODE.SETTINGS;
-                                    //_this.filterOptions.show = false;
                                     _this.editorOptions.show = false;
                                     _this.toggleShowState({
                                         key: 'show',
@@ -373,6 +372,11 @@ define('chat', [
                                         save: true,
                                         toggle: false
                                     }, _this.logger_GoToOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.logger_FilterOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
@@ -396,6 +400,7 @@ define('chat', [
                                 case _this.body.MODE.CONTACT_LIST:
                                     _this.bodyOptions.mode = _this.body.MODE.CONTACT_LIST;
                                     _this.editorOptions.show = false;
+                                    _this.messagesOptions.final = null;
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
@@ -426,7 +431,11 @@ define('chat', [
                                         save: true,
                                         toggle: false
                                     }, _this.logger_GoToOptions, _obj);
-
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
+                                    }, _this.logger_FilterOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         restore: true,
@@ -484,6 +493,11 @@ define('chat', [
                                         key: 'show',
                                         save: true,
                                         toggle: false
+                                    }, _this.logger_FilterOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        save: true,
+                                        toggle: false
                                     }, _this.contactList_FilterOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
@@ -529,6 +543,11 @@ define('chat', [
                                         restore: true,
                                         toggle: true
                                     }, _this.logger_GoToOptions, _obj);
+                                    _this.toggleShowState({
+                                        key: 'show',
+                                        restore: true,
+                                        toggle: true
+                                    }, _this.logger_FilterOptions, _obj);
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
@@ -657,22 +676,34 @@ define('chat', [
                 var _this = this;
                 return {
                     chatId: _this.chatId,
+                    userIds: _this.userIds,
                     createdDatetime: _this.createdDatetime,
                     createdByUserId: _this.createdByUserId,
                     receivedDatetime: _this.receivedDatetime,
-                    userIds: _this.userIds,
                     collectionDescription: _this.collectionDescription,
                     padding: _this.padding,
                     headerOptions: _this.headerOptions,
                     filterOptions: _this.filterOptions,
                     bodyOptions: _this.bodyOptions,
                     editorOptions: _this.editorOptions,
-                    messages_GoToOptions: _this.messages_GoToOptions,
-                    logger_GoToOptions: _this.logger_GoToOptions,
                     formatOptions: _this.formatOptions,
-                    logger_PaginationOptions: _this.logger_PaginationOptions,
+                    messagesOptions: _this.messagesOptions,
+                    messages_GoToOptions: _this.messages_GoToOptions,
                     messages_PaginationOptions: _this.messages_PaginationOptions,
-                    messagesOptions: _this.messagesOptions
+                    messages_FilterOptions: _this.messages_FilterOptions,
+                    messages_ExtraToolbarOptions: _this.messages_ExtraToolbarOptions,
+                    logger_GoToOptions: _this.logger_GoToOptions,
+                    logger_PaginationOptions: _this.logger_PaginationOptions,
+                    logger_FilterOptions: _this.logger_FilterOptions,
+                    logger_ExtraToolbarOptions: _this.logger_ExtraToolbarOptions,
+                    contactList_FilterOptions: _this.contactList_FilterOptions,
+                    contactList_ExtraToolbarOptions: _this.contactList_ExtraToolbarOptions,
+                    contactList_PaginationOptions: _this.contactList_PaginationOptions,
+                    contactList_GoToOptions: _this.contactList_GoToOptions,
+                    settings_ExtraToolbarOptions: _this.settings_ExtraToolbarOptions,
+                    settings_FilterOptions: _this.settings_FilterOptions,
+                    settings_PaginationOptions: _this.settings_PaginationOptions,
+                    settings_GoToOptions: _this.settings_GoToOptions
                 };
             },
 

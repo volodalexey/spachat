@@ -34,14 +34,15 @@ define('panel_platform', [
                 _this.left_panel_inner_container = document.querySelector('[data-role="left_panel_inner_container"]');
                 _this.left_filter_container = _this.left_panel_inner_container.querySelector('[data-role="left_filter_container"]');
                 _this.left_go_to_container = _this.left_panel_inner_container.querySelector('[data-role="left_go_to_container"]');
+                _this.left_panel_toolbar = _this.left_panel_inner_container.querySelector('[data-role="left_panel_toolbar"]');
                 _this.left_pagination_container = _this.left_panel_inner_container.querySelector('[data-role="left_pagination_container"]');
                 _this.left_extra_toolbar_container = _this.left_panel_inner_container.querySelector('[data-role="left_extra_toolbar_container"]');
-
 
                 _this.right_panel_outer_container = document.querySelector('[data-role="right_panel_outer_container"]');
                 _this.right_panel_inner_container = document.querySelector('[data-role="right_panel_inner_container"]');
                 _this.right_filter_container = _this.right_panel_inner_container.querySelector('[data-role="right_filter_container"]');
                 _this.right_go_to_container = _this.right_panel_inner_container.querySelector('[data-role="right_go_to_container"]');
+                _this.right_panel_toolbar = _this.right_panel_inner_container.querySelector('[data-role="right_panel_toolbar"]');
                 _this.right_pagination_container = _this.right_panel_inner_container.querySelector('[data-role="right_pagination_container"]');
                 _this.right_extra_toolbar_container = _this.right_panel_inner_container.querySelector('[data-role="right_extra_toolbar_container"]');
             },
@@ -52,14 +53,17 @@ define('panel_platform', [
                 _this.left_panel_inner_container = null;
                 _this.left_filter_container = null;
                 _this.left_go_to_container = null;
+                _this.left_panel_toolbar = null;
                 _this.left_pagination_container = null;
                 _this.left_extra_toolbar_container = null;
+
 
 
                 _this.right_panel_outer_container = null;
                 _this.right_panel_inner_container = null;
                 _this.right_filter_container = null;
                 _this.right_go_to_container = null;
+                _this.right_panel_toolbar = null;
                 _this.right_pagination_container = null;
                 _this.right_extra_toolbar_container = null;
             },
@@ -77,7 +81,8 @@ define('panel_platform', [
                         filter_container: _this.left_filter_container,
                         go_to_container: _this.left_go_to_container,
                         pagination_container: _this.left_pagination_container,
-                        extra_toolbar_container: _this.left_extra_toolbar_container
+                        extra_toolbar_container: _this.left_extra_toolbar_container,
+                        panel_toolbar: _this.left_panel_toolbar
                     },
                     {
                         type: this.PANEL_TYPES.RIGHT,
@@ -87,6 +92,7 @@ define('panel_platform', [
                         body_mode: panel.prototype.MODE.USER_INFO_SHOW,
                         filter_container: _this.right_filter_container,
                         go_to_container: _this.right_go_to_container,
+                        panel_toolbar: _this.right_panel_toolbar,
                         pagination_container: _this.right_pagination_container,
                         extra_toolbar_container: _this.right_extra_toolbar_container
                     }

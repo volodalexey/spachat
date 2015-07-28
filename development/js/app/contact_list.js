@@ -51,13 +51,6 @@ define('contact_list', [
                         "CONTACT_LIST": _this.body_container
                     };
                     _this.renderLayout(null, null);
-                } else {
-                    //_this.chat.switchModes([
-                    //    {
-                    //        'chat_part':'body',
-                    //        'newMode': _this.chat.body.MODE.MESSAGES
-                    //    }
-                    //]);
                 }
             },
 

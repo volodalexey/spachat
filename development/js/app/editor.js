@@ -134,19 +134,23 @@ define('editor', [
             renderFormatPanel: function() {
                 var _this = this;
                 if (_this.chat.formatOptions.show) {
-                    _this.showHorizontalSpinner(_this.btnEditPanel);
-                    _this.buttonFormat.dataset.toggle = false;
-                    _this.body_mode = _this.MODE.FORMAT_PANEL;
-                    _this.elementMap = {
-                        FORMAT_PANEL: _this.btnEditPanel
-                    };
-                    var data = {
-                        "offScroll": _this.chat.formatOptions.offScroll,
-                        "iSender": _this.chat.formatOptions.iSender
-                    };
-                    _this.renderLayout(data, null);
+                    if(!_this.previous_Show) {
+                        _this.previous_Show = true;
+                        _this.showHorizontalSpinner(_this.btnEditPanel);
+                        _this.buttonFormat.dataset.toggle = false;
+                        _this.body_mode = _this.MODE.FORMAT_PANEL;
+                        _this.elementMap = {
+                            FORMAT_PANEL: _this.btnEditPanel
+                        };
+                        var data = {
+                            "offScroll": _this.chat.formatOptions.offScroll,
+                            "iSender": _this.chat.formatOptions.iSender
+                        };
+                        _this.renderLayout(data, null);
+                    }
                 } else {
                     _this.btnEditPanel.innerHTML = "";
+                    _this.previous_Show = false;
                 }
             },
 

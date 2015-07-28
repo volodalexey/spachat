@@ -80,13 +80,6 @@ define('settings', [
                     _this.renderLayout(data, function(){
                         _this.addEventListener();
                     });
-                } else {
-                    //_this.chat.switchModes([
-                    //    {
-                    //        'chat_part':'body',
-                    //        'newMode': _this.chat.body.MODE.MESSAGES
-                    //    }
-                    //]);
                 }
             },
 
