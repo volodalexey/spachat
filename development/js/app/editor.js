@@ -109,13 +109,13 @@ define('editor', [
                             MAIN_PANEL: _this.editor_container
                         };
                         var data = {
-                            "restore": _this.chat.messagesOptions.restore,
-                            "innerHTML": _this.chat.messagesOptions.innerHTML
+                            "restore": _this.chat.listOptions.restore,
+                            "innerHTML": _this.chat.listOptions.innerHTML
                         }
                         _this.renderLayout(data, function() {
-                            if (_this.chat.messagesOptions.restore) {
-                                _this.chat.messagesOptions.restore = false;
-                                _this.chat.messagesOptions.innerHTML = "";
+                            if (_this.chat.listOptions.restore) {
+                                _this.chat.listOptions.restore = false;
+                                _this.chat.listOptions.innerHTML = "";
                             }
                             _this.cashElements();
                             _this.addMainEventListener();

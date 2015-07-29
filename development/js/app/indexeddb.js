@@ -67,10 +67,15 @@ define('indexeddb',
                         if(db.objectStoreNames.contains(_table_name)) {
                             db.deleteObjectStore(_table_name);
                         }
+                        var objectStore;
                         if (options.table_options && options.table_options[ind]) {
-                            db.createObjectStore(_table_name, options.table_options[ind]);
+                            objectStore = db.createObjectStore(_table_name, options.table_options[ind]);
                         } else {
-                            db.createObjectStore(_table_name, { keyPath : keyPath });
+                            objectStore = db.createObjectStore(_table_name, { keyPath : keyPath });
+                        }
+                        if(objectStore && options.table_indexes && options.table_indexes[ind]) {
+                            var indexDescription = options.table_indexes[ind];
+                            objectStore.createIndex(indexDescription[0], indexDescription[1], indexDescription[2]);
                         }
                     });
                 };
@@ -236,6 +241,60 @@ define('indexeddb',
                     getCursor.onerror = function(e) {
                         callback(e.currentTarget.error);
                     };
+                };
+
+                if (_this.openDatabases[options.db_name]) {
+                    executeGet();
+                } else {
+                    _this.open(options, function(err, upgraded) {
+                        if (err) {
+                            callback(err, upgraded);
+                        } else {
+                            executeGet();
+                        }
+                    })
+                }
+            },
+
+            getByKeysPath: function(options, getValues, callback) {
+                var _this = this, cur_table_name;
+
+                if (_this.canNotProceed(callback)) { return; }
+
+                cur_table_name = _this.defineCurrentTable(options);
+
+                var executeGet = function() {
+                    var trans, store, result;
+                    try {
+                        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_name], "readonly");
+                        store = trans.objectStore(cur_table_name);
+                    } catch (error) {
+                        callback(error);
+                        return;
+                    }
+
+                    var getCursor;
+                    var _array = [];
+                    getValues.forEach(function(getValue){
+                        try {
+                            getCursor = store.openCursor(IDBKeyRange.only(getValue));
+                        } catch (error) {
+                            callback(error);
+                            return;
+                        }
+                        getCursor.onsuccess = function(event) {
+                           var cursor = this.result;
+                            if (!cursor) return;
+                            _array.push(cursor.value);
+                            cursor.continue();
+                        };
+                        getCursor.onerror = function(e) {
+                            callback(e.currentTarget.error);
+                        };
+                        trans.oncomplete = function() {
+                            callback(null, _array);
+                        };
+                    });
                 };
 
                 if (_this.openDatabases[options.db_name]) {

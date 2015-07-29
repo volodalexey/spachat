@@ -95,7 +95,7 @@ define('chat', [
                 sendEnter: false,
                 iSender: true
             },
-            messagesOptions: {
+            listOptions: {
                 start: 0,
                 last: null,
                 previousStart: 0,
@@ -236,6 +236,7 @@ define('chat', [
                         "db_name": this.chatId + '_chat',
                         "table_names": ['messages', 'log_messages'],
                         "table_options": [{ autoIncrement: true, keyPath: "id" }, { keyPath: "id" }],
+                        "table_indexes": [[ 'userIds', 'userIds', { multiEntry: true } ]],
                         "db_version": 1
                     };
                 }
@@ -395,12 +396,12 @@ define('chat', [
                                     _this.toggleText({
                                         key: 'innerHTML',
                                         save: true
-                                    }, _this.messagesOptions, _this.editor.message_inner_container);
+                                    }, _this.listOptions, _this.editor.message_inner_container);
                                     break;
                                 case _this.body.MODE.CONTACT_LIST:
                                     _this.bodyOptions.mode = _this.body.MODE.CONTACT_LIST;
                                     _this.editorOptions.show = false;
-                                    _this.messagesOptions.final = null;
+                                    _this.listOptions.final = null;
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
@@ -454,7 +455,7 @@ define('chat', [
                                     _this.toggleText({
                                         key: 'innerHTML',
                                         save: true
-                                    }, _this.messagesOptions, _this.editor.message_inner_container);
+                                    }, _this.listOptions, _this.editor.message_inner_container);
                                     break;
                                 case _this.body.MODE.MESSAGES:
                                     _this.bodyOptions.mode = _this.body.MODE.MESSAGES;
@@ -512,12 +513,12 @@ define('chat', [
                                     _this.toggleText({
                                         key: 'innerHTML',
                                         restore: true
-                                    }, _this.messagesOptions, _this.editor.message_inner_container);
+                                    }, _this.listOptions, _this.editor.message_inner_container);
                                     break;
                                 case _this.body.MODE.LOGGER:
                                     _this.bodyOptions.mode = _this.body.MODE.LOGGER;
                                     _this.editorOptions.show = false;
-                                    _this.messagesOptions.final = null;
+                                    _this.listOptions.final = null;
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
@@ -588,10 +589,10 @@ define('chat', [
                                         _this.currentPaginationOptions.show = _obj.target.checked;
                                         _this.currentPaginationOptions.showEnablePagination = _obj.target.checked;
                                         if (!_obj.target.checked) {
-                                            _this.messagesOptions.previousStart = 0;
-                                            _this.messagesOptions.previousFinal = null;
-                                            _this.messagesOptions.start = 0;
-                                            _this.messagesOptions.final = null;
+                                            _this.listOptions.previousStart = 0;
+                                            _this.listOptions.previousFinal = null;
+                                            _this.listOptions.start = 0;
+                                            _this.listOptions.final = null;
                                         }
                                     }
                                     _this.toggleShowState({
@@ -676,7 +677,9 @@ define('chat', [
                 var _this = this;
                 return {
                     chatId: _this.chatId,
-                    userIds: _this.userIds,
+                    userIds: ["44c6c9d7-974d-489d-4b16-5b6e71ec4ed9c8921f",
+                        "948f0ec9-793d-ca47-75dc-042e80314ed9c8a776",
+                        "dcf38bce-a34d-5f8c-8315-2b4f5a024ed9c881a9"],
                     createdDatetime: _this.createdDatetime,
                     createdByUserId: _this.createdByUserId,
                     receivedDatetime: _this.receivedDatetime,
@@ -687,7 +690,7 @@ define('chat', [
                     bodyOptions: _this.bodyOptions,
                     editorOptions: _this.editorOptions,
                     formatOptions: _this.formatOptions,
-                    messagesOptions: _this.messagesOptions,
+                    listOptions: _this.listOptions,
                     messages_GoToOptions: _this.messages_GoToOptions,
                     messages_PaginationOptions: _this.messages_PaginationOptions,
                     messages_FilterOptions: _this.messages_FilterOptions,

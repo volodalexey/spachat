@@ -158,17 +158,17 @@ define('body', [
             limitationQuantityRecords: function(data) {
                 var _this = this;
                 if (data.length) {
-                    if (_this.module.messagesOptions.final > data.length || !_this.module.messagesOptions.final) {
-                        _this.module.messagesOptions.final = data.length;
+                    if (_this.module.listOptions.final > data.length || !_this.module.listOptions.final) {
+                        _this.module.listOptions.final = data.length;
                     }
                 }
-                if (_this.module.messagesOptions.previousStart !== _this.module.messagesOptions.start ||
-                    _this.module.messagesOptions.previousFinal !== _this.module.messagesOptions.final) {
+                if (_this.module.listOptions.previousStart !== _this.module.listOptions.start ||
+                    _this.module.listOptions.previousFinal !== _this.module.listOptions.final) {
                     _this.module.panel_body.innerHTML = "";
-                    _this.module.messagesOptions.previousStart = _this.module.messagesOptions.start;
-                    _this.module.messagesOptions.previousFinal = _this.module.messagesOptions.final;
+                    _this.module.listOptions.previousStart = _this.module.listOptions.start;
+                    _this.module.listOptions.previousFinal = _this.module.listOptions.final;
                 }
-                data = data.slice(_this.module.messagesOptions.start, _this.module.messagesOptions.final);
+                data = data.slice(_this.module.listOptions.start, _this.module.listOptions.final);
                 return data;
             },
 
@@ -233,7 +233,7 @@ define('body', [
             "CREATE_CHAT": '',
             'JOIN_CHAT': '',
             "CHATS": '',
-            "USERS": '',
+            "USERS": users_bus.collectionDescription,
             "DETAIL_VIEW": '',
             "FILTER_MY_CHATS": ''
         };
@@ -255,9 +255,20 @@ define('body', [
             "CREATE_CHAT": null,
             "JOIN_CHAT": null,
             "CHATS": body.prototype.transferData,
-            "USERS": null,
+            "USERS": users_bus.excludeUser,
             "DETAIL_VIEW": body.prototype.chatsFilter,
             "FILTER_CHATS": ''
+        };
+
+        body.prototype.dataHandlerContextMap = {
+            "USER_INFO_EDIT": null,
+            "USER_INFO_SHOW": null,
+            "CREATE_CHAT": null,
+            "JOIN_CHAT": null,
+            "CHATS": null,
+            "USERS": users_bus,
+            "DETAIL_VIEW": null,
+            "FILTER_CHATS": null
         };
 
         return body;

@@ -177,7 +177,7 @@ define('panel', [
                 mode_change: "rte"
             },
 
-            messagesOptions: {
+            listOptions: {
                 start: 0,
                 last: null,
                 previousStart: 0,
@@ -460,10 +460,10 @@ define('panel', [
                                     _this.currentPaginationOptions.show = obj.target.checked;
                                     _this.currentPaginationOptions.showEnablePagination = obj.target.checked;
                                     if (!obj.target.checked) {
-                                        _this.messagesOptions.previousStart = 0;
-                                        _this.messagesOptions.previousFinal = null;
-                                        _this.messagesOptions.start = 0;
-                                        _this.messagesOptions.final = null;
+                                        _this.listOptions.previousStart = 0;
+                                        _this.listOptions.previousFinal = null;
+                                        _this.listOptions.start = 0;
+                                        _this.listOptions.final = null;
                                     }
                                 }
                                 _this.toggleShowState({

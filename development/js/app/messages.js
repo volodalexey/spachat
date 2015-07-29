@@ -96,14 +96,14 @@ define('messages', [
                             _this.chat.body_container.innerHTML = "";
                         }
 
-                        if (_this.chat.messagesOptions.final > messages.length || !_this.chat.messagesOptions.final) {
-                            _this.chat.messagesOptions.final = messages.length;
+                        if (_this.chat.listOptions.final > messages.length || !_this.chat.listOptions.final) {
+                            _this.chat.listOptions.final = messages.length;
                         }
-                        if (_this.chat.messagesOptions.previousStart !== _this.chat.messagesOptions.start ||
-                            _this.chat.messagesOptions.previousFinal !== _this.chat.messagesOptions.final) {
+                        if (_this.chat.listOptions.previousStart !== _this.chat.listOptions.start ||
+                            _this.chat.listOptions.previousFinal !== _this.chat.listOptions.final) {
                             _this.showSpinner(_this.chat.body_container);
-                            _this.chat.messagesOptions.previousStart = _this.chat.messagesOptions.start;
-                            _this.chat.messagesOptions.previousFinal = _this.chat.messagesOptions.final;
+                            _this.chat.listOptions.previousStart = _this.chat.listOptions.start;
+                            _this.chat.listOptions.previousFinal = _this.chat.listOptions.final;
 
                             var generatedMessages = [];
                             var currentTemplate;
@@ -116,7 +116,7 @@ define('messages', [
                                     break;
                             }
 
-                            for (var i = _this.chat.messagesOptions.start; i < _this.chat.messagesOptions.final; i++) {
+                            for (var i = _this.chat.listOptions.start; i < _this.chat.listOptions.final; i++) {
                                 generatedMessages.push(currentTemplate({
                                     message: messages[i],
                                     deviceId: event_bus.getDeviceId(),
@@ -180,7 +180,7 @@ define('messages', [
                     deviceId: event_bus.getDeviceId(),
                     messageConstructor: HTML_message.prototype
                 });
-                //_this.chat.messagesOptions.final += 1;
+                //_this.chat.listOptions.final += 1;
                 _this.chat.messages_PaginationOptions.currentPage = null;
                 _this.chat.render(null, null);
                 _this.scrollTo(options);

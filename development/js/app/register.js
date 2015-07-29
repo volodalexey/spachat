@@ -165,7 +165,11 @@ define('register', [
                     var account = {
                         userId: _this.generateId(),
                         userName: options.userName,
-                        userPassword: options.userPassword
+                        userPassword: options.userPassword,
+                        userIds: ["44c6c9d7-974d-489d-4b16-5b6e71ec4ed9c8921f",
+                            "948f0ec9-793d-ca47-75dc-042e80314ed9c8a776",
+                            "dcf38bce-a34d-5f8c-8315-2b4f5a024ed9c881a9"
+                        ]
                     };
 
                     indexeddb.addOrUpdateAll(

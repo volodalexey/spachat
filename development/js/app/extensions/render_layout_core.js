@@ -132,24 +132,14 @@ define('render_layout_core', [
                             callback(getAllErr);
                         } else {
                             if (_this.dataHandlerMap[_this.body_mode]) {
-                                callback(null, options, _this.dataHandlerMap[_this.body_mode].call(_this, options, data));
+                                var context = _this.dataHandlerContextMap[_this.body_mode] ? _this.dataHandlerContextMap[_this.body_mode] : _this;
+                                callback(null, options, _this.dataHandlerMap[_this.body_mode].call(context, options, data));
                             } else {
                                 callback(null, options, data);
                             }
                         }
                     });
                 } else {
-/*                    if (_this.MODE && (_this.body_mode === _this.MODE.FILTER ||
-                        _this.body_mode === _this.MODE.FORMAT_PANEL || _this.body_mode === _this.MODE.PAGINATION
-                        || _this.body_mode === _this.MODE.GO_TO || _this.body_mode === _this.MODE.CHATS_FILTER
-                        || _this.body_mode === _this.MODE.USERS_FILTER
-                        || _this.body_mode === _this.MODE.MAIN_PANEL)
-                        || (_this.chat && _this.body_mode === _this.chat.body.MODE.SETTINGS)
-                    ) {
-                        callback(null, null, options);
-                        return;
-
-                    }*/
                     callback(null, null, options);
                 }
             },

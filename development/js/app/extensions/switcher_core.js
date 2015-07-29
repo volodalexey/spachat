@@ -11,11 +11,11 @@ define('switcher_core',
             optionsDefinition: function(_module, mode) {
                 var _this = this;
 
-                if (_this.previousModeSwitcher !== mode && _module.messagesOptions) {
-                    _module.messagesOptions.previousStart = 0;
-                    _module.messagesOptions.previousFinal = null;
-                    _module.messagesOptions.start = 0;
-                    _module.messagesOptions.final = null;
+                if (_this.previousModeSwitcher !== mode && _module.listOptions) {
+                    _module.listOptions.previousStart = 0;
+                    _module.listOptions.previousFinal = null;
+                    _module.listOptions.start = 0;
+                    _module.listOptions.final = null;
                 }
                 switch (mode) {
                     case _module.body.MODE.SETTINGS:

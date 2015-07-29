@@ -193,12 +193,12 @@ define('pagination', [
                         quantityPages = 1;
                     }
                     if (_this.module.currentPaginationOptions.currentPage === null) {
-                        _this.module.messagesOptions.start = quantityPages * _this.module.currentPaginationOptions.perPageValue - _this.module.currentPaginationOptions.perPageValue;
-                        _this.module.messagesOptions.final = quantityPages * _this.module.currentPaginationOptions.perPageValue;
+                        _this.module.listOptions.start = quantityPages * _this.module.currentPaginationOptions.perPageValue - _this.module.currentPaginationOptions.perPageValue;
+                        _this.module.listOptions.final = quantityPages * _this.module.currentPaginationOptions.perPageValue;
                         _this.module.currentPaginationOptions.currentPage = quantityPages;
                     } else {
-                        _this.module.messagesOptions.start = (_this.module.currentPaginationOptions.currentPage - 1) * _this.module.currentPaginationOptions.perPageValue;
-                        _this.module.messagesOptions.final = (_this.module.currentPaginationOptions.currentPage - 1) * _this.module.currentPaginationOptions.perPageValue + _this.module.currentPaginationOptions.perPageValue;
+                        _this.module.listOptions.start = (_this.module.currentPaginationOptions.currentPage - 1) * _this.module.currentPaginationOptions.perPageValue;
+                        _this.module.listOptions.final = (_this.module.currentPaginationOptions.currentPage - 1) * _this.module.currentPaginationOptions.perPageValue + _this.module.currentPaginationOptions.perPageValue;
                     }
                     _this.module.currentPaginationOptions.lastPage = quantityPages;
                     if (callback) {
