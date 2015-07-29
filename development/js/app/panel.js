@@ -274,7 +274,6 @@ define('panel', [
                 var _this = this;
                 _this.togglePanelElement = _this.outer_container.querySelector('[data-action="togglePanel"]');
                 _this.panel_body = _this.outer_container.querySelector('[data-role="panel_body"]');
-                //_this.panel_toolbar = _this.outer_container.querySelector('[data-role="panel_toolbar"]');
             },
 
             cashBodyElement: function() {
@@ -380,9 +379,6 @@ define('panel', [
                     _this.inner_container.style.maxWidth = _this.calcMaxWidth();
                     _this.fillPanelToolbar();
                     _this.render();
-                    if (bigMode === true) {
-                        _this.resizePanel();
-                    }
                     _this.resizePanel();
                 } else {
                     panel.prototype.z_index--;
