@@ -5,6 +5,7 @@ define('chat_platform', [
         'event_bus',
         'indexeddb',
         'users_bus',
+        'chats_bus',
         //
         'overlay_core',
         'throw_event_core',
@@ -20,6 +21,7 @@ define('chat_platform', [
              event_bus,
              indexeddb,
              users_bus,
+             chats_bus,
              //
              overlay_core,
              throw_event_core,
@@ -37,14 +39,6 @@ define('chat_platform', [
         };
 
         chat_platform.prototype = {
-
-            collectionDescription: {
-                "id": 'chats',
-                "db_name": 'chats',
-                "table_names": ['chats'],
-                "db_version": 1,
-                "keyPath": "chatId"
-            },
 
             bindContexts: function() {
                 var _this = this;
@@ -208,7 +202,7 @@ define('chat_platform', [
             checkGeneratedChatId: function(chatId, callback) {
                 var _this = this;
                 indexeddb.getByKeyPath(
-                    _this.collectionDescription,
+                    chats_bus.collectionDescription,
                     chatId,
                     function(getError, chat) {
                         if (getError) {
@@ -241,7 +235,7 @@ define('chat_platform', [
                 var _this = this;
                 var chat = new Chat(event.chat_description);
                 indexeddb.addOrUpdateAll(
-                    _this.collectionDescription,
+                    chats_bus.collectionDescription,
                     null,
                     [
                         chat.toChatDescription()
@@ -273,7 +267,7 @@ define('chat_platform', [
                 var _this = this;
                 if (messageData.type === "chat_joined") {
                     indexeddb.getByKeyPath(
-                        _this.collectionDescription,
+                        chats_bus.collectionDescription,
                         messageData.chat_description.chatId,
                         function(getError, localChatDescription) {
                             if (getError) {
@@ -363,7 +357,7 @@ define('chat_platform', [
                 }
 
                 indexeddb.getByKeyPath(
-                    _this.collectionDescription,
+                    chats_bus.collectionDescription,
                     event.chat_description.chatId,
                     function(getError, chat) {
                         if (getError) {
@@ -432,7 +426,7 @@ define('chat_platform', [
                 _this.blockUIButton(chatId, control_buttons);
 
                 indexeddb.getByKeyPath(
-                    _this.collectionDescription,
+                    chats_bus.collectionDescription,
                     chatId,
                     function(getError, chat) {
                         if (getError) {
@@ -475,7 +469,7 @@ define('chat_platform', [
                     var chatDescription = chatToDestroy.toChatDescription();
 
                     indexeddb.addOrUpdateAll(
-                        _this.collectionDescription,
+                        chats_bus.collectionDescription,
                         null,
                         [
                             chatDescription

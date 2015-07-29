@@ -42,6 +42,7 @@ require.config({
         "websocket": "app/websocket",
         "event_bus": "app/event_bus",
         "users_bus": "app/users_bus",
+        "chats_bus": "app/chats_bus",
         "localization": "app/localization",
         "main_layout": "app/main_layout",
         "extra_toolbar": "app/extra_toolbar",
