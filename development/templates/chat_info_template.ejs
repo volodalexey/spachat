@@ -1,4 +1,5 @@
 <% var array = arguments[0];
+console.log(array);
 
 var array_create_chat = array.config.filter(function(config) {
     return config.data.mode === "CREATE_CHAT"
@@ -100,8 +101,11 @@ var array_my_chats_help_toolbar = array.config.filter(function(config) {
     <% }) %>
 </div>
 <div>
-    <% array.data.data.forEach(function (chat) { %>
-    <% var result = array.data.openChatsInfoArray.indexOf(chat.chatId); %>
+    <% if (array.data && array.data.data) {
+     array.data.data.forEach(function (chat) { %>
+    <% var result = array.data.openChatsInfoArray.indexOf(chat.chatId);
+    console.log("result" , result)
+    %>
     <div data-action="show_more_info" data-role="chatWrapper"
          data-chatid="<%= chat.chatId %>">
         <% array_my_chats.forEach(function (config) { %>
@@ -139,7 +143,7 @@ var array_my_chats_help_toolbar = array.config.filter(function(config) {
                 button_template: array.button_template,
                 input_template: array.input_template,
                 label_template: array.label_template,
-                options: array.options
+                options: array.data
             }) %>
 
         </div>
@@ -148,7 +152,8 @@ var array_my_chats_help_toolbar = array.config.filter(function(config) {
         <% } %>
 
     </div>
-    <% }) %>
+    <% })
+    }%>
 </div>
 <% } %>
 

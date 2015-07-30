@@ -245,9 +245,33 @@ define('chat_platform', [
                             console.error(error);
                             return;
                         }
-                        _this.chatWorkflow(event);
+                        _this.addNewChatToUserChats(chat, function(){
+                            _this.chatWorkflow(event);
+                        });
                     }
                 );
+            },
+
+            addNewChatToUserChats: function(chat, callback){
+                users_bus.getMyInfo(null, function(error, options, info) {
+                    info.chatsIds.push(chat.chatId);
+                    indexeddb.addOrUpdateAll(
+                        users_bus.collectionDescription,
+                        null,
+                        [
+                            info
+                        ],
+                        function(error) {
+                            if (error) {
+                                console.error(error);
+                                return;
+                            }
+                            if(callback) {
+                                callback();
+                            }
+                        }
+                    );
+                });
             },
 
             chatWorkflow: function(event) {

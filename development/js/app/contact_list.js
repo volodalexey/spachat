@@ -59,6 +59,8 @@ define('contact_list', [
                         _this.elementMap = {
                             "CONTACT_LIST": _this.chat.body_container
                         };
+                        contactsInfo = _this.chat.body.limitationQuantityRecords(contactsInfo);
+
                         _this.renderLayout(contactsInfo, null);
                     });
 

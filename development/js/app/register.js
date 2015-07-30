@@ -168,7 +168,8 @@ define('register', [
                         userPassword: options.userPassword,
                         userIds: ["44c6c9d7-974d-489d-4b16-5b6e71ec4ed9c8921f",
                             "2700d577-4ddc-d742-9fc7-4cbaffe14ed9c965e5"
-                        ]
+                        ],
+                        chatsIds: []
                     };
 
                     indexeddb.addOrUpdateAll(

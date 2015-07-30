@@ -273,16 +273,16 @@ define('panel', [
             cashElements: function() {
                 var _this = this;
                 _this.togglePanelElement = _this.outer_container.querySelector('[data-action="togglePanel"]');
-                _this.panel_body = _this.outer_container.querySelector('[data-role="panel_body"]');
+                _this.body_container = _this.outer_container.querySelector('[data-role="panel_body"]');
             },
 
             cashBodyElement: function() {
                 var _this = this;
                 if (_this.bodyOptions.mode === _this.MODE.USER_INFO_EDIT) {
-                    _this.user_name = _this.panel_body.querySelector('[data-main="user_name_input"]');
-                    _this.old_password = _this.panel_body.querySelector('[data-role="passwordOld"]');
-                    _this.new_password = _this.panel_body.querySelector('[data-role="passwordNew"]');
-                    _this.confirm_password = _this.panel_body.querySelector('[data-role="passwordConfirm"]');
+                    _this.user_name = _this.body_container.querySelector('[data-main="user_name_input"]');
+                    _this.old_password = _this.body_container.querySelector('[data-role="passwordOld"]');
+                    _this.new_password = _this.body_container.querySelector('[data-role="passwordNew"]');
+                    _this.confirm_password = _this.body_container.querySelector('[data-role="passwordConfirm"]');
                 }
             },
 
@@ -314,11 +314,11 @@ define('panel', [
                 var _this = this;
                 _this.removeMainEventListeners();
                 _this.addRemoveListener('add', _this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
-                _this.addRemoveListener('add', _this.panel_body, 'input', _this.bindedInputUserInfo, false);
+                _this.addRemoveListener('add', _this.body_container, 'input', _this.bindedInputUserInfo, false);
                 _this.addRemoveListener('add', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
-                _this.addRemoveListener('add', _this.panel_body, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('add', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
+                _this.addRemoveListener('add', _this.body_container, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('add', _this.body_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('add', _this.body_container, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.on('throw', _this.throwRouter, _this);
                 event_bus.on('chatDestroyed', _this.bindedOnChatDestroyed, _this);
             },
@@ -326,11 +326,11 @@ define('panel', [
             removeMainEventListeners: function() {
                 var _this = this;
                 _this.addRemoveListener('remove', _this.togglePanelElement, 'click', _this.bindedTogglePanelWorkflow, false);
-                _this.addRemoveListener('remove', _this.panel_body, 'input', _this.bindedInputUserInfo, false);
+                _this.addRemoveListener('remove', _this.body_container, 'input', _this.bindedInputUserInfo, false);
                 _this.addRemoveListener('remove', _this.panel_toolbar, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('remove', _this.panel_body, 'click', _this.bindedThrowEventRouter, false);
-                _this.addRemoveListener('remove', _this.panel_body, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('remove', _this.panel_body, 'transitionend', _this.bindedTransitionEnd, false);
+                _this.addRemoveListener('remove', _this.body_container, 'click', _this.bindedThrowEventRouter, false);
+                _this.addRemoveListener('remove', _this.body_container, 'click', _this.bindedDataActionRouter, false);
+                _this.addRemoveListener('remove', _this.body_container, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.off('throw', _this.throwRouter);
                 event_bus.off('chatDestroyed', _this.bindedOnChatDestroyed);
             },
@@ -345,7 +345,7 @@ define('panel', [
                 var _this = this;
                 if (_this.type === "left" &&
                     (_this.bodyOptions.mode === this.MODE.CHATS || _this.bodyOptions.mode === this.MODE.DETAIL_VIEW)) {
-                    var chat_info_container = _this.panel_body.querySelector('[data-chatid="' + chatId + '"]');
+                    var chat_info_container = _this.body_container.querySelector('[data-chatid="' + chatId + '"]');
                     if (chat_info_container) {
                         var detail_view = chat_info_container.querySelector('[data-role="detail_view_container"]');
                         if (detail_view.dataset.state) {
@@ -371,7 +371,7 @@ define('panel', [
 
             openOrClosePanel: function(bigMode, forceClose) {
                 var _this = this;
-                _this.showSpinner(_this.panel_body);
+                _this.showSpinner(_this.body_container);
                 if (!forceClose && _this.outer_container.style[_this.type] !== '0px') {
                     _this.previous_z_index = _this.outer_container.style.zIndex;
                     _this.outer_container.style.zIndex = ++panel.prototype.z_index;
@@ -386,7 +386,7 @@ define('panel', [
                         _this.bodyOptions.mode = _this.MODE.CHATS;
                     }
                     _this.outer_container.style.zIndex = _this.previous_z_index;
-                    _this.panel_body.innerHTML = "";
+                    _this.body_container.innerHTML = "";
                     _this.outer_container.style[_this.type] = (-_this.outer_container.offsetWidth) + 'px';
                     if (bigMode === true) {
                         _this.togglePanelElement.classList.remove("pull-for-" + _this.type + "-panel");
@@ -401,13 +401,13 @@ define('panel', [
                 _this.previous_Filter_Options = false;
                 _this.pagination.previousShow = false;
                 if (!_this.bodyOptions.mode || _this.bodyOptions.mode === "") {
-                    _this.panel_body.innerHTML = "";
+                    _this.body_container.innerHTML = "";
                     _this.filter_container.innerHTML = "";
                     _this.extra_toolbar_container.innerHTML = "";
                     _this.pagination_container.innerHTML = "";
                     _this.go_to_container.innerHTML = "";
                 } else {
-                    _this.showSpinner(_this.panel_body);
+                    _this.showSpinner(_this.body_container);
                     _this.render();
                 }
             },
@@ -490,64 +490,6 @@ define('panel', [
                         break;
                 }
                 _this.render();
-            },
-
-            changePerPage: function(element) {
-                var _this = this;
-                var value = parseInt(element.value);
-                if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
-                    _this.bodyOptions.mode = _this.MODE.CHATS;
-                }
-                _this.optionsDefinition(_this, _this.bodyOptions.mode);
-
-                if (element.value === "" || element.value === "0") {
-                    _this.currentPaginationOptions.perPageValueNull = true;
-                    return;
-                }
-
-                if (!_this.currentPaginationOptions.rtePerPage) {
-                    _this.currentPaginationOptions.currentPage = null;
-                    _this.currentPaginationOptions.perPageValue = value;
-                    return;
-                }
-
-                _this.currentPaginationOptions.perPageValueNull = false;
-                _this.currentPaginationOptions.perPageValue = value;
-                _this.currentPaginationOptions.currentPage = null;
-                if (_this.currentPaginationOptions.showEnablePagination) {
-                    _this.pagination.countQuantityPages(function() {
-                        _this.render();
-                    });
-                }
-            },
-
-            changeRTE_Filer: function(element) {
-                var _this = this;
-                if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
-                    _this.bodyOptions.mode = _this.MODE.CHATS;
-                }
-                _this.optionsDefinition(_this, _this.bodyOptions.mode);
-                _this.previous_Filter_Options = false;
-
-                if (element.checked) {
-                    _this.currentPaginationOptions.mode_change = "rte";
-                    _this.currentPaginationOptions.rtePerPage = true;
-                } else {
-                    _this.currentPaginationOptions.mode_change = "nrte";
-                    _this.currentPaginationOptions.rtePerPage = false;
-                }
-                _this.render();
-            },
-
-            showPerPage: function() {
-                var _this = this;
-                _this.optionsDefinition(_this, _this.bodyOptions.mode);
-                _this.currentPaginationOptions.currentPage = null;
-                if (_this.currentPaginationOptions.showEnablePagination) {
-                    _this.pagination.countQuantityPages(function() {
-                        _this.render();
-                    });
-                }
             },
 
             togglePanel: function(forceClose) {

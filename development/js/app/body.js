@@ -5,6 +5,7 @@ define('body', [
         'ajax_core',
         //
         'users_bus',
+        'chats_bus',
         //
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
@@ -23,6 +24,7 @@ define('body', [
         ajax_core,
         //
         users_bus,
+        chats_bus,
         //
         triple_element_template,
         button_template,
@@ -84,7 +86,7 @@ define('body', [
                             break;
                         case _this.MODE.USER_INFO_SHOW:
                             _this.elementMap = {
-                                "USER_INFO_SHOW": _this.module.panel_body
+                                "USER_INFO_SHOW": _this.module.body_container
                             };
                             _this.dataMap = {
                                 "USER_INFO_SHOW": users_bus.collectionDescription
@@ -94,7 +96,7 @@ define('body', [
                             break;
                         case _this.MODE.USER_INFO_EDIT:
                             _this.elementMap = {
-                                "USER_INFO_EDIT": _this.module.panel_body
+                                "USER_INFO_EDIT": _this.module.body_container
                             };
                             _this.dataMap = {
                                 "USER_INFO_EDIT": users_bus.collectionDescription
@@ -109,38 +111,51 @@ define('body', [
                             break;
                         case _this.MODE.CREATE_CHAT:
                             _this.elementMap = {
-                                "CREATE_CHAT": _this.module.panel_body
+                                "CREATE_CHAT": _this.module.body_container
                             };
                             _this.body_mode = _this.MODE.CREATE_CHAT;
                             _this.renderLayout(null, null);
                             break;
                         case _this.MODE.JOIN_CHAT:
                             _this.elementMap = {
-                                "JOIN_CHAT": _this.module.panel_body
+                                "JOIN_CHAT": _this.module.body_container
                             };
                             _this.body_mode = _this.MODE.JOIN_CHAT;
                             _this.renderLayout(null, null);
                             break;
                         case _this.MODE.CHATS:
-                            _this.elementMap = {
-                                "CHATS": _this.module.panel_body
-                            };
-                            _this.dataMap = {
-                                "CHATS": _this.module.collectionDescription
-                            };
-                            _this.body_mode = _this.MODE.CHATS;
-                            _this.renderLayout(options, null);
-                            break;
-                        case _this.MODE.USERS:
-                            users_bus.getMyContacts(function(error, contactsIds) {
-                                users_bus.getContactsInfo(error, contactsIds, function(_error, contactsInfo) {
-                                    if (_error) {
-                                        _this.module.panel_body.innerHTML = _error;
+                            users_bus.getMyInfo(options, function(error, options, userInfo) {
+                                chats_bus.getChats(error, options, userInfo.chatsIds, function(error, options, chatsInfo) {
+                                    if (error) {
+                                        _this.module.body_container.innerHTML = error;
                                         return;
                                     }
 
+                                    chatsInfo = _this.limitationQuantityRecords(chatsInfo);
                                     _this.elementMap = {
-                                        "USERS": _this.module.panel_body
+                                        "CHATS": _this.module.body_container
+                                    };
+                                    _this.body_mode = _this.MODE.CHATS;
+                                    _this.renderLayout(
+                                        {
+                                        "data": chatsInfo,
+                                        "detail_view_template": _this.detail_view_container_template,
+                                        "openChatsInfoArray": _this.module.openChatsInfoArray,
+                                        "openChats": options.openChats
+                                        }, null);
+                                });
+                            });
+                            break;
+                        case _this.MODE.USERS:
+                            users_bus.getMyInfo(function(error, userInfo) {
+                                users_bus.getContactsInfo(error, userInfo.userIds, function(_error, contactsInfo) {
+                                    if (_error) {
+                                        _this.module.body_container.innerHTML = _error;
+                                        return;
+                                    }
+                                    contactsInfo = _this.limitationQuantityRecords(contactsInfo);
+                                    _this.elementMap = {
+                                        "USERS": _this.module.body_container
                                     };
                                     _this.body_mode = _this.MODE.USERS;
                                     _this.renderLayout(contactsInfo, null);
@@ -166,18 +181,18 @@ define('body', [
 
             limitationQuantityRecords: function(data) {
                 var _this = this;
-                if (data.length) {
+                if (data && data.length) {
                     if (_this.module.listOptions.final > data.length || !_this.module.listOptions.final) {
                         _this.module.listOptions.final = data.length;
                     }
+                    if (_this.module.listOptions.previousStart !== _this.module.listOptions.start ||
+                        _this.module.listOptions.previousFinal !== _this.module.listOptions.final) {
+                        _this.module.body_container.innerHTML = "";
+                        _this.module.listOptions.previousStart = _this.module.listOptions.start;
+                        _this.module.listOptions.previousFinal = _this.module.listOptions.final;
+                    }
+                    data = data.slice(_this.module.listOptions.start, _this.module.listOptions.final);
                 }
-                if (_this.module.listOptions.previousStart !== _this.module.listOptions.start ||
-                    _this.module.listOptions.previousFinal !== _this.module.listOptions.final) {
-                    _this.module.panel_body.innerHTML = "";
-                    _this.module.listOptions.previousStart = _this.module.listOptions.start;
-                    _this.module.listOptions.previousFinal = _this.module.listOptions.final;
-                }
-                data = data.slice(_this.module.listOptions.start, _this.module.listOptions.final);
                 return data;
             },
 
@@ -203,17 +218,18 @@ define('body', [
                 return chat_info;
             },
 
-            transferData: function(options, data) {
-                var _this = this;
-
-                data = this.limitationQuantityRecords(data);
-                var dataUpdated = {
-                    "data": data,
-                    "detail_view_template": _this.detail_view_container_template,
-                    "openChatsInfoArray": _this.module.openChatsInfoArray
-                };
-                return dataUpdated;
-            },
+            //transferData: function(options, data) {
+            //    var _this = this;
+            //
+            //    data = this.limitationQuantityRecords(data);
+            //    var dataUpdated = {
+            //        "data": data,
+            //        "detail_view_template": _this.detail_view_container_template,
+            //        "openChatsInfoArray": _this.module.openChatsInfoArray,
+            //        "openChats": options.openChats
+            //    };
+            //    return dataUpdated;
+            //},
 
             destroy: function() {
                 var _this = this;
@@ -263,7 +279,7 @@ define('body', [
             "USER_INFO_SHOW": body.prototype.usersFilter,
             "CREATE_CHAT": null,
             "JOIN_CHAT": null,
-            "CHATS": body.prototype.transferData,
+            "CHATS": null,
             "USERS": '',
             "DETAIL_VIEW": body.prototype.chatsFilter,
             "FILTER_CHATS": ''

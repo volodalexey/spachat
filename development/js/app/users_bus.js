@@ -57,11 +57,11 @@ define('users_bus', [
                 }
             },
 
-            getMyContacts: function(_callback) {
+            getMyInfo: function(options, _callback) {
                 indexeddb.getByKeyPath(
                     this.collectionDescription,
                     this.userId,
-                    function(getError, contactsIds) {
+                    function(getError, userInfo) {
                         if (getError) {
                             if (_callback){
                                 _callback(getError);
@@ -72,7 +72,7 @@ define('users_bus', [
                         }
 
                         if (_callback){
-                            _callback(null, contactsIds.userIds);
+                            _callback(null, options, userInfo);
                         }
                     }
                 );
