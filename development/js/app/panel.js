@@ -607,6 +607,7 @@ define('panel', [
                 var _this = this;
                 users_bus.setUserId(null);
                 _this.bodyOptions.mode = _this.MODE.USER_INFO_SHOW;
+                event_bus.trigger("chatsDestroy");
                 _this.removeMainEventListeners();
                 _this.removeToolbarEventListeners();
                 history.pushState(null, null, 'login');

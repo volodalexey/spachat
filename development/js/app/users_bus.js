@@ -28,7 +28,10 @@ define('users_bus', [
 
             excludeUser: function(options, userIds) {
                 var _this = this;
-                userIds.splice(userIds.indexOf(_this.getUserId()), 1);
+                var result = userIds.indexOf(_this.getUserId());
+                if (result !== -1) {
+                    userIds.splice(userIds.indexOf(_this.getUserId()), 1);
+                }
                 return userIds;
             },
 

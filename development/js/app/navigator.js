@@ -119,10 +119,6 @@ define('navigator',
                         panel_platform.renderPanels({ navigator: _this });
                     }
                     _this.currentPage.render && _this.currentPage.render({ navigator: _this });
-
-                    //Delete
-                    //_this.currentPage.trigger("addNewChatAuto", {target: document.createElement('button')});
-
                 } else {
                     _this.redirectToLogin();
                 }

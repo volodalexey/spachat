@@ -1,5 +1,4 @@
 <% var array = arguments[0];
-console.log(array);
 
 var array_create_chat = array.config.filter(function(config) {
     return config.data.mode === "CREATE_CHAT"
@@ -103,9 +102,7 @@ var array_my_chats_help_toolbar = array.config.filter(function(config) {
 <div>
     <% if (array.data && array.data.data) {
      array.data.data.forEach(function (chat) { %>
-    <% var result = array.data.openChatsInfoArray.indexOf(chat.chatId);
-    console.log("result" , result)
-    %>
+    <% var result = array.data.openChatsInfoArray.indexOf(chat.chatId); %>
     <div data-action="show_more_info" data-role="chatWrapper"
          data-chatid="<%= chat.chatId %>">
         <% array_my_chats.forEach(function (config) { %>

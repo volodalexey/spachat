@@ -677,9 +677,10 @@ define('chat', [
                 var _this = this;
                 return {
                     chatId: _this.chatId,
-                    userIds: ["44c6c9d7-974d-489d-4b16-5b6e71ec4ed9c8921f",
-                        "948f0ec9-793d-ca47-75dc-042e80314ed9c8a776",
-                        "dcf38bce-a34d-5f8c-8315-2b4f5a024ed9c881a9"],
+                    userIds: ["3fe39938-37a3-a431-025c-58b455fe4edf8c85a7",
+                        "72cebf23-d29f-2ee7-8b34-153f815e4edf8c517e",
+                        "a4a78990-a92c-dec0-650a-63945d644edf8c1629",
+                        "fde5bfb7-b07b-ab98-7bdd-d62bea8d4edf8e21ff"],
                     createdDatetime: _this.createdDatetime,
                     createdByUserId: _this.createdByUserId,
                     receivedDatetime: _this.receivedDatetime,

@@ -147,19 +147,19 @@ define('body', [
                             });
                             break;
                         case _this.MODE.USERS:
-                            users_bus.getMyInfo(function(error, userInfo) {
-                                users_bus.getContactsInfo(error, userInfo.userIds, function(_error, contactsInfo) {
-                                    if (_error) {
-                                        _this.module.body_container.innerHTML = _error;
-                                        return;
-                                    }
-                                    contactsInfo = _this.limitationQuantityRecords(contactsInfo);
-                                    _this.elementMap = {
-                                        "USERS": _this.module.body_container
-                                    };
-                                    _this.body_mode = _this.MODE.USERS;
-                                    _this.renderLayout(contactsInfo, null);
-                                });
+                            users_bus.getMyInfo(options, function(error, options, userInfo) {
+                                    users_bus.getContactsInfo(error, userInfo.userIds, function(_error, contactsInfo) {
+                                        if (_error) {
+                                            _this.module.body_container.innerHTML = _error;
+                                            return;
+                                        }
+                                        contactsInfo = _this.limitationQuantityRecords(contactsInfo);
+                                        _this.elementMap = {
+                                            "USERS": _this.module.body_container
+                                        };
+                                        _this.body_mode = _this.MODE.USERS;
+                                        _this.renderLayout(contactsInfo, null);
+                                    });
                             });
                             break;
                         case _this.MODE.DETAIL_VIEW:
@@ -217,19 +217,6 @@ define('body', [
                 });
                 return chat_info;
             },
-
-            //transferData: function(options, data) {
-            //    var _this = this;
-            //
-            //    data = this.limitationQuantityRecords(data);
-            //    var dataUpdated = {
-            //        "data": data,
-            //        "detail_view_template": _this.detail_view_container_template,
-            //        "openChatsInfoArray": _this.module.openChatsInfoArray,
-            //        "openChats": options.openChats
-            //    };
-            //    return dataUpdated;
-            //},
 
             destroy: function() {
                 var _this = this;
