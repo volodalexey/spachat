@@ -100,7 +100,7 @@
       "location": "left_panel",
       "location_group": "users",
       "action": "switchPanelMode",
-      "mode": "USERS"
+      "mode": ""
     },
     "name": "",
     "disable": false

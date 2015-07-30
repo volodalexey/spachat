@@ -67,7 +67,6 @@ define('contact_list', [
 
             getContactsId: function(_callback) {
                 var _this = this;
-
                 indexeddb.getByKeyPath(
                     chats_bus.collectionDescription,
                     _this.chat.chatId,
@@ -78,7 +77,6 @@ define('contact_list', [
                         }
 
                         if (chat) {
-                            //chat.userIds.splice(chat.userIds.indexOf(users_bus.getUserId()), 1);
                             chat.userIds = users_bus.excludeUser(null, chat.userIds);
                             users_bus.getContactsInfo(null, chat.userIds, _callback);
                         } else {

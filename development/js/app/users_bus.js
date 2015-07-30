@@ -33,12 +33,35 @@ define('users_bus', [
             },
 
             getContactsInfo: function(options, userIds, _callback) {
-                var _this = this;
-                userIds.splice(userIds.indexOf(_this.getUserId()), 1);
-                indexeddb.getByKeysPath(
+                if (userIds.length) {
+                    indexeddb.getByKeysPath(
+                        this.collectionDescription,
+                        userIds,
+                        function(getError, contactsInfo) {
+                            if (getError) {
+                                if (_callback){
+                                    _callback(getError);
+                                } else {
+                                    console.error(getError);
+                                }
+                                return;
+                            }
+
+                            if (_callback){
+                                _callback(null, contactsInfo);
+                            }
+                        }
+                    );
+                } else {
+                    _callback(null, null);
+                }
+            },
+
+            getMyContacts: function(_callback) {
+                indexeddb.getByKeyPath(
                     this.collectionDescription,
-                    userIds,
-                    function(getError, contactsInfo) {
+                    this.userId,
+                    function(getError, contactsIds) {
                         if (getError) {
                             if (_callback){
                                 _callback(getError);
@@ -49,7 +72,7 @@ define('users_bus', [
                         }
 
                         if (_callback){
-                            _callback(null, contactsInfo);
+                            _callback(null, contactsIds.userIds);
                         }
                     }
                 );

@@ -1,12 +1,14 @@
 <% var _in = arguments[0]; %>
-<% _in.data.forEach(function (_user) { %>
+<% if (_in.data && _in.data.length) {
+     _in.data.forEach(function (_user) { %>
 
-<div class="flex-sp-start margin-t-b">
-    <div class="width-40px flex-just-center"><img src="img\app\3.ico" width="35px" height="35px" class="border-radius-5"></div>
-    <div class="message flex-item-1-auto flex-dir-col flex-sp-between">
-        <div>User name: <%= _user.userName %></div>
-        <div>User id: <%= _user.userId %></div>
+    <div class="flex-sp-start margin-t-b">
+        <div class="width-40px flex-just-center"><img src="img\app\3.ico" width="35px" height="35px" class="border-radius-5"></div>
+        <div class="message flex-item-1-auto flex-dir-col flex-sp-between">
+            <div>User name: <%= _user.userName %></div>
+            <div>User id: <%= _user.userId %></div>
+        </div>
     </div>
-</div>
 
-<% }) %>
+    <% })
+}%>

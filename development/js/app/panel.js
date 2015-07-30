@@ -400,8 +400,16 @@ define('panel', [
                 _this.bodyOptions.mode = element.dataset.mode;
                 _this.previous_Filter_Options = false;
                 _this.pagination.previousShow = false;
-                _this.showSpinner(_this.panel_body);
-                _this.render();
+                if (!_this.bodyOptions.mode || _this.bodyOptions.mode === "") {
+                    _this.panel_body.innerHTML = "";
+                    _this.filter_container.innerHTML = "";
+                    _this.extra_toolbar_container.innerHTML = "";
+                    _this.pagination_container.innerHTML = "";
+                    _this.go_to_container.innerHTML = "";
+                } else {
+                    _this.showSpinner(_this.panel_body);
+                    _this.render();
+                }
             },
 
             render: function(options) {

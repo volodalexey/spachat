@@ -132,11 +132,20 @@ define('body', [
                             _this.renderLayout(options, null);
                             break;
                         case _this.MODE.USERS:
-                            _this.elementMap = {
-                                "USERS": _this.module.panel_body
-                            };
-                            _this.body_mode = _this.MODE.USERS;
-                            _this.renderLayout(null, null);
+                            users_bus.getMyContacts(function(error, contactsIds) {
+                                users_bus.getContactsInfo(error, contactsIds, function(_error, contactsInfo) {
+                                    if (_error) {
+                                        _this.module.panel_body.innerHTML = _error;
+                                        return;
+                                    }
+
+                                    _this.elementMap = {
+                                        "USERS": _this.module.panel_body
+                                    };
+                                    _this.body_mode = _this.MODE.USERS;
+                                    _this.renderLayout(contactsInfo, null);
+                                });
+                            });
                             break;
                         case _this.MODE.DETAIL_VIEW:
                             _this.elementMap = {
@@ -233,7 +242,7 @@ define('body', [
             "CREATE_CHAT": '',
             'JOIN_CHAT': '',
             "CHATS": '',
-            "USERS": users_bus.collectionDescription,
+            "USERS": '',
             "DETAIL_VIEW": '',
             "FILTER_MY_CHATS": ''
         };
@@ -255,7 +264,7 @@ define('body', [
             "CREATE_CHAT": null,
             "JOIN_CHAT": null,
             "CHATS": body.prototype.transferData,
-            "USERS": users_bus.excludeUser,
+            "USERS": '',
             "DETAIL_VIEW": body.prototype.chatsFilter,
             "FILTER_CHATS": ''
         };
