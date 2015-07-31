@@ -56,7 +56,6 @@ define('filter', [
                 _this.removeEventListener();
                 _this.addRemoveListener('add',  _this._module.filter_container, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('add',  _this._module.filter_container, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('add',  _this._module.filter_container, 'change', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add',  _this._module.filter_container, 'input', _this.bindedDataActionRouter, false);
             },
 
@@ -64,7 +63,6 @@ define('filter', [
                 var _this = this;
                 _this.addRemoveListener('remove',  _this._module.filter_container, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('remove',  _this._module.filter_container, 'click', _this.bindedDataActionRouter, false);
-                _this.addRemoveListener('remove',  _this._module.filter_container, 'change', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('remove',  _this._module.filter_container, 'input', _this.bindedDataActionRouter, false);
             },
 

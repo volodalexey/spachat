@@ -67,9 +67,6 @@ define('settings', [
                 if (!_this.chat.body.previousMode || _this.chat.body.previousMode !== _this.chat.bodyOptions.mode) {
                     _this.body_container = _this.chat.body_container;
                     _this.showSpinner(_this.body_container);
-                    _this.chat.listOptions.previousFinal = 0;
-                    _this.chat.listOptions.previousStart = 0;
-                    _this.body_container.classList.add('background');
                     _this.body_mode = _this.chat.bodyOptions.mode;
                     _this.elementMap = {
                         "SETTINGS": _this.body_container

@@ -1,8 +1,10 @@
 define('users_bus', [
-        'indexeddb'
+        'indexeddb',
+        'chats_bus'
     ],
     function(
-        indexeddb
+        indexeddb,
+        chats_bus
     ) {
 
         var users_bus = function() {
@@ -33,6 +35,25 @@ define('users_bus', [
                     userIds.splice(userIds.indexOf(_this.getUserId()), 1);
                 }
                 return userIds;
+            },
+
+            getContactsId: function(chatId, _callback) {
+                var _this = this;
+                indexeddb.getByKeyPath(
+                    chats_bus.collectionDescription,
+                    chatId,
+                    function(getError, chat) {
+                        if (getError) {
+                            console.error(getError);
+                            return;
+                        }
+
+                        if (chat) {
+                            chat.userIds = _this.excludeUser(null, chat.userIds);
+                            _this.getContactsInfo(null, chat.userIds, _callback);
+                        }
+                    }
+                );
             },
 
             getContactsInfo: function(options, userIds, _callback) {

@@ -3,6 +3,7 @@ define('messages', [
         'template_core',
         'id_core',
         'overlay_core',
+        'switcher_core',
         //
         'indexeddb',
         'html_message',
@@ -17,6 +18,7 @@ define('messages', [
              template_core,
              id_core,
              overlay_core,
+             switcher_core,
              //
              indexeddb,
              HTML_message,
@@ -33,24 +35,10 @@ define('messages', [
 
         messages.prototype = {
 
-            render: function(options, chat) {
+            render: function(options, _module) {
                 var _this = this;
-
+                _this._module = _module;
                 _this.fillListMessage(options);
-            },
-
-            tableDefinition: function(mode){
-                var _this = this, table_name;
-
-                switch (mode) {
-                    case _this.chat.body.MODE.MESSAGES:
-                        table_name = ['messages'];
-                        break;
-                    case _this.chat.body.MODE.LOGGER:
-                        table_name = ['log_messages'];
-                        break;
-                }
-                return table_name;
             },
 
             getMessageConstructor: function(mode) {
@@ -80,51 +68,53 @@ define('messages', [
 
             fillListMessage: function(options) {
                 var _this = this;
-                if (!_this.chat.body_container) {
+                if (!_this._module.body_container) {
                     return;
                 }
+                var changeMode = _this._module.body.previousMode !== _this._module.bodyOptions.mode;
                 indexeddb.getAll(
-                    _this.chat.collectionDescription,
-                    _this.tableDefinition(_this.chat.bodyOptions.mode),
+                    _this._module.collectionDescription,
+                    _this.tableDefinition(_this._module, _this._module.bodyOptions.mode),
                     function(getAllErr, messages) {
                         if (getAllErr) {
-                            _this.chat.body_container.innerHTML = getAllErr.message || getAllErr;
+                            _this._module.body_container.innerHTML = getAllErr.message || getAllErr;
                             return;
                         }
 
                         if (messages.length === 0) {
-                            _this.chat.body_container.innerHTML = "";
+                            _this._module.body_container.innerHTML = "";
                         }
 
-                        if (_this.chat.listOptions.final > messages.length || !_this.chat.listOptions.final) {
-                            _this.chat.listOptions.final = messages.length;
+                        if (_this._module.currentListOptions.final > messages.length || !_this._module.currentListOptions.final) {
+                            _this._module.currentListOptions.final = messages.length;
                         }
-                        if (_this.chat.listOptions.previousStart !== _this.chat.listOptions.start ||
-                            _this.chat.listOptions.previousFinal !== _this.chat.listOptions.final) {
-                            _this.showSpinner(_this.chat.body_container);
-                            _this.chat.listOptions.previousStart = _this.chat.listOptions.start;
-                            _this.chat.listOptions.previousFinal = _this.chat.listOptions.final;
+                        if (_this._module.currentListOptions.previousStart !== _this._module.currentListOptions.start ||
+                            _this._module.currentListOptions.previousFinal !== _this._module.currentListOptions.final ||
+                            changeMode) {
+                            _this.showSpinner(_this._module.body_container);
+                            _this._module.currentListOptions.previousStart = _this._module.currentListOptions.start;
+                            _this._module.currentListOptions.previousFinal = _this._module.currentListOptions.final;
 
                             var generatedMessages = [];
                             var currentTemplate;
-                            switch (_this.chat.bodyOptions.mode) {
-                                case _this.chat.body.MODE.LOGGER:
+                            switch (_this._module.bodyOptions.mode) {
+                                case _this._module.body.MODE.LOGGER:
                                     currentTemplate = _this.log_message_template;
                                     break;
-                                case _this.chat.body.MODE.MESSAGES:
+                                case _this._module.body.MODE.MESSAGES:
                                     currentTemplate = _this.message_template;
                                     break;
                             }
 
-                            for (var i = _this.chat.listOptions.start; i < _this.chat.listOptions.final; i++) {
+                            for (var i = _this._module.currentListOptions.start; i < _this._module.currentListOptions.final; i++) {
                                 generatedMessages.push(currentTemplate({
                                     message: messages[i],
                                     deviceId: event_bus.getDeviceId(),
                                     messageConstructor: HTML_message.prototype
                                 }));
                             }
-                            _this.chat.body_container.innerHTML = generatedMessages.join('');
-                            _this.scrollTo(options);
+                            _this._module.body_container.innerHTML = generatedMessages.join('');
+                            //_this.scrollTo(options);
                         } else {
                             if (options.callback) {
                                 options.callback();
@@ -137,14 +127,14 @@ define('messages', [
             /**
              * add message to the database
              */
-            addMessage: function(mode, options, callback) {
+            addMessage: function(_module, mode, options, callback) {
                 var _this = this;
                 var Message = _this.getMessageConstructor(mode);
                 var message = (new Message({innerHTML: options.messageInnerHTML})).toJSON();
 
                 indexeddb.addAll(
                     _this.chat.collectionDescription,
-                    _this.tableDefinition(mode),
+                    _this.tableDefinition(_module, mode),
                     [
                         message
                     ],
@@ -180,7 +170,7 @@ define('messages', [
                     deviceId: event_bus.getDeviceId(),
                     messageConstructor: HTML_message.prototype
                 });
-                //_this.chat.listOptions.final += 1;
+                //_this._module.currentListOptions.final += 1;
                 _this.chat.messages_PaginationOptions.currentPage = null;
                 _this.chat.render(null, null);
                 _this.scrollTo(options);
@@ -193,7 +183,7 @@ define('messages', [
 
                 indexeddb.addAll(
                     _this.chat.collectionDescription,
-                    _this.tableDefinition(_this.chat.body.MODE.MESSAGES),
+                    _this.tableDefinition(_this._module, _this.chat.body.MODE.MESSAGES),
                     [
                         message
                     ],
@@ -222,6 +212,7 @@ define('messages', [
         extend(messages, template_core);
         extend(messages, id_core);
         extend(messages, overlay_core);
+        extend(messages, switcher_core);
 
         messages.prototype.message_template = messages.prototype.template(message_template);
         messages.prototype.log_message_template = messages.prototype.template(log_message_template);

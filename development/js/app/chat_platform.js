@@ -269,6 +269,7 @@ define('chat_platform', [
                                 return;
                             }
                             if(callback) {
+                                event_bus.trigger('AddedNewChat', info.chatsIds.length);
                                 callback();
                             }
                         }

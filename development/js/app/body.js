@@ -3,6 +3,7 @@ define('body', [
         'template_core',
         'render_layout_core',
         'ajax_core',
+        'overlay_core',
         //
         'users_bus',
         'chats_bus',
@@ -22,6 +23,7 @@ define('body', [
         template_core,
         render_layout_core,
         ajax_core,
+        overlay_core,
         //
         users_bus,
         chats_bus,
@@ -136,7 +138,7 @@ define('body', [
                                     _this.body_mode = _this.MODE.CHATS;
                                     _this.renderLayout(
                                         {
-                                        "data": chatsInfo,
+                                        "data": chatsInfo.data,
                                         "detail_view_template": _this.detail_view_container_template,
                                         "openChatsInfoArray": _this.module.openChatsInfoArray,
                                         "openChats": options.openChats
@@ -156,7 +158,7 @@ define('body', [
                                             "USERS": _this.module.body_container
                                         };
                                         _this.body_mode = _this.MODE.USERS;
-                                        _this.renderLayout(contactsInfo, null);
+                                        _this.renderLayout(contactsInfo.data, null);
                                     });
                             });
                             break;
@@ -177,21 +179,25 @@ define('body', [
                 }
             },
 
-            limitationQuantityRecords: function(data) {
+            limitationQuantityRecords: function(data, forceChangeMode) {
                 var _this = this;
                 if (data && data.length) {
-                    if (_this.module.listOptions.final > data.length || !_this.module.listOptions.final) {
-                        _this.module.listOptions.final = data.length;
+                    if (_this.module.currentListOptions.final > data.length || !_this.module.currentListOptions.final) {
+                        _this.module.currentListOptions.final = data.length;
                     }
-                    if (_this.module.listOptions.previousStart !== _this.module.listOptions.start ||
-                        _this.module.listOptions.previousFinal !== _this.module.listOptions.final) {
+                    if (_this.module.currentListOptions.previousStart !== _this.module.currentListOptions.start ||
+                        _this.module.currentListOptions.previousFinal !== _this.module.currentListOptions.final ||
+                        forceChangeMode) {
+                        var needRender = true;
+                        _this.showSpinner(_this.module.body_container);
                         _this.module.body_container.innerHTML = "";
-                        _this.module.listOptions.previousStart = _this.module.listOptions.start;
-                        _this.module.listOptions.previousFinal = _this.module.listOptions.final;
+                        _this.module.currentListOptions.previousStart = _this.module.currentListOptions.start;
+                        _this.module.currentListOptions.previousFinal = _this.module.currentListOptions.final;
                     }
-                    data = data.slice(_this.module.listOptions.start, _this.module.listOptions.final);
+                    data = data.slice(_this.module.currentListOptions.start, _this.module.currentListOptions.final);
                 }
-                return data;
+
+                return {data: data, needRender:needRender};
             },
 
             chatsFilter: function(options, chats) {
@@ -215,6 +221,7 @@ define('body', [
         extend(body, template_core);
         extend(body, render_layout_core);
         extend(body, ajax_core);
+        extend(body, overlay_core);
 
         body.prototype.chat_info_template = body.prototype.template(chat_info_template);
         body.prototype.user_info_template = body.prototype.template(user_info_template);

@@ -6,6 +6,8 @@ define('pagination', [
         'indexeddb',
         "switcher_core",
         'overlay_core',
+        'users_bus',
+        'chats_bus',
         //
         'text!../templates/pagination_template.ejs',
         'text!../templates/choice_per_page_template.ejs',
@@ -21,6 +23,8 @@ define('pagination', [
              indexeddb,
              switcher_core,
              overlay_core,
+             users_bus,
+             chats_bus,
              //
              pagination_template,
              choice_per_page_template,
@@ -183,28 +187,75 @@ define('pagination', [
             },
 
             countQuantityPages: function(callback) {
-                var _this = this, quantityPages;
+                var _this = this;
                 _this.optionsDefinition(_this.module, _this.bodyOptionsMode);
-                indexeddb.getAll(_this.module.collectionDescription, null, function(getAllErr, messages) {
-                    var quantityMessage = messages.length;
-                    if (quantityMessage !== 0) {
-                        quantityPages = Math.ceil(quantityMessage / _this.module.currentPaginationOptions.perPageValue);
-                    } else {
-                        quantityPages = 1;
+                if (_this.module.currentListOptions.data_download) {
+                    indexeddb.getAll(_this.module.collectionDescription,
+                        _this.tableDefinition(_this.module, _this.module.bodyOptions.mode),
+                        function(getAllErr, messages) {
+                        if (getAllErr) {
+                            console.error(getAllErr);
+                            return;
+                        }
+                        _this.handleCountPagination(messages, callback);
+                    });
+                } else {
+                    switch (_this.module.bodyOptions.mode){
+                        case _this.module.body.MODE.CONTACT_LIST:
+                            users_bus.getContactsId(_this.module.chatId, function(error, contactsInfo) {
+                                if (error) {
+                                    console.error(error);
+                                    return;
+                                }
+                                _this.handleCountPagination(contactsInfo, callback);
+                            });
+                            break;
+                        case _this.module.body.MODE.CHATS:
+                            users_bus.getMyInfo(null, function(error, options, userInfo) {
+                                chats_bus.getChats(error, options, userInfo.chatsIds, function(error, options, chatsInfo) {
+                                    if (error) {
+                                        _this.module.body_container.innerHTML = error;
+                                        return;
+                                    }
+                                    _this.handleCountPagination(chatsInfo, callback);
+                                });
+                            });
+                            break;
+                        case _this.module.body.MODE.USERS:
+                            users_bus.getMyInfo(null, function(error, options, userInfo) {
+                                users_bus.getContactsInfo(error, userInfo.userIds, function(_error, contactsInfo) {
+                                    if (_error) {
+                                        _this.module.body_container.innerHTML = _error;
+                                        return;
+                                    }
+                                    _this.handleCountPagination(contactsInfo, callback);
+                                });
+                            });
+                            break;
                     }
-                    if (_this.module.currentPaginationOptions.currentPage === null) {
-                        _this.module.listOptions.start = quantityPages * _this.module.currentPaginationOptions.perPageValue - _this.module.currentPaginationOptions.perPageValue;
-                        _this.module.listOptions.final = quantityPages * _this.module.currentPaginationOptions.perPageValue;
-                        _this.module.currentPaginationOptions.currentPage = quantityPages;
-                    } else {
-                        _this.module.listOptions.start = (_this.module.currentPaginationOptions.currentPage - 1) * _this.module.currentPaginationOptions.perPageValue;
-                        _this.module.listOptions.final = (_this.module.currentPaginationOptions.currentPage - 1) * _this.module.currentPaginationOptions.perPageValue + _this.module.currentPaginationOptions.perPageValue;
-                    }
-                    _this.module.currentPaginationOptions.lastPage = quantityPages;
-                    if (callback) {
-                        callback();
-                    }
-                });
+                }
+            },
+
+            handleCountPagination: function(data, callback) {
+                var _this = this, quantityPages;
+                var quantityData = data.length;
+                if (quantityData !== 0) {
+                    quantityPages = Math.ceil(quantityData / _this.module.currentPaginationOptions.perPageValue);
+                } else {
+                    quantityPages = 1;
+                }
+                if (_this.module.currentPaginationOptions.currentPage === null) {
+                    _this.module.currentListOptions.start = quantityPages * _this.module.currentPaginationOptions.perPageValue - _this.module.currentPaginationOptions.perPageValue;
+                    _this.module.currentListOptions.final = quantityPages * _this.module.currentPaginationOptions.perPageValue;
+                    _this.module.currentPaginationOptions.currentPage = quantityPages;
+                } else {
+                    _this.module.currentListOptions.start = (_this.module.currentPaginationOptions.currentPage - 1) * _this.module.currentPaginationOptions.perPageValue;
+                    _this.module.currentListOptions.final = (_this.module.currentPaginationOptions.currentPage - 1) * _this.module.currentPaginationOptions.perPageValue + _this.module.currentPaginationOptions.perPageValue;
+                }
+                _this.module.currentPaginationOptions.lastPage = quantityPages;
+                if (callback) {
+                    callback();
+                }
             },
 
             changePage: function(element) {

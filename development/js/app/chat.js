@@ -95,15 +95,6 @@ define('chat', [
                 sendEnter: false,
                 iSender: true
             },
-            listOptions: {
-                start: 0,
-                last: null,
-                previousStart: 0,
-                previousFinal: 0,
-                restore: false,
-                innerHTML: ""
-            },
-
             messages_GoToOptions: {
                 text: "mes",
                 show: false,
@@ -132,6 +123,16 @@ define('chat', [
             },
             messages_ExtraToolbarOptions: {
                 show: true
+            },
+            messages_ListOptions: {
+                text: "mes",
+                start: 0,
+                last: null,
+                previousStart: 0,
+                previousFinal: 0,
+                restore: false,
+                innerHTML: "",
+                data_download: true
             },
 
             logger_GoToOptions: {
@@ -162,6 +163,15 @@ define('chat', [
             logger_ExtraToolbarOptions: {
                 show: true
             },
+            logger_ListOptions: {
+                text: "log",
+                start: 0,
+                last: null,
+                previousStart: 0,
+                previousFinal: 0,
+                restore: false,
+                data_download: true
+            },
 
             contactList_FilterOptions: {
                 show: false
@@ -191,6 +201,15 @@ define('chat', [
                 show: false,
                 rteChoicePage: true,
                 mode_change: "rte"
+            },
+            contactList_ListOptions: {
+                text: "contact",
+                start: 0,
+                last: null,
+                previousStart: 0,
+                previousFinal: 0,
+                restore: false,
+                data_download: false
             },
 
             settings_ExtraToolbarOptions: {
@@ -290,7 +309,7 @@ define('chat', [
                 log: function(event) {
                     var _this = this;
                     var txt = _this.console_log_template(event);
-                    _this.messages.addMessage(_this.body.MODE.LOGGER,
+                    _this.messages.addMessage(_this, _this.body.MODE.LOGGER,
                         {scrollTop: true, messageInnerHTML: txt}, null);
                 }
             },
@@ -396,12 +415,13 @@ define('chat', [
                                     _this.toggleText({
                                         key: 'innerHTML',
                                         save: true
-                                    }, _this.listOptions, _this.editor.message_inner_container);
+                                    }, _this.messages_ListOptions, _this.editor.message_inner_container);
                                     break;
                                 case _this.body.MODE.CONTACT_LIST:
                                     _this.bodyOptions.mode = _this.body.MODE.CONTACT_LIST;
                                     _this.editorOptions.show = false;
-                                    _this.listOptions.final = null;
+                                    _this.messages_ListOptions.final = null;
+                                    _this.logger_ListOptions.final = null;
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
@@ -455,7 +475,7 @@ define('chat', [
                                     _this.toggleText({
                                         key: 'innerHTML',
                                         save: true
-                                    }, _this.listOptions, _this.editor.message_inner_container);
+                                    }, _this.messages_ListOptions, _this.editor.message_inner_container);
                                     break;
                                 case _this.body.MODE.MESSAGES:
                                     _this.bodyOptions.mode = _this.body.MODE.MESSAGES;
@@ -513,12 +533,13 @@ define('chat', [
                                     _this.toggleText({
                                         key: 'innerHTML',
                                         restore: true
-                                    }, _this.listOptions, _this.editor.message_inner_container);
+                                    }, _this.messages_ListOptions, _this.editor.message_inner_container);
                                     break;
                                 case _this.body.MODE.LOGGER:
                                     _this.bodyOptions.mode = _this.body.MODE.LOGGER;
                                     _this.editorOptions.show = false;
-                                    _this.listOptions.final = null;
+                                    _this.messages_ListOptions.final = null;
+                                    _this.logger_ListOptions.final = null;
                                     _this.toggleShowState({
                                         key: 'show',
                                         save: true,
@@ -588,11 +609,11 @@ define('chat', [
                                         _this.optionsDefinition(_this, _this.bodyOptions.mode);
                                         _this.currentPaginationOptions.show = _obj.target.checked;
                                         _this.currentPaginationOptions.showEnablePagination = _obj.target.checked;
-                                        if (!_obj.target.checked) {
-                                            _this.listOptions.previousStart = 0;
-                                            _this.listOptions.previousFinal = null;
-                                            _this.listOptions.start = 0;
-                                            _this.listOptions.final = null;
+                                        if (!_obj.target.checked && _this.currentListOptions) {
+                                            _this.currentListOptions.previousStart = 0;
+                                            _this.currentListOptions.previousFinal = null;
+                                            _this.currentListOptions.start = 0;
+                                            _this.currentListOptions.final = null;
                                         }
                                     }
                                     _this.toggleShowState({
@@ -677,10 +698,10 @@ define('chat', [
                 var _this = this;
                 return {
                     chatId: _this.chatId,
-                    userIds: ["3fe39938-37a3-a431-025c-58b455fe4edf8c85a7",
-                        "72cebf23-d29f-2ee7-8b34-153f815e4edf8c517e",
-                        "a4a78990-a92c-dec0-650a-63945d644edf8c1629",
-                        "fde5bfb7-b07b-ab98-7bdd-d62bea8d4edf8e21ff"],
+                    userIds: ["126e15d1-8ae0-f240-bdb4-fdfd84e64ee440e051",
+                        "3434eac5-cd02-e372-1f62-86afc1d44ee4413460",
+                        "7ce57eee-c0a0-a7ab-0278-0db148bc4ee440fda1",
+                        "d43cdf4f-c855-8ff5-1063-44256a684ee441153b"],
                     createdDatetime: _this.createdDatetime,
                     createdByUserId: _this.createdByUserId,
                     receivedDatetime: _this.receivedDatetime,
@@ -691,15 +712,16 @@ define('chat', [
                     bodyOptions: _this.bodyOptions,
                     editorOptions: _this.editorOptions,
                     formatOptions: _this.formatOptions,
-                    listOptions: _this.listOptions,
                     messages_GoToOptions: _this.messages_GoToOptions,
                     messages_PaginationOptions: _this.messages_PaginationOptions,
                     messages_FilterOptions: _this.messages_FilterOptions,
                     messages_ExtraToolbarOptions: _this.messages_ExtraToolbarOptions,
+                    messages_ListOptions: _this.messages_ListOptions,
                     logger_GoToOptions: _this.logger_GoToOptions,
                     logger_PaginationOptions: _this.logger_PaginationOptions,
                     logger_FilterOptions: _this.logger_FilterOptions,
                     logger_ExtraToolbarOptions: _this.logger_ExtraToolbarOptions,
+                    logger_ListOptions: _this.logger_ListOptions,
                     contactList_FilterOptions: _this.contactList_FilterOptions,
                     contactList_ExtraToolbarOptions: _this.contactList_ExtraToolbarOptions,
                     contactList_PaginationOptions: _this.contactList_PaginationOptions,

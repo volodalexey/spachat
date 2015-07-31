@@ -109,13 +109,13 @@ define('editor', [
                             MAIN_PANEL: _this.editor_container
                         };
                         var data = {
-                            "restore": _this.chat.listOptions.restore,
-                            "innerHTML": _this.chat.listOptions.innerHTML
+                            "restore": _this.chat.messages_ListOptions.restore,
+                            "innerHTML": _this.chat.messages_ListOptions.innerHTML
                         }
                         _this.renderLayout(data, function() {
-                            if (_this.chat.listOptions.restore) {
-                                _this.chat.listOptions.restore = false;
-                                _this.chat.listOptions.innerHTML = "";
+                            if (_this.chat.messages_ListOptions.restore) {
+                                _this.chat.messages_ListOptions.restore = false;
+                                _this.chat.messages_ListOptions.innerHTML = "";
                             }
                             _this.cashElements();
                             _this.addMainEventListener();
@@ -206,7 +206,7 @@ define('editor', [
                 var messageInnerHTML = _this.message_inner_container.innerHTML;
                 var pattern = /[^\s{0,}$|^$]/; // empty message or \n only
                 if (pattern.test(messageInnerHTML)) {
-                    _this.chat.messages.addMessage(_this.chat.body.MODE.MESSAGES,
+                    _this.chat.messages.addMessage(_this.chat, _this.chat.body.MODE.MESSAGES,
                         {scrollTop: true, messageInnerHTML: messageInnerHTML},
                         function(error, message) {
                             if (error) {

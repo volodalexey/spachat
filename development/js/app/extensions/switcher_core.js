@@ -11,12 +11,6 @@ define('switcher_core',
             optionsDefinition: function(_module, mode) {
                 var _this = this;
 
-                if (_this.previousModeSwitcher !== mode && _module.listOptions) {
-                    _module.listOptions.previousStart = 0;
-                    _module.listOptions.previousFinal = null;
-                    _module.listOptions.start = 0;
-                    _module.listOptions.final = null;
-                }
                 switch (mode) {
                     case _module.body.MODE.SETTINGS:
                         _this.previousModeSwitcher = _module.body.MODE.MESSAGES;
@@ -31,6 +25,7 @@ define('switcher_core',
                         _module.currentGoToOptions = _module.messages_GoToOptions;
                         _module.current_Extra_Toolbar_Options = _module.messages_ExtraToolbarOptions;
                         _module.currnetFilterOptions = _module.messages_FilterOptions;
+                        _module.currentListOptions = _module.messages_ListOptions;
                         break;
                     case _module.body.MODE.CONTACT_LIST:
                         _this.previousModeSwitcher = _module.body.MODE.MESSAGES;
@@ -38,6 +33,7 @@ define('switcher_core',
                         _module.currentGoToOptions = _module.contactList_GoToOptions;
                         _module.current_Extra_Toolbar_Options = _module.contactList_ExtraToolbarOptions;
                         _module.currnetFilterOptions = _module.contactList_FilterOptions;
+                        _module.currentListOptions = _module.contactList_ListOptions;
                         break;
                     case _module.body.MODE.LOGGER:
                         _this.previousModeSwitcher = _module.body.MODE.LOGGER;
@@ -45,6 +41,7 @@ define('switcher_core',
                         _module.currentGoToOptions = _module.logger_GoToOptions;
                         _module.current_Extra_Toolbar_Options = _module.logger_ExtraToolbarOptions;
                         _module.currnetFilterOptions = _module.logger_FilterOptions;
+                        _module.currentListOptions = _module.logger_ListOptions;
                         break;
                     case _module.MODE.CHATS:
                         _this.previousModeSwitcher = _module.MODE.CHATS;
@@ -52,6 +49,7 @@ define('switcher_core',
                         _module.currentGoToOptions = _module.chats_GoToOptions;
                         _module.current_Extra_Toolbar_Options = _module.chats_ExtraToolbarOptions;
                         _module.currnetFilterOptions = _module.chats_FilterOptions;
+                        _module.currentListOptions = _module.chats_ListOptions;
                         break;
                     case _module.MODE.CREATE_CHAT:
                         _module.current_Extra_Toolbar_Options = _module.createChat_ExtraToolbarOptions;
@@ -70,6 +68,7 @@ define('switcher_core',
                         _module.currnetFilterOptions = _module.users_FilterOptions;
                         _module.currentPaginationOptions = _module.users_PaginationOptions;
                         _module.currentGoToOptions = _module.users_GoToOptions;
+                        _module.currentListOptions = _module.users_ListOptions;
                         break;
                     case _module.MODE.USER_INFO_EDIT:
                         _module.current_Extra_Toolbar_Options = _module.userInfoEdit_ExtraToolbarOptions;
@@ -128,11 +127,22 @@ define('switcher_core',
                        toggleObject.restore = true;
                     }
                     toggleObject.previousSave = false;
-                    return;
                 }
+            },
+
+            tableDefinition: function(_module, mode){
+                var _this = this, table_name;
+
+                switch (mode) {
+                    case _module.body.MODE.MESSAGES:
+                        table_name = ['messages'];
+                        break;
+                    case _module.body.MODE.LOGGER:
+                        table_name = ['log_messages'];
+                        break;
+                }
+                return table_name;
             }
-
-
         };
 
         return switcher_core;

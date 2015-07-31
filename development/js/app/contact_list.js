@@ -3,7 +3,6 @@ define('contact_list', [
         'ajax_core',
         'template_core',
         'render_layout_core',
-        'overlay_core',
         //
         'indexeddb',
         'users_bus',
@@ -19,7 +18,6 @@ define('contact_list', [
              ajax_core,
              template_core,
              render_layout_core,
-             overlay_core,
              //
              indexeddb,
              users_bus,
@@ -43,51 +41,28 @@ define('contact_list', [
             renderContactList: function(options, chat) {
                 var _this = this;
                 _this.chat = chat;
+                var changeMode = _this.chat.body.previousMode !== _this.chat.bodyOptions.mode;
+                users_bus.getContactsId(_this.chat.chatId, function(error, contactsInfo) {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
 
-                if (!_this.chat.body.previousMode || _this.chat.body.previousMode !== _this.chat.bodyOptions.mode) {
-                    _this.showSpinner(_this.chat.body_container);
-                    _this.getContactsId(function(error, contactsInfo) {
-                        if (error) {
-                            console.error(error);
-                            return;
-                        }
-
-                        _this.chat.listOptions.previousFinal = 0;
-                        _this.chat.listOptions.previousStart = 0;
-                        _this.chat.body_container.classList.add('background');
+                    contactsInfo = _this.chat.body.limitationQuantityRecords(contactsInfo, changeMode);
+                    if (!contactsInfo.data.length) {
+                        _this.chat.body_container.innerHTML = "";
+                        return;
+                    }
+                    if (contactsInfo.needRender) {
                         _this.body_mode = _this.chat.bodyOptions.mode;
                         _this.elementMap = {
                             "CONTACT_LIST": _this.chat.body_container
                         };
-                        contactsInfo = _this.chat.body.limitationQuantityRecords(contactsInfo);
-
-                        _this.renderLayout(contactsInfo, null);
-                    });
-
-                }
-            },
-
-            getContactsId: function(_callback) {
-                var _this = this;
-                indexeddb.getByKeyPath(
-                    chats_bus.collectionDescription,
-                    _this.chat.chatId,
-                    function(getError, chat) {
-                        if (getError) {
-                            console.error(getError);
-                            return;
-                        }
-
-                        if (chat) {
-                            chat.userIds = users_bus.excludeUser(null, chat.userIds);
-                            users_bus.getContactsInfo(null, chat.userIds, _callback);
-                        } else {
-                            _this.body_container.innerHTML = ("Chat with id" + _this.chat.chatId + "not find");
-                        }
+                        _this.renderLayout(contactsInfo.data, null);
                     }
-                );
-            },
 
+                });
+            },
 
             destroy: function() {
                 var _this = this;
@@ -98,7 +73,6 @@ define('contact_list', [
         extend(contact_list, ajax_core);
         extend(contact_list, template_core);
         extend(contact_list, render_layout_core);
-        extend(contact_list, overlay_core);
 
         contact_list.prototype.contact_list_template = contact_list.prototype.template(contact_list_template);
         contact_list.prototype.triple_element_template = contact_list.prototype.template(triple_element_template);

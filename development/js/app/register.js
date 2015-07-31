@@ -166,10 +166,10 @@ define('register', [
                         userId: _this.generateId(),
                         userName: options.userName,
                         userPassword: options.userPassword,
-                        userIds: ["3fe39938-37a3-a431-025c-58b455fe4edf8c85a7",
-                            "72cebf23-d29f-2ee7-8b34-153f815e4edf8c517e",
-                            "a4a78990-a92c-dec0-650a-63945d644edf8c1629",
-                            "b5ca6f54-001b-8c3b-6361-604283b34edf8c6d8d"
+                        userIds: ["126e15d1-8ae0-f240-bdb4-fdfd84e64ee440e051",
+                            "3434eac5-cd02-e372-1f62-86afc1d44ee4413460",
+                            "7ce57eee-c0a0-a7ab-0278-0db148bc4ee440fda1",
+                            "d43cdf4f-c855-8ff5-1063-44256a684ee441153b"
                         ],
                         chatsIds: []
                     };

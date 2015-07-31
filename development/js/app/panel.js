@@ -86,6 +86,15 @@ define('panel', [
             chats_FilterOptions: {
                 show: false
             },
+            chats_ListOptions: {
+                text: "chats",
+                start: 0,
+                last: null,
+                previousStart: 0,
+                previousFinal: 0,
+                restore: false,
+                data_download: false
+            },
 
             users_ExtraToolbarOptions: {
                 show: true
@@ -115,6 +124,15 @@ define('panel', [
                 disableFirst: false,
                 disableLast: false,
                 disableForward: false
+            },
+            users_ListOptions: {
+                text: "users",
+                start: 0,
+                last: null,
+                previousStart: 0,
+                previousFinal: 0,
+                restore: false,
+                data_download: false
             },
 
             createChat_ExtraToolbarOptions: {
@@ -308,6 +326,7 @@ define('panel', [
                 _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
                 _this.bindedTransitionEnd = _this.transitionEnd.bind(_this);
                 _this.bindedOnChatDestroyed = _this.onChatDestroyed.bind(_this);
+                _this.bindedToggleListOptions = _this.toggleListOptions.bind(_this);
             },
 
             addMainEventListener: function() {
@@ -321,6 +340,7 @@ define('panel', [
                 _this.addRemoveListener('add', _this.body_container, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.on('throw', _this.throwRouter, _this);
                 event_bus.on('chatDestroyed', _this.bindedOnChatDestroyed, _this);
+                event_bus.on('AddedNewChat', _this.bindedToggleListOptions, _this);
             },
 
             removeMainEventListeners: function() {
@@ -333,6 +353,7 @@ define('panel', [
                 _this.addRemoveListener('remove', _this.body_container, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.off('throw', _this.throwRouter);
                 event_bus.off('chatDestroyed', _this.bindedOnChatDestroyed);
+                event_bus.off('AddedNewChat', _this.bindedToggleListOptions);
             },
 
             throwRouter: function(action, event) {
@@ -468,10 +489,10 @@ define('panel', [
                                     _this.currentPaginationOptions.show = obj.target.checked;
                                     _this.currentPaginationOptions.showEnablePagination = obj.target.checked;
                                     if (!obj.target.checked) {
-                                        _this.listOptions.previousStart = 0;
-                                        _this.listOptions.previousFinal = null;
-                                        _this.listOptions.start = 0;
-                                        _this.listOptions.final = null;
+                                        _this.currentListOptions.previousStart = 0;
+                                        _this.currentListOptions.previousFinal = null;
+                                        _this.currentListOptions.start = 0;
+                                        _this.currentListOptions.final = null;
                                     }
                                 }
                                 _this.toggleShowState({
@@ -576,25 +597,25 @@ define('panel', [
 
             updateUserInfo: function(callback) {
                 var _this = this;
-                var account = {
-                    userId: users_bus.getUserId(),
-                    userPassword: _this.new_password.value,
-                    userName: _this.user_name.value
-                };
-                indexeddb.addOrUpdateAll(
-                    users_bus.collectionDescription,
-                    null,
-                    [
-                        account
-                    ],
-                    function(error) {
-                        if (error) {
-                            console.error(error);
-                            return;
+                users_bus.getMyInfo(null, function(err, options, userInfo){
+                    userInfo.userPassword = _this.new_password.value;
+                    userInfo.userName = _this.user_name.value;
+                    indexeddb.addOrUpdateAll(
+                        users_bus.collectionDescription,
+                        null,
+                        [
+                            userInfo
+                        ],
+                        function(error) {
+                            if (error) {
+                                console.error(error);
+                                return;
+                            }
+                            callback();
                         }
-                        callback();
-                    }
-                );
+                    );
+                });
+
             },
 
             changeUserInfo: function() {
@@ -669,6 +690,13 @@ define('panel', [
                         _this.togglePanelElement.classList.remove("pull-for-" + _this.type + "-panel");
                         _this.togglePanelElement.classList.add("panel-button");
                     }
+                }
+            },
+
+            toggleListOptions: function(chatsLength) {
+              var _this = this;
+                if (_this.type === "left" ){
+                    _this.chats_ListOptions.final = chatsLength;
                 }
             },
 
