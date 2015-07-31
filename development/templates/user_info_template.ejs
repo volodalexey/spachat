@@ -1,6 +1,6 @@
 <% var array = arguments[0]; %>
 
-
+<%console.log(array);%>
 <% var array_show = array.config.filter( function(obj){ return obj.mode === "USER_INFO_SHOW" } ) %>
 <% var array_editing = array.config.filter( function(obj){ return obj.mode === "USER_INFO_EDIT" } ) %>
 
@@ -72,7 +72,7 @@
     <% byDataLocationReading['user_name'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
-    data: array.options,
+    data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
     label_template: array.label_template

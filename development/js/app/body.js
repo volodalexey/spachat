@@ -85,29 +85,27 @@ define('body', [
                             _this.module.messages.render(options, _module);
                             break;
                         case _this.MODE.USER_INFO_SHOW:
-                            _this.elementMap = {
-                                "USER_INFO_SHOW": _this.module.body_container
-                            };
-                            _this.dataMap = {
-                                "USER_INFO_SHOW": users_bus.collectionDescription
-                            };
-                            _this.body_mode = _this.MODE.USER_INFO_SHOW;
-                            _this.renderLayout(null, null);
+                            users_bus.getMyInfo(options, function(error, options, userInfo) {
+                                if (error) {
+                                    _this.module.body_container.innerHTML = error;
+                                    return;
+                                }
+                                _this.elementMap = {
+                                    "USER_INFO_SHOW": _this.module.body_container
+                                };
+                                _this.body_mode = _this.MODE.USER_INFO_SHOW;
+                                _this.module.user = userInfo;
+                                _this.renderLayout(userInfo, null);
+                            });
                             break;
                         case _this.MODE.USER_INFO_EDIT:
-                            _this.elementMap = {
-                                "USER_INFO_EDIT": _this.module.body_container
-                            };
-                            _this.dataMap = {
-                                "USER_INFO_EDIT": users_bus.collectionDescription
-                            };
-                            _this.body_mode = _this.MODE.USER_INFO_EDIT;
-                            var data = {
-                                "user": _this.module.user
-                            };
-                            _this.renderLayout(data, function() {
-                                _this.module.cashBodyElement();
-                            });
+                                _this.elementMap = {
+                                    "USER_INFO_EDIT": _this.module.body_container
+                                };
+                                _this.body_mode = _this.MODE.USER_INFO_EDIT;
+                                _this.renderLayout( _this.module.user, function() {
+                                    _this.module.cashBodyElement();
+                                });
                             break;
                         case _this.MODE.CREATE_CHAT:
                             _this.elementMap = {
@@ -196,17 +194,6 @@ define('body', [
                 return data;
             },
 
-            usersFilter: function(options, users) {
-                var _this = this;
-                users.every(function(_user) {
-                    if (_user.userId === users_bus.getUserId()) {
-                        _this.module.user = _user;
-                    }
-                    return !_this.module.user;
-                });
-                return _this.module.user;
-            },
-
             chatsFilter: function(options, chats) {
                 var chat_info;
                 chats.every(function(_chat) {
@@ -262,8 +249,8 @@ define('body', [
         };
 
         body.prototype.dataHandlerMap = {
-            "USER_INFO_EDIT": body.prototype.usersFilter,
-            "USER_INFO_SHOW": body.prototype.usersFilter,
+            "USER_INFO_EDIT": null,
+            "USER_INFO_SHOW": null,
             "CREATE_CHAT": null,
             "JOIN_CHAT": null,
             "CHATS": null,
