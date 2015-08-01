@@ -202,6 +202,8 @@ define('filter', [
             LOGGER_FILTER: filter.prototype.filter_template
         };
 
+        filter.prototype.configHandlerMap = {};
+        filter.prototype.configHandlerContextMap = {};
         filter.prototype.dataHandlerMap = {};
         filter.prototype.dataMap = {};
 

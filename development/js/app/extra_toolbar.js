@@ -134,6 +134,8 @@ define('extra_toolbar', [
             LOGGER_EXTRA_TOOLBAR: extra_toolbar.prototype.messages_extra_toolbar_template,
         };
 
+        extra_toolbar.prototype.configHandlerMap = {};
+        extra_toolbar.prototype.configHandlerContextMap = {};
         extra_toolbar.prototype.dataHandlerMap = {};
         extra_toolbar.prototype.dataMap = {};
 

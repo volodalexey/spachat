@@ -1,0 +1,12 @@
+<% var _in = arguments[0]; %>
+<div class="<%= _in.config.wrapperConfig.classList %>">
+    <% _in.config.configs.forEach(function (config) { %>
+    <%= _in.triple_element_template({
+        config: config,
+        data: _in.data,
+        button_template: _in.button_template,
+        input_template: _in.input_template,
+        label_template: _in.label_template
+    }) %>
+    <% }); %>
+</div>

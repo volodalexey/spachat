@@ -16,7 +16,9 @@ define('body', [
         'text!../templates/detail_view_container_template.ejs',
         'text!../templates/chat_info_template.ejs',
         'text!../templates/panel_users_template.ejs',
-        'text!../templates/user_info_template.ejs'
+        'text!../templates/user_info_template.ejs',
+        'text!../templates/join_locations_template.ejs',
+        'text!../templates/element/location_wrapper_template.ejs'
     ],
     function(
         throw_event_core,
@@ -36,7 +38,9 @@ define('body', [
         detail_view_container_template,
         chat_info_template,
         panel_users_template,
-        user_info_template
+        user_info_template,
+        join_locations_template,
+        location_wrapper_template
     ) {
 
         var body = function(options) {
@@ -51,6 +55,7 @@ define('body', [
                 "JOIN_CHAT": '/configs/chats_info_config.json',
                 "CHATS": '/configs/chats_info_config.json',
                 "USERS": '/configs/users_info_config.json',
+                "JOIN_USER": '/configs/users_info_config.json',
                 "DETAIL_VIEW": '/configs/chats_info_config.json'
             },
 
@@ -64,6 +69,7 @@ define('body', [
                 JOIN_CHAT: 'JOIN_CHAT',
                 CHATS: 'CHATS',
                 USERS: 'USERS',
+                JOIN_USER: 'JOIN_USER',
 
                 DETAIL_VIEW: 'DETAIL_VIEW',
 
@@ -174,6 +180,13 @@ define('body', [
                                 _this.module.rotatePointer(options);
                             });
                             break;
+                        case  _this.MODE.JOIN_USER:
+                            _this.elementMap = {
+                                "JOIN_USER": _this.module.body_container
+                            };
+                            _this.body_mode = _this.MODE.JOIN_USER;
+                            _this.renderLayout(null, null);
+                            break;
                     }
                     _this.previousMode = _this.module.bodyOptions.mode;
                 }
@@ -213,6 +226,28 @@ define('body', [
 
             destroy: function() {
                 var _this = this;
+            },
+
+            prepareConfig: function(rawConfig) {
+                var byDataLocation = {};
+                rawConfig.forEach(function(_config) {
+                    if (!_config.location) {
+                        return;
+                    }
+                    if (!byDataLocation[_config.location]) {
+                        byDataLocation[_config.location] = {
+                            configs: []
+                        };
+                    }
+                    if (!_config.role) {
+                        byDataLocation[_config.location].configs.push(_config);
+                    } else if (_config.role === 'locationWrapper') {
+                        byDataLocation[_config.location].wrapperConfig = _config;
+                    }
+                });
+
+                rawConfig.byDataLocation = byDataLocation;
+                return rawConfig;
             }
 
         };
@@ -232,6 +267,8 @@ define('body', [
         body.prototype.textarea_template = body.prototype.template(textarea_template);
         body.prototype.panel_users_template = body.prototype.template(panel_users_template);
         body.prototype.detail_view_container_template = body.prototype.template(detail_view_container_template);
+        body.prototype.join_locations_template = body.prototype.template(join_locations_template);
+        body.prototype.location_wrapper_template = body.prototype.template(location_wrapper_template);
 
         body.prototype.dataMap = {
             "USER_INFO_EDIT": '',
@@ -251,9 +288,15 @@ define('body', [
             "JOIN_CHAT": body.prototype.chat_info_template,
             "CHATS": body.prototype.chat_info_template,
             "USERS": body.prototype.panel_users_template,
+            "JOIN_USER": body.prototype.join_locations_template,
             "DETAIL_VIEW": body.prototype.detail_view_container_template,
             "FILTER_MY_CHATS": body.prototype.filter_my_chats_template
         };
+
+        body.prototype.configHandlerMap = {
+            "JOIN_USER": body.prototype.prepareConfig
+        };
+        body.prototype.configHandlerContextMap = {};
 
         body.prototype.dataHandlerMap = {
             "USER_INFO_EDIT": null,

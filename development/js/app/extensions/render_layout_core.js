@@ -65,7 +65,13 @@ define('render_layout_core', [
                             callback(err);
                             return;
                         }
-                        _this.config = JSON.parse(res);
+                        var config = JSON.parse(res);
+                        if (_this.configHandlerMap[_this.body_mode]) {
+                            var context = _this.configHandlerContextMap[_this.body_mode] ? _this.configHandlerContextMap[_this.body_mode] : _this;
+                            _this.config = _this.configHandlerMap[_this.body_mode].call(context, config);
+                        } else {
+                            _this.config = config;
+                        }
                         if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW) {
                             _this.module.config = _this.config;
                         }
@@ -161,6 +167,8 @@ define('render_layout_core', [
                         options: options,
                         description: _this.description,
                         triple_element_template: _this.triple_element_template,
+                        join_locations_template: _this.join_locations_template,
+                        location_wrapper_template: _this.location_wrapper_template,
                         button_template: _this.button_template,
                         input_template: _this.input_template,
                         label_template: _this.label_template,

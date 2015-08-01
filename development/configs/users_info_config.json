@@ -1,1 +1,73 @@
-[]
+[
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-between",
+    "location": "user_id"
+  },
+  {
+    "element": "label",
+    "icon": "",
+    "text": 67,
+    "class": "",
+    "location": "user_id",
+    "data": {
+      "role": "user_id_label",
+      "mode": "JOIN_USER"
+    },
+    "for": "user_id",
+    "name": "",
+    "disable": false
+  },
+  {
+    "element": "input",
+    "type": "text",
+    "icon": "",
+    "text": "",
+    "class": "flex-item-w50p",
+    "location": "user_id",
+    "data": {
+      "role": "user_id_input",
+      "mode": "JOIN_USER"
+    },
+    "name": "",
+    "id": "user_id",
+    "disabled": false
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-around",
+    "location": "user_id_btn"
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": 68,
+    "class": "button-inset-square",
+    "location": "user_id_btn",
+    "data": {
+      "throw": "true",
+      "action": "requestFriendByUserId",
+      "mode": "JOIN_USER"
+    },
+    "name": "",
+    "disable": false
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p",
+    "location": "user_id_apply"
+  },
+  {
+    "element": "input",
+    "type": "checkbox",
+    "text": 69,
+    "class": "check-box-size",
+    "location": "user_id_apply",
+    "data": {
+      "key": "readyForFriendRequest",
+      "role": "btnEdit",
+      "action": "readyForFriendRequest",
+      "name": ""
+    }
+  }
+]

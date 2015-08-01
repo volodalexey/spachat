@@ -245,6 +245,7 @@ define('panel', [
                 JOIN_CHAT: 'JOIN_CHAT',
                 CHATS: 'CHATS',
                 USERS: 'USERS',
+                JOIN_USER: 'JOIN_USER',
 
                 USER_INFO_EDIT: 'USER_INFO_EDIT',
                 USER_INFO_SHOW: 'USER_INFO_SHOW',
@@ -722,6 +723,8 @@ define('panel', [
         panel.prototype.textarea_template = panel.prototype.template(textarea_template);
 
         panel.prototype.templateMap = {};
+        panel.prototype.configHandlerMap = {};
+        panel.prototype.configHandlerContextMap = {};
         panel.prototype.dataHandlerMap = {};
         panel.prototype.dataMap = {};
 
