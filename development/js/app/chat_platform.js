@@ -163,7 +163,7 @@ define('chat_platform', [
                                 _this.chatJoinApproved(parsedMessageData);
                                 break;
                             default :
-                                console.error(new Error('Message handler not found'));
+                                console.error(new Error('Message handler not found'), parsedMessageData);
                         }
                     }
                 }

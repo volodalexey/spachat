@@ -6,16 +6,17 @@ define('panel', [
         'extend_core',
         'switcher_core',
         'overlay_core',
+        'dom_core',
+        //
         'users_bus',
         'event_bus',
         'extra_toolbar',
         'filter',
-
         'pagination',
         'body',
-
         'indexeddb',
-
+        'websocket',
+        //
         'text!../templates/panel_left_template.ejs',
         'text!../templates/panel_right_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -31,14 +32,17 @@ define('panel', [
              extend_core,
              switcher_core,
              overlay_core,
+             dom_core,
+             //
              users_bus,
              event_bus,
              Extra_toolbar,
              Filter,
-             //
              Pagination,
              Body,
              indexeddb,
+             websocket,
+             //
              panel_left_template,
              panel_right_template,
              triple_element_template,
@@ -703,6 +707,34 @@ define('panel', [
 
             calcMaxWidth: function() {
                 return document.body.offsetWidth + 'px';
+            },
+
+            requestFriendByUserId: function() {
+                var _this = this;
+                var user_id_input = _this.body_container.querySelector('[data-role="user_id_input"]');
+
+                if (user_id_input && user_id_input.value) {
+                    websocket.sendMessage({
+                        type: "user_add",
+                        userId: users_bus.getUserId(),
+                        deviceId: event_bus.getDeviceId(),
+                        tempDeviceId: event_bus.getTempDeviceId(),
+                        request_body: {
+                            userId: user_id_input.value,
+                            message: ""
+                        }
+                    });
+                }
+            },
+
+            readyForFriendRequest: function(element) {
+                websocket.sendMessage({
+                    type: "user_toggle_ready",
+                    userId: users_bus.getUserId(),
+                    deviceId: event_bus.getDeviceId(),
+                    tempDeviceId: event_bus.getTempDeviceId(),
+                    ready_state: element.checked
+                });
             }
 
         };
@@ -713,6 +745,7 @@ define('panel', [
         extend(panel, extend_core);
         extend(panel, switcher_core);
         extend(panel, overlay_core);
+        extend(panel, dom_core);
 
         panel.prototype.panel_left_template = panel.prototype.template(panel_left_template);
         panel.prototype.panel_right_template = panel.prototype.template(panel_right_template);
