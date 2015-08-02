@@ -21,7 +21,7 @@ define('chat', [
         'message_core',
         'throw_event_core',
         "switcher_core",
-        'app/extensions/model_core',
+        'model_core',
         'overlay_core',
         'render_layout_core',
         //
@@ -743,13 +743,7 @@ define('chat', [
                 _this.messages.fillListMessage(obj);
             },
 
-            sendToWebSocket: function(sendData) {
-                var _this = this;
-                sendData.chat_description = this.valueOfChat();
-                websocket.sendMessage(sendData);
-                //_this.proceedNextMessage();
-            },
-
+            // TODO connect webrtc.js direct to message router
             onMessageRouter: function(eventData) {
                 var _this = this;
                 _this.initializeMessagesStack();
@@ -759,7 +753,7 @@ define('chat', [
                     if (_this[eventData.notify_data]) {
                         _this[eventData.notify_data](eventData);
                     } else if (webrtc[eventData.notify_data]) {
-                        webrtc[eventData.notify_data](_this, eventData);
+                        webrtc[eventData.notify_data](eventData, _this);
                     } else {
                         console.error(new Error('No message handler'));
                     }

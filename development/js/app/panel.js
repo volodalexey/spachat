@@ -346,6 +346,7 @@ define('panel', [
                 _this.on('throw', _this.throwRouter, _this);
                 event_bus.on('chatDestroyed', _this.bindedOnChatDestroyed, _this);
                 event_bus.on('AddedNewChat', _this.bindedToggleListOptions, _this);
+                websocket.on('message', _this.onPanelMessageRouter, _this);
             },
 
             removeMainEventListeners: function() {
@@ -359,6 +360,7 @@ define('panel', [
                 _this.off('throw', _this.throwRouter);
                 event_bus.off('chatDestroyed', _this.bindedOnChatDestroyed);
                 event_bus.off('AddedNewChat', _this.bindedToggleListOptions);
+                websocket.off('message', _this.onPanelMessageRouter);
             },
 
             throwRouter: function(action, event) {
@@ -735,6 +737,22 @@ define('panel', [
                     tempDeviceId: event_bus.getTempDeviceId(),
                     ready_state: element.checked
                 });
+            },
+
+            /**
+             * handle message from web-socket (if it is connected with chats some how)
+             */
+            onPanelMessageRouter: function(messageData) {
+                var _this = this;
+
+                switch (messageData.type) {
+                    case 'user_add':
+
+                        break;
+                    case 'user_add_sent':
+
+                        break;
+                }
             }
 
         };

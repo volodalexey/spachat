@@ -38,10 +38,12 @@ define('dom_core',[
                     return null;
                 }
                 var n = !( _n === undefined || _n === null ) ? _n : 3 ;
-                if (!element.dataset[param] && n > 0) {
-                    return this.getDataParameter(element.parentNode, param, n-1);
-                } else if (element.dataset[param]) {
-                    return element;
+                if (n > 0) {
+                    if (!element.dataset || !element.dataset[param]) {
+                        return this.getDataParameter(element.parentNode, param, n-1);
+                    } else if (element.dataset[param]) {
+                        return element;
+                    }
                 }
                 return null;
             },

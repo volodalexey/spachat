@@ -2,11 +2,13 @@ require.config({
     "baseUrl": "js",
     "waitSeconds": 10,
     "paths": {
+        // requireJS plugins
         "text": "lib/text",
-        //
+        // models
         "html_message": "app/model/html_message",
         "html_log_message": "app/model/html_log_message",
-        //
+        "connection": "app/model/connection",
+        // inheritable
         "async_core": "app/extensions/async_core",
         "ajax_core": "app/extensions/ajax_core",
         "overlay_core": "app/extensions/overlay_core",
@@ -21,7 +23,8 @@ require.config({
         "dom_core": "app/extensions/dom_core",
         "description_core": "app/description_core",
         "switcher_core": "app/extensions/switcher_core",
-        //
+        "model_core": "app/extensions/model_core",
+        // instantiable
         "body": "app/body",
         "chat": "app/chat",
         "chat_platform": "app/chat_platform",

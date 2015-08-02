@@ -108,6 +108,9 @@ define('settings', [
         settings.prototype.label_template = settings.prototype.template(label_template);
         settings.prototype.input_template = settings.prototype.template(input_template);
 
+        settings.prototype.configHandlerMap = {};
+        settings.prototype.configHandlerContextMap = {};
+
         settings.prototype.dataMap = {
             "SETTINGS": ""
         };

@@ -66,7 +66,6 @@ define('websocket', [
             },
 
             onMessage: function(event) {
-                console.log('WebSocket received message data', event.data);
                 if (event.data) {
                     try {
                         var parsedMessageData = JSON.parse(event.data);
@@ -75,7 +74,7 @@ define('websocket', [
                         return;
                     }
                 }
-
+                console.info('WebSocket received message data', parsedMessageData);
                 this.trigger('message', parsedMessageData);
             },
 

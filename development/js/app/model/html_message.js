@@ -1,7 +1,7 @@
 define('html_message', [
         'id_core',
         'extend_core',
-        'app/extensions/model_core',
+        'model_core',
         'users_bus',
         'event_bus'
     ],

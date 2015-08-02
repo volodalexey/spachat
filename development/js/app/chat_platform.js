@@ -91,7 +91,7 @@ define('chat_platform', [
                 event_bus.on('addNewChatAuto', _this.addNewChatAuto, _this);
                 event_bus.on('getOpenChats', _this.getOpenChats, _this);
                 event_bus.on('chatsDestroy', _this.destroyChats, _this);
-                websocket.on('message', _this.onMessageRouter, _this);
+                websocket.on('message', _this.onChatMessageRouter, _this);
                 _this.on('resize', _this.resizeChats, _this);
                 _this.on('joinByChatIdAuto', _this.joinByChatIdAuto, _this);
                 _this.on('showChat', _this.showChat, _this);
@@ -103,7 +103,7 @@ define('chat_platform', [
                 event_bus.off('addNewChatAuto', _this.addNewChatAuto);
                 event_bus.off('getOpenChats', _this.getOpenChats);
                 event_bus.off('chatsDestroy', _this.destroyChats);
-                websocket.off('message', _this.onMessageRouter);
+                websocket.off('message', _this.onChatMessageRouter);
                 _this.off('resize');
                 _this.off('joinByChatIdAuto');
                 _this.off('showChat');
@@ -139,7 +139,7 @@ define('chat_platform', [
             /**
              * handle message from web-socket (if it is connected with chats some how)
              */
-            onMessageRouter: function(messageData) {
+            onChatMessageRouter: function(messageData) {
                 var _this = this;
 
                 _this.initializeMessagesStack();
@@ -160,13 +160,10 @@ define('chat_platform', [
                             case 'chat_joined':
                                 _this.chatJoinApproved(messageData);
                                 break;
-                            default :
-                                console.error(new Error('Message handler not found'), messageData);
                         }
                     }
                 }
-            }
-            ,
+            },
 
             /**
              * sends future chat description to the server to check if such chat is already exists on the server
@@ -334,7 +331,7 @@ define('chat_platform', [
                         }], renderOptions);
                     }
 
-                    webrtc.serverStoredChat(newChat, messageData);
+                    webrtc.handleConnectedDevices(messageData.connectedDevices, newChat);
                 });
             },
 
@@ -395,7 +392,7 @@ define('chat_platform', [
                         } else if (chat && !_this.isChatOpened(event.chat_description.chatId)) {
                             _this.chatWorkflow(event);
                         } else if (chat) {
-                            webrtc.serverStoredChat(_this.isChatOpened(event.chat_description.chatId), event);
+                            webrtc.handleConnectedDevices(event.connectedDevices, chat);
                         }
                     }
                 );
