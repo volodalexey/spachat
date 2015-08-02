@@ -264,6 +264,9 @@ define('header', [
         header.prototype.label_template = header.prototype.template(label_template);
         header.prototype.input_template = header.prototype.template(input_template);
 
+        header.prototype.configHandlerMap = {};
+        header.prototype.configHandlerContextMap = {};
+
         header.prototype.dataMap = {
             WEBRTC: '',
             TAB: '',

@@ -243,6 +243,9 @@ define('editor', [
         editor.prototype.label_template = editor.prototype.template(label_template);
         editor.prototype.input_template = editor.prototype.template(input_template);
 
+        editor.prototype.configHandlerMap = {};
+        editor.prototype.configHandlerContextMap = {};
+
         editor.prototype.dataMap = {
             "MAIN_PANEL": "",
             "FORMAT_PANEL": ""

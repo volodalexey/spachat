@@ -137,33 +137,31 @@ define('chat_platform', [
             },
 
             /**
-             * route message from web-socket
-             * @param event
+             * handle message from web-socket (if it is connected with chats some how)
              */
-            onMessageRouter: function(event) {
-                var _this = this,
-                    parsedMessageData = typeof event === 'string' ? JSON.parse(event) : event;
+            onMessageRouter: function(messageData) {
+                var _this = this;
 
                 _this.initializeMessagesStack();
-                if (parsedMessageData.type === 'notifyChat') {
+                if (messageData.type === 'notifyChat') {
                     Chat.prototype.chatsArray.forEach(function(_chat) {
-                        if (parsedMessageData.chat_description.chatId === _chat.chatId) {
-                            _chat.trigger('notifyChat', parsedMessageData);
+                        if (messageData.chat_description.chatId === _chat.chatId) {
+                            _chat.trigger('notifyChat', messageData);
                         }
                     });
                 } else {
                     if (_this.messagesStack.length) {
-                        _this.messagesStack.push(parsedMessageData);
+                        _this.messagesStack.push(messageData);
                     } else {
-                        switch (parsedMessageData.type) {
+                        switch (messageData.type) {
                             case 'chat_created':
-                                _this.chatCreateApproved(parsedMessageData);
+                                _this.chatCreateApproved(messageData);
                                 break;
                             case 'chat_joined':
-                                _this.chatJoinApproved(parsedMessageData);
+                                _this.chatJoinApproved(messageData);
                                 break;
                             default :
-                                console.error(new Error('Message handler not found'), parsedMessageData);
+                                console.error(new Error('Message handler not found'), messageData);
                         }
                     }
                 }
