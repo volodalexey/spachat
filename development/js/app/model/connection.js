@@ -112,6 +112,16 @@ function(
             return chat;
         },
 
+        removeChatById: function(chatId) {
+            var chat = this.getChat({ chatId: chatId });
+            if (chat) {
+                var index = this.chats.indexOf(chatToDestroy);
+                if (index > -1) {
+                    this.chats.splice(index, 1);
+                }
+            }
+        },
+
         storeInstance: function(instance) {
             if (instance.chatId) {
                 this.storeChat(instance);

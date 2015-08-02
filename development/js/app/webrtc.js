@@ -34,6 +34,7 @@ define('webrtc', [
                 }
             };
             _this.connections = [];
+            _this.addEventListeners();
         };
 
         WebRTC.prototype = {
@@ -610,6 +611,24 @@ define('webrtc', [
                         _this.connections.splice(removeIndex, 1);
                     }
                 }
+            },
+
+            destroyConnectionChat: function(chatId) {
+                var _this = this;
+                _this.connections.forEach(function(connetion) {
+                    connetion.removeChatById(chatId);
+                });
+            },
+
+            addEventListeners: function() {
+                var _this = this;
+                _this.removeEventListeners();
+                event_bus.on('chatDestroyed', _this.destroyConnectionChat, _this);
+            },
+
+            removeEventListeners: function() {
+                var _this = this;
+                event_bus.off('chatDestroyed', _this.destroyConnectionChat);
             }
         };
         extend(WebRTC, throw_event_core);
