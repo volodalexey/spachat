@@ -317,7 +317,7 @@ define('webrtc', [
                 var _this = this;
                 curConnection.log('log', { message: 'try: acceptRemoteAnswerAuto:setRemoteDescription' });
                 try {
-                    var remoteAnswerDescription = new RTCSessionDescription(options.curConnection.active.remoteAnswerDescription);
+                    var remoteAnswerDescription = new RTCSessionDescription(curConnection.active.remoteAnswerDescription);
                     curConnection.active.peerConnection.setRemoteDescription(remoteAnswerDescription);
                 } catch (error) {
                     if (callback) {
@@ -335,7 +335,7 @@ define('webrtc', [
             /**
              * each time client tries to define its address
              */
-            onICEcandidate: function(curConnection, peerConnection, onICECandidate, event) {
+            _onICECandidate: function(curConnection, peerConnection, onICECandidate, event) {
                 if (event.candidate == null) {
                     curConnection.log('log', { message: 'done: ICE candidate' });
                     if (onICECandidate) {
@@ -373,7 +373,7 @@ define('webrtc', [
                     return;
                 }
 
-                peerConnection.onicecandidate = _this.onICECandidate.bind(_this, curConnection, peerConnection, onICECandidate);
+                peerConnection.onicecandidate = _this._onICECandidate.bind(_this, curConnection, peerConnection, onICECandidate);
                 peerConnection.oniceconnectionstatechange = function(ev) { console.log('oniceconnectionstatechange', ev.target.iceConnectionState); };
                 //peerConnection.onnegotiationneeded = function(ev) { console.log('onnegotiationneeded', ev); };
                 peerConnection.onsignalingstatechange = function(ev) { console.log('onsignalingstatechange', ev.target.signalingState); };
@@ -437,21 +437,21 @@ define('webrtc', [
             /**
              * create data channel with channel id equal to chat id
              */
-            _createDataChannel: function(curConnection, peerConnection, _onDataChannelCreated, callback) {
+            _createDataChannel: function(curConnection, peerConnection, onDataChannelCreated, callback) {
                 var _this = this;
 
                 try {
-                    var dataChannel = peerConnection.createDataChannel(options.curConnection.getAnyDeviceId(), {reliable: true});
+                    var dataChannel = peerConnection.createDataChannel(curConnection.getAnyDeviceId(), {reliable: true});
                 } catch (error) {
-                    if (_onDataChannelCreated) {
-                        _onDataChannelCreated(error , null, null, null, callback);
+                    if (onDataChannelCreated) {
+                        onDataChannelCreated(error , null, null, null, callback);
                     }
                     return;
                 }
 
                 _this.addDataChannelListeners(dataChannel, curConnection, 'active');
-                if (_onDataChannelCreated) {
-                    _onDataChannelCreated(null, curConnection, peerConnection, dataChannel, callback);
+                if (onDataChannelCreated) {
+                    onDataChannelCreated(null, curConnection, peerConnection, dataChannel, callback);
                 }
             },
 
@@ -518,7 +518,7 @@ define('webrtc', [
                 _this._createDataChannel(
                     curConnection,
                     peerConnection,
-                    _this._onDataChannelCreated,
+                    _this._onDataChannelCreated.bind(_this),
                     callback
                 );
             },

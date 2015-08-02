@@ -1,9 +1,7 @@
-define([
-        'chat',
+define('connection',[
         'websocket'
     ],
 function(
-    Chat,
     websocket
 ) {
     /**
@@ -87,10 +85,10 @@ function(
             return user;
         },
 
-        storeUser: function(messageDescription) {
-            var user = this.getUser(messageDescription);
+        storeUser: function(userDescription) {
+            var user = this.getUser(userDescription);
             if (!user) {
-                this.users.push(user);
+                this.users.push(userDescription);
             }
             return user;
         },
@@ -109,15 +107,15 @@ function(
         storeChat: function(chatDescription) {
             var chat = this.getChat(chatDescription);
             if (!chat) {
-                this.chats.push(chat);
+                this.chats.push(chatDescription);
             }
             return chat;
         },
 
         storeInstance: function(instance) {
-            if (instance instanceof Chat) {
+            if (instance.chatId) {
                 this.storeChat(instance);
-            } else {
+            } else if (instance.userId) {
                 // TODO use user model ?
                 this.storeUser(instance);
             }
@@ -129,9 +127,9 @@ function(
 
         sendToWebSocket: function(sendData) {
             var _this = this;
-            sendData.chat_description = this.valueOfChat();
+            //sendData.chat_description = this.valueOfChat();
+            sendData.chat_description = _this.chats[0].valueOfChat();
             websocket.sendMessage(sendData);
-            //_this.proceedNextMessage();
         }
     };
 
