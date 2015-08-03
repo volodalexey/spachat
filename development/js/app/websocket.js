@@ -1,7 +1,8 @@
 define('websocket', [
-        'throw_event_core'
+        'throw_event_core',
+        'extend_core'
     ],
-    function(throw_event_core) {
+    function(throw_event_core, extend_core) {
 
         var websocket = function() {
             this.create();
@@ -90,7 +91,7 @@ define('websocket', [
                 this.socket.send(senddata);
             }
         };
-        extend(websocket, throw_event_core);
+        extend_core.prototype.inherit(websocket, throw_event_core);
 
         return new websocket();
     }

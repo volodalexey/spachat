@@ -769,16 +769,16 @@ define('chat', [
             }
 
         };
-        extend(chat, ajax_core);
-        extend(chat, template_core);
-        extend(chat, id_core);
-        extend(chat, extend_core);
-        extend(chat, message_core);
-        extend(chat, throw_event_core);
-        extend(chat, switcher_core);
-        extend(chat, model_core);
-        extend(chat, render_layout_core);
-        extend(chat, overlay_core);
+        extend_core.prototype.inherit(chat, ajax_core);
+        extend_core.prototype.inherit(chat, template_core);
+        extend_core.prototype.inherit(chat, id_core);
+        extend_core.prototype.inherit(chat, extend_core);
+        extend_core.prototype.inherit(chat, message_core);
+        extend_core.prototype.inherit(chat, throw_event_core);
+        extend_core.prototype.inherit(chat, switcher_core);
+        extend_core.prototype.inherit(chat, model_core);
+        extend_core.prototype.inherit(chat, render_layout_core);
+        extend_core.prototype.inherit(chat, overlay_core);
 
         chat.prototype.chat_template = chat.prototype.template(chat_template);
         chat.prototype.waiter_template = chat.prototype.template(waiter_template);

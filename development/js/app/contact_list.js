@@ -3,6 +3,7 @@ define('contact_list', [
         'ajax_core',
         'template_core',
         'render_layout_core',
+        'extend_core',
         //
         'indexeddb',
         'users_bus',
@@ -18,6 +19,7 @@ define('contact_list', [
              ajax_core,
              template_core,
              render_layout_core,
+             extend_core,
              //
              indexeddb,
              users_bus,
@@ -69,10 +71,10 @@ define('contact_list', [
             }
         };
 
-        extend(contact_list, throw_event_core);
-        extend(contact_list, ajax_core);
-        extend(contact_list, template_core);
-        extend(contact_list, render_layout_core);
+        extend_core.prototype.inherit(contact_list, throw_event_core);
+        extend_core.prototype.inherit(contact_list, ajax_core);
+        extend_core.prototype.inherit(contact_list, template_core);
+        extend_core.prototype.inherit(contact_list, render_layout_core);
 
         contact_list.prototype.contact_list_template = contact_list.prototype.template(contact_list_template);
         contact_list.prototype.triple_element_template = contact_list.prototype.template(triple_element_template);

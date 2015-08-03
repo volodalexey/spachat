@@ -6,6 +6,7 @@ define('pagination', [
         'indexeddb',
         "switcher_core",
         'overlay_core',
+        'extend_core',
         'users_bus',
         'chats_bus',
         //
@@ -23,6 +24,7 @@ define('pagination', [
              indexeddb,
              switcher_core,
              overlay_core,
+             extend_core,
              users_bus,
              chats_bus,
              //
@@ -344,12 +346,12 @@ define('pagination', [
                 _this.unCashElements();
             }
         };
-        extend(pagination, throw_event_core);
-        extend(pagination, ajax_core);
-        extend(pagination, template_core);
-        extend(pagination, render_layout_core);
-        extend(pagination, switcher_core);
-        extend(pagination, overlay_core);
+        extend_core.prototype.inherit(pagination, throw_event_core);
+        extend_core.prototype.inherit(pagination, ajax_core);
+        extend_core.prototype.inherit(pagination, template_core);
+        extend_core.prototype.inherit(pagination, render_layout_core);
+        extend_core.prototype.inherit(pagination, switcher_core);
+        extend_core.prototype.inherit(pagination, overlay_core);
 
         pagination.prototype.pagination_template = pagination.prototype.template(pagination_template);
         pagination.prototype.choice_per_page_template = pagination.prototype.template(choice_per_page_template);

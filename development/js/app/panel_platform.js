@@ -2,11 +2,13 @@ define('panel_platform', [
         'panel',
         'overlay_core',
         'throw_event_core',
+        'extend_core',
         'ping_core'
     ],
     function(panel,
              overlay_core,
              throw_event_core,
+             extend_core,
              ping_core) {
 
         var panel_platform = function() {
@@ -143,9 +145,9 @@ define('panel_platform', [
                 _this.unCashMainElements();
             }
         };
-        extend(panel_platform, overlay_core);
-        extend(panel_platform, throw_event_core);
-        extend(panel_platform, ping_core);
+        extend_core.prototype.inherit(panel_platform, overlay_core);
+        extend_core.prototype.inherit(panel_platform, throw_event_core);
+        extend_core.prototype.inherit(panel_platform, ping_core);
 
         return new panel_platform();
     });

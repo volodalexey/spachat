@@ -3,6 +3,7 @@ define('main_layout', [
         'ajax_core',
         'navigator',
         'dom_core',
+        'extend_core',
         //
         'text!../templates/index_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -13,6 +14,7 @@ define('main_layout', [
              ajax_core,
              navigator,
              dom_core,
+             extend_core,
             //
              index_template,
              triple_element_template,
@@ -56,9 +58,9 @@ define('main_layout', [
                 });
             }
         };
-        extend(Main_layout, ajax_core);
-        extend(Main_layout, template_core);
-        extend(Main_layout, dom_core);
+        extend_core.prototype.inherit(Main_layout, ajax_core);
+        extend_core.prototype.inherit(Main_layout, template_core);
+        extend_core.prototype.inherit(Main_layout, dom_core);
         Main_layout.prototype.index_template = Main_layout.prototype.template(index_template);
         Main_layout.prototype.triple_element_template = Main_layout.prototype.template(triple_element_template);
         Main_layout.prototype.button_template = Main_layout.prototype.template(button_template);

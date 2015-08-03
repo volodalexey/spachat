@@ -6,6 +6,7 @@ define('settings', [
         'indexeddb',
         'render_layout_core',
         'overlay_core',
+        'extend_core',
 
         'text!../templates/setting_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -20,6 +21,7 @@ define('settings', [
              indexeddb,
              render_layout_core,
              overlay_core,
+             extend_core,
 
              setting_template,
              triple_element_template,
@@ -96,11 +98,11 @@ define('settings', [
 
         };
 
-        extend(settings, throw_event_core);
-        extend(settings, ajax_core);
-        extend(settings, template_core);
-        extend(settings, render_layout_core);
-        extend(settings, overlay_core);
+        extend_core.prototype.inherit(settings, throw_event_core);
+        extend_core.prototype.inherit(settings, ajax_core);
+        extend_core.prototype.inherit(settings, template_core);
+        extend_core.prototype.inherit(settings, render_layout_core);
+        extend_core.prototype.inherit(settings, overlay_core);
 
         settings.prototype.setting_template = settings.prototype.template(setting_template);
         settings.prototype.triple_element_template = settings.prototype.template(triple_element_template);

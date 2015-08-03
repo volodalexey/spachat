@@ -1,6 +1,7 @@
 define('webrtc', [
         'throw_event_core',
         'template_core',
+        'extend_core',
         //
         'event_bus',
         'users_bus',
@@ -11,6 +12,7 @@ define('webrtc', [
     ],
     function(throw_event_core,
              template_core,
+             extend_core,
              //
              event_bus,
              users_bus,
@@ -631,8 +633,8 @@ define('webrtc', [
                 event_bus.off('chatDestroyed', _this.destroyConnectionChat);
             }
         };
-        extend(WebRTC, throw_event_core);
-        extend(WebRTC, template_core);
+        extend_core.prototype.inherit(WebRTC, throw_event_core);
+        extend_core.prototype.inherit(WebRTC, template_core);
 
         WebRTC.prototype.webrtc_template = WebRTC.prototype.template(webrtc_template);
         WebRTC.prototype.waiter_template = WebRTC.prototype.template(waiter_template);

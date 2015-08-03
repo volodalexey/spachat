@@ -12,6 +12,7 @@ define('chat_platform', [
         'template_core',
         'message_core',
         'dom_core',
+        'extend_core',
         //
         'text!../templates/chat_platform_template.ejs'
     ],
@@ -28,6 +29,7 @@ define('chat_platform', [
              template_core,
              message_core,
              dom_core,
+             extend_core,
              //
              chat_platform_template) {
 
@@ -546,11 +548,11 @@ define('chat_platform', [
                 return openedChat;
             }
         };
-        extend(chat_platform, overlay_core);
-        extend(chat_platform, throw_event_core);
-        extend(chat_platform, template_core);
-        extend(chat_platform, message_core);
-        extend(chat_platform, dom_core);
+        extend_core.prototype.inherit(chat_platform, overlay_core);
+        extend_core.prototype.inherit(chat_platform, throw_event_core);
+        extend_core.prototype.inherit(chat_platform, template_core);
+        extend_core.prototype.inherit(chat_platform, message_core);
+        extend_core.prototype.inherit(chat_platform, dom_core);
 
         chat_platform.prototype.chat_platform_template = chat_platform.prototype.template(chat_platform_template);
 

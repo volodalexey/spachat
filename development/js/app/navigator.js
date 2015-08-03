@@ -8,7 +8,8 @@ define('navigator',
         //
         'description_core',
         'throw_event_core',
-        'dom_core'
+        'dom_core',
+        'extend_core'
     ],
     function (
         chat_platform,
@@ -19,7 +20,8 @@ define('navigator',
         //
         description_core,
         throw_event_core,
-        dom_core
+        dom_core,
+        extend_core
     ) {
 
         var navigator = function() {
@@ -145,8 +147,8 @@ define('navigator',
                 _this.unCashElements();
             }
         };
-        extend(navigator, throw_event_core);
-        extend(navigator, dom_core);
+        extend_core.prototype.inherit(navigator, throw_event_core);
+        extend_core.prototype.inherit(navigator, dom_core);
 
 
         return new navigator();

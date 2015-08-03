@@ -7,6 +7,7 @@ define('editor', [
         'render_layout_core',
         'description_core',
         'overlay_core',
+        'extend_core',
         //
         'text!../templates/editor_template.ejs',
         'text!../templates/editor_format_template.ejs',
@@ -23,6 +24,7 @@ define('editor', [
              render_layout_core,
              description_core,
              overlay_core,
+             extend_core,
              //
              editor_template,
              format_template,
@@ -229,12 +231,12 @@ define('editor', [
             }
         };
 
-        extend(editor, throw_event_core);
-        extend(editor, async_core);
-        extend(editor, ajax_core);
-        extend(editor, template_core);
-        extend(editor, render_layout_core);
-        extend(editor, overlay_core);
+        extend_core.prototype.inherit(editor, throw_event_core);
+        extend_core.prototype.inherit(editor, async_core);
+        extend_core.prototype.inherit(editor, ajax_core);
+        extend_core.prototype.inherit(editor, template_core);
+        extend_core.prototype.inherit(editor, render_layout_core);
+        extend_core.prototype.inherit(editor, overlay_core);
 
         editor.prototype.editor_template = editor.prototype.template(editor_template);
         editor.prototype.format_template = editor.prototype.template(format_template);

@@ -4,6 +4,7 @@ define('body', [
         'render_layout_core',
         'ajax_core',
         'overlay_core',
+        'extend_core',
         //
         'users_bus',
         'chats_bus',
@@ -26,6 +27,7 @@ define('body', [
         render_layout_core,
         ajax_core,
         overlay_core,
+        extend_core,
         //
         users_bus,
         chats_bus,
@@ -252,11 +254,12 @@ define('body', [
 
         };
 
-        extend(body, throw_event_core);
-        extend(body, template_core);
-        extend(body, render_layout_core);
-        extend(body, ajax_core);
-        extend(body, overlay_core);
+        extend_core.prototype.inherit(body, throw_event_core);
+        extend_core.prototype.inherit(body, throw_event_core);
+        extend_core.prototype.inherit(body, template_core);
+        extend_core.prototype.inherit(body, render_layout_core);
+        extend_core.prototype.inherit(body, ajax_core);
+        extend_core.prototype.inherit(body, overlay_core);
 
         body.prototype.chat_info_template = body.prototype.template(chat_info_template);
         body.prototype.user_info_template = body.prototype.template(user_info_template);

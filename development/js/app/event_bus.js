@@ -1,8 +1,10 @@
 define('event_bus', [
-        'event_core'
+        'event_core',
+        'extend_core'
     ],
     function(
-         event_core
+         event_core,
+         extend_core
     ) {
 
         var Event_bus = function() {
@@ -42,7 +44,7 @@ define('event_bus', [
             }
         };
 
-        extend(Event_bus, event_core);
+        extend_core.prototype.inherit(Event_bus, event_core);
 
         return new Event_bus();
     })

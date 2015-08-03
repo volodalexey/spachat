@@ -1,11 +1,13 @@
 define('overlay_core', [
         'template_core',
+        'extend_core',
         //
         'text!../templates/spinner_template.ejs',
         'text!../templates/horizontal_spinner_template.ejs'
     ],
     function(
         template_core,
+        extend_core,
         //
         spinner_template,
         horizontal_spinner_template) {
@@ -38,7 +40,7 @@ define('overlay_core', [
             }
         };
 
-        extend(overlay_core, template_core);
+        extend_core.prototype.inherit(overlay_core, template_core);
 
         overlay_core.prototype.spinner_template = overlay_core.prototype.template(spinner_template);
         overlay_core.prototype.horizontal_spinner_template = overlay_core.prototype.template(horizontal_spinner_template);

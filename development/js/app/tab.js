@@ -1,8 +1,10 @@
 define('tab', [
-        'throw_event_core'
+        'throw_event_core',
+        'extend_core'
     ],
     function(
-        throw_event_core
+        throw_event_core,
+        extend_core
     ) {
 
         var tab = function() {};
@@ -34,7 +36,7 @@ define('tab', [
                 return tabId;
             }
         };
-        extend(tab, throw_event_core);
+        extend_core.prototype.inherit(tab, throw_event_core);
 
         return new tab();
     }

@@ -756,14 +756,14 @@ define('panel', [
             }
 
         };
-        extend(panel, throw_event_core);
-        extend(panel, ajax_core);
-        extend(panel, template_core);
-        extend(panel, render_layout_core);
-        extend(panel, extend_core);
-        extend(panel, switcher_core);
-        extend(panel, overlay_core);
-        extend(panel, dom_core);
+        extend_core.prototype.inherit(panel, throw_event_core);
+        extend_core.prototype.inherit(panel, ajax_core);
+        extend_core.prototype.inherit(panel, template_core);
+        extend_core.prototype.inherit(panel, render_layout_core);
+        extend_core.prototype.inherit(panel, extend_core);
+        extend_core.prototype.inherit(panel, switcher_core);
+        extend_core.prototype.inherit(panel, overlay_core);
+        extend_core.prototype.inherit(panel, dom_core);
 
         panel.prototype.panel_left_template = panel.prototype.template(panel_left_template);
         panel.prototype.panel_right_template = panel.prototype.template(panel_right_template);

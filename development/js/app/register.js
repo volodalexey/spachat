@@ -3,7 +3,8 @@ define('register', [
         'throw_event_core',
         'template_core',
         'ajax_core',
-
+        'extend_core',
+        //
         'id_core',
         'users_bus',
 
@@ -18,7 +19,8 @@ define('register', [
              throw_event_core,
              template_core,
              ajax_core,
-
+             extend_core,
+            //
              id_core,
              users_bus,
 
@@ -199,11 +201,11 @@ define('register', [
             }
         };
 
-        extend(register, overlay_core);
-        extend(register, throw_event_core);
-        extend(register, template_core);
-        extend(register, id_core);
-        extend(register, ajax_core);
+        extend_core.prototype.inherit(register, overlay_core);
+        extend_core.prototype.inherit(register, throw_event_core);
+        extend_core.prototype.inherit(register, template_core);
+        extend_core.prototype.inherit(register, id_core);
+        extend_core.prototype.inherit(register, ajax_core);
 
         return new register();
 

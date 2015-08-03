@@ -3,6 +3,7 @@ define('extra_toolbar', [
         'overlay_core',
         'render_layout_core',
         'throw_event_core',
+        'extend_core',
         //
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
@@ -16,6 +17,7 @@ define('extra_toolbar', [
              overlay_core,
              render_layout_core,
              throw_event_core,
+             extend_core,
              //
              triple_element_template,
              button_template,
@@ -112,10 +114,10 @@ define('extra_toolbar', [
             }
 
         };
-        extend(extra_toolbar, switcher_core);
-        extend(extra_toolbar, overlay_core);
-        extend(extra_toolbar, render_layout_core);
-        extend(extra_toolbar, throw_event_core);
+        extend_core.prototype.inherit(extra_toolbar, switcher_core);
+        extend_core.prototype.inherit(extra_toolbar, overlay_core);
+        extend_core.prototype.inherit(extra_toolbar, render_layout_core);
+        extend_core.prototype.inherit(extra_toolbar, throw_event_core);
 
         extra_toolbar.prototype.triple_element_template = extra_toolbar.prototype.template(triple_element_template);
         extra_toolbar.prototype.button_template = extra_toolbar.prototype.template(button_template);

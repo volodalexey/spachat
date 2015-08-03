@@ -4,6 +4,7 @@ define('messages', [
         'id_core',
         'overlay_core',
         'switcher_core',
+        'extend_core',
         //
         'indexeddb',
         'html_message',
@@ -19,6 +20,7 @@ define('messages', [
              id_core,
              overlay_core,
              switcher_core,
+             extend_core,
              //
              indexeddb,
              HTML_message,
@@ -208,11 +210,11 @@ define('messages', [
                 var _this = this;
             }
         };
-        extend(messages, throw_event_core);
-        extend(messages, template_core);
-        extend(messages, id_core);
-        extend(messages, overlay_core);
-        extend(messages, switcher_core);
+        extend_core.prototype.inherit(messages, throw_event_core);
+        extend_core.prototype.inherit(messages, template_core);
+        extend_core.prototype.inherit(messages, id_core);
+        extend_core.prototype.inherit(messages, overlay_core);
+        extend_core.prototype.inherit(messages, switcher_core);
 
         messages.prototype.message_template = messages.prototype.template(message_template);
         messages.prototype.log_message_template = messages.prototype.template(log_message_template);

@@ -45,9 +45,9 @@ define('html_message', [
 
         };
 
-        extend(HTML_message, id_core);
-        extend(HTML_message, extend_core);
-        extend(HTML_message, model_core);
+        extend_core.prototype.inherit(HTML_message, id_core);
+        extend_core.prototype.inherit(HTML_message, extend_core);
+        extend_core.prototype.inherit(HTML_message, model_core);
 
         return HTML_message;
     });

@@ -7,6 +7,7 @@ define('header', [
         'render_layout_core',
         "switcher_core",
         'overlay_core',
+        'extend_core',
         'event_bus',
 
         'pagination',
@@ -26,6 +27,7 @@ define('header', [
              render_layout_core,
              switcher_core,
              overlay_core,
+             extend_core,
              event_bus,
              //
              pagination,
@@ -249,13 +251,13 @@ define('header', [
             }
 
         };
-        extend(header, throw_event_core);
-        extend(header, async_core);
-        extend(header, ajax_core);
-        extend(header, template_core);
-        extend(header, render_layout_core);
-        extend(header, switcher_core);
-        extend(header, overlay_core);
+        extend_core.prototype.inherit(header, throw_event_core);
+        extend_core.prototype.inherit(header, async_core);
+        extend_core.prototype.inherit(header, ajax_core);
+        extend_core.prototype.inherit(header, template_core);
+        extend_core.prototype.inherit(header, render_layout_core);
+        extend_core.prototype.inherit(header, switcher_core);
+        extend_core.prototype.inherit(header, overlay_core);
 
         header.prototype.header_template = header.prototype.template(header_template);
         header.prototype.filter_template = header.prototype.template(filter_template);

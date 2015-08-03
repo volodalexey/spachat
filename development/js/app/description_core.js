@@ -1,5 +1,8 @@
-define('description_core', ['dom_core'],
-    function(dom_core) {
+define('description_core', [
+        'dom_core',
+        'extend_core'],
+    function(dom_core,
+             extend_core) {
 
         var description_core = function() {
         };
@@ -229,7 +232,7 @@ define('description_core', ['dom_core'],
                 var _this = this;
             }
         };
-        extend(description_core, dom_core);
+        extend_core.prototype.inherit(description_core, dom_core);
 
         return new description_core();
     });

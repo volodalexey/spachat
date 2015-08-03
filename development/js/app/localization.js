@@ -1,8 +1,8 @@
-define('localization',[
-    'ajax_core'
-
-],
-    function(ajax_core) {
+define('localization', [
+        'ajax_core',
+        'extend_core'
+    ],
+    function(ajax_core, extend_core) {
 
         var localization = function() {
         };
@@ -35,8 +35,7 @@ define('localization',[
             return text;
         };
 
-
-        extend(localization, ajax_core);
+        extend_core.prototype.inherit(localization, ajax_core);
 
         return new localization();
     }

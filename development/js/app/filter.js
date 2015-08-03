@@ -3,6 +3,7 @@ define('filter', [
         'overlay_core',
         'render_layout_core',
         'throw_event_core',
+        'extend_core',
         //
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
@@ -15,6 +16,7 @@ define('filter', [
              overlay_core,
              render_layout_core,
              throw_event_core,
+             extend_core,
              //
              triple_element_template,
              button_template,
@@ -181,10 +183,10 @@ define('filter', [
 
         };
 
-        extend(filter, switcher_core);
-        extend(filter, overlay_core);
-        extend(filter, render_layout_core);
-        extend(filter, throw_event_core);
+        extend_core.prototype.inherit(filter, switcher_core);
+        extend_core.prototype.inherit(filter, overlay_core);
+        extend_core.prototype.inherit(filter, render_layout_core);
+        extend_core.prototype.inherit(filter, throw_event_core);
 
         filter.prototype.triple_element_template = filter.prototype.template(triple_element_template);
         filter.prototype.button_template = filter.prototype.template(button_template);

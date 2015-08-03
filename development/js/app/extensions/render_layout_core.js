@@ -1,12 +1,13 @@
 define('render_layout_core', [
         'indexeddb',
         'async_core',
-        'dom_core'
-
+        'dom_core',
+        'extend_core'
     ],
     function(indexeddb,
              async_core,
-             dom_core) {
+             dom_core,
+             extend_core) {
 
         var render_layout_core = function() {
         };
@@ -185,8 +186,8 @@ define('render_layout_core', [
             }
 
         };
-        extend(render_layout_core, async_core);
-        extend(render_layout_core, dom_core);
+        extend_core.prototype.inherit(render_layout_core, async_core);
+        extend_core.prototype.inherit(render_layout_core, dom_core);
 
         return render_layout_core;
     }

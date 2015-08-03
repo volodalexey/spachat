@@ -1,6 +1,6 @@
 define('dom_core',[
-    'ajax_core'],
-    function (ajax_core) {
+    'ajax_core', 'extend_core'],
+    function (ajax_core, extend_core) {
 
         var dom_core = function() {};
 
@@ -60,7 +60,7 @@ define('dom_core',[
             }
         };
 
-        extend(dom_core, ajax_core);
+        extend_core.prototype.inherit(dom_core, ajax_core);
 
         return dom_core;
     }

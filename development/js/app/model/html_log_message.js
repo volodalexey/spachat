@@ -30,7 +30,7 @@ define('html_log_message', [
 
         };
 
-        extend(HTML_log_message, extend_core);
+        extend_core.prototype.inherit(HTML_log_message, extend_core);
 
         return HTML_log_message;
     });

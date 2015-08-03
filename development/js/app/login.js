@@ -1,6 +1,7 @@
 define('login', [
         'overlay_core',
         'throw_event_core',
+        'extend_core',
         //
         'users_bus',
         'indexeddb'
@@ -8,6 +9,7 @@ define('login', [
     function(
         overlay_core,
         throw_event_core,
+        extend_core,
         //
         users_bus,
         indexeddb
@@ -125,8 +127,8 @@ define('login', [
             }
         };
 
-        extend(login, overlay_core);
-        extend(login, throw_event_core);
+        extend_core.prototype.inherit(login, overlay_core);
+        extend_core.prototype.inherit(login, throw_event_core);
 
         return new login();
 

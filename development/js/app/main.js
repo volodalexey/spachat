@@ -53,19 +53,6 @@ require.config({
     }
 });
 
-function extend(Child, Parent) {
-    var F = function() {
-    };
-    F.prototype = Parent.prototype;
-    var f = new F();
-
-    for (var prop in Child.prototype) {
-        f[prop] = Child.prototype[prop]
-    }
-    Child.prototype = f;
-    Child.prototype[Parent.prototype.__class_name] = Parent.prototype;
-}
-
 require(['main_layout', 'localization'
 ], function(main_layout, localization) {
     //OK

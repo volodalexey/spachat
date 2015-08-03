@@ -1,13 +1,14 @@
 define('throw_event_core', [
         'event_core',
         'event_bus',
-        'dom_core'
-
+        'dom_core',
+        'extend_core'
     ],
     function (
         event_core,
         event_bus,
-        dom_core
+        dom_core,
+        extend_core
 ) {
 
         var throw_event_core = function() {};
@@ -65,8 +66,8 @@ define('throw_event_core', [
             }
         };
 
-        extend(throw_event_core, event_core);
-        extend(throw_event_core, dom_core);
+        extend_core.prototype.inherit(throw_event_core, event_core);
+        extend_core.prototype.inherit(throw_event_core, dom_core);
 
         return throw_event_core;
     }
