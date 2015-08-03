@@ -546,17 +546,54 @@ define('panel', [
             },
 
             fillPanelToolbar: function() {
-                var _this = this;
+                var _this = this, iconsArray = [], icon_config = [];
                 _this.showHorizontalSpinner(_this.panel_toolbar);
-                _this.panel_toolbar.innerHTML = _this['panel_' + _this.type + '_template']({
-                    config: _this.panel_config,
-                    icon_config: [{svg: _this.description_icon, name: 'description_icon'}],
-                    triple_element_template: _this.triple_element_template,
-                    button_template: _this.button_template,
-                    input_template: _this.input_template,
-                    label_template: _this.label_template
+
+                _this.loadToolbarIcons(function(icon_config) {
+                    _this.panel_toolbar.innerHTML = _this['panel_' + _this.type + '_template']({
+                        config: _this.panel_config,
+                        icon_config: icon_config,
+                        triple_element_template: _this.triple_element_template,
+                        button_template: _this.button_template,
+                        input_template: _this.input_template,
+                        label_template: _this.label_template
+                    });
+                    _this.addToolbarEventListener();
                 });
-                _this.addToolbarEventListener();
+            },
+
+            loadToolbarIcons: function(callback) {
+                var _this = this, iconsArray = [], icon_config = [];
+                _this.panel_config.forEach(function(_config) {
+                    if (_config.icon && _config.icon !== "") {
+                        iconsArray.push(
+                            {icon: '/templates/icon/' + _config.icon + '.html', name: _config.icon}
+                        );
+                    }
+                });
+                if (iconsArray.length) {
+                    _this.async_eachSeries(iconsArray,
+                        function(obj, _callback) {
+                            _this.sendRequest(obj.icon, function(err, res) {
+                                if (err) {
+                                    _callback(err);
+                                } else {
+                                    obj.svg = res;
+                                    _callback();
+                                }
+                            })
+                        },
+                        function(allError) {
+                            if (allError) {
+                                console.error(allError);
+                            } else {
+                                icon_config = iconsArray;
+                                icon_config.push({svg: _this.description_icon, name: 'description_icon'});
+                                callback(icon_config);
+                            }
+                        }
+                    );
+                }
             },
 
             inputUserInfo: function(event) {

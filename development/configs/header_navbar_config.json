@@ -42,7 +42,7 @@
       "location": "bottomPanel",
       "description": 62
     },
-    "class": "button-margin-height",
+    "class": "flex-item-1-0p",
     "name": "Messages"
   },
   {
@@ -59,7 +59,7 @@
       "location": "bottomPanel",
       "description": 25
     },
-    "class": "button-margin-height",
+    "class": "flex-item-1-0p",
     "name": "ContactList"
   },
   {
@@ -76,7 +76,7 @@
       "location": "bottomPanel",
       "description": 23
     },
-    "class": "button-margin-height",
+    "class": "flex-item-1-0p",
     "name": "Setting"
   }
 ]

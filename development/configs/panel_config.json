@@ -1,7 +1,7 @@
 [
   {
     "element": "button",
-    "icon": "",
+    "icon": "new_blog_icon",
     "text": 63,
     "class": "button-margin-height",
     "data": {
@@ -15,7 +15,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "add_blog_icon",
     "text": 64,
     "class": "button-margin-height",
     "data": {
@@ -29,7 +29,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "blogs_icon",
     "text": 65,
     "class": "button-margin-height",
     "data": {
@@ -44,7 +44,7 @@
 
   {
     "element": "button",
-    "icon": "",
+    "icon": "new_chat_icon",
     "text": 1,
     "class": "button-margin-height",
     "data": {
@@ -60,7 +60,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "add_chat_icon",
     "text": 29,
     "class": "button-margin-height",
     "data": {
@@ -75,7 +75,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "chats_icon",
     "text": 30,
     "class": "button-margin-height",
     "data": {
@@ -92,7 +92,7 @@
 
   {
     "element": "button",
-    "icon": "",
+    "icon": "add_user_icon",
     "text": 66,
     "class": "button-margin-height",
     "data": {
@@ -108,7 +108,7 @@
 
   {
     "element": "button",
-    "icon": "",
+    "icon": "users_icon",
     "text": 32,
     "class": "button-margin-height",
     "data": {

@@ -1,7 +1,7 @@
 [
   {
     "element": "button",
-    "icon": "send_icon",
+    "icon": "_send_icon",
     "text": "",
     "class": "button-small-not-padding",
     "data": {
