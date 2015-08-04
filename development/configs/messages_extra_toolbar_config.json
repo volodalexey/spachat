@@ -1,7 +1,7 @@
 [
   {
     "element": "button",
-    "icon": "",
+    "icon": "filter_icon",
     "text": 26,
     "class": "button-inset-square",
     "data": {

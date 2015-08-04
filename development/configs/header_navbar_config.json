@@ -1,7 +1,7 @@
 [
   {
     "element": "button",
-    "icon": "",
+    "icon": "exit_icon",
     "text": 20,
     "data": {
       "throw": "true",
@@ -15,7 +15,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "save_exit_icon",
     "text": 56,
     "data": {
       "throw": "true",
@@ -30,7 +30,7 @@
 
   {
     "element": "button",
-    "icon": "",
+    "icon": "messages_icon",
     "text": 61,
     "data": {
       "throw": "true",
@@ -47,7 +47,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "users_icon",
     "text": 24,
     "data": {
       "throw": "true",
@@ -64,7 +64,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "settings_chat_icon",
     "text": 22,
     "data": {
       "throw": "true",

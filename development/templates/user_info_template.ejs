@@ -27,6 +27,7 @@
     <% byDataLocationShow['user_id'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+    icon_config: array.icon_config,
     data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
@@ -41,6 +42,7 @@
     <% byDataLocationShow['user_name'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+    icon_config: array.icon_config,
     data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
@@ -55,6 +57,7 @@
     <% byDataLocationShow['navbar'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+    icon_config: array.icon_config,
     data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
@@ -74,7 +77,8 @@
     data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
-    label_template: array.label_template
+    label_template: array.label_template,
+        icon_config: array.icon_config
     }) %>
     <% }) %>
 </div>
@@ -85,6 +89,7 @@
     <% byDataLocationReading['old_password'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+        icon_config: array.icon_config,
     data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
@@ -99,6 +104,7 @@
     <% byDataLocationReading['new_password'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+        icon_config: array.icon_config,
     data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,
@@ -113,6 +119,7 @@
     <% byDataLocationReading['confirm_password'].forEach(function (_config) { %>
     <%= array.triple_element_template({
     config: _config,
+        icon_config: array.icon_config,
     data: array.data,
     button_template: array.button_template,
     input_template: array.input_template,

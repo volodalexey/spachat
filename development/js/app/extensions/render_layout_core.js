@@ -51,7 +51,8 @@ define('render_layout_core', [
 
                     if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW) {
                         if (_this.module.config) {
-                            callback();
+                            //callback();
+                            _this.loadBodyIconConfig(callback);
                             return;
                         }
                     }

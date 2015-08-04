@@ -65,7 +65,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "change_icon",
     "text": 37,
     "class": "button-convex",
     "data": {
@@ -80,7 +80,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "exit_icon",
     "text": 38,
     "class": "button-convex",
     "data": {

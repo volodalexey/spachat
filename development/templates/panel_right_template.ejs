@@ -1,11 +1,12 @@
 <% var _in = arguments[0]; %>
 <% var array_leright_panel = _in.config.filter( function(obj){ return obj.data.location === "right_panel" } ) %>
 <% array_leright_panel.forEach(function (_config) { %>
-<%= _in.triple_element_template({
-config: _config,
-    icon_config: _in.icon_config,
-    button_template: _in.button_template,
-input_template: _in.input_template,
-label_template: _in.label_template
-}) %>
-<% }) %>
+    <%= _in.triple_element_template({
+        config: _config,
+        icon_config: _in.icon_config,
+        button_template: _in.button_template,
+        input_template: _in.input_template,
+        label_template: _in.label_template
+    }) %>
+    <% }) %>
+

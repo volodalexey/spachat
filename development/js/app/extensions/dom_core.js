@@ -37,7 +37,7 @@ define('dom_core',[
                 if (element.disabled && param !== "description") {
                     return null;
                 }
-                var n = !( _n === undefined || _n === null ) ? _n : 4 ;
+                var n = !( _n === undefined || _n === null ) ? _n : 5 ;
                 if (n > 0) {
                     if (!element.dataset || !element.dataset[param]) {
                         return this.getDataParameter(element.parentNode, param, n-1);

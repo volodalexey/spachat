@@ -12,7 +12,7 @@ var array_left_panel = _in.config.filter(function(obj) {
 <% }); %>
 
 <% if (byDataLocationGroup['blogs'].length) { %>
-<div>
+<div class="flex-item-1-0p">
     <% byDataLocationGroup['blogs'].forEach(function (config) { %>
 
     <%= _in.triple_element_template({
@@ -28,7 +28,7 @@ var array_left_panel = _in.config.filter(function(obj) {
 <%}%>
 
 <% if (byDataLocationGroup['chats'].length) { %>
-<div>
+<div class="flex-item-1-0p">
     <% byDataLocationGroup['chats'].forEach(function (config) { %>
 
     <%= _in.triple_element_template({
@@ -45,7 +45,7 @@ var array_left_panel = _in.config.filter(function(obj) {
 
 
 <% if (byDataLocationGroup['users'].length) { %>
-<div>
+<div class="flex-item-1-0p">
     <% byDataLocationGroup['users'].forEach(function (config) { %>
 
     <%= _in.triple_element_template({
