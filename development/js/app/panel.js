@@ -559,6 +559,7 @@ define('panel', [
                         label_template: _this.label_template
                     });
                     _this.addToolbarEventListener();
+                    _this.resizePanel();
                 });
             },
 

@@ -370,6 +370,10 @@ define('pagination', [
             "GO_TO": pagination.prototype.choice_per_page_template
         };
 
+        pagination.prototype.configHandlerMap = {
+        };
+        pagination.prototype.configHandlerContextMap = {};
+
         return pagination;
     })
 ;

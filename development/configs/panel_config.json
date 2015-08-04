@@ -3,7 +3,7 @@
     "element": "button",
     "icon": "new_blog_icon",
     "text": 63,
-    "class": "w-100p",
+    "class": "flex-item-1-0p",
     "data": {
       "role": "",
       "location": "left_panel",
@@ -17,7 +17,7 @@
     "element": "button",
     "icon": "add_blog_icon",
     "text": 64,
-    "class": "w-100p",
+    "class": "flex-item-1-0p",
     "data": {
       "role": "",
       "location": "left_panel",
@@ -31,7 +31,7 @@
     "element": "button",
     "icon": "blogs_icon",
     "text": 65,
-    "class": "w-100p",
+    "class": "flex-item-1-0p",
     "data": {
       "role": "",
       "location": "left_panel",
@@ -46,7 +46,7 @@
     "element": "button",
     "icon": "new_chat_icon",
     "text": 1,
-    "class": "w-100p",
+    "class": "flex-item-1-0p",
     "data": {
       "description": 2,
       "role": "",
@@ -62,7 +62,7 @@
     "element": "button",
     "icon": "add_chat_icon",
     "text": 29,
-    "class": "w-100p",
+    "class": "flex-item-1-0p",
     "data": {
       "role": "",
       "location": "left_panel",
@@ -77,7 +77,7 @@
     "element": "button",
     "icon": "chats_icon",
     "text": 30,
-    "class": "w-100p",
+    "class": "flex-item-1-0p",
     "data": {
       "description": 31,
       "role": "",
@@ -94,7 +94,7 @@
     "element": "button",
     "icon": "add_user_icon",
     "text": 66,
-    "class": "w-100p",
+    "class": "flex-item-1-0p",
     "data": {
       "role": "",
       "location": "left_panel",
@@ -110,7 +110,7 @@
     "element": "button",
     "icon": "users_icon",
     "text": 32,
-    "class": "w-100p",
+    "class": "flex-item-1-0p",
     "data": {
       "role": "",
       "location": "left_panel",
@@ -127,7 +127,7 @@
     "element": "button",
     "icon": "user_icon",
     "text": 33,
-    "class": "floatR",
+    "class": "floatR flex-item-1-0p",
     "data": {
       "role": "",
       "location": "right_panel",
@@ -141,7 +141,7 @@
     "element": "button",
     "icon": "connections_icon",
     "text": 13,
-    "class": "floatR",
+    "class": "floatR flex-item-1-0p",
     "data": {
       "role": "",
       "location": "right_panel",

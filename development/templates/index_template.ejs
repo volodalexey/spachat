@@ -7,7 +7,7 @@
 <% var labelUserPassword = _in.config.filter( function(obj){ return obj.data.role === "labelUserPassword" } ) %>
 <% var loginButton = _in.config.filter( function(obj){ return obj.data.role === "loginButton" } ) %>
 
-<section data-role="left_panel_outer_container" class="p-fx panel left-panel animate hide c-pink">
+<section data-role="left_panel_outer_container" class="p-fx panel left-panel animate hide c-100">
     <div class="p-rel h-100p">
         <%= _in.triple_element_template({
             config: mainButtonLeftPanel[0],
@@ -15,19 +15,19 @@
             label_template: _in.label_template
         }) %>
         <div data-role="left_panel_inner_container" class="min-width-350 clear flex-dir-col h-inherit">
-            <header data-role="left_panel_toolbar" class="w-100p flex-sp-around background-blue"></header>
-            <div data-role="left_extra_toolbar_container" class="flex-sp-around"></div>
-            <div data-role="left_filter_container" class="background flex wrap"></div>
+            <header data-role="left_panel_toolbar" class="w-100p flex-dir-col c-200"></header>
+            <div data-role="left_extra_toolbar_container" class="flex-sp-around c-200"></div>
+            <div data-role="left_filter_container" class="flex wrap c-200"></div>
             <div data-role="panel_body" class="overflow-a flex-item-w50p"></div>
             <footer class="flex-item-auto">
-                <div data-role="left_go_to_container"></div>
-                <div data-role="left_pagination_container" class="flex filter_container justContent background"></div>
+                <div data-role="left_go_to_container" class="c-200"></div>
+                <div data-role="left_pagination_container" class="flex filter_container justContent c-200"></div>
             </footer>
         </div>
     </div>
 </section>
 
-<section data-role="right_panel_outer_container" class="p-fx panel right-panel animate hide c-mist">
+<section data-role="right_panel_outer_container" class="p-fx panel right-panel animate hide c-100">
     <div class="p-rel h-100p">
         <%= _in.triple_element_template({
             config: mainButtonRightPanel[0],
@@ -35,13 +35,13 @@
             label_template: _in.label_template
         }) %>
         <div data-role="right_panel_inner_container" class="min-width-350 clear flex-dir-col h-inherit">
-            <header data-role="right_panel_toolbar" class="w-100p flex-sp-around background-blue"></header>
-            <div data-role="right_extra_toolbar_container" class="flex-sp-around"></div>
-            <div data-role="right_filter_container" class="background flex wrap"></div>
+            <header data-role="right_panel_toolbar" class="w-100p flex-dir-col c-200"></header>
+            <div data-role="right_extra_toolbar_container" class="flex-sp-around c-200"></div>
+            <div data-role="right_filter_container" class="flex wrap c-200"></div>
             <div data-role="panel_body" class=" overflow-a flex-item-w50p"></div>
             <footer class="flex-item-auto">
-                <div data-role="right_go_to_container"></div>
-                <div data-role="right_pagination_container" class="flex filter_container justContent background"></div>
+                <div data-role="right_go_to_container" class="c-200"></div>
+                <div data-role="right_pagination_container" class="flex filter_container justContent c-200"></div>
             </footer>
         </div>
     </div>

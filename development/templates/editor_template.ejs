@@ -1,5 +1,5 @@
 <% var _in = arguments[0]; %>
-<div class="flex background-blue">
+<div class="flex">
     <div data-role="message_container" class="modal-controls message_conteiner">
         <div data-role="message_inner_container" class="container" contenteditable="true">
             <% if (_in.data && _in.data.restore) { %>
@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="flex-wrap width-40px align-c" data-role="controls_container">
-        <div class="modal-main-btn background-blue ">
+        <div class="modal-main-btn">
             <% _in.config.forEach(function (_config) { %>
             <%= _in.triple_element_template({
                 config: _config,
@@ -24,5 +24,5 @@
 
 </div>
 
-<div data-role="btnEditPanel" class="btnEditPanel background-blue flex-align-c"></div>
+<div data-role="btnEditPanel" class="btnEditPanel flex-align-c"></div>
 
