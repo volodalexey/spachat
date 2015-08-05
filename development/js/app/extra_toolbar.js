@@ -34,19 +34,23 @@ define('extra_toolbar', [
         extra_toolbar.prototype = {
 
             configMap: {
-                "CHATS_EXTRA_TOOLBAR": '/configs/panel_chats_extra_toolbar_config.json',
-                "USERS_EXTRA_TOOLBAR": '/configs/panel_users_extra_toolbar_config.json',
+                BLOGS_EXTRA_TOOLBAR: '',
+                CHATS_EXTRA_TOOLBAR: '/configs/panel_chats_extra_toolbar_config.json',
+                USERS_EXTRA_TOOLBAR: '/configs/panel_users_extra_toolbar_config.json',
                 MESSAGES_EXTRA_TOOLBAR: '/configs/messages_extra_toolbar_config.json',
                 CONTACT_LIST_EXTRA_TOOLBAR: '/configs/contact_list_extra_toolbar_config.json',
-                LOGGER_EXTRA_TOOLBAR: '/configs/logger_extra_toolbar_config.json'
+                LOGGER_EXTRA_TOOLBAR: '/configs/logger_extra_toolbar_config.json',
+                CONNECTIONS_EXTRA_TOOLBAR: ''
             },
 
             MODE: {
+                BLOGS_EXTRA_TOOLBAR: 'BLOGS_EXTRA_TOOLBAR',
                 CHATS_EXTRA_TOOLBAR: 'CHATS_EXTRA_TOOLBAR',
                 USERS_EXTRA_TOOLBAR: ' USERS_EXTRA_TOOLBAR',
                 MESSAGES_EXTRA_TOOLBAR: 'MESSAGES_EXTRA_TOOLBAR',
                 CONTACT_LIST_EXTRA_TOOLBAR: 'CONTACT_LIST_EXTRA_TOOLBAR',
-                LOGGER_EXTRA_TOOLBAR: 'LOGGER'
+                LOGGER_EXTRA_TOOLBAR: 'LOGGER_EXTRA_TOOLBAR',
+                CONNECTIONS_EXTRA_TOOLBAR: 'CONNECTIONS_EXTRA_TOOLBAR'
             },
 
             bindContext: function() {
@@ -71,11 +75,13 @@ define('extra_toolbar', [
                 var _this = this;
                 _this._module = _module;
                 _this.elementMap = {
+                    BLOGS_EXTRA_TOOLBAR: _module.extra_toolbar_container,
                     CHATS_EXTRA_TOOLBAR: _module.extra_toolbar_container,
                     USERS_EXTRA_TOOLBAR: _module.extra_toolbar_container,
                     MESSAGES_EXTRA_TOOLBAR: _module.extra_toolbar_container,
                     CONTACT_LIST_EXTRA_TOOLBAR: _module.extra_toolbar_container,
-                    LOGGER_EXTRA_TOOLBAR: _module.extra_toolbar_container
+                    LOGGER_EXTRA_TOOLBAR: _module.extra_toolbar_container,
+                    CONNECTIONS_EXTRA_TOOLBAR: _module.extra_toolbar_container
                 };
                 if (_mode === _module.body.MODE.DETAIL_VIEW) {
                     _this.optionsDefinition(_module, _this.MODE.CHATS);
@@ -129,11 +135,13 @@ define('extra_toolbar', [
         extra_toolbar.prototype.contact_list_extra_toolbar_template = extra_toolbar.prototype.template(contact_list_extra_toolbar_template);
 
         extra_toolbar.prototype.templateMap = {
+            BLOGS_EXTRA_TOOLBAR: '',
             CHATS_EXTRA_TOOLBAR: extra_toolbar.prototype.panel_extra_toolbar_template,
             USERS_EXTRA_TOOLBAR: extra_toolbar.prototype.panel_extra_toolbar_template,
             MESSAGES_EXTRA_TOOLBAR: extra_toolbar.prototype.messages_extra_toolbar_template,
             CONTACT_LIST_EXTRA_TOOLBAR: extra_toolbar.prototype.contact_list_extra_toolbar_template,
             LOGGER_EXTRA_TOOLBAR: extra_toolbar.prototype.messages_extra_toolbar_template,
+            CONNECTIONS_EXTRA_TOOLBAR: ''
         };
 
         extra_toolbar.prototype.configHandlerMap = {};

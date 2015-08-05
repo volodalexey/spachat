@@ -63,12 +63,38 @@ define('switcher_core',
                         _module.currentPaginationOptions = _module.joinChat_PaginationOptions;
                         _module.currentGoToOptions = _module.joinChat_GoToOptions;
                         break;
+                    case _module.MODE.BLOGS:
+                        _this.previousModeSwitcher = _module.MODE.BLOGS;
+                        _module.currentPaginationOptions = _module.blogs_PaginationOptions;
+                        _module.currentGoToOptions = _module.blogs_GoToOptions;
+                        _module.current_Extra_Toolbar_Options = _module.blogs_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.blogs_FilterOptions;
+                        _module.currentListOptions = _module.blogs_ListOptions;
+                        break;
+                    case _module.MODE.CREATE_BLOG:
+                        _module.current_Extra_Toolbar_Options = _module.createBlog_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.createBlog_FilterOptions;
+                        _module.currentPaginationOptions = _module.createBlog_PaginationOptions;
+                        _module.currentGoToOptions = _module.createBlog_GoToOptions;
+                        break;
+                    case _module.MODE.JOIN_BLOG:
+                        _module.current_Extra_Toolbar_Options = _module.joinBlog_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.joinBlog_FilterOptions;
+                        _module.currentPaginationOptions = _module.joinBlog_PaginationOptions;
+                        _module.currentGoToOptions = _module.joinBlog_GoToOptions;
+                        break;
                     case _module.MODE.USERS:
                         _module.current_Extra_Toolbar_Options = _module.users_ExtraToolbarOptions;
                         _module.currnetFilterOptions = _module.users_FilterOptions;
                         _module.currentPaginationOptions = _module.users_PaginationOptions;
                         _module.currentGoToOptions = _module.users_GoToOptions;
                         _module.currentListOptions = _module.users_ListOptions;
+                        break;
+                    case _module.MODE.JOIN_USER:
+                        _module.current_Extra_Toolbar_Options = _module.joinUser_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.joinUser_FilterOptions;
+                        _module.currentPaginationOptions = _module.joinUser_PaginationOptions;
+                        _module.currentGoToOptions = _module.joinUser_GoToOptions;
                         break;
                     case _module.MODE.USER_INFO_EDIT:
                         _module.current_Extra_Toolbar_Options = _module.userInfoEdit_ExtraToolbarOptions;
@@ -81,6 +107,13 @@ define('switcher_core',
                         _module.currnetFilterOptions = _module.userInfoShow_FilterOptions;
                         _module.currentPaginationOptions = _module.userInfoShow_PaginationOptions;
                         _module.currentGoToOptions = _module.userInfoShow_GoToOptions;
+                        break;
+                    case _module.MODE.CONNECTIONS:
+                        _module.current_Extra_Toolbar_Options = _module.connections_ExtraToolbarOptions;
+                        _module.currnetFilterOptions = _module.connections_FilterOptions;
+                        _module.currentPaginationOptions = _module.connections_PaginationOptions;
+                        _module.currentGoToOptions = _module.connections_GoToOptions;
+                        _module.currentListOptions = _module.connections_ListOptions;
                         break;
                 }
             },
@@ -142,6 +175,16 @@ define('switcher_core',
                         break;
                 }
                 return table_name;
+            },
+
+            toggleActiveButton: function(btnsArray, mode) {
+                btnsArray.forEach(function(_button){
+                    if (_button.dataset.mode_to === mode) {
+                        _button.classList.add('c-100');
+                    } else {
+                        _button.classList.remove('c-100');
+                    }
+                })
             }
         };
 

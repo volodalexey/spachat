@@ -14,7 +14,8 @@ define('editor', [
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
-        'text!../templates/element/input_template.ejs'
+        'text!../templates/element/input_template.ejs',
+        'text!../templates/element/location_wrapper_template.ejs'
     ],
     function(throw_event_core,
              async_core,
@@ -31,7 +32,8 @@ define('editor', [
              triple_element_template,
              button_template,
              label_template,
-             input_template) {
+             input_template,
+             location_wrapper_template) {
 
         var editor = function(options) {
             this.chatElem = options.chat.chatElem;
@@ -113,7 +115,7 @@ define('editor', [
                         var data = {
                             "restore": _this.chat.messages_ListOptions.restore,
                             "innerHTML": _this.chat.messages_ListOptions.innerHTML
-                        }
+                        };
                         _this.renderLayout(data, function() {
                             if (_this.chat.messages_ListOptions.restore) {
                                 _this.chat.messages_ListOptions.restore = false;
@@ -244,8 +246,12 @@ define('editor', [
         editor.prototype.button_template = editor.prototype.template(button_template);
         editor.prototype.label_template = editor.prototype.template(label_template);
         editor.prototype.input_template = editor.prototype.template(input_template);
+        editor.prototype.location_wrapper_template = editor.prototype.template(location_wrapper_template);
 
-        editor.prototype.configHandlerMap = {};
+        editor.prototype.configHandlerMap = {
+            "FORMAT_PANEL": editor.prototype.prepareConfig
+        };
+
         editor.prototype.configHandlerContextMap = {};
 
         editor.prototype.dataMap = {

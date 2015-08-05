@@ -8,17 +8,17 @@
 <% var loginButton = _in.config.filter( function(obj){ return obj.data.role === "loginButton" } ) %>
 
 <section data-role="left_panel_outer_container" class="p-fx panel left-panel animate hide c-100">
-    <div class="p-rel h-100p">
+    <div class="p-rel h-100p flex-dir-col">
         <%= _in.triple_element_template({
             config: mainButtonLeftPanel[0],
             button_template: _in.button_template,
             label_template: _in.label_template
         }) %>
-        <div data-role="left_panel_inner_container" class="min-width-350 clear flex-dir-col h-inherit">
-            <header data-role="left_panel_toolbar" class="w-100p flex-dir-col c-200"></header>
-            <div data-role="left_extra_toolbar_container" class="flex-sp-around c-200"></div>
-            <div data-role="left_filter_container" class="flex wrap c-200"></div>
-            <div data-role="panel_body" class="overflow-a flex-item-w50p"></div>
+        <div data-role="left_panel_inner_container" class="min-width-350 flex-item-1-auto clear flex-dir-col">
+            <header data-role="left_panel_toolbar" class="w-100p flex-dir-col flex-item-auto c-200"></header>
+            <div data-role="left_extra_toolbar_container" class="flex-sp-around flex-item-auto c-200"></div>
+            <div data-role="left_filter_container" class="flex wrap flex-item-auto c-200"></div>
+            <div data-role="panel_body" class="overflow-a flex-item-1-auto"></div>
             <footer class="flex-item-auto">
                 <div data-role="left_go_to_container" class="c-200"></div>
                 <div data-role="left_pagination_container" class="flex filter_container justContent c-200"></div>
@@ -28,17 +28,17 @@
 </section>
 
 <section data-role="right_panel_outer_container" class="p-fx panel right-panel animate hide c-100">
-    <div class="p-rel h-100p">
+    <div class="p-rel h-100p flex-dir-col">
         <%= _in.triple_element_template({
             config: mainButtonRightPanel[0],
             button_template: _in.button_template,
             label_template: _in.label_template
         }) %>
-        <div data-role="right_panel_inner_container" class="min-width-350 clear flex-dir-col h-inherit">
+        <div data-role="right_panel_inner_container" class="min-width-350 flex-item-1-auto clear flex-dir-col">
             <header data-role="right_panel_toolbar" class="w-100p flex-dir-col c-200"></header>
-            <div data-role="right_extra_toolbar_container" class="flex-sp-around c-200"></div>
-            <div data-role="right_filter_container" class="flex wrap c-200"></div>
-            <div data-role="panel_body" class=" overflow-a flex-item-w50p"></div>
+            <div data-role="right_extra_toolbar_container" class="flex-sp-around flex-item-auto c-200"></div>
+            <div data-role="right_filter_container" class="flex wrap flex-item-auto c-200"></div>
+            <div data-role="panel_body" class=" overflow-a flex-item-1-auto"></div>
             <footer class="flex-item-auto">
                 <div data-role="right_go_to_container" class="c-200"></div>
                 <div data-role="right_pagination_container" class="flex filter_container justContent c-200"></div>

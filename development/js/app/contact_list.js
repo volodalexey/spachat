@@ -90,5 +90,9 @@ define('contact_list', [
             "CONTACT_LIST": contact_list.prototype.contact_list_template
         };
 
+        contact_list.prototype.configHandlerMap = {
+        };
+        contact_list.prototype.configHandlerContextMap = {};
+
         return contact_list;
     });

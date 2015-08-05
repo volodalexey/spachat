@@ -5,11 +5,11 @@
     "text": 63,
     "class": "flex-item-1-0p",
     "data": {
-      "role": "",
+      "role": "btnToolbar",
       "location": "left_panel",
       "location_group": "blogs",
       "action": "switchPanelMode",
-      "mode": ""
+      "mode_to": "CREATE_BLOG"
     },
     "disable": false
   },
@@ -19,11 +19,11 @@
     "text": 64,
     "class": "flex-item-1-0p",
     "data": {
-      "role": "",
+      "role": "btnToolbar",
       "location": "left_panel",
       "location_group": "blogs",
       "action": "switchPanelMode",
-      "mode": ""
+      "mode_to": "JOIN_BLOG"
     },
     "disable": false
   },
@@ -33,11 +33,11 @@
     "text": 65,
     "class": "flex-item-1-0p",
     "data": {
-      "role": "",
+      "role": "btnToolbar",
       "location": "left_panel",
       "location_group": "blogs",
       "action": "switchPanelMode",
-      "mode": ""
+      "mode_to": "BLOGS"
     },
     "disable": false
   },
@@ -49,11 +49,11 @@
     "class": "flex-item-1-0p",
     "data": {
       "description": 2,
-      "role": "",
+      "role": "btnToolbar",
       "location": "left_panel",
       "location_group": "chats",
       "action": "switchPanelMode",
-      "mode": "CREATE_CHAT"
+      "mode_to": "CREATE_CHAT"
     },
     "name": "",
     "disable": false
@@ -64,11 +64,11 @@
     "text": 29,
     "class": "flex-item-1-0p",
     "data": {
-      "role": "",
+      "role": "btnToolbar",
       "location": "left_panel",
       "location_group": "chats",
       "action": "switchPanelMode",
-      "mode": "JOIN_CHAT"
+      "mode_to": "JOIN_CHAT"
     },
     "name": "",
     "disable": false
@@ -80,11 +80,11 @@
     "class": "flex-item-1-0p",
     "data": {
       "description": 31,
-      "role": "",
+      "role": "btnToolbar",
       "location": "left_panel",
       "location_group": "chats",
       "action": "switchPanelMode",
-      "mode": "CHATS"
+      "mode_to": "CHATS"
     },
     "name": "",
     "disable": false
@@ -96,11 +96,11 @@
     "text": 66,
     "class": "flex-item-1-0p",
     "data": {
-      "role": "",
+      "role": "btnToolbar",
       "location": "left_panel",
       "location_group": "users",
       "action": "switchPanelMode",
-      "mode": "JOIN_USER"
+      "mode_to": "JOIN_USER"
     },
     "name": "",
     "disable": false
@@ -112,11 +112,11 @@
     "text": 32,
     "class": "flex-item-1-0p",
     "data": {
-      "role": "",
+      "role": "btnToolbar",
       "location": "left_panel",
       "location_group": "users",
       "action": "switchPanelMode",
-      "mode": "USERS"
+      "mode_to": "USERS"
     },
     "name": "",
     "disable": false
@@ -129,10 +129,10 @@
     "text": 33,
     "class": "floatR flex-item-1-0p",
     "data": {
-      "role": "",
+      "role": "btnToolbar",
       "location": "right_panel",
-      "action": "btn_user_info",
-      "mode": "user_info"
+      "action": "switchPanelMode",
+      "mode_to": "USER_INFO_SHOW"
     },
     "name": "",
     "disable": false
@@ -143,10 +143,10 @@
     "text": 13,
     "class": "floatR flex-item-1-0p",
     "data": {
-      "role": "",
+      "role": "btnToolbar",
       "location": "right_panel",
-      "action": "",
-      "mode": ""
+      "action": "switchPanelMode",
+      "mode_to": "CONNECTIONS"
     },
     "name": "",
     "disable": false

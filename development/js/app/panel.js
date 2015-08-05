@@ -139,6 +139,21 @@ define('panel', [
                 data_download: false
             },
 
+            joinUser_ExtraToolbarOptions: {
+                show: false
+            },
+            joinUser_FilterOptions: {
+                show: false
+            },
+            joinUser_PaginationOptions: {
+                show: false
+            },
+            joinUser_GoToOptions: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+
             createChat_ExtraToolbarOptions: {
                 show: false
             },
@@ -167,6 +182,84 @@ define('panel', [
                 show: false,
                 rteChoicePage: true,
                 mode_change: "rte"
+            },
+
+            createBlog_ExtraToolbarOptions: {
+                show: false
+            },
+            createBlog_FilterOptions: {
+                show: false
+            },
+            createBlog_PaginationOptions: {
+                show: false
+            },
+            createBlog_GoToOptions: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+
+            joinBlog_ExtraToolbarOptions: {
+                show: false
+            },
+            joinBlog_FilterOptions: {
+                show: false
+            },
+            joinBlog_PaginationOptions: {
+                show: false
+            },
+            joinBlog_GoToOptions: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+
+            blogs_ExtraToolbarOptions: {
+                show: false
+            },
+            blogs_FilterOptions: {
+                show: false
+            },
+            blogs_PaginationOptions: {
+                show: false
+            },
+            blogs_GoToOptions: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+            blogs_ListOptions: {
+                text: "blogs",
+                start: 0,
+                last: null,
+                previousStart: 0,
+                previousFinal: 0,
+                restore: false,
+                data_download: false
+            },
+
+            connections_ExtraToolbarOptions: {
+                show: false
+            },
+            connections_FilterOptions: {
+                show: false
+            },
+            connections_PaginationOptions: {
+                show: false
+            },
+            connections_GoToOptions: {
+                show: false,
+                rteChoicePage: true,
+                mode_change: "rte"
+            },
+            connections_ListOptions: {
+                text: "connections",
+                start: 0,
+                last: null,
+                previousStart: 0,
+                previousFinal: 0,
+                restore: false,
+                data_download: false
             },
 
             userInfoEdit_ExtraToolbarOptions: {
@@ -255,6 +348,12 @@ define('panel', [
                 USER_INFO_SHOW: 'USER_INFO_SHOW',
                 DETAIL_VIEW: 'DETAIL_VIEW',
 
+                CONNECTIONS: 'CONNECTIONS',
+
+                CREATE_BLOG: 'CREATE_BLOG',
+                JOIN_BLOG: 'JOIN_BLOG',
+                BLOGS: 'BLOGS',
+
                 PAGINATION: "PAGINATION",
                 GO_TO: "GO_TO",
                 FILTER: 'FILTER'
@@ -305,13 +404,18 @@ define('panel', [
                     _this.user_name = _this.body_container.querySelector('[data-main="user_name_input"]');
                     _this.old_password = _this.body_container.querySelector('[data-role="passwordOld"]');
                     _this.new_password = _this.body_container.querySelector('[data-role="passwordNew"]');
-                    _this.confirm_password = _this.body_container.querySelector('[data-role="passwordConfirm"]');
+                    _this.confirm_password = _this.panel_toolbar.querySelector('[data-role="passwordConfirm"]');
                 }
             },
 
             cashExtraToolbarElement: function() {
                 var _this = this;
                 _this.btn_Filter = _this.extra_toolbar_container.querySelector('[data-role="btn_Filter"]');
+            },
+
+            cashToolbarElement: function() {
+                var _this = this;
+                _this.btns_toolbar = Array.prototype.slice.call(_this.panel_toolbar.querySelectorAll('[data-role="btnToolbar"]'));
             },
 
             unCashElements: function() {
@@ -407,7 +511,7 @@ define('panel', [
                     _this.inner_container.style.maxWidth = _this.calcMaxWidth();
                     _this.fillPanelToolbar();
                     _this.render();
-                    _this.resizePanel();
+                    //_this.resizePanel();
                 } else {
                     panel.prototype.z_index--;
                     if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
@@ -425,9 +529,14 @@ define('panel', [
 
             switchPanelMode: function(element) {
                 var _this = this;
-                _this.bodyOptions.mode = element.dataset.mode;
+                if (element.dataset.mode_to === _this.MODE.USER_INFO_SHOW && _this.previous_UserInfo_Mode) {
+                    _this.bodyOptions.mode = _this.previous_UserInfo_Mode;
+                } else {
+                    _this.bodyOptions.mode = element.dataset.mode_to;
+                }
                 _this.previous_Filter_Options = false;
                 _this.pagination.previousShow = false;
+                _this.toggleActiveButton(_this.btns_toolbar, element.dataset.mode_to);
                 if (!_this.bodyOptions.mode || _this.bodyOptions.mode === "") {
                     _this.body_container.innerHTML = "";
                     _this.filter_container.innerHTML = "";
@@ -435,7 +544,10 @@ define('panel', [
                     _this.pagination_container.innerHTML = "";
                     _this.go_to_container.innerHTML = "";
                 } else {
-                    _this.showSpinner(_this.body_container);
+                    if (_this.previous_BodyMode && _this.previous_BodyMode  !== _this.bodyOptions.mode) {
+                        _this.showSpinner(_this.body_container);
+                    }
+                    _this.previous_BodyMode = _this.bodyOptions.mode;
                     _this.render();
                 }
             },
@@ -459,7 +571,9 @@ define('panel', [
                 var _this = this;
                 _this.extraToolbar.renderExtraToolbar(_this, _this.bodyOptions.mode, function() {
                     _this.filter.renderFilter(_this, _this.bodyOptions.mode, function() {
-                        _this.pagination.render(options, _this, _this.bodyOptions.mode);
+                        _this.pagination.render(options, _this, _this.bodyOptions.mode, function() {
+                            _this.resizePanel();
+                        });
                         _this.body.render(options, _this);
                     });
                 });
@@ -546,7 +660,7 @@ define('panel', [
             },
 
             fillPanelToolbar: function() {
-                var _this = this, iconsArray = [], icon_config = [];
+                var _this = this;
                 _this.showHorizontalSpinner(_this.panel_toolbar);
 
                 _this.loadToolbarIcons(function(icon_config) {
@@ -559,6 +673,8 @@ define('panel', [
                         label_template: _this.label_template
                     });
                     _this.addToolbarEventListener();
+                    _this.cashToolbarElement();
+                    _this.toggleActiveButton(_this.btns_toolbar, _this.body_mode);
                     _this.resizePanel();
                 });
             },
@@ -610,6 +726,7 @@ define('panel', [
             cancelChangeUserInfo: function() {
                 var _this = this;
                 _this.bodyOptions.mode = _this.MODE.USER_INFO_SHOW;
+                _this.previous_UserInfo_Mode = _this.MODE.USER_INFO_SHOW;
                 _this.user = null;
                 _this.render();
             },
@@ -621,6 +738,7 @@ define('panel', [
                         if (_this.new_password.value === _this.confirm_password.value) {
                             _this.updateUserInfo(function() {
                                 _this.bodyOptions.mode = _this.MODE.USER_INFO_SHOW;
+                                _this.previous_UserInfo_Mode = _this.MODE.USER_INFO_SHOW;
                                 _this.user = null;
                                 _this.render();
                             })
@@ -666,6 +784,7 @@ define('panel', [
             changeUserInfo: function() {
                 var _this = this;
                 _this.bodyOptions.mode = _this.MODE.USER_INFO_EDIT;
+                _this.previous_UserInfo_Mode = _this.MODE.USER_INFO_EDIT;
                 _this.render();
             },
 
@@ -673,6 +792,7 @@ define('panel', [
                 var _this = this;
                 users_bus.setUserId(null);
                 _this.bodyOptions.mode = _this.MODE.USER_INFO_SHOW;
+                _this.previous_UserInfo_Mode = _this.MODE.USER_INFO_SHOW;
                 event_bus.trigger("chatsDestroy");
                 _this.removeMainEventListeners();
                 _this.removeToolbarEventListeners();

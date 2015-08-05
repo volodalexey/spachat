@@ -1,9 +1,15 @@
 [
   {
+    "role": "locationWrapper",
+    "classList": "w-100p",
+    "location": "btn_format"
+  },
+  {
     "element": "button",
     "icon": "aling_left_icon",
     "text": "",
     "class": "button-margin",
+    "location": "btn_format",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -15,6 +21,7 @@
     "icon": "aling_center_icon",
     "text": "",
     "class": "button-margin",
+    "location": "btn_format",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -27,6 +34,7 @@
     "icon": "aling_right_icon",
     "text": "",
     "class": "button-margin",
+    "location": "btn_format",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -38,6 +46,7 @@
     "icon": "bold_icon",
     "text": "",
     "class": "button-margin",
+    "location": "btn_format",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -49,6 +58,7 @@
     "icon": "italic_icon",
     "text": "",
     "class": "button-margin",
+    "location": "btn_format",
     "data": {
       "role": "btnEdit",
       "action": "addEdit",
@@ -60,6 +70,7 @@
     "icon": "color_text_icon",
     "text": "",
     "class": "button-margin",
+    "location": "btn_format",
     "data": {
       "role": "btnEdit",
       "name": "ForeColor",
@@ -68,10 +79,16 @@
     }
   },
   {
+    "role": "locationWrapper",
+    "classList": "w-100p",
+    "location": "toggle_scroll"
+  },
+  {
     "element": "input",
     "type": "checkbox",
     "text": 12,
     "class": "check-box-size",
+    "location": "toggle_scroll",
     "data": {
       "key": "offScroll",
       "role": "btnEdit",

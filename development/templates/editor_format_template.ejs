@@ -1,13 +1,14 @@
-<% var _in = arguments[0]; %>
-<% _in.config.forEach(function (config) { %>
-
-    <%= _in.triple_element_template({
-    config: config,
+<% var _in = arguments[0];
+if (_in.config && _in.config.byDataLocation) {
+        for (var locationKey in _in.config.byDataLocation) { %>
+<%= _in.location_wrapper_template({
+    config: _in.config.byDataLocation[locationKey],
+    data: _in.data ? _in.data : {},
     icon_config: _in.icon_config,
+    triple_element_template: _in.triple_element_template,
     button_template: _in.button_template,
     input_template: _in.input_template,
-    label_template: _in.label_template,
-    data: _in.data
-    }) %>
-
-<% }) %>
+    label_template: _in.label_template
+}) %>
+<% }
+} %>

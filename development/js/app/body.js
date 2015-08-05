@@ -58,7 +58,11 @@ define('body', [
                 "CHATS": '/configs/chats_info_config.json',
                 "USERS": '/configs/users_info_config.json',
                 "JOIN_USER": '/configs/users_info_config.json',
-                "DETAIL_VIEW": '/configs/chats_info_config.json'
+                "DETAIL_VIEW": '/configs/chats_info_config.json',
+                "CREATE_BLOG": '',
+                "JOIN_BLOG": '',
+                "BLOGS": '',
+                "CONNECTIONS": ''
             },
 
             MODE: {
@@ -73,10 +77,14 @@ define('body', [
                 USERS: 'USERS',
                 JOIN_USER: 'JOIN_USER',
 
-                DETAIL_VIEW: 'DETAIL_VIEW',
+                CREATE_BLOG: 'CREATE_BLOG',
+                JOIN_BLOG: 'JOIN_BLOG',
+                BLOGS: 'BLOGS',
 
+                DETAIL_VIEW: 'DETAIL_VIEW',
                 USER_INFO_EDIT: 'USER_INFO_EDIT',
-                USER_INFO_SHOW: 'USER_INFO_SHOW'
+                USER_INFO_SHOW: 'USER_INFO_SHOW',
+                CONNECTIONS: 'CONNECTIONS'
             },
 
             render: function(options, _module) {
@@ -180,6 +188,7 @@ define('body', [
                             _this.body_mode = _this.MODE.DETAIL_VIEW;
                             _this.renderLayout(options, function() {
                                 _this.module.rotatePointer(options);
+                                _this.module.resizePanel();
                             });
                             break;
                         case  _this.MODE.JOIN_USER:
@@ -188,6 +197,18 @@ define('body', [
                             };
                             _this.body_mode = _this.MODE.JOIN_USER;
                             _this.renderLayout(null, null);
+                            break;
+                        case  _this.MODE.CREATE_BLOG:
+                            _this.module.body_container.innerHTML = "";
+                            break;
+                        case  _this.MODE.JOIN_BLOG:
+                            _this.module.body_container.innerHTML = "";
+                            break;
+                        case  _this.MODE.BLOGS:
+                            _this.module.body_container.innerHTML = "";
+                            break;
+                        case  _this.MODE.CONNECTIONS:
+                            _this.module.body_container.innerHTML = "";
                             break;
                     }
                     _this.previousMode = _this.module.bodyOptions.mode;
@@ -228,30 +249,7 @@ define('body', [
 
             destroy: function() {
                 var _this = this;
-            },
-
-            prepareConfig: function(rawConfig) {
-                var byDataLocation = {};
-                rawConfig.forEach(function(_config) {
-                    if (!_config.location) {
-                        return;
-                    }
-                    if (!byDataLocation[_config.location]) {
-                        byDataLocation[_config.location] = {
-                            configs: []
-                        };
-                    }
-                    if (!_config.role) {
-                        byDataLocation[_config.location].configs.push(_config);
-                    } else if (_config.role === 'locationWrapper') {
-                        byDataLocation[_config.location].wrapperConfig = _config;
-                    }
-                });
-
-                rawConfig.byDataLocation = byDataLocation;
-                return rawConfig;
             }
-
         };
 
         extend_core.prototype.inherit(body, throw_event_core);
@@ -281,7 +279,11 @@ define('body', [
             "CHATS": '',
             "USERS": '',
             "DETAIL_VIEW": '',
-            "FILTER_MY_CHATS": ''
+            "FILTER_MY_CHATS": '',
+            "CREATE_BLOG": '',
+            "JOIN_BLOG": '',
+            "BLOGS": '',
+            "CONNECTIONS": ''
         };
 
         body.prototype.templateMap = {
@@ -293,7 +295,11 @@ define('body', [
             "USERS": body.prototype.panel_users_template,
             "JOIN_USER": body.prototype.join_locations_template,
             "DETAIL_VIEW": body.prototype.detail_view_container_template,
-            "FILTER_MY_CHATS": body.prototype.filter_my_chats_template
+            "FILTER_MY_CHATS": body.prototype.filter_my_chats_template,
+            "CREATE_BLOG": '',
+            "JOIN_BLOG": '',
+            "BLOGS": '',
+            "CONNECTIONS": ''
         };
 
         body.prototype.configHandlerMap = {
@@ -309,7 +315,11 @@ define('body', [
             "CHATS": null,
             "USERS": '',
             "DETAIL_VIEW": body.prototype.chatsFilter,
-            "FILTER_CHATS": ''
+            "FILTER_CHATS": '',
+            "CREATE_BLOG": '',
+            "JOIN_BLOG": '',
+            "BLOGS": '',
+            "CONNECTIONS": ''
         };
 
         body.prototype.dataHandlerContextMap = {
@@ -320,7 +330,11 @@ define('body', [
             "CHATS": null,
             "USERS": users_bus,
             "DETAIL_VIEW": null,
-            "FILTER_CHATS": null
+            "FILTER_CHATS": null,
+            "CREATE_BLOG": null,
+            "JOIN_BLOG": null,
+            "BLOGS": null,
+            "CONNECTIONS": null
         };
 
         return body;

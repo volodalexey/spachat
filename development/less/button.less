@@ -71,25 +71,19 @@ button{
     right: 100%;
     margin: 0 0 0.2em 0.2em;
     border-radius: 0.4em 0 0 0.4em;
-    border: 2px ridge buttonface;
     border-right: none;
+    box-shadow: -2px 0px 10px 3px rgba(109, 76, 65, 0.7);
   }
   &.left-panel-button {
     left: 100%;
     margin: 0 0.2em 0.2em 0;
     border-radius: 0 0.4em 0.4em 0;
-    border: 2px ridge buttonface;
     border-left: none;
+    box-shadow: 2px 0px 10px 3px rgba(109, 76, 65, 0.7);
   }
   &:active{
     border-style: inset;
   }
-}
-
-.btnHeader-select{
-  background-color: @pink;
-  border-bottom: none;
-  outline: none;
 }
 
 button:disabled{

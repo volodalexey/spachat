@@ -183,9 +183,30 @@ define('render_layout_core', [
                 if (callback) {
                     callback();
                 }
+            },
 
+
+            prepareConfig: function(rawConfig) {
+                var byDataLocation = {};
+                rawConfig.forEach(function(_config) {
+                    if (!_config.location) {
+                        return;
+                    }
+                    if (!byDataLocation[_config.location]) {
+                        byDataLocation[_config.location] = {
+                            configs: []
+                        };
+                    }
+                    if (!_config.role) {
+                        byDataLocation[_config.location].configs.push(_config);
+                    } else if (_config.role === 'locationWrapper') {
+                        byDataLocation[_config.location].wrapperConfig = _config;
+                    }
+                });
+
+                rawConfig.byDataLocation = byDataLocation;
+                return rawConfig;
             }
-
         };
         extend_core.prototype.inherit(render_layout_core, async_core);
         extend_core.prototype.inherit(render_layout_core, dom_core);

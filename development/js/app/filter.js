@@ -32,19 +32,23 @@ define('filter', [
         filter.prototype = {
 
             configMap: {
+                BLOGS_FILTER: '',
                 CHATS_FILTER: '/configs/panel_chats_filter_config.json',
                 USERS_FILTER: '/configs/panel_users_filter_config.json',
                 MESSAGES_FILTER: '/configs/messages_filter_config.json',
                 CONTACT_LIST_FILTER: '/configs/panel_chats_filter_config.json',
-                LOGGER_FILTER: '/configs/messages_filter_config.json'
+                LOGGER_FILTER: '/configs/messages_filter_config.json',
+                CONNECTIONS_FILTER: ''
             },
 
             MODE: {
+                BLOGS_FILTER: 'BLOGS_FILTER',
                 CHATS_FILTER: 'CHATS_FILTER',
                 USERS_FILTER: 'USERS_FILTER',
                 MESSAGES_FILTER: 'MESSAGES_FILTER',
                 CONTACT_LIST_FILTER: 'CONTACT_LIST_FILTER',
-                LOGGER_FILTER: 'LOGGER'
+                LOGGER_FILTER: 'LOGGER',
+                CONNECTIONS_FILTER: 'CONNECTIONS_FILTER'
             },
 
             bindContext: function() {
@@ -72,11 +76,13 @@ define('filter', [
                 var _this = this;
                 _this._module = _module;
                 _this.elementMap = {
+                    BLOGS_FILTER: _module.filter_container,
                     CHATS_FILTER: _module.filter_container,
                     USERS_FILTER: _module.filter_container,
                     MESSAGES_FILTER: _module.filter_container,
                     CONTACT_LIST_FILTER: _module.filter_container,
-                    LOGGER_FILTER: _module.filter_container
+                    LOGGER_FILTER: _module.filter_container,
+                    CONNECTIONS_FILTER: _module.filter_container
                 };
                 if (_mode === _module.body.MODE.DETAIL_VIEW) {
                     _this.optionsDefinition(_module, _this.MODE.CHATS);
@@ -197,11 +203,13 @@ define('filter', [
         filter.prototype.filter_template = filter.prototype.template(filter_template);
 
         filter.prototype.templateMap = {
+            BLOGS_FILTER: '',
             CHATS_FILTER: filter.prototype.filter_my_chats_template,
             USERS_FILTER: filter.prototype.filter_my_chats_template,
             MESSAGES_FILTER: filter.prototype.filter_template,
             CONTACT_LIST_FILTER: filter.prototype.filter_my_chats_template,
-            LOGGER_FILTER: filter.prototype.filter_template
+            LOGGER_FILTER: filter.prototype.filter_template,
+            CONNECTIONS_FILTER: ''
         };
 
         filter.prototype.configHandlerMap = {};

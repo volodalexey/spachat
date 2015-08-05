@@ -101,6 +101,7 @@ define('header', [
             cashToolbarElement: function() {
                 var _this = this;
                 _this.filter_container = _this.chat.header_container.querySelector('[data-role="filter_container"]');
+                _this.btns_header = Array.prototype.slice.call(_this.chat.header_container.querySelectorAll('[data-role="btnHeader"]'));
             },
 
             cashBodyElement: function() {
@@ -138,10 +139,12 @@ define('header', [
                                     _this.cashToolbarElement();
                                     _this.addToolbarEventListener();
                                     _this.renderFilter();
+                                    _this.toggleActiveButton(_this.btns_header, _this.chat.bodyOptions.mode);
                                 });
                             } else {
                                 _this.previousMode = _this.MODE.TAB;
                                 _this.renderFilter();
+                                _this.toggleActiveButton(_this.btns_header, _this.chat.bodyOptions.mode);
                             }
                             break;
                         case _this.MODE.WEBRTC:
@@ -194,55 +197,6 @@ define('header', [
                     _this.previousFilterShow = false;
                 }
             },
-
-            //changePerPage: function(element) {
-            //    var _this = this;
-            //    var value = parseInt(element.value);
-            //
-            //    if (element.value === "" || element.value === "0") {
-            //        _this.currentPaginationOptions.perPageValueNull = true;
-            //        return;
-            //    }
-            //
-            //    if (!_this.currentPaginationOptions.rtePerPage) {
-            //        _this.currentPaginationOptions.currentPage = null;
-            //        _this.currentPaginationOptions.perPageValue = value;
-            //        element.focus();
-            //        return;
-            //    }
-            //
-            //    _this.currentPaginationOptions.perPageValue = value;
-            //    _this.currentPaginationOptions.currentPage = null;
-            //    if (_this.currentPaginationOptions.showEnablePagination) {
-            //        _this.chat.pagination.countQuantityPages(function() {
-            //            _this.chat.render(null, null);
-            //        });
-            //    }
-            //},
-            //
-            //changeRTE: function(element) {
-            //    var _this = this;
-            //    _this.previousFilterShow = false;
-            //    if (element.checked) {
-            //        _this.currentPaginationOptions.mode_change = "rte";
-            //        _this.currentPaginationOptions.rtePerPage = true;
-            //    } else {
-            //        _this.currentPaginationOptions.mode_change = "nrte";
-            //        _this.currentPaginationOptions.rtePerPage = false;
-            //    }
-            //    _this.chat.render(null, null);
-            //},
-            //
-            //showPerPage: function() {
-            //    var _this = this;
-            //    _this.currentPaginationOptions.currentPage = null;
-            //
-            //    if (_this.currentPaginationOptions.showEnablePagination) {
-            //        _this.chat.pagination.countQuantityPages(function() {
-            //            _this.chat.render(null, null);
-            //        });
-            //    }
-            //},
 
             destroy: function() {
                 var _this = this;
