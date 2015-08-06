@@ -162,7 +162,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "open_icon",
     "text": 10,
     "class": "button-convex",
     "data": {
@@ -176,7 +176,7 @@
   },
   {
     "element": "button",
-    "icon": "",
+    "icon": "save_open_icon",
     "text": 58,
     "class": "button-convex",
     "data": {

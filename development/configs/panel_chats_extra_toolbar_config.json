@@ -1,7 +1,7 @@
 [
   {
     "element": "button",
-    "icon": "filter_icon",
+    "icon": "filter_chats_icon",
     "text": 26,
     "class": "button-inset-square",
     "data": {

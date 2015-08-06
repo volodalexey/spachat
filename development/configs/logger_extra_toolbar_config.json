@@ -1,8 +1,8 @@
 [
   {
     "element": "button",
-    "icon": "",
-    "text": 28,
+    "icon": "filter_log_messages_icon",
+    "text": 26,
     "class": "button-inset-square",
     "data": {
       "throw": "true",
