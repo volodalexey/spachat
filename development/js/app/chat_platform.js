@@ -93,6 +93,7 @@ define('chat_platform', [
                 event_bus.on('addNewChatAuto', _this.addNewChatAuto, _this);
                 event_bus.on('getOpenChats', _this.getOpenChats, _this);
                 event_bus.on('chatsDestroy', _this.destroyChats, _this);
+                event_bus.on('toCloseChat', _this.toCloseChat, _this);
                 websocket.on('message', _this.onChatMessageRouter, _this);
                 _this.on('resize', _this.resizeChats, _this);
                 _this.on('joinByChatIdAuto', _this.joinByChatIdAuto, _this);
@@ -105,6 +106,7 @@ define('chat_platform', [
                 event_bus.off('addNewChatAuto', _this.addNewChatAuto);
                 event_bus.off('getOpenChats', _this.getOpenChats);
                 event_bus.off('chatsDestroy', _this.destroyChats);
+                event_bus.off('toCloseChat', _this.toCloseChat);
                 websocket.off('message', _this.onChatMessageRouter);
                 _this.off('resize');
                 _this.off('joinByChatIdAuto');
@@ -429,7 +431,7 @@ define('chat_platform', [
             showChat: function(element) {
                 var _this = this;
                 var parentElement = _this.traverseUpToDataset(element, 'role', 'chatWrapper');
-                var control_buttons = Array.prototype.slice.call(parentElement.querySelectorAll('[data-action="showChat"]'));
+                var control_buttons = Array.prototype.slice.call(parentElement.querySelectorAll('button[data-mode="DETAIL_VIEW"]'));
                 var restore_options = element.dataset.restore_chat_state;
                 if (!parentElement) {
                     console.error(new Error('Parent element not found!'));
@@ -506,6 +508,21 @@ define('chat_platform', [
                             _this.destroyChat(chatToDestroy);
                         }
                     );
+                }
+            },
+
+            toCloseChat: function(chatToDestroyId, saveStates) {
+                var _this = this, chatToDestroy;
+                Chat.prototype.chatsArray.every(function(_chat) {
+                    if (_chat.chatId === chatToDestroyId) {
+                        chatToDestroy = _chat;
+                    }
+                    return !chatToDestroy;
+                });
+                if (saveStates) {
+                    _this.saveStatesChats(chatToDestroy);
+                } else {
+                    _this.closeChat(chatToDestroy);
                 }
             },
 

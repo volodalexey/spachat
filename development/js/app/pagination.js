@@ -98,7 +98,7 @@ define('pagination', [
                 _this.buttons_show_choice = null;
             },
 
-            render: function(options, _module, mode, callback) {
+            render: function(options, _module, mode) {
                 var _this = this;
                 _this.module = _module;
                 _this.bodyOptionsMode = mode;
@@ -134,9 +134,6 @@ define('pagination', [
                                     _this.buttons_show_choice.forEach(function(btn){
                                         btn.dataset.toggle = false;
                                     });
-                                }
-                                if (callback) {
-                                    callback();
                                 }
                             });
                         });

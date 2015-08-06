@@ -188,5 +188,31 @@
     },
     "name": "",
     "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "exit_icon",
+    "text": 20,
+    "data": {
+      "role": "closeChat",
+      "action": "closeChat",
+      "mode": "DETAIL_VIEW",
+      "location": "navbar"
+    },
+    "class": "button-convex",
+    "name": "CloseChat"
+  },
+  {
+    "element": "button",
+    "icon": "save_exit_icon",
+    "text": 56,
+    "data": {
+      "role": "saveStatesChats",
+      "action": "closeChat",
+      "mode": "DETAIL_VIEW",
+      "location": "navbar"
+    },
+    "class": "button-convex",
+    "name": "SaveCloseChat"
   }
 ]

@@ -7,6 +7,7 @@ define('panel', [
         'switcher_core',
         'overlay_core',
         'dom_core',
+        'chats_bus',
         //
         'users_bus',
         'event_bus',
@@ -33,6 +34,7 @@ define('panel', [
              switcher_core,
              overlay_core,
              dom_core,
+             chats_bus,
              //
              users_bus,
              event_bus,
@@ -375,6 +377,7 @@ define('panel', [
                 _this.outer_container.style.maxWidth = window.innerWidth + 'px';
                 _this.outer_container.style[_this.type] = (-_this.outer_container.offsetWidth) + 'px';
                 _this.outer_container.style.zIndex = panel.prototype.z_index;
+                _this.togglePanelElement_clientWidth = _this.togglePanelElement.clientWidth;
             },
 
             dispose: function() {
@@ -425,6 +428,9 @@ define('panel', [
                 _this.old_password = null;
                 _this.new_password = null;
                 _this.confirm_password = null;
+                _this.btns_toolbar = null;
+                _this.togglePanelElement = null;
+                _this.body_container = null;
             },
 
             bindMainContexts: function() {
@@ -436,6 +442,8 @@ define('panel', [
                 _this.bindedTransitionEnd = _this.transitionEnd.bind(_this);
                 _this.bindedOnChatDestroyed = _this.onChatDestroyed.bind(_this);
                 _this.bindedToggleListOptions = _this.toggleListOptions.bind(_this);
+                _this.bindedCloseChat = _this.closeChat.bind(_this);
+
             },
 
             addMainEventListener: function() {
@@ -450,6 +458,7 @@ define('panel', [
                 _this.on('throw', _this.throwRouter, _this);
                 event_bus.on('chatDestroyed', _this.bindedOnChatDestroyed, _this);
                 event_bus.on('AddedNewChat', _this.bindedToggleListOptions, _this);
+                //event_bus.on('chatShown', _this.bindedUpdateDetailView, _this);
                 websocket.on('message', _this.onPanelMessageRouter, _this);
             },
 
@@ -464,6 +473,7 @@ define('panel', [
                 _this.off('throw', _this.throwRouter);
                 event_bus.off('chatDestroyed', _this.bindedOnChatDestroyed);
                 event_bus.off('AddedNewChat', _this.bindedToggleListOptions);
+                event_bus.off('chatShown', _this.bindedUpdateDetailView);
                 websocket.off('message', _this.onPanelMessageRouter);
             },
 
@@ -511,7 +521,6 @@ define('panel', [
                     _this.inner_container.style.maxWidth = _this.calcMaxWidth();
                     _this.fillPanelToolbar();
                     _this.render();
-                    //_this.resizePanel();
                 } else {
                     panel.prototype.z_index--;
                     if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
@@ -565,16 +574,17 @@ define('panel', [
                 } else {
                     _this.proceed(options);
                 }
+                _this.resizePanel();
             },
 
             proceed: function(options) {
                 var _this = this;
                 _this.extraToolbar.renderExtraToolbar(_this, _this.bodyOptions.mode, function() {
                     _this.filter.renderFilter(_this, _this.bodyOptions.mode, function() {
-                        _this.pagination.render(options, _this, _this.bodyOptions.mode, function() {
+                        _this.pagination.render(options, _this, _this.bodyOptions.mode);
+                        _this.body.render(options, _this, function() {
                             _this.resizePanel();
                         });
-                        _this.body.render(options, _this);
                     });
                 });
             },
@@ -824,6 +834,22 @@ define('panel', [
                 }
             },
 
+            closeChat: function(element) {
+                var _this = this, saveStates;
+                if (_this.type === "left" ){
+                    var parentElement = _this.traverseUpToDataset(element, 'role', 'chatWrapper');
+                    var chatid = parentElement.dataset.chatid;
+
+                    if (element.dataset.role === "closeChat") {
+                        saveStates = false;
+                    }
+                    if (element.dataset.role === "saveStatesChats") {
+                        saveStates = true;
+                    }
+                    event_bus.trigger('toCloseChat', chatid, saveStates);
+                }
+            },
+
             rotatePointer: function(options) {
                 var _this = this;
                 options.detail_view.dataset.state = "expanded";
@@ -834,11 +860,13 @@ define('panel', [
             },
 
             transitionEnd: function(event) {
+                var _this = this;
                 var action = event.target.dataset.role;
                 if (action === 'detail_view_container') {
                     if (event.target.style.maxHeight === '0em') {
                         delete event.target.dataset.state;
                         event.target.innerHTML = "";
+                        _this.resizePanel();
                     }
                 }
             },
@@ -847,7 +875,7 @@ define('panel', [
                 var _this = this;
                 if (_this.outer_container.style[_this.type] === '0px') {
                     _this.inner_container.style.maxWidth = _this.calcMaxWidth();
-                    if (_this.outer_container.clientWidth + _this.togglePanelElement.clientWidth > document.body.clientWidth) {
+                    if (_this.outer_container.clientWidth + _this.togglePanelElement_clientWidth > document.body.clientWidth) {
                         _this.togglePanelElement.classList.add("pull-for-" + _this.type + "-panel");
                         _this.togglePanelElement.classList.remove("panel-button");
                     }

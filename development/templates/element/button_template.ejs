@@ -1,5 +1,6 @@
-<% var _in = arguments[0]; %>
-<button class="<%= _in.config.class ? _in.config.class : '' %>"
+<% var _in = arguments[0], classList = _in.config.class ? _in.config.class : '';%>
+
+<button class="<%= classList %>"
 <% if(_in.config.data) {
     for (var dataKey in _in.config.data) {
         if (_in.config.data[dataKey] !== "" && dataKey !== "description") { %>
@@ -17,12 +18,9 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
 <% var flag = true;%>
 <% } %>
 
-<%if (_in.options && _in.options.openChats){
-    if (_in.options.openChats[_in.data.chatId] ? true : false) { %>
-        disabled = "true"
-  <%  }
-}%>
-
+        <% if (_in.options && _in.options.display !== undefined && _in.options.display !== true) {%>
+            style="display: none;"
+       <% }%>
 
     <% if(_in.config.type){ %> type="<%= _in.config.type%>" <%}%>
     <% if(_in.config.data.key){ %> data-value="<%= _in.data[_in.config.data.key]%>" <%}%>
@@ -36,7 +34,6 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
             return !icon;
         } );
         if (icon) {
-
             if (flag)  { %>
                   <div class="opacity-05 cursor-not-allowed">   <%= icon.svg %></div>
            <% } else { %>

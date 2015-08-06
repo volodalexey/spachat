@@ -87,7 +87,7 @@ define('body', [
                 CONNECTIONS: 'CONNECTIONS'
             },
 
-            render: function(options, _module) {
+            render: function(options, _module, callback) {
                 var _this = this;
                 _this.module = _module;
                 if (_this.module.bodyOptions.show) {
@@ -158,7 +158,7 @@ define('body', [
                                         "detail_view_template": _this.detail_view_container_template,
                                         "openChatsInfoArray": _this.module.openChatsInfoArray,
                                         "openChats": options.openChats
-                                        }, null);
+                                        }, callback);
                                 });
                             });
                             break;
