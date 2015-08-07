@@ -65,7 +65,7 @@
   },
   {
     "element": "button",
-    "icon": "change_icon",
+    "icon": "change_user_info_icon",
     "text": 37,
     "class": "button-convex",
     "data": {
