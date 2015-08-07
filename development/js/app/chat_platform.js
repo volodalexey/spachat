@@ -402,7 +402,7 @@ define('chat_platform', [
                 );
             },
 
-            blockUIButton: function(chatId, buttonsElement) {
+            hideUIButton: function(chatId, buttonsElement) {
                 var _this = this;
                 if (!_this.UIbuttonsByChatId[chatId]) {
                     _this.UIbuttonsByChatId[chatId] = {};
@@ -410,15 +410,23 @@ define('chat_platform', [
                 }
                 buttonsElement.forEach(function(buttonElement){
                     _this.UIbuttonsByChatId[chatId].buttons.push(buttonElement);
-                    buttonElement.disabled = true;
+                    if (buttonElement.style.display === 'none') {
+                        buttonElement.style.display = 'inherit';
+                    } else {
+                        buttonElement.style.display = 'none';
+                    }
                 });
             },
 
-            unBlockUIButton: function(chatId) {
+            unHideUIButton: function(chatId) {
                 var _this = this;
                 if (_this.UIbuttonsByChatId[chatId] && _this.UIbuttonsByChatId[chatId].buttons) {
                     _this.UIbuttonsByChatId[chatId].buttons.forEach(function(button) {
-                        button.disabled = false;
+                        if (button.style.display === 'none') {
+                            button.style.display = 'inherit';
+                        } else {
+                            button.style.display = 'none';
+                        }
                     });
                 }
                 _this.UIbuttonsByChatId[chatId].buttons = [];
@@ -448,16 +456,14 @@ define('chat_platform', [
                     console.error(new Error('Chat is already opened!'));
                     return;
                 }
-
-                _this.blockUIButton(chatId, control_buttons);
-
+                _this.hideUIButton(chatId, control_buttons);
                 indexeddb.getByKeyPath(
                     chats_bus.collectionDescription,
                     chatId,
                     function(getError, chat) {
                         if (getError) {
                             console.error(getError);
-                            _this.unBlockUIButton(chatId);
+                            _this.unHideUIButton(chatId);
                             return;
                         }
 
@@ -475,7 +481,7 @@ define('chat_platform', [
                             });
                         } else {
                             console.error(new Error('Chat with such id not found in the database!'));
-                            _this.unBlockUIButton(chatId);
+                            _this.unHideUIButton(chatId);
                         }
                     }
                 );

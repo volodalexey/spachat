@@ -684,7 +684,7 @@ define('panel', [
                     });
                     _this.addToolbarEventListener();
                     _this.cashToolbarElement();
-                    _this.toggleActiveButton(_this.btns_toolbar, _this.body_mode);
+                    _this.toggleActiveButton(_this.btns_toolbar, _this.bodyOptions.mode);
                     _this.resizePanel();
                 });
             },
@@ -788,7 +788,6 @@ define('panel', [
                         }
                     );
                 });
-
             },
 
             changeUserInfo: function() {
