@@ -135,11 +135,14 @@ function(
             console.log(type, messageObject.message);
         },
 
-        sendToWebSocket: function(sendData) {
+        sendToWebSocket: function(messageData) {
             var _this = this;
-            //sendData.chat_description = this.valueOfChat();
-            sendData.chat_description = _this.chats[0].valueOfChat();
-            websocket.sendMessage(sendData);
+            if (messageData.type === 'chat_offer' ||
+                messageData.type === 'chat_accept' ||
+                messageData.type === 'chat_answer') {
+                messageData.chat_description = _this.chats[0].valueOfChat();
+            }
+            websocket.sendMessage(messageData);
         }
     };
 

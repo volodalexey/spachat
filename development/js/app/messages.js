@@ -152,7 +152,13 @@ define('messages', [
 
                         if (_this.chat.bodyOptions.mode === _this.chat.body.MODE.MESSAGES &&
                             mode === _this.chat.body.MODE.MESSAGES) {
-                            webrtc.broadcastMessage(JSON.stringify(message));
+                            var messageData = {
+                                type: "notifyChat",
+                                notify_data: "addRemoteMessage",
+                                message: message,
+                                chat_description: _this.chat.valueOfChat()
+                            };
+                            webrtc.broadcastMessage(JSON.stringify(messageData));
                         }
 
                         callback && callback(error, message);
@@ -180,8 +186,7 @@ define('messages', [
 
             addRemoteMessage: function(remoteMessage, callback) {
                 var _this = this;
-                // TODO distinct this chat messages from other
-                var message = (new HTML_message(remoteMessage)).toJSON();
+                var message = (new HTML_message(remoteMessage.message)).toJSON();
 
                 indexeddb.addAll(
                     _this.chat.collectionDescription,

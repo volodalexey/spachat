@@ -10,7 +10,6 @@ define('chat_platform', [
         'overlay_core',
         'throw_event_core',
         'template_core',
-        'message_core',
         'dom_core',
         'extend_core',
         //
@@ -27,7 +26,6 @@ define('chat_platform', [
              overlay_core,
              throw_event_core,
              template_core,
-             message_core,
              dom_core,
              extend_core,
              //
@@ -94,6 +92,7 @@ define('chat_platform', [
                 event_bus.on('getOpenChats', _this.getOpenChats, _this);
                 event_bus.on('chatsDestroy', _this.destroyChats, _this);
                 event_bus.on('toCloseChat', _this.toCloseChat, _this);
+                event_bus.on('notifyChat', _this.onChatMessageRouter, _this);
                 websocket.on('message', _this.onChatMessageRouter, _this);
                 _this.on('resize', _this.resizeChats, _this);
                 _this.on('joinByChatIdAuto', _this.joinByChatIdAuto, _this);
@@ -107,6 +106,7 @@ define('chat_platform', [
                 event_bus.off('getOpenChats', _this.getOpenChats);
                 event_bus.off('chatsDestroy', _this.destroyChats);
                 event_bus.off('toCloseChat', _this.toCloseChat);
+                event_bus.off('notifyChat', _this.onChatMessageRouter);
                 websocket.off('message', _this.onChatMessageRouter);
                 _this.off('resize');
                 _this.off('joinByChatIdAuto');
@@ -146,26 +146,20 @@ define('chat_platform', [
             onChatMessageRouter: function(messageData) {
                 var _this = this;
 
-                _this.initializeMessagesStack();
-                if (messageData.type === 'notifyChat') {
-                    Chat.prototype.chatsArray.forEach(function(_chat) {
-                        if (messageData.chat_description.chatId === _chat.chatId) {
-                            _chat.trigger('notifyChat', messageData);
-                        }
-                    });
-                } else {
-                    if (_this.messagesStack.length) {
-                        _this.messagesStack.push(messageData);
-                    } else {
-                        switch (messageData.type) {
-                            case 'chat_created':
-                                _this.chatCreateApproved(messageData);
-                                break;
-                            case 'chat_joined':
-                                _this.chatJoinApproved(messageData);
-                                break;
-                        }
-                    }
+                switch (messageData.type) {
+                    case 'chat_created':
+                        _this.chatCreateApproved(messageData);
+                        break;
+                    case 'chat_joined':
+                        _this.chatJoinApproved(messageData);
+                        break;
+                    case 'notifyChat':
+                        Chat.prototype.chatsArray.forEach(function(_chat) {
+                            if (messageData.chat_description.chatId === _chat.chatId) {
+                                _chat.trigger('notifyChat', messageData);
+                            }
+                        });
+                        break;
                 }
             },
 
@@ -574,7 +568,6 @@ define('chat_platform', [
         extend_core.prototype.inherit(chat_platform, overlay_core);
         extend_core.prototype.inherit(chat_platform, throw_event_core);
         extend_core.prototype.inherit(chat_platform, template_core);
-        extend_core.prototype.inherit(chat_platform, message_core);
         extend_core.prototype.inherit(chat_platform, dom_core);
 
         chat_platform.prototype.chat_platform_template = chat_platform.prototype.template(chat_platform_template);

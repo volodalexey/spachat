@@ -746,15 +746,12 @@ define('chat', [
             // TODO connect webrtc.js direct to message router
             onMessageRouter: function(eventData) {
                 var _this = this;
-                _this.initializeMessagesStack();
-                if (_this.messagesStack.length) {
-                    _this.messagesStack.push(eventData);
-                } else {
-                    if (_this[eventData.notify_data]) {
-                        _this[eventData.notify_data](eventData);
-                    } else if (webrtc[eventData.notify_data]) {
-                        webrtc[eventData.notify_data](eventData, _this);
-                    }
+                if (_this[eventData.notify_data]) {
+                    _this[eventData.notify_data](eventData);
+                } else if (_this.messages[eventData.notify_data]) {
+                    _this.messages[eventData.notify_data](eventData);
+                } else if (webrtc[eventData.notify_data]) {
+                    webrtc[eventData.notify_data](eventData, _this);
                 }
             },
 

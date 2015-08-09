@@ -388,22 +388,28 @@ define('webrtc', [
             },
 
             onDataChannelOpen: function(curConnection, activeOrPassive) {
-                curConnection.log('log', { message: 'Data channel connection established!' });
-                curConnection.dataChannel = curConnection[activeOrPassive].dataChannel;
-                curConnection.peerConnection = curConnection[activeOrPassive].peerConnection;
-                delete curConnection.active;
-                delete curConnection.passive;
+                if (curConnection[activeOrPassive]) {
+                    curConnection.log('log', { message: 'Data channel connection opened!' });
+                    curConnection.dataChannel = curConnection[activeOrPassive].dataChannel;
+                    curConnection.peerConnection = curConnection[activeOrPassive].peerConnection;
+                    delete curConnection.active;
+                    delete curConnection.passive;
+                } else {
+                    curConnection.log('log', { message: 'fail to set data channel for ' + activeOrPassive });
+                }
             },
 
             onDataChannelMessage: function(curConnection, event) {
                 try {
-                    var remoteMessage = JSON.parse(event.data);
+                    var messageData = JSON.parse(event.data);
                 } catch (e) {
                     console.error(e);
                     return;
                 }
 
-                curChat.messages.addRemoteMessage(remoteMessage);
+                if (messageData.type === 'notifyChat') {
+                    event_bus.trigger('notifyChat', messageData);
+                }
             },
 
             onDataChannelClose: function(curConnection, event) {
