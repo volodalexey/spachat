@@ -100,6 +100,26 @@ define('users_bus', [
                         }
                     }
                 );
+            },
+
+            getUserDescription: function(options, callback) {
+                this.getMyInfo(options, function(error, _options, userInfo) {
+                    if (error) {
+                        if (callback){
+                            callback(error);
+                        } else {
+                            console.error(error);
+                        }
+                        return;
+                    }
+
+                    if (callback){
+                        callback(null, {
+                            userId: userInfo.userId,
+                            userName: userInfo.userName
+                        });
+                    }
+                });
             }
         };
 

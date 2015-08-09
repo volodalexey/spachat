@@ -153,7 +153,7 @@ define('register', [
 
                     var user;
                     allUsers.every(function(_user) {
-                        if (_user.userName === options.userName) {
+                        if (_user.userName === options.userName && _user.userPassword) {
                             user = _user;
                         }
                         return !user;

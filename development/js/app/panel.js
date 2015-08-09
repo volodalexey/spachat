@@ -17,6 +17,7 @@ define('panel', [
         'body',
         'indexeddb',
         'websocket',
+        'webrtc',
         //
         'text!../templates/panel_left_template.ejs',
         'text!../templates/panel_right_template.ejs',
@@ -44,6 +45,7 @@ define('panel', [
              Body,
              indexeddb,
              websocket,
+             webrtc,
              //
              panel_left_template,
              panel_right_template,
@@ -435,6 +437,7 @@ define('panel', [
 
             bindMainContexts: function() {
                 var _this = this;
+                // bind all panel handlers because each panel has the same handlers
                 _this.bindedTogglePanelWorkflow = _this.togglePanelWorkflow.bind(_this);
                 _this.bindedInputUserInfo = _this.inputUserInfo.bind(_this);
                 _this.bindedDataActionRouter = _this.dataActionRouter.bind(_this);
@@ -443,7 +446,7 @@ define('panel', [
                 _this.bindedOnChatDestroyed = _this.onChatDestroyed.bind(_this);
                 _this.bindedToggleListOptions = _this.toggleListOptions.bind(_this);
                 _this.bindedCloseChat = _this.closeChat.bind(_this);
-
+                _this.bindedOnPanelMessageRouter = _this.onPanelMessageRouter.bind(_this);
             },
 
             addMainEventListener: function() {
@@ -456,10 +459,9 @@ define('panel', [
                 _this.addRemoveListener('add', _this.body_container, 'click', _this.bindedDataActionRouter, false);
                 _this.addRemoveListener('add', _this.body_container, 'transitionend', _this.bindedTransitionEnd, false);
                 _this.on('throw', _this.throwRouter, _this);
-                event_bus.on('chatDestroyed', _this.bindedOnChatDestroyed, _this);
-                event_bus.on('AddedNewChat', _this.bindedToggleListOptions, _this);
-                //event_bus.on('chatShown', _this.bindedUpdateDetailView, _this);
-                websocket.on('message', _this.onPanelMessageRouter, _this);
+                event_bus.on('chatDestroyed', _this.bindedOnChatDestroyed);
+                event_bus.on('AddedNewChat', _this.bindedToggleListOptions);
+                websocket.on('message', _this.bindedOnPanelMessageRouter);
             },
 
             removeMainEventListeners: function() {
@@ -473,8 +475,7 @@ define('panel', [
                 _this.off('throw', _this.throwRouter);
                 event_bus.off('chatDestroyed', _this.bindedOnChatDestroyed);
                 event_bus.off('AddedNewChat', _this.bindedToggleListOptions);
-                event_bus.off('chatShown', _this.bindedUpdateDetailView);
-                websocket.off('message', _this.onPanelMessageRouter);
+                websocket.off('message', _this.bindedOnPanelMessageRouter);
             },
 
             throwRouter: function(action, event) {
@@ -901,15 +902,23 @@ define('panel', [
                 var user_id_input = _this.body_container.querySelector('[data-role="user_id_input"]');
 
                 if (user_id_input && user_id_input.value) {
-                    websocket.sendMessage({
-                        type: "user_add",
-                        userId: users_bus.getUserId(),
-                        deviceId: event_bus.getDeviceId(),
-                        tempDeviceId: event_bus.getTempDeviceId(),
-                        request_body: {
-                            userId: user_id_input.value,
-                            message: ""
+                    users_bus.getUserDescription({}, function(error, user_description) {
+                        if (error) {
+                            console.error(error);
+                            return;
                         }
+
+                        websocket.sendMessage({
+                            type: "user_add",
+                            userId: users_bus.getUserId(),
+                            deviceId: event_bus.getDeviceId(),
+                            tempDeviceId: event_bus.getTempDeviceId(),
+                            user_description: user_description,
+                            request_body: {
+                                userId: user_id_input.value,
+                                message: "Hi!"
+                            }
+                        });
                     });
                 }
             },
@@ -929,15 +938,70 @@ define('panel', [
              */
             onPanelMessageRouter: function(messageData) {
                 var _this = this;
+                if (_this.type !== "left" ){
+                    return;
+                }
 
                 switch (messageData.type) {
                     case 'user_add':
-
+                        // TODO check my allow user friendship status
+                        if (_this.bodyOptions.mode === _this.MODE.JOIN_USER) {
+                            _this.userAddApproved(messageData);
+                        }
                         break;
                     case 'user_add_sent':
-
+                        // TODO check my allow user friendship status
+                        if (_this.bodyOptions.mode === _this.MODE.JOIN_USER) {
+                            console.log('Friendship request was sent');
+                        }
                         break;
                 }
+            },
+
+            addNewUserToIndexedDB: function(messageData, callback) {
+                var _this = this;
+                indexeddb.addOrUpdateAll(
+                    users_bus.collectionDescription,
+                    null,
+                    [
+                        messageData.user_description
+                    ],
+                    function(error) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
+
+                        callback(null, messageData.user_description);
+                    }
+                );
+            },
+
+            userAddApproved: function(messageData) {
+                var _this = this;
+                indexeddb.getByKeyPath(
+                    users_bus.collectionDescription,
+                    messageData.userId,
+                    function(getError, user_description) {
+                        if (getError) {
+                            console.error(getError);
+                            return;
+                        }
+
+                        if (!user_description) {
+                            _this.addNewUserToIndexedDB(messageData, function(error, user_description) {
+                                if (error) {
+                                    console.error(error);
+                                    return;
+                                }
+
+                                webrtc.handleDeviceActive(messageData, user_description);
+                            });
+                        } else if (user_description) {
+                            webrtc.handleDeviceActive(messageData, user_description);
+                        }
+                    }
+                );
             }
 
         };

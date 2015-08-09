@@ -261,8 +261,8 @@ define('chat_platform', [
                                 console.error(error);
                                 return;
                             }
-                            if(callback) {
-                                event_bus.trigger('AddedNewChat', info.chatsIds.length);
+                            event_bus.trigger('AddedNewChat', info.chatsIds.length);
+                            if (callback) {
                                 callback();
                             }
                         }
