@@ -34,7 +34,7 @@ define('dom_core',[
             },
 
             getDataParameter: function(element, param, _n) {
-                if (element.disabled && param !== "description") {
+                if (element && element.disabled && param !== "description") {
                     return null;
                 }
                 var n = !( _n === undefined || _n === null ) ? _n : 5 ;

@@ -385,18 +385,18 @@ define('chat_platform', [
                 indexeddb.getByKeyPath(
                     chats_bus.collectionDescription,
                     event.chat_description.chatId,
-                    function(getError, chat) {
+                    function(getError, chat_description) {
                         if (getError) {
                             console.error(getError);
                             return;
                         }
 
-                        if (!chat) {
+                        if (!chat_description) {
                             _this.addNewChatToIndexedDB(event);
-                        } else if (chat && !_this.isChatOpened(event.chat_description.chatId)) {
+                        } else if (chat_description && !_this.isChatOpened(chat_description.chatId)) {
                             _this.chatWorkflow(event);
-                        } else if (chat) {
-                            webrtc.handleConnectedDevices(event.connectedDevices, chat);
+                        } else if (chat_description) {
+                            webrtc.handleConnectedDevices(event.connectedDevices, _this.isChatOpened(chat_description.chatId));
                         }
                     }
                 );

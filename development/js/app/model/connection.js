@@ -115,7 +115,7 @@ function(
         removeChatById: function(chatId) {
             var chat = this.getChat({ chatId: chatId });
             if (chat) {
-                var index = this.chats.indexOf(chatToDestroy);
+                var index = this.chats.indexOf(chat);
                 if (index > -1) {
                     this.chats.splice(index, 1);
                 }

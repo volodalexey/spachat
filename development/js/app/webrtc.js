@@ -246,7 +246,7 @@ define('webrtc', [
                 });
             },
 
-            onLocalAnswerCreated: function(curConnection, createError) {
+            onLocalAnswerCreated: function(curConnection, createError, result) {
                 if (createError) {
                     curConnection.log('error', { message: createError });
                     return;

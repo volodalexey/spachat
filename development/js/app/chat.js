@@ -754,8 +754,6 @@ define('chat', [
                         _this[eventData.notify_data](eventData);
                     } else if (webrtc[eventData.notify_data]) {
                         webrtc[eventData.notify_data](eventData, _this);
-                    } else {
-                        console.error(new Error('No message handler'));
                     }
                 }
             },
