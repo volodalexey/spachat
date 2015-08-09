@@ -235,7 +235,7 @@ define('webrtc', [
                 event_bus.setDeviceId(deviceId);
                 curConnection.log('log',{ message: 'Extracted host device id from offer => ' + deviceId});
 
-                curConnection.passive.peerConnection.ondatachannel = _this.onReceivedDataChannel.bind(_this, curConnection);
+                //curConnection.passive.peerConnection.ondatachannel = _this.onReceivedDataChannel.bind(_this, curConnection);
                 curConnection.passive.readyState = Connection.prototype.readyStates.WAITING;
                 curConnection.sendToWebSocket({
                     type: 'chat_answer',
@@ -351,14 +351,50 @@ define('webrtc', [
                 }
             },
 
-            onReceivedDataChannel: function(curConnection, event) {
+            _onReceivedDataChannel: function(curConnection, event) {
                 curConnection.log('log', { message: 'Data Channel received' });
                 if (!curConnection.passive) {
-                    this.removeDataChannelListeners(event.channel);
+                    this._removeDataChannelListeners(event.channel);
                     return;
                 }
                 curConnection.passive.dataChannel = event.channel;
-                this.addDataChannelListeners(curConnection.passive.dataChannel, curConnection, 'passive');
+                this._addDataChannelListeners(curConnection.passive.dataChannel, curConnection, 'passive');
+            },
+
+            _onICEConnectionStateChange: function(curConnection, event) {
+                if (event.target.iceConnectionState === 'disconnected') {
+                    console.warn(event);
+                    curConnection.destroy();
+                } else {
+                    console.log('oniceconnectionstatechange', event.target.iceConnectionState);
+                }
+            },
+
+            _addPeerConnectionListeners: function(peerConnection, curConnection, onICECandidate) {
+                if (!peerConnection) {
+                    return;
+                }
+                var _this = this;
+                _this._removePeerConnectionListeners(peerConnection);
+
+                peerConnection.ondatachannel = _this._onReceivedDataChannel.bind(_this, curConnection);
+                peerConnection.onicecandidate = _this._onICECandidate.bind(_this, curConnection, peerConnection, onICECandidate);
+                peerConnection.oniceconnectionstatechange = _this._onICEConnectionStateChange.bind(_this, curConnection);
+                //peerConnection.onnegotiationneeded = function(ev) { console.log('onnegotiationneeded', ev); };
+                peerConnection.onsignalingstatechange = function(ev) { console.log('onsignalingstatechange', ev.target.signalingState); };
+            },
+
+            _removePeerConnectionListeners: function(peerConnection) {
+                if (!peerConnection) {
+                    return;
+                }
+                var _this = this;
+
+                peerConnection.ondatachannel = null;
+                peerConnection.onicecandidate = null;
+                peerConnection.oniceconnectionstatechange = null;
+                //peerConnection.onnegotiationneeded = null;
+                peerConnection.onsignalingstatechange = null;
             },
 
             /**
@@ -376,14 +412,19 @@ define('webrtc', [
                     return;
                 }
 
-                peerConnection.onicecandidate = _this._onICECandidate.bind(_this, curConnection, peerConnection, onICECandidate);
-                peerConnection.oniceconnectionstatechange = function(ev) { console.log('oniceconnectionstatechange', ev.target.iceConnectionState); };
-                //peerConnection.onnegotiationneeded = function(ev) { console.log('onnegotiationneeded', ev); };
-                peerConnection.onsignalingstatechange = function(ev) { console.log('onsignalingstatechange', ev.target.signalingState); };
+                _this._addPeerConnectionListeners(peerConnection, curConnection, onICECandidate);
 
                 curConnection.log('log', { message: 'done: createRTCPeerConnection' });
                 if (callback) {
                     callback(null, peerConnection);
+                }
+            },
+
+            notMode: function(mode) {
+                if (mode === 'active') {
+                    return 'passive';
+                } else if (mode === 'passive') {
+                    return 'active';
                 }
             },
 
@@ -392,6 +433,9 @@ define('webrtc', [
                     curConnection.log('log', { message: 'Data channel connection opened!' });
                     curConnection.dataChannel = curConnection[activeOrPassive].dataChannel;
                     curConnection.peerConnection = curConnection[activeOrPassive].peerConnection;
+                    var notMode = this.notMode(activeOrPassive);
+                    this._removePeerConnectionListeners(curConnection[notMode].peerConnection);
+                    this._removeDataChannelListeners(curConnection[notMode].dataChannel);
                     delete curConnection.active;
                     delete curConnection.passive;
                 } else {
@@ -420,13 +464,13 @@ define('webrtc', [
                 console.log('onerror', event);
             },
 
-            addDataChannelListeners: function(dataChannel, curConnection, activeOrPassive) {
+            _addDataChannelListeners: function(dataChannel, curConnection, activeOrPassive) {
                 var _this = this;
                 if (!dataChannel) {
                     console.error(new Error('Data channel is not provided!'));
                     return;
                 }
-                _this.removeDataChannelListeners(dataChannel);
+                _this._removeDataChannelListeners(dataChannel);
 
                 dataChannel.onopen = _this.onDataChannelOpen.bind(_this, curConnection, activeOrPassive);
                 dataChannel.onmessage = _this.onDataChannelMessage.bind(_this, curConnection);
@@ -434,7 +478,7 @@ define('webrtc', [
                 dataChannel.onerror = _this.onDataChannelError.bind(_this, curConnection);
             },
 
-            removeDataChannelListeners: function(dataChannel) {
+            _removeDataChannelListeners: function(dataChannel) {
                 if (!dataChannel) {
                     return;
                 }
@@ -458,7 +502,7 @@ define('webrtc', [
                     return;
                 }
 
-                _this.addDataChannelListeners(dataChannel, curConnection, 'active');
+                _this._addDataChannelListeners(dataChannel, curConnection, 'active');
                 if (onDataChannelCreated) {
                     onDataChannelCreated(null, curConnection, peerConnection, dataChannel, callback);
                 }
@@ -594,7 +638,10 @@ define('webrtc', [
 
             destroy: function() {
                 var _this = this;
-                _this.removeDataChannelListeners();
+                _this.connections.forEach(function(connection) {
+                    connection.destroy();
+                });
+                _this.connections = [];
             },
 
             /**
@@ -628,15 +675,24 @@ define('webrtc', [
                 });
             },
 
+            onConnectionDestroyed: function(connection) {
+                var _this = this;
+                _this._removeDataChannelListeners(connection.dataChannel);
+                _this._removePeerConnectionListeners(connection.peerConnection);
+                _this.connections.splice(_this.connections.indexOf(connection), 1);
+            },
+
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
                 event_bus.on('chatDestroyed', _this.destroyConnectionChat, _this);
+                event_bus.on('connectionDestroyed', _this.onConnectionDestroyed, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 event_bus.off('chatDestroyed', _this.destroyConnectionChat);
+                event_bus.off('connectionDestroyed', _this.onConnectionDestroyed);
             }
         };
         extend_core.prototype.inherit(WebRTC, throw_event_core);

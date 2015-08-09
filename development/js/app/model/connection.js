@@ -1,8 +1,10 @@
 define('connection',[
-        'websocket'
+        'websocket',
+        'event_bus'
     ],
 function(
-    websocket
+    websocket,
+    event_bus
 ) {
     /**
      * WebRTC peer to peer connection
@@ -120,6 +122,9 @@ function(
                     this.chats.splice(index, 1);
                 }
             }
+            if (!this.handleAnyContexts()) {
+                this.destroy();
+            }
         },
 
         storeInstance: function(instance) {
@@ -143,6 +148,16 @@ function(
                 messageData.chat_description = _this.chats[0].valueOfChat();
             }
             websocket.sendMessage(messageData);
+        },
+
+        handleAnyContexts: function() {
+            return this.chats.length || this.users.length;
+        },
+
+        destroy: function() {
+            this.chats = [];
+            this.users = [];
+            event_bus.trigger('connectionDestroyed', this);
         }
     };
 

@@ -687,7 +687,6 @@ define('chat', [
                 this.extra_toolbar = null;
                 this.filter.destroy();
                 this.filter = null;
-                webrtc.destroy(_this);
                 this.body.destroy();
                 this.body = null;
                 _this.chat_element.remove();
