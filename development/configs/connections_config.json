@@ -1,0 +1,17 @@
+[
+  {
+    "element": "button",
+    "icon": "exit_icon",
+    "text": 38,
+    "class": "button-convex",
+    "data": {
+      "role": "",
+      "action": "logout",
+      "location": "navbar"
+    },
+    "name": "",
+    "disable": false,
+    "sort": 6,
+    "mode": "USER_INFO_SHOW"
+  }
+]

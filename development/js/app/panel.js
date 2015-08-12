@@ -157,6 +157,9 @@ define('panel', [
                 rteChoicePage: true,
                 mode_change: "rte"
             },
+            joinUser_ListOptions: {
+                readyForRequest: false
+            },
 
             createChat_ExtraToolbarOptions: {
                 show: false
@@ -302,26 +305,27 @@ define('panel', [
                 previousStart: 0,
                 previousFinal: 0
             },
-            filterOptions: {
-                show: false
-            },
             bodyOptions: {
                 show: true,
                 mode: null
             }
-
         };
 
         var panel = function(description) {
-            this.extend(this, defaultOptions);
+            if (description.options) {
+                this.extend(this, description.options);
+                this.body_mode = description.options.bodyOptions.mode;
+            } else {
+                this.extend(this, defaultOptions);
+                this.body_mode = description.body_mode;
+                this.bodyOptions.mode = description.body_mode;
+            }
 
             this.bindMainContexts();
 
             this.type = description.type;
-            this.panel_platform = description.panel_platform;
             this.outer_container = description.outer_container;
             this.inner_container = description.inner_container;
-            this.body_mode = description.body_mode;
             this.filter_container = description.filter_container;
             this.go_to_container = description.go_to_container;
             this.panel_toolbar = description.panel_toolbar;
@@ -330,7 +334,7 @@ define('panel', [
 
             this.pagination = new Pagination();
             this.body = new Body();
-            this.bodyOptions.mode = description.body_mode;
+
             this.extraToolbar = new Extra_toolbar({panel: this});
             this.filter = new Filter({panel: this});
         };
@@ -371,6 +375,7 @@ define('panel', [
                     return;
                 }
                 var _this = this;
+                _this.optionsDefinition(_this, _this.bodyOptions.mode);
                 _this.navigator = options.navigator;
                 _this.cashElements();
                 _this.elementMap = {};
@@ -559,6 +564,9 @@ define('panel', [
                     }
                     _this.previous_BodyMode = _this.bodyOptions.mode;
                     _this.render();
+                }
+                if (_this.bodyOptions.mode === _this.MODE.USER_INFO_SHOW) {
+                    _this.previous_UserInfo_Mode = _this.MODE.USER_INFO_SHOW;
                 }
             },
 
@@ -800,9 +808,8 @@ define('panel', [
 
             logout: function() {
                 var _this = this;
-                users_bus.setUserId(null);
-                _this.bodyOptions.mode = _this.MODE.USER_INFO_SHOW;
-                _this.previous_UserInfo_Mode = _this.MODE.USER_INFO_SHOW;
+                //_this.bodyOptions.mode = _this.MODE.USER_INFO_SHOW;
+                //_this.previous_UserInfo_Mode = _this.bodyOptions.mode;
                 event_bus.trigger("chatsDestroy");
                 _this.removeMainEventListeners();
                 _this.removeToolbarEventListeners();
@@ -924,6 +931,7 @@ define('panel', [
             },
 
             readyForFriendRequest: function(element) {
+                var _this = this;
                 websocket.sendMessage({
                     type: "user_toggle_ready",
                     userId: users_bus.getUserId(),
@@ -1002,6 +1010,69 @@ define('panel', [
                         }
                     }
                 );
+            },
+
+            toPanelDescription: function() {
+                var _this = this, description = {};
+                if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
+                    _this.bodyOptions.mode = _this.MODE.CHATS;
+                }
+                description = {
+                    chats_GoToOptions: _this.chats_GoToOptions,
+                    chats_PaginationOptions: _this.chats_PaginationOptions,
+                    chats_ExtraToolbarOptions: _this.chats_ExtraToolbarOptions,
+                    chats_FilterOptions: _this.chats_FilterOptions,
+                    chats_ListOptions: _this.chats_ListOptions,
+                    users_ExtraToolbarOptions: _this.users_ExtraToolbarOptions,
+                    users_FilterOptions: _this.users_FilterOptions,
+                    users_GoToOptions: _this.users_GoToOptions,
+                    users_PaginationOptions: _this.users_PaginationOptions,
+                    users_ListOptions: _this.users_ListOptions,
+                    joinUser_ExtraToolbarOptions: _this.joinUser_ExtraToolbarOptions,
+                    joinUser_FilterOptions: _this.joinUser_FilterOptions,
+                    joinUser_PaginationOptions: _this.joinUser_PaginationOptions,
+                    joinUser_GoToOptions: _this.joinUser_GoToOptions,
+                    createChat_ExtraToolbarOptions: _this.createChat_ExtraToolbarOptions,
+                    createChat_FilterOptions: _this.createChat_FilterOptions,
+                    createChat_PaginationOptions: _this.createChat_PaginationOptions,
+                    createChat_GoToOptions: _this.createChat_GoToOptions,
+                    joinChat_ExtraToolbarOptions: _this.joinChat_ExtraToolbarOptions,
+                    joinChat_FilterOptions: _this.joinChat_FilterOptions,
+                    joinChat_PaginationOptions: _this.joinChat_PaginationOptions,
+                    joinChat_GoToOptions: _this.joinChat_GoToOptions,
+                    createBlog_ExtraToolbarOptions: _this.createBlog_ExtraToolbarOptions,
+                    createBlog_FilterOptions: _this.createBlog_FilterOptions,
+                    createBlog_PaginationOptions: _this.createBlog_PaginationOptions,
+                    createBlog_GoToOptions: _this.createBlog_GoToOptions,
+                    joinBlog_ExtraToolbarOptions: _this.joinBlog_ExtraToolbarOptions,
+                    joinBlog_FilterOptions: _this.joinBlog_FilterOptions,
+                    joinBlog_PaginationOptions: _this.joinBlog_PaginationOptions,
+                    joinBlog_GoToOptions: _this.joinBlog_GoToOptions,
+                    blogs_ExtraToolbarOptions: _this.blogs_ExtraToolbarOptions,
+                    blogs_FilterOptions: _this.blogs_FilterOptions,
+                    blogs_PaginationOptions: _this.blogs_PaginationOptions,
+                    blogs_GoToOptions: _this.blogs_GoToOptions,
+                    blogs_ListOptions: _this.blogs_ListOptions,
+                    connections_ExtraToolbarOptions: _this.connections_ExtraToolbarOptions,
+                    connections_FilterOptions: _this.connections_FilterOptions,
+                    connections_PaginationOptions: _this.connections_PaginationOptions,
+                    connections_GoToOptions: _this.connections_GoToOptions,
+                    connections_ListOptions: _this.connections_ListOptions,
+                    userInfoEdit_ExtraToolbarOptions: _this.userInfoEdit_ExtraToolbarOptions,
+                    userInfoEdit_FilterOptions: _this.userInfoEdit_FilterOptions,
+                    userInfoEdit_PaginationOptions: _this.userInfoEdit_PaginationOptions,
+                    userInfoEdit_GoToOptions: _this.userInfoEdit_GoToOptions,
+                    userInfoShow_ExtraToolbarOptions: _this.userInfoShow_ExtraToolbarOptions,
+                    userInfoShow_FilterOptions: _this.userInfoShow_FilterOptions,
+                    userInfoShow_PaginationOptions: _this.userInfoShow_PaginationOptions,
+                    userInfoShow_GoToOptions: _this.userInfoShow_GoToOptions,
+                    filterOptions: _this.filterOptions,
+                    bodyOptions: _this.bodyOptions,
+                    collectionDescription: _this.collectionDescription,
+                    previous_UserInfo_Mode: _this.previous_UserInfo_Mode,
+                    joinUser_ListOptions: _this.joinUser_ListOptions
+            };
+                return description
             }
 
         };

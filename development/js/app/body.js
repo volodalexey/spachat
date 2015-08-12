@@ -19,7 +19,8 @@ define('body', [
         'text!../templates/panel_users_template.ejs',
         'text!../templates/user_info_template.ejs',
         'text!../templates/join_locations_template.ejs',
-        'text!../templates/element/location_wrapper_template.ejs'
+        'text!../templates/element/location_wrapper_template.ejs',
+        'text!../templates/connections_template.ejs'
     ],
     function(
         throw_event_core,
@@ -42,7 +43,8 @@ define('body', [
         panel_users_template,
         user_info_template,
         join_locations_template,
-        location_wrapper_template
+        location_wrapper_template,
+        connections_template
     ) {
 
         var body = function(options) {
@@ -62,7 +64,7 @@ define('body', [
                 "CREATE_BLOG": '',
                 "JOIN_BLOG": '',
                 "BLOGS": '',
-                "CONNECTIONS": ''
+                "CONNECTIONS": '/configs/connections_config.json'
             },
 
             MODE: {
@@ -121,9 +123,20 @@ define('body', [
                                     "USER_INFO_EDIT": _this.module.body_container
                                 };
                                 _this.body_mode = _this.MODE.USER_INFO_EDIT;
-                                _this.renderLayout( _this.module.user, function() {
-                                    _this.module.cashBodyElement();
-                                });
+                                if (!_this.module.user){
+                                    users_bus.getMyInfo(options, function(error, options, userInfo) {
+                                        if (error) {
+                                            _this.module.body_container.innerHTML = error;
+                                            return;
+                                        }
+                                        _this.module.user = userInfo;
+                                        _this.renderLayout(userInfo, null);
+                                    });
+                                } else {
+                                    _this.renderLayout( _this.module.user, function() {
+                                        _this.module.cashBodyElement();
+                                    });
+                                }
                             break;
                         case _this.MODE.CREATE_CHAT:
                             _this.elementMap = {
@@ -208,7 +221,13 @@ define('body', [
                             _this.module.body_container.innerHTML = "";
                             break;
                         case  _this.MODE.CONNECTIONS:
-                            _this.module.body_container.innerHTML = "";
+                            _this.elementMap = {
+                                "CONNECTIONS": _this.module.body_container
+                            };
+                            _this.body_mode = _this.MODE.CONNECTIONS;
+                            _this.renderLayout(null, function() {
+                                callback();
+                            });
                             break;
                     }
                     _this.previousMode = _this.module.bodyOptions.mode;
@@ -270,6 +289,7 @@ define('body', [
         body.prototype.detail_view_container_template = body.prototype.template(detail_view_container_template);
         body.prototype.join_locations_template = body.prototype.template(join_locations_template);
         body.prototype.location_wrapper_template = body.prototype.template(location_wrapper_template);
+        body.prototype.connections_template = body.prototype.template(connections_template);
 
         body.prototype.dataMap = {
             "USER_INFO_EDIT": '',
@@ -299,7 +319,7 @@ define('body', [
             "CREATE_BLOG": '',
             "JOIN_BLOG": '',
             "BLOGS": '',
-            "CONNECTIONS": ''
+            "CONNECTIONS": body.prototype.connections_template
         };
 
         body.prototype.configHandlerMap = {

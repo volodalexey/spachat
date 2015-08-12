@@ -3,13 +3,17 @@ define('panel_platform', [
         'overlay_core',
         'throw_event_core',
         'extend_core',
-        'ping_core'
+        'ping_core',
+        'indexeddb',
+        'users_bus'
     ],
     function(panel,
              overlay_core,
              throw_event_core,
              extend_core,
-             ping_core) {
+             ping_core,
+             indexeddb,
+             users_bus) {
 
         var panel_platform = function() {
             var _this = this;
@@ -59,8 +63,6 @@ define('panel_platform', [
                 _this.left_pagination_container = null;
                 _this.left_extra_toolbar_container = null;
 
-
-
                 _this.right_panel_outer_container = null;
                 _this.right_panel_inner_container = null;
                 _this.right_filter_container = null;
@@ -73,52 +75,101 @@ define('panel_platform', [
             renderPanels: function(options) {
                 var _this = this;
                 _this.cashElements();
-                this.panelsDescriptions = [
-                    {
-                        type: this.PANEL_TYPES.LEFT,
-                        outer_container: _this.left_panel_outer_container,
-                        inner_container: _this.left_panel_inner_container,
-                        panel_platform: this,
-                        body_mode: panel.prototype.MODE.CREATE_CHAT,
-                        filter_container: _this.left_filter_container,
-                        go_to_container: _this.left_go_to_container,
-                        pagination_container: _this.left_pagination_container,
-                        extra_toolbar_container: _this.left_extra_toolbar_container,
-                        panel_toolbar: _this.left_panel_toolbar
-                    },
-                    {
-                        type: this.PANEL_TYPES.RIGHT,
-                        outer_container: _this.right_panel_outer_container,
-                        inner_container: _this.right_panel_inner_container,
-                        panel_platform: this,
-                        body_mode: panel.prototype.MODE.USER_INFO_SHOW,
-                        filter_container: _this.right_filter_container,
-                        go_to_container: _this.right_go_to_container,
-                        panel_toolbar: _this.right_panel_toolbar,
-                        pagination_container: _this.right_pagination_container,
-                        extra_toolbar_container: _this.right_extra_toolbar_container
+                users_bus.getMyInfo(null, function(error, _options, userInfo){
+                    if (error) {
+                        console.error(error);
+                        return;
                     }
-                ];
-                this.panelsDescriptions.forEach(function(panelDescription) {
-                    var _panel = new panel(panelDescription);
-                    panel.prototype.panelArray.push(_panel);
-                });
+
+                    _this.panelsDescriptions = [
+                        {
+                            type: _this.PANEL_TYPES.LEFT,
+                            outer_container: _this.left_panel_outer_container,
+                            inner_container: _this.left_panel_inner_container,
+                            //panel_platform: this,
+                            body_mode: panel.prototype.MODE.CREATE_CHAT,
+                            filter_container: _this.left_filter_container,
+                            go_to_container: _this.left_go_to_container,
+                            pagination_container: _this.left_pagination_container,
+                            extra_toolbar_container: _this.left_extra_toolbar_container,
+                            panel_toolbar: _this.left_panel_toolbar,
+                            options: userInfo[_this.PANEL_TYPES.LEFT]
+                        },
+                        {
+                            type: _this.PANEL_TYPES.RIGHT,
+                            outer_container: _this.right_panel_outer_container,
+                            inner_container: _this.right_panel_inner_container,
+                            //panel_platform: this,
+                            body_mode: panel.prototype.MODE.USER_INFO_SHOW,
+                            filter_container: _this.right_filter_container,
+                            go_to_container: _this.right_go_to_container,
+                            panel_toolbar: _this.right_panel_toolbar,
+                            pagination_container: _this.right_pagination_container,
+                            extra_toolbar_container: _this.right_extra_toolbar_container,
+                            options: userInfo[_this.PANEL_TYPES.RIGHT]
+                        }
+                    ];
+                    _this.panelsDescriptions.forEach(function(panelDescription) {
+                        var _panel = new panel(panelDescription);
+                        panel.prototype.panelArray.push(_panel);
+                    });
 
 
-                options.panel_platform = this;
-                panel.prototype.panelArray.forEach(function(_panel) {
-                    _panel.initialization(options);
+                    options.panel_platform = _this;
+                    panel.prototype.panelArray.forEach(function(_panel) {
+                        _panel.initialization(options);
+                    });
+                    _this.addEventListeners();
                 });
-                this.addEventListeners();
             },
 
             disposePanels: function() {
-                var _this = this;
+                var _this = this, panelDescription = {};
                 _this.removeEventListeners();
-                panel.prototype.panelArray.forEach(function(_panel) {
-                    _panel.dispose();
+                if (panel.prototype.panelArray.length){
+                    panel.prototype.panelArray.forEach(function(_panel) {
+                        panelDescription[_panel.type] = _this.getPanelDescription(_panel);
+                        _panel.dispose();
+                    });
+                    _this.savePanelStates(panelDescription);
+                    panel.prototype.panelArray = [];
+                }
+                users_bus.setUserId(null);
+            },
+
+            savePanelStates: function(panelDescription) {
+                var _this = this;
+
+                users_bus.getMyInfo(null, function(error, options, userInfo){
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+
+                    _this.extend(userInfo, panelDescription);
+                    indexeddb.addOrUpdateAll(
+                        users_bus.collectionDescription,
+                        null,
+                        [
+                            userInfo
+                        ],
+                        function(error) {
+                            if (error){
+                                console.error(error);
+                                return;
+                            }
+
+                        }
+                    );
                 });
-                panel.prototype.panelArray = [];
+            },
+
+            getPanelDescription: function(_panel) {
+                var _this = this, panelDescription = {};
+
+                var descr = _panel.toPanelDescription();
+                _this.extend(panelDescription, descr);
+                return panelDescription;
             },
 
             addEventListeners: function() {
@@ -133,7 +184,6 @@ define('panel_platform', [
             },
 
             resizePanels: function(){
-                var _this = this;
                 panel.prototype.panelArray.forEach(function(_panel) {
                     _panel.resizePanel();
                 });
@@ -144,10 +194,12 @@ define('panel_platform', [
                 _this.removeEventListeners();
                 _this.unCashMainElements();
             }
+
         };
         extend_core.prototype.inherit(panel_platform, overlay_core);
         extend_core.prototype.inherit(panel_platform, throw_event_core);
         extend_core.prototype.inherit(panel_platform, ping_core);
+        extend_core.prototype.inherit(panel_platform, extend_core);
 
         return new panel_platform();
     });

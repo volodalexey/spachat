@@ -95,6 +95,7 @@ define('switcher_core',
                         _module.currnetFilterOptions = _module.joinUser_FilterOptions;
                         _module.currentPaginationOptions = _module.joinUser_PaginationOptions;
                         _module.currentGoToOptions = _module.joinUser_GoToOptions;
+                        _module.currentListOptions = _module.joinUser_ListOptions;
                         break;
                     case _module.MODE.USER_INFO_EDIT:
                         _module.current_Extra_Toolbar_Options = _module.userInfoEdit_ExtraToolbarOptions;

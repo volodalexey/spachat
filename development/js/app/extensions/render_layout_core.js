@@ -49,14 +49,6 @@ define('render_layout_core', [
 
                 if (_this.configMap[_this.body_mode] || _this.configIconMap && _this.configIconMap[_this.body_mode]) {
 
-                    if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW) {
-                        if (_this.module.config) {
-                            //callback();
-                            _this.loadBodyIconConfig(callback);
-                            return;
-                        }
-                    }
-
                     if (!_this.configMap[_this.body_mode]) {
                         _this.loadBodyIconConfig(callback);
                         return;
