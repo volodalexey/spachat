@@ -86,7 +86,6 @@ define('panel_platform', [
                             type: _this.PANEL_TYPES.LEFT,
                             outer_container: _this.left_panel_outer_container,
                             inner_container: _this.left_panel_inner_container,
-                            //panel_platform: this,
                             body_mode: panel.prototype.MODE.CREATE_CHAT,
                             filter_container: _this.left_filter_container,
                             go_to_container: _this.left_go_to_container,
@@ -99,7 +98,6 @@ define('panel_platform', [
                             type: _this.PANEL_TYPES.RIGHT,
                             outer_container: _this.right_panel_outer_container,
                             inner_container: _this.right_panel_inner_container,
-                            //panel_platform: this,
                             body_mode: panel.prototype.MODE.USER_INFO_SHOW,
                             filter_container: _this.right_filter_container,
                             go_to_container: _this.right_go_to_container,
@@ -128,7 +126,7 @@ define('panel_platform', [
                 _this.removeEventListeners();
                 if (panel.prototype.panelArray.length){
                     panel.prototype.panelArray.forEach(function(_panel) {
-                        panelDescription[_panel.type] = _this.getPanelDescription(_panel);
+                        panelDescription[_panel.type] = _panel.toPanelDescription();
                         _panel.dispose();
                     });
                     _this.savePanelStates(panelDescription);
@@ -158,18 +156,9 @@ define('panel_platform', [
                                 console.error(error);
                                 return;
                             }
-
                         }
                     );
                 });
-            },
-
-            getPanelDescription: function(_panel) {
-                var _this = this, panelDescription = {};
-
-                var descr = _panel.toPanelDescription();
-                _this.extend(panelDescription, descr);
-                return panelDescription;
             },
 
             addEventListeners: function() {

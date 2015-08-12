@@ -209,7 +209,7 @@ define('body', [
                                 "JOIN_USER": _this.module.body_container
                             };
                             _this.body_mode = _this.MODE.JOIN_USER;
-                            _this.renderLayout(null, null);
+                            _this.renderLayout({readyForFriendRequest: _this.module.joinUser_ListOptions.readyForRequest}, null);
                             break;
                         case  _this.MODE.CREATE_BLOG:
                             _this.module.body_container.innerHTML = "";

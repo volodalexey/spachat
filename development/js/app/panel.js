@@ -932,6 +932,8 @@ define('panel', [
 
             readyForFriendRequest: function(element) {
                 var _this = this;
+                _this.joinUser_ListOptions.readyForRequest = element.checked;
+
                 websocket.sendMessage({
                     type: "user_toggle_ready",
                     userId: users_bus.getUserId(),
@@ -1017,7 +1019,7 @@ define('panel', [
                 if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
                     _this.bodyOptions.mode = _this.MODE.CHATS;
                 }
-                description = {
+                return description = {
                     chats_GoToOptions: _this.chats_GoToOptions,
                     chats_PaginationOptions: _this.chats_PaginationOptions,
                     chats_ExtraToolbarOptions: _this.chats_ExtraToolbarOptions,
@@ -1072,7 +1074,6 @@ define('panel', [
                     previous_UserInfo_Mode: _this.previous_UserInfo_Mode,
                     joinUser_ListOptions: _this.joinUser_ListOptions
             };
-                return description
             }
 
         };
