@@ -4,6 +4,7 @@ define('register', [
         'template_core',
         'ajax_core',
         'extend_core',
+        'render_layout_core',
         //
         'id_core',
         'users_bus',
@@ -13,13 +14,16 @@ define('register', [
         'text!../templates/register_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
-        'text!../templates/element/label_template.ejs'
+        'text!../templates/element/label_template.ejs',
+        'text!../templates/element/location_wrapper_template.ejs',
+        'text!../templates/element/input_template.ejs'
     ],
     function(overlay_core,
              throw_event_core,
              template_core,
              ajax_core,
              extend_core,
+             render_layout_core,
             //
              id_core,
              users_bus,
@@ -29,7 +33,9 @@ define('register', [
              register_template,
              triple_element_template,
              button_template,
-             label_template) {
+             label_template,
+             location_wrapper_template,
+             input_template) {
 
         /**
          * register constructor
@@ -37,13 +43,17 @@ define('register', [
         var register = function() {
             this.link = /register/; // is used for navigator
             this.bindContexts();
-            this.register_template = this.template(register_template);
-            this.triple_element_template = this.template(triple_element_template);
-            this.button_template = this.template(button_template);
-            this.label_template = this.template(label_template);
         };
 
         register.prototype = {
+
+            configMap: {
+                "REGISTER": '/configs/register_config.json'
+            },
+
+            MODE: {
+                REGISTER: 'REGISTER'
+            },
 
             cashMainElements: function() {
                 var _this = this;
@@ -64,26 +74,15 @@ define('register', [
                 }
                 var _this = this;
                 _this.navigator = options.navigator;
-                _this.sendRequest('/configs/register_config.json', function(err, res) {
-                    if (err) {
-                        console.error(err);
-                        return;
-                    }
-                    var registe_config = JSON.parse(res);
-                    _this.getDescriptionIcon(null, null, null, function(res){
-                        _this.navigator.main_container.innerHTML = _this.register_template({
-                            config: registe_config,
-                            icon_config: [{svg: res, name: 'description_icon'}],
-                            triple_element_template: _this.triple_element_template,
-                            button_template: _this.button_template,
-                            label_template: _this.label_template
-                        });
-                        _this.cashMainElements();
-                        _this.addEventListeners();
-                        _this.toggleWaiter();
-                    });
+                _this.elementMap = {
+                    "REGISTER": _this.navigator.main_container
+                };
+                _this.body_mode = _this.MODE.REGISTER;
+                _this.renderLayout(null, function() {
+                    _this.cashMainElements();
+                    _this.addEventListeners();
+                    _this.toggleWaiter();
                 });
-
             },
 
             dispose: function() {
@@ -206,6 +205,34 @@ define('register', [
         extend_core.prototype.inherit(register, template_core);
         extend_core.prototype.inherit(register, id_core);
         extend_core.prototype.inherit(register, ajax_core);
+        extend_core.prototype.inherit(register, render_layout_core);
+
+        register.prototype.register_template = register.prototype.template(register_template);
+        register.prototype.triple_element_template = register.prototype.template(triple_element_template);
+        register.prototype.button_template = register.prototype.template(button_template);
+        register.prototype.label_template = register.prototype.template(label_template);
+        register.prototype.location_wrapper_template = register.prototype.template(location_wrapper_template);
+        register.prototype.input_template = register.prototype.template(input_template);
+
+        register.prototype.dataMap = {
+            "REGISTER": ''
+        };
+
+        register.prototype.templateMap = {
+            "REGISTER": register.prototype.register_template
+        };
+
+        register.prototype.configHandlerMap = {
+            "REGISTER": register.prototype.prepareConfig
+        };
+        register.prototype.configHandlerContextMap = {};
+        register.prototype.dataHandlerMap = {
+            "REGISTER": ''
+        };
+        register.prototype.dataHandlerContextMap = {
+            "REGISTER": null
+        };
+
 
         return new register();
 

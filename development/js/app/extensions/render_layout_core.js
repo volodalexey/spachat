@@ -66,7 +66,8 @@ define('render_layout_core', [
                         } else {
                             _this.config = config;
                         }
-                        if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW ||  _this.body_mode === _this.MODE.USER_INFO_EDIT) {
+                        if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW ||
+                            _this.MODE && _this.body_mode === _this.MODE.USER_INFO_EDIT) {
                             _this.module.config = _this.config;
                         }
                         _this.loadBodyIconConfig(callback);

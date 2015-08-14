@@ -13,17 +13,21 @@
 } %>
 <% if (_in.config.disable === true){ %> disabled <%}%>
 
-<% if (_in.config.data.key_disable && _in.data[_in.config.data.key_disable]) { %>
+<% if (_in.config.data && _in.config.data.key_disable && _in.data[_in.config.data.key_disable]) { %>
 disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
 <% var flag = true;%>
 <% } %>
 
-        <% if (_in.options && _in.options.display !== undefined && _in.options.display !== true) {%>
+        <% var display;
+        if (_in.calcDisplay) {
+            display = _in.calcDisplay(_in.config);
+        }
+        if (display !== undefined && display !== true) {%>
             style="display: none;"
        <% }%>
 
     <% if(_in.config.type){ %> type="<%= _in.config.type%>" <%}%>
-    <% if(_in.config.data.key){ %> data-value="<%= _in.data[_in.config.data.key]%>" <%}%>
+    <% if(_in.config.data && _in.config.data.key){ %> data-value="<%= _in.data[_in.config.data.key]%>" <%}%>
 ><% if (_in.config.icon) {
     if (_in.icon_config) {
         var icon;
@@ -47,11 +51,11 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
     <%} else {%>
         <%= ''%>
     <% }%>
-<% if (_in.config.data.key) { %>
+<% if (_in.config.data && _in.config.data.key) { %>
 <%= _in.data[_in.config.data.key] %>
 <%} %>
 
-    <%if (_in.config.data.description && _in.icon_config) {
+    <%if (_in.config.data && _in.config.data.description && _in.icon_config) {
        var icon_description;
     _in.icon_config.every(function(_icon) {
         if (_icon.name === "description_icon") {

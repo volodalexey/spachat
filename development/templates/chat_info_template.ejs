@@ -1,153 +1,87 @@
-<% var array = arguments[0];
+<% var _in = arguments[0];
 
-var array_create_chat = array.config.filter(function(config) {
-    return config.data.mode === "CREATE_CHAT"
-})
-var array_join_chat = array.config.filter(function(config) {
-    return config.data.mode === "JOIN_CHAT"
-})
-var array_my_chats = array.config.filter(function(config) {
-    return config.data.mode === "CHATS"
-})
-var array_my_chats_help_toolbar = array.config.filter(function(config) {
-    return config.data.mode === "MY_CHATS_HELP_TOOLBAR"
-}) %>
-<% if (array.mode === 'CREATE_CHAT') { %>
-<% array_create_chat.forEach(function (config) { %>
-<div class="w-100p p-t-b flex-sp-around">
-    <%= array.triple_element_template({
-        config: config,
-        icon_config: array.icon_config,
-        data: array.data,
-        button_template: array.button_template,
-        input_template: array.input_template,
-        label_template: array.label_template
-    }) %>
-</div>
-<% }) %>
-<% } %>
-<% if (array.mode === 'JOIN_CHAT') { %>
-<% var byDataLocation = {}; %>
-<% array_join_chat.forEach(function(_config) { %>
-<% if (!byDataLocation[_config.data.location]) {
-    byDataLocation[_config.data.location] = [];
-} %>
-<% byDataLocation[_config.data.location].push(_config); %>
-<% }); %>
-<% if (byDataLocation['chat_id'].length) { %>
-<div class="w-100p flex-sp-between">
-    <% byDataLocation['chat_id'].forEach(function (config) { %>
-    <%= array.triple_element_template({
-        config: config,
-        icon_config: array.icon_config,
-        data: array.data,
-        button_template: array.button_template,
-        input_template: array.input_template,
-        label_template: array.label_template
-    }) %>
-    <% }) %>
-</div>
-<% } %>
-<% if (byDataLocation['chat_id_btn'].length) { %>
-<div class="w-100p flex-sp-around">
-    <% byDataLocation['chat_id_btn'].forEach(function (config) { %>
-    <%= array.triple_element_template({
-        config: config,
-        icon_config: array.icon_config,
-        data: array.data,
-        button_template: array.button_template,
-        input_template: array.input_template,
-        label_template: array.label_template
-    }) %>
-    <% }) %>
-</div>
-<% } %>
-<% if (byDataLocation['remote_offer'].length) { %>
-<% byDataLocation['remote_offer'].forEach(function (config) { %>
-<div class="w-100p flex-sp-between">
-    <%= array.triple_element_template({
-        config: config,
-        icon_config: array.icon_config,
-        data: array.data,
-        button_template: array.button_template,
-        input_template: array.input_template,
-        label_template: array.label_template,
-        textarea_template: array.textarea_template,
-    }) %>
-</div>
-<% }) %>
-<% if (byDataLocation['remote_offer_btn'].length) { %>
-<div class="w-100p flex-sp-around">
-    <% byDataLocation['remote_offer_btn'].forEach(function (config) { %>
-    <%= array.triple_element_template({
-        config: config,
-        icon_config: array.icon_config,
-        data: array.data,
-        button_template: array.button_template,
-        input_template: array.input_template,
-        label_template: array.label_template
-    }) %>
-    <% }) %>
-</div>
-<% } %>
-<% } %>
-<% } %>
-<% if (array.mode === 'CHATS') { %>
-<div class="w-100p p-t-b flex-sp-around">
-    <% array_my_chats_help_toolbar.forEach(function (config) { %>
-        <%= array.triple_element_template({
-            config: config,
-            icon_config: array.icon_config,
-            data: array.data,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template
-        }) %>
-    <% }) %>
-</div>
-<div>
-    <% if (array.data && array.data.data) {
-     array.data.data.forEach(function (chat) { %>
-    <% var result = array.data.openChatsInfoArray.indexOf(chat.chatId); %>
+_in.config._byDataLocation = {};
+if (_in.mode !== 'CHATS') {
+    if (_in.mode === 'CREATE_CHAT') {
+        _in.config._byDataLocation.chatAuto = _in.config.byDataLocation.chatAuto;
+        _in.config._byDataLocation.chatManual = _in.config.byDataLocation.chatManual;
+    }
+    if (_in.mode === 'JOIN_CHAT') {
+        _in.config._byDataLocation.chat_id = _in.config.byDataLocation.chat_id;
+        _in.config._byDataLocation.chat_id_btn = _in.config.byDataLocation.chat_id_btn;
+        _in.config._byDataLocation.remote_offer_label = _in.config.byDataLocation.remote_offer_label;
+        _in.config._byDataLocation.remote_offer = _in.config.byDataLocation.remote_offer;
+        _in.config._byDataLocation.remote_offer_btn = _in.config.byDataLocation.remote_offer_btn;
+    }
+
+if (_in.config && _in.config._byDataLocation) {
+        for (var locationKey in _in.config._byDataLocation) { %>
+
+<%= _in.location_wrapper_template({
+    config: _in.config._byDataLocation[locationKey],
+    data: _in.data ? _in.data : {},
+    icon_config: _in.icon_config,
+    triple_element_template: _in.triple_element_template,
+    button_template: _in.button_template,
+    input_template: _in.input_template,
+    label_template: _in.label_template,
+    options: _in.options,
+    textarea_template: _in.textarea_template
+})%>
+<% }
+}
+
+} else {
+    if (_in.mode === 'CHATS') {
+        _in.config._byDataLocation.chats = _in.config.byDataLocation.chats;
+    }%>
+
+    <% if (_in.data && _in.data.data) {
+            _in.data.data.forEach(function (chat) { %>
+    <% var result = _in.data.openChatsInfoArray.indexOf(chat.chatId); %>
     <div data-action="show_more_info" data-role="chatWrapper"
          data-chatid="<%= chat.chatId %>">
-        <% array_my_chats.forEach(function (config) { %>
-        <% var element = array.triple_element_template({
-            config: config,
-            icon_config: array.icon_config,
-            icon_config: array.icon_config,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template,
-            data: chat
-        }) %>
+        <% if (_in.config._byDataLocation.chats) { %>
+            <% _in.config._byDataLocation.chats.configs.forEach(function (config) { %>
+            <% var element = _in.triple_element_template({
+                config: config,
+                icon_config: _in.icon_config,
+                icon_config: _in.icon_config,
+                button_template: _in.button_template,
+                input_template: _in.input_template,
+                label_template: _in.label_template,
+                data: chat
+            }) %>
 
-        <% if ((result !== -1) && config.element === "svg") { %>
-        <% var div = document.createElement('div');
-            div.innerHTML = element;
-            var pointer = div.querySelector('[data-role="pointer"]');
-            if (pointer) {
-                pointer.classList.add("rotate-90");
-            }
-        %>
-        <%= div.innerHTML %>
-        <% } else { %>
-        <%= element %>
-        <% } %>
-        <% }) %>
+            <% if ((result !== -1) && config.element === "svg") { %>
+            <% var div = document.createElement('div');
+                div.innerHTML = element;
+                var pointer = div.querySelector('[data-role="pointer"]');
+                if (pointer) {
+                    pointer.classList.add("rotate-90");
+                }
+            %>
+            <%= div.innerHTML %>
+            <% } else { %>
+            <%= element %>
+            <% } %>
+            <% }) %>
+
+       <% }%>
 
         <% if (result !== -1) { %>
         <div data-role="detail_view_container" style="max-height: 15em;" class="max-height-auto max-height-0"
              data-state="expanded">
-            <%= array.data.detail_view_template({
+            <%= _in.data.detail_view_template({
                 config: config,
                 data: chat,
-                icon_config: array.icon_config,
-                triple_element_template: array.triple_element_template,
-                button_template: array.button_template,
-                input_template: array.input_template,
-                label_template: array.label_template,
-                options: array.data
+                icon_config: _in.icon_config,
+                triple_element_template: _in.triple_element_template,
+                location_wrapper_template: _in.location_wrapper_template,
+                button_template: _in.button_template,
+                input_template: _in.input_template,
+                label_template: _in.label_template,
+                options: _in.data
             }) %>
 
         </div>
@@ -157,7 +91,14 @@ var array_my_chats_help_toolbar = array.config.filter(function(config) {
 
     </div>
     <% })
-    }%>
-</div>
-<% } %>
+    }
+}%>
+
+
+
+
+
+
+
+
 

@@ -1,13 +1,17 @@
 [
   {
+    "role": "locationWrapper",
+    "classList": "flex",
+    "location": "blogs"
+  },
+  {
     "element": "button",
     "icon": "new_blog_icon",
     "text": 63,
     "class": "flex-item-1-0p",
+    "location": "blogs",
     "data": {
       "role": "btnToolbar",
-      "location": "left_panel",
-      "location_group": "blogs",
       "action": "switchPanelMode",
       "mode_to": "CREATE_BLOG"
     },
@@ -18,10 +22,9 @@
     "icon": "add_blog_icon",
     "text": 64,
     "class": "flex-item-1-0p",
+    "location": "blogs",
     "data": {
       "role": "btnToolbar",
-      "location": "left_panel",
-      "location_group": "blogs",
       "action": "switchPanelMode",
       "mode_to": "JOIN_BLOG"
     },
@@ -32,10 +35,9 @@
     "icon": "blogs_icon",
     "text": 65,
     "class": "flex-item-1-0p",
+    "location": "blogs",
     "data": {
       "role": "btnToolbar",
-      "location": "left_panel",
-      "location_group": "blogs",
       "action": "switchPanelMode",
       "mode_to": "BLOGS"
     },
@@ -43,19 +45,22 @@
   },
 
   {
+    "role": "locationWrapper",
+    "classList": "flex",
+    "location": "chats"
+  },
+  {
     "element": "button",
     "icon": "new_chat_icon",
     "text": 1,
     "class": "flex-item-1-0p",
+    "location": "chats",
     "data": {
       "description": 2,
       "role": "btnToolbar",
-      "location": "left_panel",
-      "location_group": "chats",
       "action": "switchPanelMode",
       "mode_to": "CREATE_CHAT"
     },
-    "name": "",
     "disable": false
   },
   {
@@ -63,14 +68,12 @@
     "icon": "add_chat_icon",
     "text": 29,
     "class": "flex-item-1-0p",
+    "location": "chats",
     "data": {
       "role": "btnToolbar",
-      "location": "left_panel",
-      "location_group": "chats",
       "action": "switchPanelMode",
       "mode_to": "JOIN_CHAT"
     },
-    "name": "",
     "disable": false
   },
   {
@@ -78,31 +81,32 @@
     "icon": "chats_icon",
     "text": 30,
     "class": "flex-item-1-0p",
+    "location": "chats",
     "data": {
       "description": 31,
       "role": "btnToolbar",
-      "location": "left_panel",
-      "location_group": "chats",
       "action": "switchPanelMode",
       "mode_to": "CHATS"
     },
-    "name": "",
     "disable": false
   },
 
+  {
+    "role": "locationWrapper",
+    "classList": "flex",
+    "location": "users"
+  },
   {
     "element": "button",
     "icon": "add_user_icon",
     "text": 66,
     "class": "flex-item-1-0p",
+    "location": "users",
     "data": {
       "role": "btnToolbar",
-      "location": "left_panel",
-      "location_group": "users",
       "action": "switchPanelMode",
       "mode_to": "JOIN_USER"
     },
-    "name": "",
     "disable": false
   },
 
@@ -111,44 +115,12 @@
     "icon": "users_icon",
     "text": 32,
     "class": "flex-item-1-0p",
+    "location": "users",
     "data": {
       "role": "btnToolbar",
-      "location": "left_panel",
-      "location_group": "users",
       "action": "switchPanelMode",
       "mode_to": "USERS"
     },
-    "name": "",
-    "disable": false
-  },
-
-  
-  {
-    "element": "button",
-    "icon": "user_icon",
-    "text": 33,
-    "class": "floatR flex-item-1-0p",
-    "data": {
-      "role": "btnToolbar",
-      "location": "right_panel",
-      "action": "switchPanelMode",
-      "mode_to": "USER_INFO_SHOW"
-    },
-    "name": "",
-    "disable": false
-  },
-  {
-    "element": "button",
-    "icon": "connections_icon",
-    "text": 13,
-    "class": "floatR flex-item-1-0p",
-    "data": {
-      "role": "btnToolbar",
-      "location": "right_panel",
-      "action": "switchPanelMode",
-      "mode_to": "CONNECTIONS"
-    },
-    "name": "",
     "disable": false
   }
 ]

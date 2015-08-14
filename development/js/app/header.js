@@ -15,6 +15,7 @@ define('header', [
         'text!../templates/filter_template.ejs',
         'text!../templates/header_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs'
@@ -34,6 +35,7 @@ define('header', [
              filter_template,
              header_template,
              triple_element_template,
+             location_wrapper_template,
              button_template,
              label_template,
              input_template) {
@@ -47,7 +49,7 @@ define('header', [
             configMap: {
                 WEBRTC: '',
                 TAB: '/configs/header_navbar_config.json',
-                FILTER: '/configs/filter_navbar_config.json',
+                FILTER: '',
                 WAITER: ''
             },
 
@@ -216,11 +218,14 @@ define('header', [
         header.prototype.header_template = header.prototype.template(header_template);
         header.prototype.filter_template = header.prototype.template(filter_template);
         header.prototype.triple_element_template = header.prototype.template(triple_element_template);
+        header.prototype.location_wrapper_template = header.prototype.template(location_wrapper_template);
         header.prototype.button_template = header.prototype.template(button_template);
         header.prototype.label_template = header.prototype.template(label_template);
         header.prototype.input_template = header.prototype.template(input_template);
 
-        header.prototype.configHandlerMap = {};
+        header.prototype.configHandlerMap = {
+            TAB: header.prototype.prepareConfig
+        };
         header.prototype.configHandlerContextMap = {};
 
         header.prototype.dataMap = {

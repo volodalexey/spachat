@@ -11,7 +11,7 @@
             }
          }
     } %>
-<% if (_in.config.data.key) { %>
+<% if (_in.config.data && _in.config.data.key) { %>
 data-<%= _in.config.data.key %> = "<%= _in.data[_in.config.data.key] %>"
 <% } %>
         ><%if (_in.config.text) {%>
@@ -19,6 +19,14 @@ data-<%= _in.config.data.key %> = "<%= _in.data[_in.config.data.key] %>"
     <%} else {%>
     <%= ''%>
     <% }%>
-<% if(_in.config.data.key) { %>
+
+    <% if (_in.description && typeof _in.description === 'number' ) { %>
+    <%= window.getLocText(_in.description)%>
+    <% } else {%>
+    <%= _in.description %>
+    <%}%>
+
+
+<% if(_in.config.data && _in.config.data.key) { %>
 <%= _in.data[_in.config.data.key] %>
 <%} %></label>

@@ -1,177 +1,208 @@
 [
   {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-around",
+    "location": "chatAuto"
+  },
+  {
     "element": "button",
-    "icon": "",
     "text": 3,
     "class": "button-inset-square",
+    "location": "chatAuto",
     "data": {
       "throw": "true",
       "action": "addNewChatAuto",
       "mode": "CREATE_CHAT"
     },
-    "name": "",
     "disable": false
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-around",
+    "location": "chatManual"
   },
   {
     "element": "button",
-    "icon": "",
     "text": 4,
     "class": "button-inset-square",
+    "location": "chatManual",
     "data": {
       "throw": "true",
       "action": "addNewChatManual",
       "mode": "CREATE_CHAT"
     },
-    "name": "",
     "disable": false
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-between",
+    "location": "chat_id"
   },
   {
     "element": "label",
-    "icon": "",
     "text": 5,
-    "class": "",
+    "location": "chat_id",
     "data": {
-      "location": "chat_id",
       "role": "chat_id_label",
       "mode": "JOIN_CHAT"
     },
     "for": "chat_id",
-    "name": "",
     "disable": false
   },
   {
     "element": "input",
     "type": "text",
-    "icon": "",
-    "text": "",
     "class": "flex-item-w50p",
+    "location": "chat_id",
     "data": {
-      "location": "chat_id",
       "role": "chat_id_input",
       "mode": "JOIN_CHAT"
     },
-    "name": "",
     "id": "chat_id",
     "disabled": false
   },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-around",
+    "location": "chat_id_btn"
+  },
   {
     "element": "button",
-    "icon": "",
     "text": 6,
     "class": "button-inset-square",
+    "location": "chat_id_btn",
     "data": {
       "throw": "true",
-      "location": "chat_id_btn",
       "action": "joinByChatIdAuto",
       "mode": "JOIN_CHAT"
     },
-    "name": "",
     "disable": false
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-between",
+    "location": "remote_offer_label"
   },
   {
     "element": "label",
-    "icon": "",
     "text": 7,
-    "class": "",
+    "location": "remote_offer_label",
     "data": {
-      "location": "remote_offer",
       "role": "remote_offer_label",
       "mode": "JOIN_CHAT"
     },
-    "name": "",
     "disable": false
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-between",
+    "location": "remote_offer"
   },
   {
     "element": "textarea",
     "rows": "5",
-    "text": "",
     "class": "w-100p",
+    "location": "remote_offer",
     "data": {
-      "location": "remote_offer",
       "role": "remote_offer_textarea",
       "mode": "JOIN_CHAT"
     },
     "disabled": false
   },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-around",
+    "location": "remote_offer_btn"
+  },
   {
     "element": "button",
-    "icon": "",
     "text": 8,
     "class": "button-inset-square",
+    "location": "remote_offer_btn",
     "data": {
       "throw": "true",
-      "location": "remote_offer_btn",
       "action": "joinChatByChatSdp",
       "mode": "JOIN_CHAT"
     },
-    "name": "",
     "disable": false
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-between",
+    "location": "chats"
   },
   {
     "element": "svg",
     "icon": "pointer_icon",
-    "text": "",
-    "class": "",
+    "location": "chats",
     "data": {
       "mode": "CHATS"
-    },
-    "name": ""
+    }
   },
   {
     "element": "label",
     "type": "text",
-    "icon": "",
-    "text": "",
-    "class": "",
+    "location": "chats",
     "data": {
       "role": "my_chat_id_label",
       "key": "chatId",
       "mode": "CHATS"
     },
-    "name": "",
     "disabled": false
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-between",
+    "location": "user_id"
   },
   {
     "element": "label",
     "type": "text",
-    "icon": "",
     "text": 9,
-    "class": "",
+    "location": "user_id",
     "data": {
       "role": "user_id_label",
-      "location": "user_id",
       "mode": "DETAIL_VIEW"
     },
-    "name": "",
     "disabled": false
   },
   {
     "element": "label",
     "type": "text",
-    "icon": "",
-    "text": "",
     "class": "flex-item-w50p",
+    "location": "user_id",
     "data": {
       "role": "user_id",
       "key": "userIds",
-      "mode": "DETAIL_VIEW",
-      "location": "user_id"
+      "mode": "DETAIL_VIEW"
     },
-    "name": "",
     "disabled": false
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-around",
+    "location": "navbar"
   },
   {
     "element": "button",
     "icon": "open_icon",
     "text": 10,
     "class": "button-convex",
+    "location": "navbar",
     "data": {
       "throw": "true",
       "action": "showChat",
-      "mode": "DETAIL_VIEW",
-      "location": "navbar"
+      "mode": "DETAIL_VIEW"
     },
-    "name": "",
     "disable": false
   },
   {
@@ -179,25 +210,24 @@
     "icon": "save_open_icon",
     "text": 58,
     "class": "button-convex",
+    "location": "navbar",
     "data": {
       "throw": "true",
       "restore_chat_state": true,
       "action": "showChat",
-      "mode": "DETAIL_VIEW",
-      "location": "navbar"
+      "mode": "DETAIL_VIEW"
     },
-    "name": "",
     "disable": false
   },
   {
     "element": "button",
     "icon": "exit_icon",
     "text": 20,
+    "location": "navbar",
     "data": {
       "role": "closeChat",
       "action": "closeChat",
-      "mode": "DETAIL_VIEW",
-      "location": "navbar"
+      "mode": "DETAIL_VIEW"
     },
     "class": "button-convex",
     "name": "CloseChat"
@@ -205,12 +235,12 @@
   {
     "element": "button",
     "icon": "save_exit_icon",
+    "location": "navbar",
     "text": 56,
     "data": {
       "role": "saveStatesChats",
       "action": "closeChat",
-      "mode": "DETAIL_VIEW",
-      "location": "navbar"
+      "mode": "DETAIL_VIEW"
     },
     "class": "button-convex",
     "name": "SaveCloseChat"

@@ -6,6 +6,7 @@ define('filter', [
         'extend_core',
         //
         'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs',
@@ -19,6 +20,7 @@ define('filter', [
              extend_core,
              //
              triple_element_template,
+             location_wrapper_template,
              button_template,
              label_template,
              input_template,
@@ -195,6 +197,7 @@ define('filter', [
         extend_core.prototype.inherit(filter, throw_event_core);
 
         filter.prototype.triple_element_template = filter.prototype.template(triple_element_template);
+        filter.prototype.location_wrapper_template = filter.prototype.template(location_wrapper_template);
         filter.prototype.button_template = filter.prototype.template(button_template);
         filter.prototype.label_template = filter.prototype.template(label_template);
         filter.prototype.input_template = filter.prototype.template(input_template);
@@ -212,7 +215,13 @@ define('filter', [
             CONNECTIONS_FILTER: ''
         };
 
-        filter.prototype.configHandlerMap = {};
+        filter.prototype.configHandlerMap = {
+            MESSAGES_FILTER: filter.prototype.prepareConfig,
+            LOGGER_FILTER: filter.prototype.prepareConfig,
+            CHATS_FILTER: filter.prototype.prepareConfig,
+            USERS_FILTER: filter.prototype.prepareConfig,
+            CONTACT_LIST_FILTER: filter.prototype.prepareConfig
+        };
         filter.prototype.configHandlerContextMap = {};
         filter.prototype.dataHandlerMap = {};
         filter.prototype.dataMap = {};

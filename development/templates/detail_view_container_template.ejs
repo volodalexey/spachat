@@ -1,58 +1,36 @@
-<% var _in = arguments[0]; %>
+<% var _in = arguments[0];
 
-<% var _in_detail_view = _in.config.filter( function(config){ return config.data.mode === "DETAIL_VIEW" } ) %>
+_in.config._byDataLocation = {};
+_in.config._byDataLocation.user_id = _in.config.byDataLocation.user_id;
+_in.config._byDataLocation.navbar = _in.config.byDataLocation.navbar;
 
-<% var byDataLocation = {};
-_in_detail_view.forEach(function(_config) {
-    if (!byDataLocation[_config.data.location]) {
-        byDataLocation[_config.data.location] = [];
-    }
-    byDataLocation[_config.data.location].push(_config);
-}); %>
-
-<% if (byDataLocation['user_id'] && byDataLocation['user_id'].length) { %>
-<div class="w-100p flex-sp-between">
-    <% byDataLocation['user_id'].forEach(function (config) { %>
-    <%= _in.triple_element_template({
-    config: config,
-    data: _in.data,
-    icon_config: _in.icon_config,
-    button_template: _in.button_template,
-    input_template: _in.input_template,
-    label_template: _in.label_template
-    }) %>
-    <% }) %>
-</div>
-<%} %>
-
-<% if (byDataLocation['navbar'] && byDataLocation['navbar'].length) { %>
-<div class="w-100p flex-sp-around">
-    <% byDataLocation['navbar'].forEach(function (config) { %>
-
-    <%   if (_in.options) {
-            delete _in.options.display;
-        }
-        if (_in.options && _in.options.openChats && config.data){
+var calcDisplay = function(config) {
+    if (_in.options && _in.options.openChats && config.data){
         if (_in.options.openChats[_in.data.chatId]) {
             if (config.data.action === 'showChat') {
-                _in.options.display = false;
+                return false;
             }
         } else {
             if (config.data.action === 'closeChat') {
-                _in.options.display = false;
+                return false;
             }
         }
-    }%>
+    }
+    return true;
+};%>
+<% if (_in.config && _in.config._byDataLocation) {
+        for (var locationKey in _in.config._byDataLocation) { %>
 
-    <%= _in.triple_element_template({
-    config: config,
-    data: _in.data,
+<%= _in.location_wrapper_template({
+    config: _in.config._byDataLocation[locationKey],
+    data: _in.data ? _in.data : {},
     icon_config: _in.icon_config,
+    triple_element_template: _in.triple_element_template,
     button_template: _in.button_template,
     input_template: _in.input_template,
     label_template: _in.label_template,
-    options: _in.options
-    }) %>
-    <% }) %>
-</div>
-<%} %>
+    options: _in.options,
+    calcDisplay: calcDisplay
+}) %>
+<% }
+} %>

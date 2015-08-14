@@ -1,20 +1,13 @@
 <% var _in = arguments[0]; %>
-
-<div class="">
-
-        <% _in.config.forEach(function (config) { %>
-        <div>
-            <%= _in.triple_element_template({
-                config: config,
-                icon_config: _in.icon_config,
-                button_template: _in.button_template,
-                input_template: _in.input_template,
-                label_template: _in.label_template,
-                data: _in.data
-            }) %>
-        </div>
-        <%})%>
-
-
-    <!--<button data-chat_part="body" data-mode_to="LOGGER" data-action="changeMode">console</button>-->
-</div>
+    <% _in.config.forEach(function (config) { %>
+    <div>
+        <%= _in.triple_element_template({
+            config: config,
+            icon_config: _in.icon_config,
+            button_template: _in.button_template,
+            input_template: _in.input_template,
+            label_template: _in.label_template,
+            data: _in.data
+        }) %>
+    </div>
+    <%})%>

@@ -22,6 +22,7 @@ define('panel', [
         'text!../templates/panel_left_template.ejs',
         'text!../templates/panel_right_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs',
@@ -50,6 +51,7 @@ define('panel', [
              panel_left_template,
              panel_right_template,
              triple_element_template,
+             location_wrapper_template,
              button_template,
              label_template,
              input_template,
@@ -663,7 +665,7 @@ define('panel', [
                 if (_this.panel_config) {
                     _this.togglePanel();
                 } else {
-                    _this.sendRequest("/configs/panel_config.json", function(err, res) {
+                    _this.sendRequest("/configs/panel_" + _this.type + "_toolbar_config.json", function(err, res) {
                         if (err) {
                             console.error(err);
                             return;
@@ -683,10 +685,12 @@ define('panel', [
                 _this.showHorizontalSpinner(_this.panel_toolbar);
 
                 _this.loadToolbarIcons(function(icon_config) {
+                    _this.panel_config = _this.prepareConfig(_this.panel_config);
                     _this.panel_toolbar.innerHTML = _this['panel_' + _this.type + '_template']({
                         config: _this.panel_config,
                         icon_config: icon_config,
                         triple_element_template: _this.triple_element_template,
+                        location_wrapper_template: _this.location_wrapper_template,
                         button_template: _this.button_template,
                         input_template: _this.input_template,
                         label_template: _this.label_template
@@ -1089,6 +1093,7 @@ define('panel', [
         panel.prototype.panel_left_template = panel.prototype.template(panel_left_template);
         panel.prototype.panel_right_template = panel.prototype.template(panel_right_template);
         panel.prototype.triple_element_template = panel.prototype.template(triple_element_template);
+        panel.prototype.location_wrapper_template = panel.prototype.template(location_wrapper_template);
         panel.prototype.button_template = panel.prototype.template(button_template);
         panel.prototype.label_template = panel.prototype.template(label_template);
         panel.prototype.input_template = panel.prototype.template(input_template);

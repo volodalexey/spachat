@@ -1,106 +1,17 @@
 [
   {
-    "element": "label",
-    "icon": "",
-    "text": 9,
-    "class": "",
-    "data": {
-      "location": "user_id",
-      "role": "user_id_label"
-    },
-    "for": "user_id",
-    "name": "",
-    "sort": 1,
-    "disable": false,
-    "mode": "USER_INFO_SHOW"
-  },
-  {
-    "element": "input",
-    "type": "text",
-    "icon": "",
-    "text": "",
-    "class": "",
-    "data": {
-      "role": "userId",
-      "location": "user_id",
-      "key": "userId"
-    },
-    "name": "",
-    "id": "user_id",
-    "disabled" : true,
-    "sort": 2,
-    "mode": "USER_INFO_SHOW"
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-between",
+    "location": "user_name"
   },
   {
     "element": "label",
     "icon": "",
     "text": 36,
     "class": "",
+    "location": "user_name",
     "data": {
-      "location": "user_name",
       "role": "user_name_label"
-    },
-    "for": "user_name",
-    "name": "",
-    "sort": 3,
-    "disable": false,
-    "mode": "USER_INFO_SHOW"
-  },
-  {
-    "element": "input",
-    "type": "text",
-    "icon": "",
-    "text": "",
-    "class": "",
-    "data": {
-      "key": "userName",
-      "location": "user_name",
-      "role": "userName"
-    },
-    "name": "",
-    "id": "user_name",
-    "disabled" : true,
-    "sort": 4,
-    "mode": "USER_INFO_SHOW"
-  },
-  {
-    "element": "button",
-    "icon": "change_user_info_icon",
-    "text": 37,
-    "class": "button-convex",
-    "data": {
-      "role": "",
-      "action": "changeUserInfo",
-      "location": "navbar"
-    },
-    "name": "",
-    "disable": false,
-    "sort": 5,
-    "mode": "USER_INFO_SHOW"
-  },
-  {
-    "element": "button",
-    "icon": "exit_icon",
-    "text": 38,
-    "class": "button-convex",
-    "data": {
-      "role": "",
-      "action": "logout",
-      "location": "navbar"
-    },
-    "name": "",
-    "disable": false,
-    "sort": 6,
-    "mode": "USER_INFO_SHOW"
-  },
-  {
-    "element": "label",
-    "icon": "",
-    "text": 36,
-    "class": "",
-    "data": {
-      "role": "user_name_label",
-      "location": "user_name"
     },
     "for": "user_name",
     "name": "",
@@ -114,11 +25,11 @@
     "icon": "",
     "text": "",
     "class": "",
+    "location": "user_name",
     "data": {
       "role": "userName",
       "input": true,
       "main": "user_name_input",
-      "location": "user_name",
       "key": "userName"
     },
     "name": "",
@@ -128,13 +39,18 @@
     "mode": "USER_INFO_EDIT"
   },
   {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-between",
+    "location": "old_password"
+  },
+  {
     "element": "label",
     "icon": "",
     "text": 39,
     "class": "",
+    "location": "old_password",
     "data": {
-      "role": "user_old_password_label",
-      "location": "old_password"
+      "role": "user_old_password_label"
     },
     "for": "user_old_password",
     "name": "",
@@ -148,10 +64,10 @@
     "icon": "",
     "text": "",
     "class": "",
+    "location": "old_password",
     "data": {
       "role": "passwordOld",
       "input": true,
-      "location": "old_password",
       "key": "passwordOld"
     },
     "name": "",
@@ -161,13 +77,18 @@
     "mode": "USER_INFO_EDIT"
   },
   {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-between",
+    "location": "new_password"
+  },
+  {
     "element": "label",
     "icon": "",
     "text": 40,
     "class": "",
+    "location": "new_password",
     "data": {
-      "role": "user_new_password_label",
-      "location": "new_password"
+      "role": "user_new_password_label"
     },
     "for": "user_new_password",
     "name": "",
@@ -181,10 +102,10 @@
     "icon": "",
     "text": "",
     "class": "",
+    "location": "new_password",
     "data": {
       "role": "passwordNew",
       "input": true,
-      "location": "new_password",
       "key": "passwordNew"
     },
     "name": "",
@@ -194,13 +115,18 @@
     "mode": "USER_INFO_EDIT"
   },
   {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-between",
+    "location": "confirm_password"
+  },
+  {
     "element": "label",
     "icon": "",
     "text": 41,
     "class": "",
+    "location": "confirm_password",
     "data": {
-      "role": "user_confirm_password_label",
-      "location": "confirm_password"
+      "role": "user_confirm_password_label"
     },
     "for": "user_confirm_password",
     "name": "",
@@ -214,11 +140,11 @@
     "icon": "",
     "text": "",
     "class": "",
+    "location": "confirm_password",
     "data": {
       "role": "passwordConfirm",
       "input": true,
-      "key": "passwordConfirm",
-      "location": "confirm_password"
+      "key": "passwordConfirm"
     },
     "name": "",
     "id": "user_confirm_password",
@@ -227,14 +153,19 @@
     "mode": "USER_INFO_EDIT"
   },
   {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-around c-200",
+    "location": "navbar"
+  },
+  {
     "element": "button",
     "icon": "cancel_icon",
     "text": 42,
     "class": "button-convex",
+    "location": "navbar",
     "data": {
       "role": "",
-      "action": "cancelChangeUserInfo",
-      "location": "navbar"
+      "action": "cancelChangeUserInfo"
     },
     "name": "",
     "disable": false,
@@ -246,10 +177,10 @@
     "icon": "ok_icon",
     "text": 43,
     "class": "button-convex",
+    "location": "navbar",
     "data": {
       "role": "",
-      "action": "saveChangeUserInfo",
-      "location": "navbar"
+      "action": "saveChangeUserInfo"
     },
     "name": "",
     "disable": false,

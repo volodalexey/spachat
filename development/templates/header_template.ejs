@@ -1,55 +1,21 @@
-    <% var _in = arguments[0]; %>
+<% var _in = arguments[0]; %>
 
-    <% var byDataLocationShow = {}; %>
-    <% _in.config.forEach(function(_config) { %>
-    <%  if (!byDataLocationShow[_config.data.location]) { %>
-    <%  byDataLocationShow[_config.data.location] = []; %>
-    <% }%>
-    <%  byDataLocationShow[_config.data.location].push(_config); %>
-    <% }); %>
-
-    <div data-role="webrtc_container"></div>
-    <div data-role="waiter_container"></div>
-    <div data-role="tabs_container">
-        <div data-role="topHeaderPanel" class="flex-sp-end">
-            <% if (byDataLocationShow['topPanel'].length) { %>
-                <% byDataLocationShow['topPanel'].forEach(function (config) { %>
-
-                <%= _in.triple_element_template({
-                    config: config,
-                    icon_config: _in.icon_config,
-                    button_template: _in.button_template,
-                    input_template: _in.input_template,
-                    label_template: _in.label_template
-                }) %>
-
-                <%})%>
-            <%}%>
-        </div>
-        <div data-role="header_description">
-            <div>
-            <% if (_in.description && typeof _in.description === 'number' ) { %>
-                <%= window.getLocText(_in.description)%>
-            <% } else {%>
-                <%= _in.description %>
-                <%}%>
-            </div>
-            <hr/>
-        </div>
-        <div data-role="btnHeaderPanel" class="flex">
-            <% if (byDataLocationShow['bottomPanel'].length) { %>
-                <% byDataLocationShow['bottomPanel'].forEach(function (config) { %>
-
-                <%= _in.triple_element_template({
-                    config: config,
-                    icon_config: _in.icon_config,
-                    button_template: _in.button_template,
-                    input_template: _in.input_template,
-                    label_template: _in.label_template
-                }) %>
-
-                <%})%>
-            <%}%>
-        </div>
-        <div data-role="filter_container" class="background flex wrap"></div>
-    </div>
+<div data-role="webrtc_container"></div>
+<div data-role="waiter_container"></div>
+<div data-role="tabs_container">
+    <% if (_in.config && _in.config.byDataLocation) {
+            for (var locationKey in _in.config.byDataLocation) { %>
+    <%= _in.location_wrapper_template({
+        config: _in.config.byDataLocation[locationKey],
+        data: _in.data ? _in.data : {},
+        icon_config: _in.icon_config,
+        triple_element_template: _in.triple_element_template,
+        button_template: _in.button_template,
+        input_template: _in.input_template,
+        label_template: _in.label_template,
+        description: _in.description
+    }) %>
+    <% }
+    } %>
+    <div data-role="filter_container" class="background flex wrap"></div>
+</div>

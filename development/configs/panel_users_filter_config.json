@@ -1,9 +1,12 @@
 [
   {
+    "role": "locationWrapper",
+    "classList": "elements flex-align-c flex-item-auto",
+    "location": "pagination"
+  },
+  {
     "element": "input",
     "type": "checkbox",
-    "icon": "",
-    "text": "",
     "class": "check-box-size",
     "data": {
       "throw": "true",
@@ -13,41 +16,24 @@
       "chat_part": "pagination",
       "key": "showEnablePagination"
     },
-    "name": "",
-    "service_id": "pagination",
+    "location": "pagination",
     "sort": 3
   },
   {
     "element": "label",
-    "icon": "",
-    "text": "icon",
-    "class": "hide",
-    "data": {
-      "role": "icon_enable_pagination"
-    },
-    "name": "",
-    "service_id": "pagination",
-    "sort": 1
-  },
-  {
-    "element": "label",
-    "icon": "",
     "text": 28,
-    "class": "",
-    "data": {
-      "role": ""
-    },
-    "name": "",
-    "service_id": "pagination",
+    "location": "pagination",
     "sort": 2
   },
 
-
+  {
+    "role": "locationWrapper",
+    "classList": "elements flex-align-c flex-item-auto",
+    "location": "per_page"
+  },
   {
     "element": "input",
     "type": "checkbox",
-    "icon": "",
-    "text": "",
     "class": "check-box-size",
     "data": {
       "throw": "true",
@@ -55,77 +41,46 @@
       "action": "changeRTE",
       "key": "rtePerPage"
     },
-    "name": "",
-    "id": "",
-    "service_id": "per_page",
+    "location": "per_page",
     "sort": 4,
     "redraw_mode": "rte"
   },
   {
     "element": "label",
-    "icon": "",
-    "text": "icon",
-    "class": "hide",
-    "data": {
-      "role": "icon_show_per_page"
-    },
-    "name": "",
-    "service_id": "per_page",
-    "sort": 1,
-    "redraw_mode": "rte"
-  },
-  {
-    "element": "label",
-    "icon": "",
     "text": 19,
-    "class": "",
-    "data": {
-      "role": ""
-    },
-    "name": "",
     "for": "show_per_page",
-    "service_id": "per_page",
+    "location": "per_page",
     "sort": 2,
     "redraw_mode": "rte"
   },
   {
     "element": "input",
     "type": "text",
-    "icon": "",
-    "text": "",
     "class": "inputWidth",
     "data": {
       "role": "perPageValue",
       "action": "changePerPage",
       "key": "perPageValue"
     },
-    "name": "",
     "id": "show_per_page",
     "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
-    "service_id": "per_page",
+    "location": "per_page",
     "sort": 3,
     "redraw_mode": "rte"
   },
 
-
   {
     "element": "label",
-    "icon": "",
-    "text": "",
-    "class": "",
     "data": {
       "role": "icon_show_per_page"
     },
-    "name": "",
-    "service_id": "per_page",
+    "location": "per_page",
     "sort": 1,
     "redraw_mode": "nrte"
   },
   {
     "element": "input",
     "type": "checkbox",
-    "icon": "",
-    "text": "",
     "class": "check-box-size",
     "data": {
       "throw": "true",
@@ -133,43 +88,35 @@
       "action": "changeRTE",
       "key": "rtePerPage"
     },
-    "name": "",
-    "id": "",
-    "service_id": "per_page",
+    "location": "per_page",
     "sort": 4,
     "redraw_mode": "nrte"
   },
   {
     "element": "button",
-    "icon": "",
     "text": 19,
     "class": "button-inset-white",
     "data": {
-      "throw": "true",
       "role": "show_per_page",
       "action": "showPerPage"
     },
-    "name": "",
     "for": "show_per_page",
-    "service_id": "per_page",
+    "location": "per_page",
     "sort": 2,
     "redraw_mode": "nrte"
   },
   {
     "element": "input",
     "type": "text",
-    "icon": "",
-    "text": "",
     "class": "inputWidth",
     "data": {
       "role": "perPageValue",
       "action": "changePerPage",
       "key": "perPageValue"
     },
-    "name": "",
     "id": "show_per_page",
     "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
-    "service_id": "per_page",
+    "location": "per_page",
     "sort": 3,
     "redraw_mode": "nrte"
   }

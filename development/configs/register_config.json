@@ -1,8 +1,14 @@
 [
   {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-around",
+    "location": "loginButton"
+  },
+  {
     "element": "button",
     "type": "button",
     "text": 52,
+    "location": "loginButton",
     "data": {
       "action": "redirectToLogin",
       "role": "loginButton"
@@ -10,33 +16,87 @@
     "class": "button-inset"
   },
   {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-around",
+    "location": "userName"
+  },
+  {
     "element": "label",
     "text": 49,
     "class": "flex-item-w50p",
+    "location": "userName",
     "data": {
       "role": "labelUserName"
     }
   },
   {
+    "element": "input",
+    "type": "text",
+    "class": "flex-item-w50p",
+    "location": "userName",
+    "name": "userName",
+    "data": {
+      "key": "userName"
+    }
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-between",
+    "location": "userPassword"
+  },
+  {
     "element": "label",
     "text": 50,
     "class": "flex-item-w50p",
+    "location": "userPassword",
     "data": {
       "role": "labelUserPassword"
     }
   },
   {
+    "element": "input",
+    "type": "password",
+    "class": "flex-item-w50p",
+    "location": "userPassword",
+    "name": "userPassword",
+    "data": {
+      "key": "userPassword"
+    }
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-between",
+    "location": "userPasswordConfirm"
+  },
+  {
     "element": "label",
     "text": 41,
     "class": "flex-item-w50p",
+    "location": "userPasswordConfirm",
     "data": {
       "role": "labelConfirmUserPassword"
     }
   },
   {
+    "element": "input",
+    "type": "password",
+    "class": "flex-item-w50p",
+    "location": "userPasswordConfirm",
+    "name": "userPasswordConfirm",
+    "data": {
+      "key": "userPasswordConfirm"
+    }
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-around",
+    "location": "registerButton"
+  },
+  {
     "element": "button",
     "type": "submit",
     "text": 53,
+    "location": "registerButton",
     "data": {
       "description": 55,
       "action": "register",

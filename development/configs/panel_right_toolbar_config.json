@@ -1,0 +1,33 @@
+[
+  {
+    "role": "locationWrapper",
+    "classList": "flex",
+    "location": "buttons"
+  },
+  {
+    "element": "button",
+    "icon": "user_icon",
+    "text": 33,
+    "class": "floatR flex-item-1-0p",
+    "location": "buttons",
+    "data": {
+      "role": "btnToolbar",
+      "action": "switchPanelMode",
+      "mode_to": "USER_INFO_SHOW"
+    },
+    "disable": false
+  },
+  {
+    "element": "button",
+    "icon": "connections_icon",
+    "text": 13,
+    "class": "floatR flex-item-1-0p",
+    "location": "buttons",
+    "data": {
+      "role": "btnToolbar",
+      "action": "switchPanelMode",
+      "mode_to": "CONNECTIONS"
+    },
+    "disable": false
+  }
+]

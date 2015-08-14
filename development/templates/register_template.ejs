@@ -1,56 +1,18 @@
 <% var _in = arguments[0]; %>
-
-<% var loginButton = _in.config.filter( function(obj){ return obj.data.role === "loginButton" } ) %>
-<% var labelUserName = _in.config.filter( function(obj){ return obj.data.role === "labelUserName" } ) %>
-<% var labelUserPassword = _in.config.filter( function(obj){ return obj.data.role === "labelUserPassword" } ) %>
-<% var labelConfirmUserPassword = _in.config.filter( function(obj){ return obj.data.role === "labelConfirmUserPassword" } ) %>
-<% var registerButton = _in.config.filter( function(obj){ return obj.data.role === "registerButton" } ) %>
-
-
 <div class="flex-outer-container p-fx">
     <form class="flex-inner-container form-small" data-role="registerForm">
-        <div class="w-100p p-t-b flex-sp-around">
-            <%= _in.triple_element_template({
-                config: loginButton[0],
-                icon_config: _in.icon_config,
-                button_template: _in.button_template,
-                label_template: _in.label_template
-            }) %>
-        </div>
-        <div class="w-100p p-t-b flex-sp-between">
-            <%= _in.triple_element_template({
-                config: labelUserName[0],
-                icon_config: _in.icon_config,
-                button_template: _in.button_template,
-                label_template: _in.label_template
-            }) %>
-            <input class="flex-item-w50p" type="text" name="userName">
-        </div>
-        <div class="w-100p p-t-b flex-sp-between">
-            <%= _in.triple_element_template({
-                config: labelUserPassword[0],
-                icon_config: _in.icon_config,
-                button_template: _in.button_template,
-                label_template: _in.label_template
-            }) %>
-            <input class="flex-item-w50p" type="password" name="userPassword">
-        </div>
-        <div class="w-100p p-t-b flex-sp-between">
-            <%= _in.triple_element_template({
-                config: labelConfirmUserPassword[0],
-                icon_config: _in.icon_config,
-                button_template: _in.button_template,
-                label_template: _in.label_template
-            }) %>
-            <input class="flex-item-w50p" type="password" name="userPasswordConfirm">
-        </div>
-        <div class="w-100p p-t-b flex-sp-around">
-            <%= _in.triple_element_template({
-                config: registerButton[0],
-                icon_config: _in.icon_config,
-                button_template: _in.button_template,
-                label_template: _in.label_template
-            }) %>
-        </div>
+        <% if (_in.config && _in.config.byDataLocation) {
+                for (var locationKey in _in.config.byDataLocation) { %>
+        <%= _in.location_wrapper_template({
+            config: _in.config.byDataLocation[locationKey],
+            data: _in.data ? _in.data : {},
+            icon_config: _in.icon_config,
+            triple_element_template: _in.triple_element_template,
+            button_template: _in.button_template,
+            input_template: _in.input_template,
+            label_template: _in.label_template
+        }) %>
+        <% }
+        } %>
     </form>
 </div>

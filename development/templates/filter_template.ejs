@@ -1,71 +1,18 @@
-<% var array = arguments[0]; %>
-<% var array_date_from = array.config.filter( function(obj){ return obj.service_id === "date_from" } ) %>
-<% var array_date_to = array.config.filter( function(obj){ return obj.service_id === "date_to" } ) %>
-<% var array_pagination = array.config.filter( function(obj){ return obj.service_id === "pagination" } ) %>
-<% var array_per_page = array.config.filter( function(obj){ return obj.service_id === "per_page" } ) %>
-<% var array_per_page_nrte = array_per_page.filter( function(obj){ return obj.redraw_mode === "nrte" } ) %>
-<% var array_per_page_rte = array_per_page.filter( function(obj){ return obj.redraw_mode === "rte" } ) %>
+<% var _in = arguments[0];
 
+_in.config.byDataLocation.per_page.configs = _in.config.byDataLocation.per_page.configs.filter( function(obj){
+    return obj.redraw_mode === _in.data.mode_change } ); %>
 
-<div class="flex-item flex-wrap">
-    <div class="elements">
-        <% array_date_from.forEach(function (_config) { %>
-        <%= array.triple_element_template({
-        config: _config,
-        data: array.data,
-        button_template: array.button_template,
-        input_template: array.input_template,
-        label_template: array.label_template
-        }) %>
-        <% }) %>
-        <% array_date_to.forEach(function (_config) { %>
-        <%= array.triple_element_template({
-        config: _config,
-        data: array.data,
-        button_template: array.button_template,
-        input_template: array.input_template,
-        label_template: array.label_template
-        }) %>
-        <% }) %>
-    </div>
-</div>
-
-<div class="flex-item flex-wrap">
-    <div class="elements flex-align-c flex-item-auto">
-        <% array_pagination.forEach(function (_config) { %>
-        <%= array.triple_element_template({
-        config: _config,
-        data: array.data,
-        button_template: array.button_template,
-        input_template: array.input_template,
-        label_template: array.label_template
-        }) %>
-        <% }) %>
-    </div>
-    <div class="elements flex-align-c flex-item-auto">
-
-        <% if(array.data.mode_change === 'nrte') { %>
-            <% array_per_page_nrte.forEach(function (_config) { %>
-                <%= array.triple_element_template({
-                config: _config,
-                data: array.data,
-                button_template: array.button_template,
-                input_template: array.input_template,
-                label_template: array.label_template
-                }) %>
-            <% }) %>
-        <% } else { %>
-            <% array_per_page_rte.forEach(function (_config) { %>
-            <%= array.triple_element_template({
-            config: _config,
-            data: array.data,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template
-            }) %>
-            <% }) %>
-        <%} %>
-    </div>
-
-
-</div>
+<% if (_in.config && _in.config.byDataLocation) {
+        for (var locationKey in _in.config.byDataLocation) { %>
+<%= _in.location_wrapper_template({
+    config: _in.config.byDataLocation[locationKey],
+    data: _in.data ? _in.data : {},
+    icon_config: _in.icon_config,
+    triple_element_template: _in.triple_element_template,
+    button_template: _in.button_template,
+    input_template: _in.input_template,
+    label_template: _in.label_template
+}) %>
+<% }
+} %>

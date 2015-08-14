@@ -13,6 +13,7 @@ define('pagination', [
         'text!../templates/pagination_template.ejs',
         'text!../templates/choice_per_page_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs'
@@ -31,6 +32,7 @@ define('pagination', [
              pagination_template,
              choice_per_page_template,
              triple_element_template,
+             location_wrapper_template,
              button_template,
              label_template,
              input_template) {
@@ -355,6 +357,7 @@ define('pagination', [
 
         pagination.prototype.pagination_template = pagination.prototype.template(pagination_template);
         pagination.prototype.choice_per_page_template = pagination.prototype.template(choice_per_page_template);
+        pagination.prototype.location_wrapper_template = pagination.prototype.template(location_wrapper_template);
         pagination.prototype.triple_element_template = pagination.prototype.template(triple_element_template);
         pagination.prototype.button_template = pagination.prototype.template(button_template);
         pagination.prototype.label_template = pagination.prototype.template(label_template);
@@ -371,6 +374,7 @@ define('pagination', [
         };
 
         pagination.prototype.configHandlerMap = {
+            GO_TO: pagination.prototype.prepareConfig
         };
         pagination.prototype.configHandlerContextMap = {};
 

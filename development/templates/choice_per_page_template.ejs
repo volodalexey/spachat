@@ -1,28 +1,18 @@
+<% var _in = arguments[0];
 
-<% var array = arguments[0]; %>
-<% var array_choice_nrte = array.config.filter( function(obj){ return obj.redraw_mode === "nrte" } ) %>
-<% var array_choice_rte = array.config.filter( function(obj){ return obj.redraw_mode === "rte" } ) %>
+_in.config.byDataLocation.choice_page.configs = _in.config.byDataLocation.choice_page.configs.filter( function(obj){
+return obj.redraw_mode === _in.data.mode_change } ); %>
 
-<div class="flex-align-c">
-    <% if(array.data.mode_change === 'nrte') { %>
-        <% array_choice_nrte.forEach( function (_config) { %>
-            <%= array.triple_element_template({
-            config: _config,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template,
-            data: array.data
-            }) %>
-        <% }) %>
-    <% } else { %>
-        <% array_choice_rte.forEach( function (_config) { %>
-            <%= array.triple_element_template({
-            config: _config,
-            button_template: array.button_template,
-            input_template: array.input_template,
-            label_template: array.label_template,
-            data: array.data
-            }) %>
-        <% }) %>
-    <%} %>
-</div>
+<% if (_in.config && _in.config.byDataLocation) {
+        for (var locationKey in _in.config.byDataLocation) { %>
+<%= _in.location_wrapper_template({
+    config: _in.config.byDataLocation[locationKey],
+    data: _in.data ? _in.data : {},
+    icon_config: _in.icon_config,
+    triple_element_template: _in.triple_element_template,
+    button_template: _in.button_template,
+    input_template: _in.input_template,
+    label_template: _in.label_template
+}) %>
+<% }
+} %>

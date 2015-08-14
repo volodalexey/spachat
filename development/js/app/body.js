@@ -53,8 +53,8 @@ define('body', [
         body.prototype = {
 
             configMap: {
-                "USER_INFO_EDIT": '/configs/user_info_config.json',
-                "USER_INFO_SHOW": '/configs/user_info_config.json',
+                "USER_INFO_EDIT": '/configs/user_info_edit_config.json',
+                "USER_INFO_SHOW": '/configs/user_info_show_config.json',
                 "CREATE_CHAT": '/configs/chats_info_config.json',
                 "JOIN_CHAT": '/configs/chats_info_config.json',
                 "CHATS": '/configs/chats_info_config.json',
@@ -323,7 +323,13 @@ define('body', [
         };
 
         body.prototype.configHandlerMap = {
-            "JOIN_USER": body.prototype.prepareConfig
+            "JOIN_USER": body.prototype.prepareConfig,
+            "USER_INFO_EDIT": body.prototype.prepareConfig,
+            "USER_INFO_SHOW": body.prototype.prepareConfig,
+            "DETAIL_VIEW": body.prototype.prepareConfig,
+            "CHATS": body.prototype.prepareConfig,
+            "CREATE_CHAT": body.prototype.prepareConfig,
+            "JOIN_CHAT": body.prototype.prepareConfig
         };
         body.prototype.configHandlerContextMap = {};
 

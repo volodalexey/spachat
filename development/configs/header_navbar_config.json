@@ -1,13 +1,21 @@
 [
   {
+    "role": "locationWrapper",
+    "classList": "flex-sp-end",
+    "location": "topPanel",
+    "data": {
+      "role": "topHeaderPanel"
+    }
+  },
+  {
     "element": "button",
     "icon": "exit_icon",
     "text": 20,
+    "location": "topPanel",
     "data": {
       "throw": "true",
       "target": "event_bus",
       "action": "closeChat",
-      "location": "topPanel",
       "description": 21
     },
     "class": "button-margin-height",
@@ -17,21 +25,46 @@
     "element": "button",
     "icon": "save_exit_icon",
     "text": 56,
+    "location": "topPanel",
     "data": {
       "throw": "true",
       "target": "event_bus",
       "action": "saveStatesChats",
-      "location": "topPanel",
       "description": 57
     },
     "class": "button-margin-height",
     "name": "SaveCloseChat"
   },
-
+  {
+    "role": "locationWrapper",
+    "classList": "",
+    "location": "description",
+    "data": {
+      "role": "header_description"
+    }
+  },
+  {
+    "element": "label",
+    "text": "",
+    "class": "",
+    "location": "description",
+    "data": {
+      "role": "labelUserPassword"
+    }
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "flex",
+    "location": "bottomPanel",
+    "data": {
+      "role": "btnHeaderPanel"
+    }
+  },
   {
     "element": "button",
     "icon": "messages_icon",
     "text": 61,
+    "location": "bottomPanel",
     "data": {
       "throw": "true",
       "chat_part": "body",
@@ -39,7 +72,6 @@
       "action": "changeMode",
       "role": "btnHeader",
       "toggle_reset_header": false,
-      "location": "bottomPanel",
       "description": 62
     },
     "class": "flex-item-1-0p",
@@ -49,6 +81,7 @@
     "element": "button",
     "icon": "users_icon",
     "text": 24,
+    "location": "bottomPanel",
     "data": {
       "throw": "true",
       "mode_to": "CONTACT_LIST",
@@ -56,7 +89,6 @@
       "action": "changeMode",
       "role": "btnHeader",
       "toggle_reset_header": true,
-      "location": "bottomPanel",
       "description": 25
     },
     "class": "flex-item-1-0p",
@@ -66,6 +98,7 @@
     "element": "button",
     "icon": "settings_chat_icon",
     "text": 22,
+    "location": "bottomPanel",
     "data": {
       "throw": "true",
       "chat_part": "body",
@@ -73,7 +106,6 @@
       "action": "changeMode",
       "role": "btnHeader",
       "toggle_reset_header": true,
-      "location": "bottomPanel",
       "description": 23
     },
     "class": "flex-item-1-0p",

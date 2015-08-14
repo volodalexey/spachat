@@ -1,5 +1,6 @@
 <% var _in = arguments[0]; %>
-<div class="<%= _in.config.wrapperConfig.classList %>">
+<div class="<%= _in.config.wrapperConfig.classList %>"
+     <% if (_in.config.wrapperConfig.data) { %>  role="<%= _in.config.wrapperConfig.data.role %>" <% } %>>
     <% _in.config.configs.forEach(function (config) { %>
     <%= _in.triple_element_template({
         config: config,
@@ -7,7 +8,11 @@
         data: _in.data,
         button_template: _in.button_template,
         input_template: _in.input_template,
-        label_template: _in.label_template
+        label_template: _in.label_template,
+        textarea_template: _in.textarea_template,
+        description: _in.description,
+        options: _in.options,
+        calcDisplay: _in.calcDisplay
     }) %>
     <% }); %>
 </div>
