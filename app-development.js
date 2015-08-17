@@ -13,7 +13,7 @@ expressApp.use(express.static(fullPath));
 
 web_socket_connections_collection.apply_wss(expressWs.getWss(websocketPath));
 expressApp.ws(websocketPath, function(ws, req) {
-    web_socket_connections_collection.on_wsc_open(this);
+    web_socket_connections_collection.on_wsc_open(ws);
     ws.on('message', function(messageData) {
         web_socket_connections_collection.on_wsc_message(this, messageData);
     });
