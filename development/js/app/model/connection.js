@@ -14,8 +14,7 @@ function(
     var Connection = function(options) {
         this.chats = [];
         this.users = [];
-        this.deviceId = options.deviceId;
-        this.tempDeviceId = options.tempDeviceId;
+        this.ws_device_id = options.ws_device_id;
         this.active = {
             readyState: options.active && options.active.readyState ? options.active.readyState : this.readyStates.WAITING,
             remoteAnswerDescription: options.active && options.active.remoteAnswerDescription ? options.active.remoteAnswerDescription : null
@@ -38,31 +37,12 @@ function(
             WILL_ACCEPT_ANSWER: 'WILL_ACCEPT_ANSWER'
         },
 
-        isEqualAnyDeviceId: function(options) {
-            return (options.deviceId && this.deviceId === options.deviceId) ||
-                (options.tempDeviceId && this.tempDeviceId === options.tempDeviceId);
+        set_ws_device_id: function(ws_device_id) {
+            this.ws_device_id = ws_device_id;
         },
 
-        getAnyDeviceId: function() {
-            return this.deviceId || this.tempDeviceId;
-        },
-
-        getDeviceId: function() {
-            return this.deviceId;
-        },
-
-        setDeviceId: function(deviceId) {
-            this.deviceId = deviceId;
-            if (this.tempDeviceId) {
-                this.tempDeviceId = undefined;
-            }
-        },
-
-        getDeviceDescription: function() {
-            return {
-                deviceId: this.deviceId,
-                tempDeviceId: this.tempDeviceId
-            }
+        get_ws_device_id: function() {
+            return this.ws_device_id;
         },
 
         canApplyNextState: function() {

@@ -11,36 +11,13 @@ define('event_bus', [
         };
 
         Event_bus.prototype = {
-            setTempDeviceId: function(tempDeviceId) {
-                this.tempDeviceId = tempDeviceId;
+
+            set_ws_device_id: function(ws_device_id) {
+                this.ws_device_id = ws_device_id;
             },
 
-            getTempDeviceId: function() {
-                return this.tempDeviceId;
-            },
-
-            setDeviceId: function(deviceId) {
-                this.deviceId = deviceId;
-                if (this.tempDeviceId) {
-                    this.tempDeviceId = undefined;
-                }
-            },
-
-            getDeviceId: function() {
-                return this.deviceId;
-            },
-
-            isEqualAnyDeviceId: function(options) {
-                return (options.deviceId && this.deviceId === options.deviceId) ||
-                    (options.tempDeviceId && this.tempDeviceId === options.tempDeviceId);
-            },
-
-            setAnyDeviceId: function(options) {
-                if (options.deviceId) {
-                    this.setDeviceId(options.deviceId);
-                } else if (options.tempDeviceId) {
-                    this.setTempDeviceId(options.tempDeviceId);
-                }
+            get_ws_device_id: function() {
+                return this.ws_device_id;
             }
         };
 

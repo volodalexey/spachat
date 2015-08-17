@@ -111,7 +111,7 @@ define('messages', [
                             for (var i = _this._module.currentListOptions.start; i < _this._module.currentListOptions.final; i++) {
                                 generatedMessages.push(currentTemplate({
                                     message: messages[i],
-                                    deviceId: event_bus.getDeviceId(),
+                                    ws_device_id: event_bus.get_ws_device_id(),
                                     messageConstructor: HTML_message.prototype
                                 }));
                             }
@@ -175,7 +175,7 @@ define('messages', [
                 // TODO check which page is current
                 _this.chat.body_container.innerHTML += _this.message_template({
                     message: message,
-                    deviceId: event_bus.getDeviceId(),
+                    ws_device_id: event_bus.get_ws_device_id(),
                     messageConstructor: HTML_message.prototype
                 });
                 //_this._module.currentListOptions.final += 1;

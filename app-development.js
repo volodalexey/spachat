@@ -1,5 +1,5 @@
 var express = require('express'),
-    Server_message_router = require('./development/js/node_modules/server_message_router'),
+    web_socket_connections_collection = require('./development/js/node_modules/web_socket_connections_collection'),
     expressApp      = express(),
     port            = 8888,
     dirPath = '/development',
@@ -9,17 +9,17 @@ var express = require('express'),
     websocketPath = '/websocket',
     expressWs = require('express-ws')(expressApp);
 
-var server_message_router = new Server_message_router();
-
 expressApp.use(express.static(fullPath));
 
+web_socket_connections_collection.apply_wss(expressWs.getWss(websocketPath));
 expressApp.ws(websocketPath, function(ws, req) {
+    web_socket_connections_collection.on_wsc_open(this);
     ws.on('message', function(messageData) {
-        //var wss =expressWs.getWss(websocketPath);
-        //wss.clients
-        server_message_router.onMessage(this, messageData);
+        web_socket_connections_collection.on_wsc_message(this, messageData);
     });
-    console.log('WebSocket request type', req.method + ' from ' + req.originalUrl);
+    ws.on('close', function(code, message) {
+        web_socket_connections_collection.on_wsc_close(this, code, message);
+    });
 });
 
 var readMainFile = function() {

@@ -923,8 +923,6 @@ define('panel', [
                         websocket.sendMessage({
                             type: "user_add",
                             userId: users_bus.getUserId(),
-                            deviceId: event_bus.getDeviceId(),
-                            tempDeviceId: event_bus.getTempDeviceId(),
                             user_description: user_description,
                             request_body: {
                                 userId: user_id_input.value,
@@ -942,8 +940,6 @@ define('panel', [
                 websocket.sendMessage({
                     type: "user_toggle_ready",
                     userId: users_bus.getUserId(),
-                    deviceId: event_bus.getDeviceId(),
-                    tempDeviceId: event_bus.getTempDeviceId(),
                     ready_state: element.checked
                 });
             },
