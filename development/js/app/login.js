@@ -4,7 +4,8 @@ define('login', [
         'extend_core',
         //
         'users_bus',
-        'indexeddb'
+        'indexeddb',
+        'websocket'
     ],
     function(
         overlay_core,
@@ -12,7 +13,8 @@ define('login', [
         extend_core,
         //
         users_bus,
-        indexeddb
+        indexeddb,
+        websocket
     ) {
 
         /**
@@ -103,6 +105,7 @@ define('login', [
 
                         if (user) {
                             users_bus.setUserId(user.userId);
+                            websocket.createAndListen();
                             history.pushState(null, null, 'chat');
                             _this.navigator.navigate();
                         } else {

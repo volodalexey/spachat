@@ -817,6 +817,7 @@ define('panel', [
                 event_bus.trigger("chatsDestroy");
                 _this.removeMainEventListeners();
                 _this.removeToolbarEventListeners();
+                websocket.dispose();
                 history.pushState(null, null, 'login');
                 _this.navigator.navigate();
             },

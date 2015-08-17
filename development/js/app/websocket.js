@@ -5,9 +5,7 @@ define('websocket', [
     function(throw_event_core, extend_core) {
 
         var websocket = function() {
-            this.create();
             this.bindContexts();
-            this.addSocketListeners();
         };
 
         websocket.prototype = {
@@ -22,12 +20,19 @@ define('websocket', [
                 _this.bindedOnError = _this.onError.bind(_this);
             },
 
+            createAndListen: function() {
+                this.create();
+                this.addSocketListeners();
+            },
+
             create: function() {
                 this.socket = new WebSocket('ws://' + window.location.host + this.href);
             },
 
             dispose: function() {
                 this.removeSocketListeners(this.socket);
+                this.socket.close();
+                this.socket = null;
             },
 
             addSocketListeners: function() {
