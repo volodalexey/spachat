@@ -15,6 +15,8 @@ expressApp.use(express.static(fullPath));
 
 expressApp.ws(websocketPath, function(ws, req) {
     ws.on('message', function(messageData) {
+        //var wss =expressWs.getWss(websocketPath);
+        //wss.clients
         server_message_router.onMessage(this, messageData);
     });
     console.log('WebSocket request type', req.method + ' from ' + req.originalUrl);
