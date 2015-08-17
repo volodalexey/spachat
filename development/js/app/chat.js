@@ -223,6 +223,13 @@ define('chat', [
             },
             settings_GoToOptions: {
                 show: false
+            },
+            settings_ListOptions: {
+                size_350: true,
+                size_700: false,
+                size_1050: false,
+                size_custom: false,
+                size_current: '350px'
             }
         };
 
@@ -289,6 +296,7 @@ define('chat', [
                 _this.body_container = _this.chat_element.querySelector('[data-role="body_container"]');
                 _this.pagination_container = _this.chat_element.querySelector('[data-role="pagination_container"]');
                 _this.go_to_container = _this.chat_element.querySelector('[data-role="go_to_container"]');
+                _this.splitter_items = Array.prototype.slice.call(_this.chat_element.querySelectorAll('[data-role="splitter_item"]'));
             },
 
             cashExtraToolbarElement: function() {
@@ -319,6 +327,12 @@ define('chat', [
                 _this.chat_wrapper = options && options.chat_wrapper ? options.chat_wrapper : _this.chat_wrapper;
                 _this.chat_wrapper.insertAdjacentHTML('beforeend', _this.chat_template({chat: this}));
                 _this.cashElements();
+                _this.chat_element.style.width = _this.settings_ListOptions.size_current;
+                if (_this.settings_ListOptions.size_custom){
+                    _this.toggleShowSplitterItems(true, _this.splitter_items);
+                } else {
+                    _this.toggleShowSplitterItems(false, _this.splitter_items);
+                }
                 _this.header_waiter_container.innerHTML = _this.waiter_template();
                 _this.addEventListeners();
             },
@@ -728,7 +742,8 @@ define('chat', [
                     settings_ExtraToolbarOptions: _this.settings_ExtraToolbarOptions,
                     settings_FilterOptions: _this.settings_FilterOptions,
                     settings_PaginationOptions: _this.settings_PaginationOptions,
-                    settings_GoToOptions: _this.settings_GoToOptions
+                    settings_GoToOptions: _this.settings_GoToOptions,
+                    settings_ListOptions: _this.settings_ListOptions
                 };
             },
 

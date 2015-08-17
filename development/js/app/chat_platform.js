@@ -309,6 +309,7 @@ define('chat_platform', [
             handleChat: function(messageData, renderOptions, new_chat) {
                 var newChat = new Chat(messageData.chat_description);
                 Chat.prototype.chatsArray.push(newChat);
+                newChat.index = Chat.prototype.chatsArray.indexOf(newChat);
 
                 indexeddb.open(newChat.collectionDescription, function(err) {
                     if (err) {

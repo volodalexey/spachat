@@ -1,0 +1,29 @@
+.chat-resize-container {
+  position: relative;
+}
+.chat-splitter-container {
+  position: relative;
+  height: 100%;
+  &:hover{
+    background-color: green;
+    cursor: e-resize;
+    z-index: 350;
+    visibility: visible;
+  }
+}
+
+.chat-splitter-item {
+  position: absolute;
+  width: 20px;
+  height: 100%;
+  z-index: 20;
+  box-shadow: 0 0 3px 6px rgba(109, 76, 65, 0.5);
+  background-color: black;
+  opacity: 0.4;
+  &.right{
+    right: 0;
+  }
+  &:hover{
+    cursor: e-resize;
+  }
+}

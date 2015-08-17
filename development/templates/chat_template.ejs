@@ -1,5 +1,7 @@
-<% var _in = arguments[0]; %>
+<% var _in = arguments[0];%>
 <section class="modal" data-chat_id="<%= _in.chat.chatId %>">
+    <div class="chat-splitter-item hidden" data-role="splitter_item"></div>
+    <div class="chat-splitter-item right hidden" data-role="splitter_item"></div>
     <header data-role="header_container" class="modal-header">
         <div data-role="waiter_container"></div>
     </header>
@@ -13,4 +15,5 @@
         <div data-role="go_to_container" class="c-100"></div>
         <div data-role="pagination_container" class="flex filter_container justContent c-200"></div>
     </footer>
+
 </section>

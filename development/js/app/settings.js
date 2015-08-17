@@ -7,9 +7,11 @@ define('settings', [
         'render_layout_core',
         'overlay_core',
         'extend_core',
+        'switcher_core',
 
         'text!../templates/setting_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs'
@@ -22,9 +24,11 @@ define('settings', [
              render_layout_core,
              overlay_core,
              extend_core,
+             switcher_core,
 
              setting_template,
              triple_element_template,
+             location_wrapper_template,
              button_template,
              label_template,
              input_template) {
@@ -58,6 +62,11 @@ define('settings', [
                 _this.addRemoveListener('remove', _this.body_container, 'click', _this.bindedDataActionRouter, false);
             },
 
+            cashElements: function() {
+                var _this = this;
+                _this.sizeButtonsArray = Array.prototype.slice.call(_this.chat.body_container.querySelectorAll('[data-role="sizeChatButton"]'));
+            },
+
             //override extended throwEvent to use trigger on chat
             throwEvent: function(name, data) {
                 this.chat && this.chat.trigger('throw', name, data);
@@ -74,10 +83,16 @@ define('settings', [
                         "SETTINGS": _this.body_container
                     };
                     var data = {
-                        "sendEnter": _this.chat.formatOptions.sendEnter
+                        "sendEnter": _this.chat.formatOptions.sendEnter,
+                        "size_350": _this.chat.settings_ListOptions.size_350,
+                        "size_700": _this.chat.settings_ListOptions.size_700,
+                        "size_1050": _this.chat.settings_ListOptions.size_1050,
+                        "size_custom": _this.chat.settings_ListOptions.size_custom,
+                        "index": _this.chat.index
                     };
                     _this.renderLayout(data, function(){
                         _this.addEventListener();
+                        _this.cashElements();
                     });
                 }
             },
@@ -88,6 +103,26 @@ define('settings', [
                     _this.chat.formatOptions.sendEnter = true;
                 } else {
                     _this.chat.formatOptions.sendEnter = false;
+                }
+            },
+
+            changeChatSize: function(element) {
+                var _this = this;
+                if (element.dataset.value && _this.chat.chat_element) {
+                    _this.chat.chat_element.style.width = element.dataset.value + 'px';
+                    _this.toggleShowSplitterItems(false, _this.chat.splitter_items);
+                } else {
+                    _this.toggleShowSplitterItems(true, _this.chat.splitter_items);
+                }
+                if (element.dataset.key){
+                    _this.sizeButtonsArray.forEach(function(_button) {
+                        if (_button.dataset.key === element.dataset.key) {
+                            _this.chat.settings_ListOptions[_button.dataset.key] = true;
+                            _this.chat.settings_ListOptions.size_current = element.dataset.value + 'px';
+                        } else {
+                            _this.chat.settings_ListOptions[_button.dataset.key] = false;
+                        }
+                    });
                 }
             },
 
@@ -103,14 +138,18 @@ define('settings', [
         extend_core.prototype.inherit(settings, template_core);
         extend_core.prototype.inherit(settings, render_layout_core);
         extend_core.prototype.inherit(settings, overlay_core);
+        extend_core.prototype.inherit(settings, switcher_core);
 
         settings.prototype.setting_template = settings.prototype.template(setting_template);
         settings.prototype.triple_element_template = settings.prototype.template(triple_element_template);
+        settings.prototype.location_wrapper_template = settings.prototype.template(location_wrapper_template);
         settings.prototype.button_template = settings.prototype.template(button_template);
         settings.prototype.label_template = settings.prototype.template(label_template);
         settings.prototype.input_template = settings.prototype.template(input_template);
 
-        settings.prototype.configHandlerMap = {};
+        settings.prototype.configHandlerMap = {
+            SETTINGS: settings.prototype.prepareConfig
+        };
         settings.prototype.configHandlerContextMap = {};
 
         settings.prototype.dataMap = {

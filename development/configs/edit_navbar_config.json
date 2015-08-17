@@ -80,7 +80,7 @@
   },
   {
     "role": "locationWrapper",
-    "classList": "w-100p",
+    "classList": "w-100p flex-item flex-align-c flex-item-auto",
     "location": "toggle_scroll"
   },
   {

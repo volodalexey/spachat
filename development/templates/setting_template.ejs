@@ -1,13 +1,55 @@
-<% var _in = arguments[0]; %>
-    <% _in.config.forEach(function (config) { %>
-    <div>
-        <%= _in.triple_element_template({
-            config: config,
+<% var _in = arguments[0];
+
+_in.config._byDataLocation = {};
+_in.config._byDataLocation.logger_massage = _in.config.byDataLocation.logger_massage;
+_in.config._byDataLocation.send_enter = _in.config.byDataLocation.send_enter;
+
+%>
+
+<% if (_in.config && _in.config._byDataLocation) {
+        for (var locationKey in _in.config._byDataLocation) { %>
+<%= _in.location_wrapper_template({
+    config: _in.config._byDataLocation[locationKey],
+    data: _in.data ? _in.data : {},
+    icon_config: _in.icon_config,
+    triple_element_template: _in.triple_element_template,
+    button_template: _in.button_template,
+    input_template: _in.input_template,
+    label_template: _in.label_template,
+    description: _in.description
+}) %>
+<% }
+} %>
+
+<div class="textbox">
+        <div class="title c-100">
+            <% if (_in.config && _in.config.byDataLocation) {%>
+            <%= _in.location_wrapper_template({
+                config: _in.config.byDataLocation.size_container,
+                data: _in.data ? _in.data : {},
+                icon_config: _in.icon_config,
+                triple_element_template: _in.triple_element_template,
+                button_template: _in.button_template,
+                input_template: _in.input_template,
+                label_template: _in.label_template,
+                description: _in.description
+            }) %>
+            <%  } %>
+        </div>
+        <% if (_in.config && _in.config.byDataLocation) {%>
+        <%= _in.location_wrapper_template({
+            config: _in.config.byDataLocation.size,
+            data: _in.data ? _in.data : {},
             icon_config: _in.icon_config,
+            triple_element_template: _in.triple_element_template,
             button_template: _in.button_template,
             input_template: _in.input_template,
             label_template: _in.label_template,
-            data: _in.data
+            description: _in.description,
+            index: _in.data.index
         }) %>
-    </div>
-    <%})%>
+        <%  } %>
+</div>
+
+
+
