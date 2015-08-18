@@ -59,7 +59,7 @@ function(
         getUser: function(messageDescription) {
             var user;
             this.users.every(function(_user) {
-                if (_user.userId === messageDescription.userId) {
+                if (_user.user_id === messageDescription.user_id) {
                     user = _user;
                 }
                 return !user;
@@ -110,7 +110,7 @@ function(
         storeInstance: function(instance) {
             if (instance.chat_id) {
                 this.storeChat(instance);
-            } else if (instance.userId) {
+            } else if (instance.user_id) {
                 // TODO use user model ?
                 this.storeUser(instance);
             }

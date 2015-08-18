@@ -177,7 +177,7 @@ define('body', [
                             break;
                         case _this.MODE.USERS:
                             users_bus.getMyInfo(options, function(error, options, userInfo) {
-                                    users_bus.getContactsInfo(error, userInfo.userIds, function(_error, contactsInfo) {
+                                    users_bus.getContactsInfo(error, userInfo.user_ids, function(_error, contactsInfo) {
                                         if (_error) {
                                             _this.module.body_container.innerHTML = _error;
                                             return;

@@ -38,7 +38,7 @@ define('html_message', [
                     createdByUserId: this.createdByUserId,
                     receivedDatetime: this.receivedDatetime,
                     messageId: this.messageId,
-                    userIds: this.userIds,
+                    user_ids: this.user_ids,
                     innerHTML: this.innerHTML
                 }
             }

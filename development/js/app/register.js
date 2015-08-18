@@ -129,7 +129,7 @@ define('register', [
                                     return;
                                 }
 
-                                users_bus.setUserId(account.userId);
+                                users_bus.setUserId(account.user_id);
                                 websocket.createAndListen();
                                 history.pushState(null, null, 'chat');
                                 _this.navigator.navigate();
@@ -171,10 +171,10 @@ define('register', [
                         }
 
                         var account = {
-                            userId: res.uuid,
+                            user_id: res.uuid,
                             userName: options.userName,
                             userPassword: options.userPassword,
-                            userIds: ["126e15d1-8ae0-f240-bdb4-fdfd84e64ee440e051",
+                            user_ids: ["126e15d1-8ae0-f240-bdb4-fdfd84e64ee440e051",
                                 "3434eac5-cd02-e372-1f62-86afc1d44ee4413460",
                                 "7ce57eee-c0a0-a7ab-0278-0db148bc4ee440fda1",
                                 "d43cdf4f-c855-8ff5-1063-44256a684ee441153b"

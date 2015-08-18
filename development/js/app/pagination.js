@@ -227,7 +227,7 @@ define('pagination', [
                             break;
                         case _this.module.body.MODE.USERS:
                             users_bus.getMyInfo(null, function(error, options, userInfo) {
-                                users_bus.getContactsInfo(error, userInfo.userIds, function(_error, contactsInfo) {
+                                users_bus.getContactsInfo(error, userInfo.user_ids, function(_error, contactsInfo) {
                                     if (_error) {
                                         _this.module.body_container.innerHTML = _error;
                                         return;

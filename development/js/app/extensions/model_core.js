@@ -25,10 +25,10 @@ define([
             isInUsers: function(_instance) {
                 var instance = _instance ? _instance : this;
                 var inUsers;
-                if (instance.userIds) {
-                    instance.userIds.every(function(userId) {
-                        if (userId === users_bus.getUserId()) {
-                            inUsers = userId;
+                if (instance.user_ids) {
+                    instance.user_ids.every(function(user_id) {
+                        if (user_id === users_bus.getUserId()) {
+                            inUsers = user_id;
                         }
                         return !inUsers;
                     });
@@ -39,11 +39,11 @@ define([
 
             addMyUserId: function(_instance) {
                 var instance = _instance ? _instance : this;
-                if (!instance.userIds) {
-                    instance.userIds = [];
+                if (!instance.user_ids) {
+                    instance.user_ids = [];
                 }
                 if (!model_core.prototype.isInUsers(instance)) {
-                    instance.userIds.push(users_bus.getUserId());
+                    instance.user_ids.push(users_bus.getUserId());
                 }
             },
 

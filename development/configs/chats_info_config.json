@@ -181,7 +181,7 @@
     "location": "user_id",
     "data": {
       "role": "user_id",
-      "key": "userIds",
+      "key": "user_ids",
       "mode": "DETAIL_VIEW"
     },
     "disabled": false

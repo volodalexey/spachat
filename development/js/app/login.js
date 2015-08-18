@@ -104,7 +104,7 @@ define('login', [
                         });
 
                         if (user) {
-                            users_bus.setUserId(user.userId);
+                            users_bus.setUserId(user.user_id);
                             websocket.createAndListen();
                             history.pushState(null, null, 'chat');
                             _this.navigator.navigate();

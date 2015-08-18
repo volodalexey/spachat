@@ -27,8 +27,8 @@
     "class": "",
     "location": "user_id",
     "data": {
-      "role": "userId",
-      "key": "userId"
+      "role": "user_id",
+      "key": "user_id"
     },
     "name": "",
     "id": "user_id",

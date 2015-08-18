@@ -992,7 +992,7 @@ define('panel', [
                 var _this = this;
                 indexeddb.getByKeyPath(
                     users_bus.collectionDescription,
-                    messageData.userId,
+                    messageData.user_id,
                     function(getError, user_description) {
                         if (getError) {
                             console.error(getError);

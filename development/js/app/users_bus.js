@@ -8,33 +8,33 @@ define('users_bus', [
     ) {
 
         var users_bus = function() {
-            this.userId = null;
+            this.user_id = null;
             this.collectionDescription = {
                 "db_name": 'users',
                 "table_names": ['users'],
                 "db_version": 1,
-                "table_indexes": [[ 'userIds', 'userIds', { multiEntry: true } ]],
-                "keyPath": "userId"
+                "table_indexes": [[ 'user_ids', 'user_ids', { multiEntry: true } ]],
+                "keyPath": "user_id"
             };
         };
 
         users_bus.prototype = {
 
-            setUserId: function(userId) {
-                this.userId = userId;
+            setUserId: function(user_id) {
+                this.user_id = user_id;
             },
 
             getUserId: function() {
-                return this.userId;
+                return this.user_id;
             },
 
-            excludeUser: function(options, userIds) {
+            excludeUser: function(options, user_ids) {
                 var _this = this;
-                var result = userIds.indexOf(_this.getUserId());
+                var result = user_ids.indexOf(_this.getUserId());
                 if (result !== -1) {
-                    userIds.splice(userIds.indexOf(_this.getUserId()), 1);
+                    user_ids.splice(user_ids.indexOf(_this.getUserId()), 1);
                 }
-                return userIds;
+                return user_ids;
             },
 
             getContactsId: function(chat_id, _callback) {
@@ -49,18 +49,18 @@ define('users_bus', [
                         }
 
                         if (chat) {
-                            chat.userIds = _this.excludeUser(null, chat.userIds);
-                            _this.getContactsInfo(null, chat.userIds, _callback);
+                            chat.user_ids = _this.excludeUser(null, chat.user_ids);
+                            _this.getContactsInfo(null, chat.user_ids, _callback);
                         }
                     }
                 );
             },
 
-            getContactsInfo: function(options, userIds, _callback) {
-                if (userIds.length) {
+            getContactsInfo: function(options, user_ids, _callback) {
+                if (user_ids.length) {
                     indexeddb.getByKeysPath(
                         this.collectionDescription,
-                        userIds,
+                        user_ids,
                         function(getError, contactsInfo) {
                             if (getError) {
                                 if (_callback){
@@ -84,7 +84,7 @@ define('users_bus', [
             getMyInfo: function(options, _callback) {
                 indexeddb.getByKeyPath(
                     this.collectionDescription,
-                    this.userId,
+                    this.user_id,
                     function(getError, userInfo) {
                         if (getError) {
                             if (_callback){
@@ -115,7 +115,7 @@ define('users_bus', [
 
                     if (callback){
                         callback(null, {
-                            userId: userInfo.userId,
+                            user_id: userInfo.user_id,
                             userName: userInfo.userName
                         });
                     }
