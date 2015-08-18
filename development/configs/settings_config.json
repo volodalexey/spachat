@@ -1,28 +1,111 @@
 [
   {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-between",
+    "location": "logger_massage"
+  },
+  {
     "element": "button",
-    "icon": "",
     "text": 34,
-    "class": "",
+    "location": "logger_massage",
     "data": {
       "throw": "true",
       "action": "changeMode",
       "chat_part": "body",
       "mode_to": "LOGGER"
     },
-    "name": "",
     "disable": false
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+    "location": "send_enter"
   },
   {
     "element": "input",
     "type": "checkbox",
     "text": 35,
     "class": "check-box-size",
+    "location": "send_enter",
     "data": {
       "key": "sendEnter",
       "role": "btnEdit",
       "action": "changeSendEnter",
       "name": ""
+    }
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+    "location": "size_container"
+  },
+  {
+    "element": "label",
+    "text": 74,
+    "class": "",
+    "location": "size_container",
+    "data": {
+      "role": ""
+    }
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+    "location": "size"
+  },
+  {
+    "element": "input",
+    "type": "radio",
+    "text": 70,
+    "class": "check-box-size",
+    "location": "size",
+    "name": "size",
+    "data": {
+      "key": "size_350",
+      "value": 350,
+      "role": "sizeChatButton",
+      "action": "changeChatSize"
+    }
+  },
+  {
+    "element": "input",
+    "type": "radio",
+    "text": 71,
+    "class": "check-box-size",
+    "location": "size",
+    "name": "size",
+    "data": {
+      "key": "size_700",
+      "value": 700,
+      "role": "sizeChatButton",
+      "action": "changeChatSize"
+    }
+  },
+  {
+    "element": "input",
+    "type": "radio",
+    "text": 72,
+    "class": "check-box-size",
+    "location": "size",
+    "name": "size",
+    "data": {
+      "key": "size_1050",
+      "value": 1050,
+      "role": "sizeChatButton",
+      "action": "changeChatSize"
+    }
+  },
+  {
+    "element": "input",
+    "type": "radio",
+    "text": 73,
+    "class": "check-box-size",
+    "location": "size",
+    "name": "size",
+    "data": {
+      "key": "size_custom",
+      "role": "sizeChatButton",
+      "action": "changeChatSize"
     }
   }
 ]

@@ -45,7 +45,7 @@
 
   {
     "role": "locationWrapper",
-    "classList": "flex-item flex-wrap elements flex-align-c flex-item-auto",
+    "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
     "location": "pagination"
   },
   {
@@ -73,7 +73,7 @@
 
   {
     "role": "locationWrapper",
-    "classList": "flex-item flex-wrap elements flex-align-c flex-item-auto",
+    "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
     "location": "per_page"
   },
   {

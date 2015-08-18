@@ -14,7 +14,7 @@
 <% if(_in.config.disabled === true){ %> disabled <%}%>
 <% if(_in.config.onkeypress){ %> onkeypress="<%= _in.config.onkeypress %>" <%}%>
 
-<% if (_in.config.type === "checkbox") { %>
+<% if (_in.config.type === "checkbox" || _in.config.type === "radio") { %>
     <% if (_in.config.data.key) { %>
       <% if(_in.data[_in.config.data.key]) { %>
       checked
@@ -22,20 +22,26 @@
     <% } %>
 <% } %>
 
+
+
 <% if(_in.config.data && _in.config.data.key === "page") { %>
 value= "<%= _in.data[_in.config.data.key] %>"
 <%} %>
 
-        <% if(_in.config.name) { %>
+        <% if(_in.config.name) {
+            if (_in.config.type === "radio" && _in.index !== undefined) { %>
+            name= "<%= _in.config.name + '_' +_in.index %>"
+        <% } else { %>
        name= "<%= _in.config.name %>"
-        <%} %>
+        <%} } %>
+
 
 <% if (_in.config.type === "text") { %>
 <% if(_in.config.data.key) { %> value= "<%= _in.data[_in.config.data.key] %>" <%} %>
 <% } %>
  >
 <%if (_in.config.text) {%>
-<%= typeof _in.config.text === "number" ? window.getLocText(_in.config.text) : _in.config.text %>
+<span><%= typeof _in.config.text === "number" ? window.getLocText(_in.config.text) : _in.config.text %></span>
 <%} else {%>
 <%= ''%>
 <% }%>

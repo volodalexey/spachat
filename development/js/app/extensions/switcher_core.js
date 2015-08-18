@@ -18,6 +18,7 @@ define('switcher_core',
                         _module.currentGoToOptions = _module.settings_GoToOptions;
                         _module.current_Extra_Toolbar_Options = _module.settings_ExtraToolbarOptions;
                         _module.currnetFilterOptions = _module.settings_FilterOptions;
+                        _module.currentListOptions = _module.settings_ListOptions;
                         break;
                     case _module.body.MODE.MESSAGES:
                         _this.previousModeSwitcher = _module.body.MODE.MESSAGES;
@@ -186,6 +187,20 @@ define('switcher_core',
                         _button.classList.remove('c-100');
                     }
                 })
+            },
+
+            toggleShowSplitterItems: function(show, splitter_items) {
+                if(splitter_items){
+                    if(show){
+                        splitter_items.forEach(function(_item) {
+                            _item.classList.remove("hidden");
+                        });
+                    } else {
+                        splitter_items.forEach(function(_item) {
+                            _item.classList.add("hidden");
+                        });
+                    }
+                }
             }
         };
 
