@@ -969,21 +969,20 @@ define('panel', [
                 }
             },
 
-            addNewUserToIndexedDB: function(messageData, callback) {
-                var _this = this;
+            addNewUserToIndexedDB: function(user_description, callback) {
                 indexeddb.addOrUpdateAll(
                     users_bus.collectionDescription,
                     null,
                     [
-                        messageData.user_description
+                        user_description
                     ],
                     function(error) {
                         if (error) {
-                            console.error(error);
+                            callback(error);
                             return;
                         }
 
-                        callback(null, messageData.user_description);
+                        callback(null, user_description);
                     }
                 );
             },
@@ -992,7 +991,7 @@ define('panel', [
                 var _this = this;
                 indexeddb.getByKeyPath(
                     users_bus.collectionDescription,
-                    messageData.user_id,
+                    messageData.from_user_id,
                     function(getError, user_description) {
                         if (getError) {
                             console.error(getError);
@@ -1000,16 +999,16 @@ define('panel', [
                         }
 
                         if (!user_description) {
-                            _this.addNewUserToIndexedDB(messageData, function(error, user_description) {
+                            _this.addNewUserToIndexedDB(messageData.from_user_description, function(error, user_description) {
                                 if (error) {
                                     console.error(error);
                                     return;
                                 }
 
-                                webrtc.handleDeviceActive(messageData, user_description);
+                                webrtc.handleDeviceActive(messageData.from_ws_device_id, user_description);
                             });
                         } else if (user_description) {
-                            webrtc.handleDeviceActive(messageData, user_description);
+                            webrtc.handleDeviceActive(messageData.from_ws_device_id, user_description);
                         }
                     }
                 );
