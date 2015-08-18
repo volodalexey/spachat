@@ -665,13 +665,13 @@ define('panel', [
                 if (_this.panel_config) {
                     _this.togglePanel();
                 } else {
-                    _this.sendRequest("/configs/panel_" + _this.type + "_toolbar_config.json", function(err, res) {
+                    _this.get_JSON_res("/configs/panel_" + _this.type + "_toolbar_config.json", function(err, res) {
                         if (err) {
                             console.error(err);
                             return;
                         }
 
-                        _this.panel_config = JSON.parse(res);
+                        _this.panel_config = res;
                         _this.getDescriptionIcon(null, null, null, function(res) {
                             _this.description_icon = res;
                             _this.togglePanel();
@@ -714,7 +714,7 @@ define('panel', [
                 if (iconsArray.length) {
                     _this.async_eachSeries(iconsArray,
                         function(obj, _callback) {
-                            _this.sendRequest(obj.icon, function(err, res) {
+                            _this.getRequest(obj.icon, function(err, res) {
                                 if (err) {
                                     _callback(err);
                                 } else {

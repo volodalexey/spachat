@@ -54,17 +54,16 @@ define('render_layout_core', [
                         return;
                     }
 
-                    _this.sendRequest(_this.configMap[_this.body_mode], function(err, res) {
+                    _this.get_JSON_res(_this.configMap[_this.body_mode], function(err, res) {
                         if (err) {
                             callback(err);
                             return;
                         }
-                        var config = JSON.parse(res);
                         if (_this.configHandlerMap[_this.body_mode]) {
                             var context = _this.configHandlerContextMap[_this.body_mode] ? _this.configHandlerContextMap[_this.body_mode] : _this;
-                            _this.config = _this.configHandlerMap[_this.body_mode].call(context, config);
+                            _this.config = _this.configHandlerMap[_this.body_mode].call(context, res);
                         } else {
-                            _this.config = config;
+                            _this.config = res;
                         }
                         if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW ||
                             _this.MODE && _this.body_mode === _this.MODE.USER_INFO_EDIT) {
@@ -90,7 +89,7 @@ define('render_layout_core', [
                 if (_this.iconsArray.length) {
                     _this.async_eachSeries(_this.iconsArray,
                         function(obj, _callback) {
-                            _this.sendRequest(obj.icon, function(err, res) {
+                            _this.getRequest(obj.icon, function(err, res) {
                                 if (err) {
                                     _callback(err);
                                 } else {

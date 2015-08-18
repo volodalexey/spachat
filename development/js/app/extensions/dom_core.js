@@ -53,7 +53,7 @@ define('dom_core',[
 
             getDescriptionIcon: function(dataErr, options, data, callback){
                 var _this = this;
-                _this.sendRequest("/templates/icon/description_icon.html", function(err, res) {
+                _this.getRequest("/templates/icon/description_icon.html", function(err, res) {
                     if (err) {
                         console.error(err);
                         return;

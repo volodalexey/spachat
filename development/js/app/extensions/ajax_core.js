@@ -8,21 +8,64 @@ define('ajax_core', [],
 
             __class_name: "ajax_core",
 
-            sendRequest: function(name, callback) {
+            objectToFormData: function(objectData) {
+                var formData = new FormData();
+                for ( var key in objectData ) {
+                    formData.append(key, objectData[key]);
+                }
+                return formData;
+            },
+
+            sendRequest: function(type, url, data, callback) {
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET', name, true);
+                xhr.open(type, url, true);
 
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == 4) {
-                        if (xhr.status != 200) {
+                        if (!(xhr.status === 200 || xhr.status === 201)) {
                             callback('Error ' + xhr.status + ': ' + xhr.statusText);
                         } else {
                             callback(null, xhr.responseText);
                         }
                     }
                 };
-                xhr.send();
+                xhr.send(data);
+            },
+
+            get_JSON_res: function(url, callback) {
+                ajax_core.prototype.sendRequest('GET', url, null, function(err, res) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        try {
+                            var parsed = JSON.parse(res);
+                        } catch (e) {
+                            callback(e);
+                        }
+
+                        callback(null, parsed);
+                    }
+                });
+            },
+
+            getRequest: function(url, callback) {
+                ajax_core.prototype.sendRequest('GET', url, null, callback);
+            },
+
+            postRequest: function(url, objectData, callback) {
+                var formData = ajax_core.prototype.objectToFormData(objectData);
+                ajax_core.prototype.sendRequest('POST', url, formData, callback);
+            },
+
+            putRequest: function(url, objectData, callback) {
+                var formData = ajax_core.prototype.objectToFormData(objectData);
+                ajax_core.prototype.sendRequest('PUT', url, formData, callback);
+            },
+
+            deleteRequest: function(url, callback) {
+                ajax_core.prototype.sendRequest('DELETE', url, null, callback);
             }
         };
+
         return ajax_core;
     });

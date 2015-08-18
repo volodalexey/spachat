@@ -91,7 +91,7 @@ define('login', [
                     indexeddb.getAll(users_bus.collectionDescription, null,  function(getAllErr, users) {
                         _this.toggleWaiter();
                         if (getAllErr) {
-                            console.error(getAllErr);
+                            alert(getAllErr);
                             return;
                         }
 
@@ -111,7 +111,7 @@ define('login', [
                         } else {
                             users_bus.setUserId(null);
                             _this.loginForm.reset();
-                            console.error(new Error('User with such username or password not found!'));
+                            alert(new Error('User with such username or password not found!'));
                         }
                     });
                 }

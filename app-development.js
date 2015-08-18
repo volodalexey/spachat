@@ -7,7 +7,8 @@ var express = require('express'),
     fullPath = path.join(__dirname, dirPath),
     fs = require('fs'),
     websocketPath = '/websocket',
-    expressWs = require('express-ws')(expressApp);
+    expressWs = require('express-ws')(expressApp),
+    id_Generator = require('./development/js/node_modules/id_generator');
 
 expressApp.use(express.static(fullPath));
 
@@ -38,6 +39,10 @@ expressApp.get('/login', commonStaticResponse);
 expressApp.get('/register', commonStaticResponse);
 
 expressApp.get('/chat', commonStaticResponse);
+
+expressApp.get('/api/uuid', function(req, res) {
+    res.status(200).send({ uuid: id_Generator.generateId() });
+});
 
 expressApp.listen(port);
 console.log('Listening on port: ', port);

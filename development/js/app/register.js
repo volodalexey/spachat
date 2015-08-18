@@ -125,7 +125,7 @@ define('register', [
                             function(regErr, account) {
                                 if (regErr) {
                                     _this.toggleWaiter();
-                                    console.error(regErr);
+                                    alert(regErr);
                                     return;
                                 }
 
@@ -137,59 +137,66 @@ define('register', [
                     } else {
                         users_bus.setUserId(null);
                         _this.registerForm.reset();
-                        console.error(new Error('Passwords don\'t match!'));
+                        alert(new Error('Passwords don\'t match!'));
                     }
                 }
             },
 
             registerNewUser: function(options, callback) {
                 var _this = this;
-                indexeddb.getAll(users_bus.collectionDescription, null, function(getAllErr, allUsers) {
-                    if (getAllErr) {
-                        callback(getAllErr);
+                _this.get_JSON_res('/api/uuid', function(err, res) {
+                    if (err) {
+                        callback(err);
                         return;
                     }
 
-                    var user;
-                    allUsers.every(function(_user) {
-                        if (_user.userName === options.userName && _user.userPassword) {
-                            user = _user;
+                    indexeddb.getAll(users_bus.collectionDescription, null, function(getAllErr, allUsers) {
+                        if (getAllErr) {
+                            callback(getAllErr);
+                            return;
                         }
-                        return !user;
-                    });
 
-                    if (user) {
-                        callback(new Error('User with such username is already exist!'));
-                        return;
-                    }
-
-                    var account = {
-                        userId: _this.generateId(),
-                        userName: options.userName,
-                        userPassword: options.userPassword,
-                        userIds: ["126e15d1-8ae0-f240-bdb4-fdfd84e64ee440e051",
-                            "3434eac5-cd02-e372-1f62-86afc1d44ee4413460",
-                            "7ce57eee-c0a0-a7ab-0278-0db148bc4ee440fda1",
-                            "d43cdf4f-c855-8ff5-1063-44256a684ee441153b"
-                        ],
-                        chatsIds: []
-                    };
-
-                    indexeddb.addOrUpdateAll(
-                        users_bus.collectionDescription,
-                        null,
-                        [
-                            account
-                        ],
-                        function(error) {
-                            if (error) {
-                                callback(error);
-                                return;
+                        var user;
+                        allUsers.every(function(_user) {
+                            if (_user.userName === options.userName && _user.userPassword) {
+                                user = _user;
                             }
+                            return !user;
+                        });
 
-                            callback(null, account);
+                        if (user) {
+                            callback(new Error('User with such username is already exist!'));
+                            return;
                         }
-                    );
+
+                        var account = {
+                            userId: res.uuid,
+                            userName: options.userName,
+                            userPassword: options.userPassword,
+                            userIds: ["126e15d1-8ae0-f240-bdb4-fdfd84e64ee440e051",
+                                "3434eac5-cd02-e372-1f62-86afc1d44ee4413460",
+                                "7ce57eee-c0a0-a7ab-0278-0db148bc4ee440fda1",
+                                "d43cdf4f-c855-8ff5-1063-44256a684ee441153b"
+                            ],
+                            chatsIds: []
+                        };
+
+                        indexeddb.addOrUpdateAll(
+                            users_bus.collectionDescription,
+                            null,
+                            [
+                                account
+                            ],
+                            function(error) {
+                                if (error) {
+                                    callback(error);
+                                    return;
+                                }
+
+                                callback(null, account);
+                            }
+                        );
+                    });
                 });
             },
 

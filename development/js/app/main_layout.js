@@ -29,21 +29,15 @@ define('main_layout', [
             render: function() {
                 var _this = this;
 
-                _this.sendRequest('/configs/indexed_config.json', function(err, res) {
+                _this.get_JSON_res('/configs/indexed_config.json', function(err, config) {
                     if (err) {
                         document.body.innerHTML = err;
                         return;
                     }
 
-                    try {
-                        var indexed_config = JSON.parse(res);
-                    } catch (e) {
-                        document.body.innerHTML = e;
-                        return;
-                    }
                     _this.getDescriptionIcon(null, null, null, function(res){
                         document.body.innerHTML += _this.index_template({
-                            config: indexed_config,
+                            config: config,
                             icon_config: [{svg: res, name: 'description_icon'}],
                             triple_element_template: _this.triple_element_template,
                             button_template: _this.button_template,

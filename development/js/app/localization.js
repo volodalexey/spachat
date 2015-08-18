@@ -12,12 +12,12 @@ define('localization', [
             __class_name: "localization",
 
             getLocConfig: function(callback) {
-                this.sendRequest('/configs/localization_config.json', function(err, res) {
+                this.get_JSON_res('/configs/localization_config.json', function(err, res) {
                     if (err) {
                         callback(err);
                         return;
                     }
-                    window.localization_config = JSON.parse(res);
+                    window.localization_config = res;
                     window.localization = "ru";
                     callback();
                 });
