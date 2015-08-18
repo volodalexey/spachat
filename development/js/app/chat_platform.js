@@ -437,18 +437,20 @@ define('chat_platform', [
                 indexeddb.getByKeyPath(
                     chats_bus.collectionDescription,
                     chat_id,
-                    function(getError, chat) {
+                    function(getError, chatDescription) {
                         if (getError) {
                             console.error(getError);
                             _this.unHideUIButton(chat_id);
                             return;
                         }
 
-                        if (chat) {
+                        if (chatDescription) {
                             websocket.sendMessage({
                                 type: "chat_join",
                                 from_user_id: users_bus.getUserId(),
-                                chat_description: chat,
+                                chat_description: {
+                                    chat_id: chatDescription.chat_id
+                                },
                                 restore_chat_state: restore_options
                             });
                         } else {

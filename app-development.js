@@ -12,7 +12,6 @@ var express = require('express'),
 
 expressApp.use(express.static(fullPath));
 
-web_socket_connections_collection.apply_wss(expressWs.getWss(websocketPath));
 expressApp.ws(websocketPath, function(ws, req) {
     web_socket_connections_collection.on_wsc_open(ws);
     ws.on('message', function(messageData) {
@@ -22,6 +21,7 @@ expressApp.ws(websocketPath, function(ws, req) {
         web_socket_connections_collection.on_wsc_close(this, code, message);
     });
 });
+web_socket_connections_collection.apply_wss(expressWs.getWss(websocketPath));
 
 var readMainFile = function() {
     return fs.readFileSync(fullPath + '/index.html', 'utf8');

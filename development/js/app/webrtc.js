@@ -69,21 +69,21 @@ define('webrtc', [
                 });
             },
 
-            handleDeviceActive: function(messageData, curInstance) {
+            handleDeviceActive: function(ws_device_id, curInstance) {
                 var _this = this;
-                if (event_bus.ws_device_id === messageData.ws_device_id) {
+                if (event_bus.ws_device_id === ws_device_id) {
                     console.warn('the information about myself');
                     return;
                 }
 
-                var connection = _this.getConnection(messageData.ws_device_id);
+                var connection = _this.getConnection(ws_device_id);
                 if (connection && connection.canApplyNextState() === false) {
                     return;
                 }
                 if (!connection) {
                     // if connection with such ws_device_id not found create offer for this connection
                     connection = _this.createConnection({
-                        ws_device_id : messageData.ws_device_id
+                        ws_device_id : ws_device_id
                     });
                 }
                 // change readyState for existing connection
@@ -98,11 +98,11 @@ define('webrtc', [
              */
             handleDevicePassive: function(messageData, curInstance) {
                 var _this = this;
-                if (event_bus.get_ws_device_id() === messageData.ws_device_id) {
+                if (event_bus.get_ws_device_id() === messageData.from_ws_device_id) {
                     console.warn('the information about myself');
                     return;
                 }
-                var connection = _this.getConnection(messageData.ws_device_id);
+                var connection = _this.getConnection(messageData.from_ws_device_id);
                 if (connection && connection.canApplyNextState() === false) {
                     return;
                 }
@@ -110,7 +110,7 @@ define('webrtc', [
                 if (!connection) {
                     // if connection with such ws_device_id not found create answer for offer
                     connection = _this.createConnection({
-                        ws_device_id : messageData.ws_device_id
+                        ws_device_id : messageData.from_ws_device_id
                     });
                 }
                 // change readyState for existing connection
@@ -123,19 +123,19 @@ define('webrtc', [
             handleDeviceAnswer: function(messageData, curInstance) {
                 var _this = this;
                 // I am NOT the creator of server stored answer
-                if (event_bus.get_ws_device_id() === messageData.ws_device_id) {
+                if (event_bus.get_ws_device_id() === messageData.from_ws_device_id) {
                     console.warn('the information about myself');
                     return;
                 }
 
-                var connection = _this.getConnection(messageData);
+                var connection = _this.getConnection(messageData.from_ws_device_id);
                 if (connection && connection.canApplyNextState() === false) {
                     return;
                 } else if (!connection) {
                     console.error(new Error('Answer for connection thet is not exist!'));
                 }
 
-                if (event_bus.ws_device_id === messageData.ws_device_id) {
+                if (event_bus.ws_device_id === messageData.from_ws_device_id) {
                     // Accept answer if I am the offer creator
                     connection.active.readyState = Connection.prototype.readyStates.WILL_ACCEPT_ANSWER;
                     connection.active.remoteAnswerDescription = messageData.answerDescription;
