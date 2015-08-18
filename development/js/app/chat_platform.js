@@ -174,8 +174,8 @@ define('chat_platform', [
                 }
 
                 websocket.sendMessage({
-                    type: "create_chat",
-                    userId: users_bus.getUserId()
+                    type: "chat_create",
+                    from_user_id: users_bus.getUserId()
                 });
             },
 
@@ -342,7 +342,7 @@ define('chat_platform', [
 
                 websocket.sendMessage({
                     type: "chat_join",
-                    userId: users_bus.getUserId(),
+                    from_user_id: users_bus.getUserId(),
                     chat_description: chat_description
                 });
             }
@@ -444,7 +444,7 @@ define('chat_platform', [
                         if (chat) {
                             websocket.sendMessage({
                                 type: "chat_join",
-                                userId: users_bus.getUserId(),
+                                from_user_id: users_bus.getUserId(),
                                 chat_description: chat,
                                 restore_chat_state: restore_options
                             });

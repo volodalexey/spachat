@@ -922,10 +922,10 @@ define('panel', [
 
                         websocket.sendMessage({
                             type: "user_add",
-                            userId: users_bus.getUserId(),
-                            user_description: user_description,
+                            from_user_id: users_bus.getUserId(),
+                            from_user_description: user_description,
+                            to_user_id: user_id_input.value,
                             request_body: {
-                                userId: user_id_input.value,
                                 message: "Hi!"
                             }
                         });
@@ -939,7 +939,7 @@ define('panel', [
 
                 websocket.sendMessage({
                     type: "user_toggle_ready",
-                    userId: users_bus.getUserId(),
+                    from_user_id: users_bus.getUserId(),
                     ready_state: element.checked
                 });
             },

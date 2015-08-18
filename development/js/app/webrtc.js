@@ -158,8 +158,8 @@ define('webrtc', [
                 curConnection.active.readyState = Connection.prototype.readyStates.WAITING;
                 curConnection.sendToWebSocket({
                     type: 'chat_offer',
-                    userId: users_bus.getUserId(),
-                    ws_device_id: event_bus.get_ws_device_id(),
+                    from_user_id: users_bus.getUserId(),
+                    from_ws_device_id: event_bus.get_ws_device_id(),
                     to_ws_device_id: curConnection.get_ws_device_id(),
                     offerDescription: result.peerConnection.localDescription
                 });
@@ -192,7 +192,7 @@ define('webrtc', [
 
                 curConnection.sendToWebSocket({
                     type: 'chat_accept',
-                    userId: users_bus.getUserId(),
+                    from_user_id: users_bus.getUserId(),
                     from_ws_device_id: event_bus.get_ws_device_id(),
                     to_ws_device_id: curConnection.get_ws_device_id()
                 });
