@@ -416,7 +416,7 @@ define('panel', [
                     _this.user_name = _this.body_container.querySelector('[data-main="user_name_input"]');
                     _this.old_password = _this.body_container.querySelector('[data-role="passwordOld"]');
                     _this.new_password = _this.body_container.querySelector('[data-role="passwordNew"]');
-                    _this.confirm_password = _this.panel_toolbar.querySelector('[data-role="passwordConfirm"]');
+                    _this.confirm_password = _this.body_container.querySelector('[data-role="passwordConfirm"]');
                 }
             },
 

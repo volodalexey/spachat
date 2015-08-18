@@ -192,13 +192,11 @@ define('switcher_core',
             toggleShowSplitterItems: function(show, splitter_items) {
                 if(splitter_items){
                     if(show){
-                        splitter_items.forEach(function(_item) {
-                            _item.classList.remove("hidden");
-                        });
+                        splitter_items.classList.remove("hidden");
+                        splitter_items.classList.add("visible");
                     } else {
-                        splitter_items.forEach(function(_item) {
-                            _item.classList.add("hidden");
-                        });
+                        splitter_items.classList.add("hidden");
+                        splitter_items.classList.remove("visible");
                     }
                 }
             }

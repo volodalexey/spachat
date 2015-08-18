@@ -43,6 +43,7 @@ define('chat_platform', [
             bindContexts: function() {
                 var _this = this;
                 _this.bindedOnThrowEvent = _this.onThrowEvent.bind(_this);
+                _this.bindedHandleResizer = _this.handleResizer.bind(_this);
             },
 
             render: function
@@ -71,6 +72,8 @@ define('chat_platform', [
             cashMainElements: function() {
                 var _this = this;
                 _this.mainConteiner = document.querySelector('[data-role="main_container"]');
+                _this.chat_resize_container = document.querySelector('[data-role="chat_resize_container"]');
+                _this.line_resize = _this.chat_resize_container.querySelector('[data-role="resize_line"]');
             },
 
             cashElements: function() {
@@ -94,9 +97,13 @@ define('chat_platform', [
                 event_bus.on('toCloseChat', _this.toCloseChat, _this);
                 event_bus.on('notifyChat', _this.onChatMessageRouter, _this);
                 websocket.on('message', _this.onChatMessageRouter, _this);
-                _this.on('resize', _this.resizeChats, _this);
                 _this.on('joinByChatIdAuto', _this.joinByChatIdAuto, _this);
                 _this.on('showChat', _this.showChat, _this);
+                _this.addRemoveListener('add', _this.chat_resize_container, 'mouseup', _this.bindedHandleResizer, false);
+                _this.addRemoveListener('add', _this.chat_resize_container, 'touchend', _this.bindedHandleResizer, false);
+                _this.addRemoveListener('add', _this.chat_resize_container, 'mousemove', _this.bindedHandleResizer, false);
+                _this.addRemoveListener('add', _this.chat_resize_container, 'touchmove', _this.bindedHandleResizer, false);
+                event_bus.on('transformToResizeState', _this.transformToResizeState, _this);
             },
 
             removeEventListeners: function() {
@@ -107,10 +114,14 @@ define('chat_platform', [
                 event_bus.off('chatsDestroy', _this.destroyChats);
                 event_bus.off('toCloseChat', _this.toCloseChat);
                 event_bus.off('notifyChat', _this.onChatMessageRouter);
+                event_bus.off('transformToResizeState', _this.transformToResizeState);
                 websocket.off('message', _this.onChatMessageRouter);
-                _this.off('resize');
                 _this.off('joinByChatIdAuto');
                 _this.off('showChat');
+                _this.addRemoveListener('remove', _this.chat_resize_container, 'mouseup', _this.bindedHandleResizer, false);
+                _this.addRemoveListener('remove', _this.chat_resize_container, 'touchend', _this.bindedHandleResizer, false);
+                _this.addRemoveListener('remove', _this.chat_resize_container, 'mousemove', _this.bindedHandleResizer, false);
+                _this.addRemoveListener('remove', _this.chat_resize_container, 'touchmove', _this.bindedHandleResizer, false);
             },
 
             getOpenChats: function(callback) {
@@ -121,13 +132,95 @@ define('chat_platform', [
                 callback(openChats);
             },
 
-            /**
-             * invoke each chat to resize its view
-             */
-            resizeChats: function() {
-                //Chat.prototype.chatsArray.forEach(function(_chat) {
-                //    _chat.calcMessagesContainerHeight();
-                //});
+            transformToResizeState: function(event, _chat) {
+                var _this = this;
+                _this.chat_resize_container.classList.add('draggable');
+                _this.line_resize.style.left = event.clientX + 'px';
+                _this.resizeMouseDown = true;
+                _this.positionrSplitterItem = event.currentTarget.dataset.splitteritem;
+                _this.chatResize = _chat;
+                _this.splitterWidth = _chat.splitter_left.clientWidth;
+                _this.offsetLeft_splitter_left = _this.getOffset(_chat.splitter_left).offsetLeft;
+                _this.offsetLeft_splitter_right = _this.getOffset(_chat.splitter_right).offsetLeft;
+                _this.chatResizeWidth = _chat.chat_element.clientWidth;
+            },
+
+            handleResizer: function(event) {
+                var _this = this;
+                event.stopPropagation();
+                event.preventDefault();
+                switch (event.type) {
+                    case 'mousemove':
+                    case 'touchmove':
+                        if (_this.resizeMouseDown) {
+                            var clientX = event.clientX;
+                            if (event.type === 'touchmove' && event.changedTouches) {
+                                clientX = event.changedTouches[0].clientX;
+                            }
+                            if (!_this.resizeClientX_absolue) {
+                                _this.resizeClientX_absolue = clientX;
+                                _this.deltaX_absolute = clientX;
+                            }
+                            if (!_this.resizeClientX) {
+                                _this.resizeClientX = clientX;
+                            } else {
+                                var deltaX = clientX - _this.resizeClientX;
+                                _this.absoluteDeltaX = _this.resizeClientX_absolue - clientX;
+                                _this.redraw_chat = false;
+                                if (Math.abs(_this.absoluteDeltaX - deltaX) > 5) {
+                                    _this.redraw_chat = true;
+                                    if (_this.positionrSplitterItem === 'left' &&
+                                        _this.offsetLeft_splitter_right - clientX + _this.splitterWidth > 350 ||
+                                        _this.positionrSplitterItem === 'right' &&
+                                        clientX - _this.offsetLeft_splitter_left > 350
+                                    ) {
+                                        _this.line_resize.style.left = (_this.line_resize.offsetLeft + deltaX) + 'px';
+                                        _this.resizeClientX = clientX;
+                                    } else {
+                                        if (_this.positionrSplitterItem === 'left') {
+                                            _this.line_resize.style.left = _this.offsetLeft_splitter_right - 350 + _this.splitterWidth + 'px';
+                                        }
+                                        if (_this.positionrSplitterItem === 'right') {
+                                            _this.line_resize.style.left = _this.offsetLeft_splitter_left + 350 + 'px';
+                                        }
+                                        _this.resizeClientX = clientX;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case 'mouseup':
+                    case 'touchend':
+                        if (_this.redraw_chat ) {
+                            if (_this.positionrSplitterItem === 'left') {
+                                if (_this.chatResizeWidth + _this.absoluteDeltaX >= 350) {
+                                    _this.chatResize.chat_element.style.width = _this.chatResizeWidth + _this.absoluteDeltaX + 'px';
+                                } else {
+                                    _this.chatResize.chat_element.style.width = '350px';
+                                }
+                            }
+                            if (_this.positionrSplitterItem === 'right') {
+                                if (_this.chatResizeWidth - _this.absoluteDeltaX >= 350) {
+                                    _this.chatResize.chat_element.style.width = _this.chatResizeWidth - _this.absoluteDeltaX + 'px';
+                                } else {
+                                    _this.chatResize.chat_element.style.width = '350px';
+                                }
+                            }
+                        }
+                        _this.resizeMouseDown = false;
+                        _this.chat_resize_container.classList.remove('draggable');
+                        _this.line_resize.style.left = 0;
+                        delete _this.positionrSplitterItem;
+                        delete _this.splitterWidth;
+                        delete _this.offsetLeft_splitter_left;
+                        delete _this.offsetLeft_splitter_right;
+                        delete _this.chatResizeWidth;
+                        delete _this.resizeClientX;
+                        delete _this.resizeClientX_absolue;
+                        delete _this.deltaX_absolute;
+                        delete _this.chatResize;
+                        delete _this.redraw_chat;
+                }
             },
 
             onThrowEvent: function(eventName, eventData) {
@@ -228,14 +321,14 @@ define('chat_platform', [
                             console.error(error);
                             return;
                         }
-                        _this.addNewChatToUserChats(chat, function(){
+                        _this.addNewChatToUserChats(chat, function() {
                             _this.chatWorkflow(event);
                         });
                     }
                 );
             },
 
-            addNewChatToUserChats: function(chat, callback){
+            addNewChatToUserChats: function(chat, callback) {
                 users_bus.getMyInfo(null, function(error, options, info) {
                     info.chatsIds.push(chat.chat_id);
                     indexeddb.addOrUpdateAll(
@@ -307,12 +400,12 @@ define('chat_platform', [
                     if (messageData.restore_chat_state &&
                         messageData.chat_description.bodyOptions &&
                         messageData.chat_description.bodyOptions.mode) {
-                        newChat.switchModes( [{
+                        newChat.switchModes([{
                             'chat_part': 'body',
                             'newMode': messageData.chat_description.bodyOptions.mode
                         }], renderOptions);
                     } else {
-                        newChat.switchModes( [{
+                        newChat.switchModes([{
                             'chat_part': 'body',
                             'newMode': newChat.body.MODE.MESSAGES
                         }], renderOptions);
@@ -385,7 +478,7 @@ define('chat_platform', [
                     _this.UIbuttonsByChatId[chat_id] = {};
                     _this.UIbuttonsByChatId[chat_id].buttons = [];
                 }
-                buttonsElement.forEach(function(buttonElement){
+                buttonsElement.forEach(function(buttonElement) {
                     _this.UIbuttonsByChatId[chat_id].buttons.push(buttonElement);
                     if (buttonElement.style.display === 'none') {
                         buttonElement.style.display = 'inherit';
@@ -481,7 +574,7 @@ define('chat_platform', [
                             chatDescription
                         ],
                         function(error) {
-                            if (error){
+                            if (error) {
                                 console.error(error);
                                 return;
                             }

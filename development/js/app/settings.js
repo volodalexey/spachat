@@ -110,9 +110,11 @@ define('settings', [
                 var _this = this;
                 if (element.dataset.value && _this.chat.chat_element) {
                     _this.chat.chat_element.style.width = element.dataset.value + 'px';
-                    _this.toggleShowSplitterItems(false, _this.chat.splitter_items);
+                    _this.toggleShowSplitterItems(false, _this.chat.splitter_left);
+                    _this.toggleShowSplitterItems(false, _this.chat.splitter_right);
                 } else {
-                    _this.toggleShowSplitterItems(true, _this.chat.splitter_items);
+                    _this.toggleShowSplitterItems(true, _this.chat.splitter_left);
+                    _this.toggleShowSplitterItems(true, _this.chat.splitter_right);
                 }
                 if (element.dataset.key){
                     _this.sizeButtonsArray.forEach(function(_button) {
