@@ -152,7 +152,7 @@
     "location": "chats",
     "data": {
       "role": "my_chat_id_label",
-      "key": "chatId",
+      "key": "chat_id",
       "mode": "CHATS"
     },
     "disabled": false

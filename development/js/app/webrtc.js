@@ -62,9 +62,9 @@ define('webrtc', [
             /**
              * this function is invoked when chat was created or joined
              */
-            handleConnectedDevices: function(connectedDevices, curInstance) {
+            handleConnectedDevices: function(wscs_device_ids, curInstance) {
                 var _this = this;
-                connectedDevices.forEach(function(ws_device_id) {
+                wscs_device_ids.forEach(function(ws_device_id) {
                     _this.handleDeviceActive(ws_device_id, curInstance);
                 });
             },
@@ -658,10 +658,10 @@ define('webrtc', [
                 }
             },
 
-            destroyConnectionChat: function(chatId) {
+            destroyConnectionChat: function(chat_id) {
                 var _this = this;
                 _this.connections.forEach(function(connetion) {
-                    connetion.removeChatById(chatId);
+                    connetion.removeChatById(chat_id);
                 });
             },
 

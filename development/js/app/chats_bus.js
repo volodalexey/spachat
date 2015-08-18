@@ -11,7 +11,7 @@ define('chats_bus', [
                 "db_name": 'chats',
                 "table_names": ['chats'],
                 "db_version": 1,
-                "keyPath": "chatId"
+                "keyPath": "chat_id"
             };
         };
 

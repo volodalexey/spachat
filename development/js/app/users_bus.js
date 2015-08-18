@@ -37,11 +37,11 @@ define('users_bus', [
                 return userIds;
             },
 
-            getContactsId: function(chatId, _callback) {
+            getContactsId: function(chat_id, _callback) {
                 var _this = this;
                 indexeddb.getByKeyPath(
                     chats_bus.collectionDescription,
-                    chatId,
+                    chat_id,
                     function(getError, chat) {
                         if (getError) {
                             console.error(getError);

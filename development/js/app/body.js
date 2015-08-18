@@ -258,7 +258,7 @@ define('body', [
             chatsFilter: function(options, chats) {
                 var chat_info;
                 chats.every(function(_chat) {
-                    if (_chat.chatId === options.chat_id_value) {
+                    if (_chat.chat_id === options.chat_id_value) {
                         chat_info = _chat;
                     }
                     return !chat_info;

@@ -64,7 +64,7 @@ define('panel', [
                 "db_name": 'chats',
                 "table_names": ['chats'],
                 "db_version": 1,
-                "keyPath": "chatId"
+                "keyPath": "chat_id"
             },
 
             chats_GoToOptions: {
@@ -491,11 +491,11 @@ define('panel', [
                 }
             },
 
-            onChatDestroyed: function(chatId) {
+            onChatDestroyed: function(chat_id) {
                 var _this = this;
                 if (_this.type === "left" &&
                     (_this.bodyOptions.mode === this.MODE.CHATS || _this.bodyOptions.mode === this.MODE.DETAIL_VIEW)) {
-                    var chat_info_container = _this.body_container.querySelector('[data-chatid="' + chatId + '"]');
+                    var chat_info_container = _this.body_container.querySelector('[data-chat_id="' + chat_id + '"]');
                     if (chat_info_container) {
                         var detail_view = chat_info_container.querySelector('[data-role="detail_view_container"]');
                         if (detail_view.dataset.state) {
@@ -504,7 +504,7 @@ define('panel', [
                             _this.render({
                                 "detail_view": detail_view,
                                 "pointer": pointer,
-                                "chat_id_value": chatId
+                                "chat_id_value": chat_id
                             });
                         }
                     }
@@ -824,7 +824,7 @@ define('panel', [
 
             show_more_info: function(element) {
                 var _this = this, chat_id_value;
-                chat_id_value = element.dataset.chatid;
+                chat_id_value = element.dataset.chat_id;
                 var detail_view = element.querySelector('[data-role="detail_view_container"]');
                 var pointer = element.querySelector('[data-role="pointer"]');
                 if (detail_view.dataset.state) {
@@ -850,7 +850,7 @@ define('panel', [
                 var _this = this, saveStates;
                 if (_this.type === "left" ){
                     var parentElement = _this.traverseUpToDataset(element, 'role', 'chatWrapper');
-                    var chatid = parentElement.dataset.chatid;
+                    var chat_id = parentElement.dataset.chat_id;
 
                     if (element.dataset.role === "closeChat") {
                         saveStates = false;
@@ -858,7 +858,7 @@ define('panel', [
                     if (element.dataset.role === "saveStatesChats") {
                         saveStates = true;
                     }
-                    event_bus.trigger('toCloseChat', chatid, saveStates);
+                    event_bus.trigger('toCloseChat', chat_id, saveStates);
                 }
             },
 

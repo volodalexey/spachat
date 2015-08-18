@@ -116,7 +116,7 @@ define('chat_platform', [
             getOpenChats: function(callback) {
                 var openChats = {};
                 Chat.prototype.chatsArray.forEach(function(chat) {
-                    openChats[chat.chatId] = true;
+                    openChats[chat.chat_id] = true;
                 });
                 callback(openChats);
             },
@@ -155,7 +155,7 @@ define('chat_platform', [
                         break;
                     case 'notifyChat':
                         Chat.prototype.chatsArray.forEach(function(_chat) {
-                            if (messageData.chat_description.chatId === _chat.chatId) {
+                            if (messageData.chat_description.chat_id === _chat.chat_id) {
                                 _chat.trigger('notifyChat', messageData);
                             }
                         });
@@ -182,11 +182,11 @@ define('chat_platform', [
             /**
              * check generated chat id in the local database
              */
-            checkGeneratedChatId: function(chatId, callback) {
+            checkGeneratedChatId: function(chat_id, callback) {
                 var _this = this;
                 indexeddb.getByKeyPath(
                     chats_bus.collectionDescription,
-                    chatId,
+                    chat_id,
                     function(getError, chat) {
                         if (getError) {
                             callback(getError);
@@ -195,9 +195,9 @@ define('chat_platform', [
 
                         if (chat) {
                             console.log('Duplicated chat id found. Try generating the new one');
-                            _this.checkGeneratedChatId(chatId, callback);
+                            _this.checkGeneratedChatId(chat_id, callback);
                         } else {
-                            callback(null, chatId);
+                            callback(null, chat_id);
                         }
                     }
                 );
@@ -237,7 +237,7 @@ define('chat_platform', [
 
             addNewChatToUserChats: function(chat, callback){
                 users_bus.getMyInfo(null, function(error, options, info) {
-                    info.chatsIds.push(chat.chatId);
+                    info.chatsIds.push(chat.chat_id);
                     indexeddb.addOrUpdateAll(
                         users_bus.collectionDescription,
                         null,
@@ -276,7 +276,7 @@ define('chat_platform', [
                 if (messageData.type === "chat_joined") {
                     indexeddb.getByKeyPath(
                         chats_bus.collectionDescription,
-                        messageData.chat_description.chatId,
+                        messageData.chat_description.chat_id,
                         function(getError, localChatDescription) {
                             if (getError) {
                                 console.error(getError);
@@ -317,7 +317,9 @@ define('chat_platform', [
                         }], renderOptions);
                     }
 
-                    webrtc.handleConnectedDevices(messageData.connectedDevices, newChat);
+                    if (messageData.wscs_device_ids) {
+                        webrtc.handleConnectedDevices(messageData.wscs_device_ids, newChat);
+                    }
                 });
             },
 
@@ -337,7 +339,7 @@ define('chat_platform', [
                 element.disabled = true;
 
                 var chat_description = {
-                    "chatId": input.value
+                    "chat_id": input.value
                 };
 
                 websocket.sendMessage({
@@ -358,7 +360,7 @@ define('chat_platform', [
 
                 indexeddb.getByKeyPath(
                     chats_bus.collectionDescription,
-                    event.chat_description.chatId,
+                    event.chat_description.chat_id,
                     function(getError, chat_description) {
                         if (getError) {
                             console.error(getError);
@@ -367,23 +369,23 @@ define('chat_platform', [
 
                         if (!chat_description) {
                             _this.addNewChatToIndexedDB(event);
-                        } else if (chat_description && !_this.isChatOpened(chat_description.chatId)) {
+                        } else if (chat_description && !_this.isChatOpened(chat_description.chat_id)) {
                             _this.chatWorkflow(event);
                         } else if (chat_description) {
-                            webrtc.handleConnectedDevices(event.connectedDevices, _this.isChatOpened(chat_description.chatId));
+                            webrtc.handleConnectedDevices(event.wscs_device_ids, _this.isChatOpened(chat_description.chat_id));
                         }
                     }
                 );
             },
 
-            hideUIButton: function(chatId, buttonsElement) {
+            hideUIButton: function(chat_id, buttonsElement) {
                 var _this = this;
-                if (!_this.UIbuttonsByChatId[chatId]) {
-                    _this.UIbuttonsByChatId[chatId] = {};
-                    _this.UIbuttonsByChatId[chatId].buttons = [];
+                if (!_this.UIbuttonsByChatId[chat_id]) {
+                    _this.UIbuttonsByChatId[chat_id] = {};
+                    _this.UIbuttonsByChatId[chat_id].buttons = [];
                 }
                 buttonsElement.forEach(function(buttonElement){
-                    _this.UIbuttonsByChatId[chatId].buttons.push(buttonElement);
+                    _this.UIbuttonsByChatId[chat_id].buttons.push(buttonElement);
                     if (buttonElement.style.display === 'none') {
                         buttonElement.style.display = 'inherit';
                     } else {
@@ -392,10 +394,10 @@ define('chat_platform', [
                 });
             },
 
-            unHideUIButton: function(chatId) {
+            unHideUIButton: function(chat_id) {
                 var _this = this;
-                if (_this.UIbuttonsByChatId[chatId] && _this.UIbuttonsByChatId[chatId].buttons) {
-                    _this.UIbuttonsByChatId[chatId].buttons.forEach(function(button) {
+                if (_this.UIbuttonsByChatId[chat_id] && _this.UIbuttonsByChatId[chat_id].buttons) {
+                    _this.UIbuttonsByChatId[chat_id].buttons.forEach(function(button) {
                         if (button.style.display === 'none') {
                             button.style.display = 'inherit';
                         } else {
@@ -403,7 +405,7 @@ define('chat_platform', [
                         }
                     });
                 }
-                _this.UIbuttonsByChatId[chatId].buttons = [];
+                _this.UIbuttonsByChatId[chat_id].buttons = [];
             },
 
             /**
@@ -420,24 +422,24 @@ define('chat_platform', [
                     return;
                 }
 
-                if (!parentElement.dataset.chatid) {
+                if (!parentElement.dataset.chat_id) {
                     console.error(new Error('Chat wrapper does not have chat id!'));
                     return;
                 }
 
-                var chatId = parentElement.dataset.chatid;
-                if (_this.isChatOpened(chatId)) {
+                var chat_id = parentElement.dataset.chat_id;
+                if (_this.isChatOpened(chat_id)) {
                     console.error(new Error('Chat is already opened!'));
                     return;
                 }
-                _this.hideUIButton(chatId, control_buttons);
+                _this.hideUIButton(chat_id, control_buttons);
                 indexeddb.getByKeyPath(
                     chats_bus.collectionDescription,
-                    chatId,
+                    chat_id,
                     function(getError, chat) {
                         if (getError) {
                             console.error(getError);
-                            _this.unHideUIButton(chatId);
+                            _this.unHideUIButton(chat_id);
                             return;
                         }
 
@@ -450,7 +452,7 @@ define('chat_platform', [
                             });
                         } else {
                             console.error(new Error('Chat with such id not found in the database!'));
-                            _this.unHideUIButton(chatId);
+                            _this.unHideUIButton(chat_id);
                         }
                     }
                 );
@@ -489,7 +491,7 @@ define('chat_platform', [
             toCloseChat: function(chatToDestroyId, saveStates) {
                 var _this = this, chatToDestroy;
                 Chat.prototype.chatsArray.every(function(_chat) {
-                    if (_chat.chatId === chatToDestroyId) {
+                    if (_chat.chat_id === chatToDestroyId) {
                         chatToDestroy = _chat;
                     }
                     return !chatToDestroy;
@@ -511,13 +513,13 @@ define('chat_platform', [
             destroyChat: function(chatToDestroy) {
                 Chat.prototype.chatsArray.splice(Chat.prototype.chatsArray.indexOf(chatToDestroy), 1);
                 chatToDestroy.destroyChat();
-                event_bus.trigger('chatDestroyed', chatToDestroy.chatId);
+                event_bus.trigger('chatDestroyed', chatToDestroy.chat_id);
                 // TODO close indexeddb connections
             },
 
             destroyChats: function() {
                 Chat.prototype.chatsArray.forEach(function(chatToDestroy) {
-                    console.log(Chat.prototype.chatsArray, chatToDestroy.chatId);
+                    console.log(Chat.prototype.chatsArray, chatToDestroy.chat_id);
                     chatToDestroy.destroyChat();
                 });
                 Chat.prototype.chatsArray = [];
@@ -525,13 +527,11 @@ define('chat_platform', [
 
             /**
              * chat whether requested chat by its id is opened or not
-             * @param chatId
-             * @returns openedChat
              */
-            isChatOpened: function(chatId) {
+            isChatOpened: function(chat_id) {
                 var openedChat;
                 Chat.prototype.chatsArray.every(function(_chat) {
-                    if (_chat.chatId === chatId) {
+                    if (_chat.chat_id === chat_id) {
                         openedChat = _chat;
                     }
                     return !openedChat;

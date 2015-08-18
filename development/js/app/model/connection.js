@@ -78,7 +78,7 @@ function(
         getChat: function(chatDescription) {
             var chat;
             this.chats.every(function(_chat) {
-                if (_chat.chatId === chatDescription.chatId) {
+                if (_chat.chat_id === chatDescription.chat_id) {
                     chat = _chat;
                 }
                 return !chat;
@@ -94,8 +94,8 @@ function(
             return chat;
         },
 
-        removeChatById: function(chatId) {
-            var chat = this.getChat({ chatId: chatId });
+        removeChatById: function(chat_id) {
+            var chat = this.getChat({ chat_id: chat_id });
             if (chat) {
                 var index = this.chats.indexOf(chat);
                 if (index > -1) {
@@ -108,7 +108,7 @@ function(
         },
 
         storeInstance: function(instance) {
-            if (instance.chatId) {
+            if (instance.chat_id) {
                 this.storeChat(instance);
             } else if (instance.userId) {
                 // TODO use user model ?

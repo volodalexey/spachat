@@ -6,7 +6,7 @@ _in.config._byDataLocation.navbar = _in.config.byDataLocation.navbar;
 
 var calcDisplay = function(config) {
     if (_in.options && _in.options.openChats && config.data){
-        if (_in.options.openChats[_in.data.chatId]) {
+        if (_in.options.openChats[_in.data.chat_id]) {
             if (config.data.action === 'showChat') {
                 return false;
             }

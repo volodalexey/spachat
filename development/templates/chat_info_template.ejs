@@ -38,9 +38,9 @@ if (_in.config && _in.config._byDataLocation) {
 
     <% if (_in.data && _in.data.data) {
             _in.data.data.forEach(function (chat) { %>
-    <% var result = _in.data.openChatsInfoArray.indexOf(chat.chatId); %>
+    <% var result = _in.data.openChatsInfoArray.indexOf(chat.chat_id); %>
     <div data-action="show_more_info" data-role="chatWrapper"
-         data-chatid="<%= chat.chatId %>">
+         data-chat_id="<%= chat.chat_id %>">
         <% if (_in.config._byDataLocation.chats) { %>
             <% _in.config._byDataLocation.chats.configs.forEach(function (config) { %>
             <% var element = _in.triple_element_template({

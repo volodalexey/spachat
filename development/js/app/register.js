@@ -8,9 +8,9 @@ define('register', [
         //
         'id_core',
         'users_bus',
-
+        'websocket',
         'indexeddb',
-
+        //
         'text!../templates/register_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
@@ -27,9 +27,9 @@ define('register', [
             //
              id_core,
              users_bus,
-
+             websocket,
              indexeddb,
-
+            //
              register_template,
              triple_element_template,
              button_template,
@@ -130,6 +130,7 @@ define('register', [
                                 }
 
                                 users_bus.setUserId(account.userId);
+                                websocket.createAndListen();
                                 history.pushState(null, null, 'chat');
                                 _this.navigator.navigate();
                             }

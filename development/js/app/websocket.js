@@ -30,9 +30,11 @@ define('websocket', [
             },
 
             dispose: function() {
-                this.removeSocketListeners(this.socket);
-                this.socket.close();
-                this.socket = null;
+                this.removeSocketListeners();
+                if (this.socket) {
+                    this.socket.close();
+                    this.socket = null;
+                }
             },
 
             addSocketListeners: function() {
