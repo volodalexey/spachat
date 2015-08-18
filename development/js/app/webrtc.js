@@ -6,6 +6,7 @@ define('webrtc', [
         'event_bus',
         'users_bus',
         'connection',
+        'websocket',
         //
         'text!../templates/webrtc_template.ejs',
         'text!../templates/waiter_template.ejs'
@@ -17,6 +18,7 @@ define('webrtc', [
              event_bus,
              users_bus,
              Connection,
+             websocket,
             //
              webrtc_template,
              waiter_template) {
@@ -40,6 +42,21 @@ define('webrtc', [
         };
 
         WebRTC.prototype = {
+
+            addEventListeners: function() {
+                var _this = this;
+                _this.removeEventListeners();
+                event_bus.on('chatDestroyed', _this.destroyConnectionChat, _this);
+                event_bus.on('connectionDestroyed', _this.onConnectionDestroyed, _this);
+                websocket.on('message', _this.onWebSocketMessage, _this);
+            },
+
+            removeEventListeners: function() {
+                var _this = this;
+                event_bus.off('chatDestroyed', _this.destroyConnectionChat);
+                event_bus.off('connectionDestroyed', _this.onConnectionDestroyed);
+                websocket.off('message', _this.onWebSocketMessage);
+            },
 
             createConnection: function(options) {
                 var connection = new Connection(options);
@@ -675,17 +692,16 @@ define('webrtc', [
                 _this.connections.splice(_this.connections.indexOf(connection), 1);
             },
 
-            addEventListeners: function() {
+            onWebSocketMessage: function(messageData) {
                 var _this = this;
-                _this.removeEventListeners();
-                event_bus.on('chatDestroyed', _this.destroyConnectionChat, _this);
-                event_bus.on('connectionDestroyed', _this.onConnectionDestroyed, _this);
-            },
 
-            removeEventListeners: function() {
-                var _this = this;
-                event_bus.off('chatDestroyed', _this.destroyConnectionChat);
-                event_bus.off('connectionDestroyed', _this.onConnectionDestroyed);
+                switch (messageData.type) {
+                    case 'notify_webrtc':
+                        if (_this[messageData.notify_data]) {
+                            _this[messageData.notify_data](messageData);
+                        }
+                        break;
+                }
             }
         };
         extend_core.prototype.inherit(WebRTC, throw_event_core);

@@ -122,7 +122,7 @@ function(
         },
 
         sendToWebSocket: function(messageData) {
-            messageData.context_description = this.getContextDescription();
+            //messageData.context_description = this.getContextDescription();
             websocket.sendMessage(messageData);
         },
 

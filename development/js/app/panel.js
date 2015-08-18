@@ -818,6 +818,7 @@ define('panel', [
                 _this.removeMainEventListeners();
                 _this.removeToolbarEventListeners();
                 websocket.dispose();
+                webrtc.destroy();
                 history.pushState(null, null, 'login');
                 _this.navigator.navigate();
             },
