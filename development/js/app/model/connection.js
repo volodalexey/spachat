@@ -12,8 +12,8 @@ function(
      * communication with device is handling in terms of chat/user
      */
     var Connection = function(options) {
-        this.chats = [];
-        this.users = [];
+        this.chats_ids = [];
+        this.users_ids = [];
         this.ws_device_id = options.ws_device_id;
         this.active = {
             readyState: options.active && options.active.readyState ? options.active.readyState : this.readyStates.WAITING,
@@ -37,11 +37,11 @@ function(
             WILL_ACCEPT_ANSWER: 'WILL_ACCEPT_ANSWER'
         },
 
-        set_ws_device_id: function(ws_device_id) {
+        setWSDeviceId: function(ws_device_id) {
             this.ws_device_id = ws_device_id;
         },
 
-        get_ws_device_id: function() {
+        getWSDeviceId: function() {
             return this.ws_device_id;
         },
 
@@ -56,50 +56,11 @@ function(
             return true;
         },
 
-        getUser: function(messageDescription) {
-            var user;
-            this.users.every(function(_user) {
-                if (_user.user_id === messageDescription.user_id) {
-                    user = _user;
-                }
-                return !user;
-            });
-            return user;
-        },
-
-        storeUser: function(userDescription) {
-            var user = this.getUser(userDescription);
-            if (!user) {
-                this.users.push(userDescription);
-            }
-            return user;
-        },
-
-        getChat: function(chatDescription) {
-            var chat;
-            this.chats.every(function(_chat) {
-                if (_chat.chat_id === chatDescription.chat_id) {
-                    chat = _chat;
-                }
-                return !chat;
-            });
-            return chat;
-        },
-
-        storeChat: function(chatDescription) {
-            var chat = this.getChat(chatDescription);
-            if (!chat) {
-                this.chats.push(chatDescription);
-            }
-            return chat;
-        },
-
-        removeChatById: function(chat_id) {
-            var chat = this.getChat({ chat_id: chat_id });
-            if (chat) {
-                var index = this.chats.indexOf(chat);
+        removeChatId: function(chat_id) {
+            if (this.hasChatId(chat_id)) {
+                var index = this.chats_ids.indexOf(chat_id);
                 if (index > -1) {
-                    this.chats.splice(index, 1);
+                    this.chats_ids.splice(index, 1);
                 }
             }
             if (!this.handleAnyContexts()) {
@@ -107,12 +68,52 @@ function(
             }
         },
 
-        storeInstance: function(instance) {
-            if (instance.chat_id) {
-                this.storeChat(instance);
-            } else if (instance.user_id) {
-                // TODO use user model ?
-                this.storeUser(instance);
+        hasUserId: function(user_id) {
+            var foundUserId = false;
+            this.users_ids.every(function(_user_id) {
+                if (_user_id === user_id) {
+                    foundUserId = _user_id;
+                }
+                return !foundUserId;
+            });
+            return foundUserId;
+        },
+
+        hasChatId: function(chat_id) {
+            var foundChatId = false;
+            this.chats_ids.every(function(_chat_id) {
+                if (_chat_id === chat_id) {
+                    foundChatId = _chat_id;
+                }
+                return !foundChatId;
+            });
+            return foundChatId;
+        },
+
+        putUserId: function(user_id) {
+            if (this.hasUserId(user_id) === false) {
+                this.users_ids.push(user_id);
+            }
+        },
+
+        putChatId: function(chat_id) {
+            if (this.hasChatId(chat_id) === false) {
+                this.chats_ids.push(chat_id);
+            }
+        },
+
+        storeContext: function(ws_descr) {
+            if (ws_descr.chat_id) {
+                this.putChatId(ws_descr.chat_id);
+            } else if (ws_descr.user_id) {
+                this.putUserId(ws_descr);
+            }
+        },
+
+        getContextDescription: function() {
+            return {
+                chats_ids: chats_ids,
+                users_ids: users_ids
             }
         },
 
@@ -121,22 +122,17 @@ function(
         },
 
         sendToWebSocket: function(messageData) {
-            var _this = this;
-            if (messageData.type === 'chat_offer' ||
-                messageData.type === 'chat_accept' ||
-                messageData.type === 'chat_answer') {
-                messageData.chat_description = _this.chats[0].valueOfChat();
-            }
+            messageData.context_description = this.getContextDescription();
             websocket.sendMessage(messageData);
         },
 
         handleAnyContexts: function() {
-            return this.chats.length || this.users.length;
+            return this.chats_ids.length || this.users_ids.length;
         },
 
         destroy: function() {
-            this.chats = [];
-            this.users = [];
+            this.chats_ids = [];
+            this.users_ids = [];
             event_bus.trigger('connectionDestroyed', this);
         }
     };

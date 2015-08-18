@@ -318,8 +318,8 @@ define('chat_platform', [
                         }], renderOptions);
                     }
 
-                    if (messageData.wscs_device_ids) {
-                        webrtc.handleConnectedDevices(messageData.wscs_device_ids, newChat);
+                    if (messageData.chat_wscs_descrs) {
+                        webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
                     }
                 });
             },
@@ -372,8 +372,8 @@ define('chat_platform', [
                             _this.addNewChatToIndexedDB(event);
                         } else if (chat_description && !_this.isChatOpened(chat_description.chat_id)) {
                             _this.chatWorkflow(event);
-                        } else if (chat_description) {
-                            webrtc.handleConnectedDevices(event.wscs_device_ids, _this.isChatOpened(chat_description.chat_id));
+                        } else if (chat_description && _this.isChatOpened(chat_description.chat_id) && event.chat_wscs_descrs) {
+                            webrtc.handleConnectedDevices(event.chat_wscs_descrs);
                         }
                     }
                 );

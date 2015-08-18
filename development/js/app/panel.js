@@ -1005,10 +1005,14 @@ define('panel', [
                                     return;
                                 }
 
-                                webrtc.handleDeviceActive(messageData.from_ws_device_id, user_description);
+                                if (messageData.user_wscs_descrs) {
+                                    webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
+                                }
                             });
                         } else if (user_description) {
-                            webrtc.handleDeviceActive(messageData.from_ws_device_id, user_description);
+                            if (messageData.user_wscs_descrs) {
+                                webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
+                            }
                         }
                     }
                 );

@@ -18,7 +18,6 @@ define('chat', [
         'template_core',
         'id_core',
         'extend_core',
-        'message_core',
         'throw_event_core',
         "switcher_core",
         'model_core',
@@ -54,7 +53,6 @@ define('chat', [
              template_core,
              id_core,
              extend_core,
-             message_core,
              throw_event_core,
              switcher_core,
              model_core,
@@ -666,14 +664,12 @@ define('chat', [
                 _this.removeEventListeners();
                 _this.on('throw', _this.throwRouter, _this);
                 _this.on('log', _this.console.log, _this);
-                _this.on('notifyChat', _this.onMessageRouter, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 _this.off('throw', _this.throwRouter);
                 _this.off('log');
-                _this.off('notifyChat');
             },
 
             throwRouter: function(action, event) {
@@ -755,26 +751,6 @@ define('chat', [
             fillMessages: function(obj) {
                 var _this = this;
                 _this.messages.fillListMessage(obj);
-            },
-
-            // TODO connect webrtc.js direct to message router
-            onMessageRouter: function(eventData) {
-                var _this = this;
-                if (_this[eventData.notify_data]) {
-                    _this[eventData.notify_data](eventData);
-                } else if (_this.messages[eventData.notify_data]) {
-                    _this.messages[eventData.notify_data](eventData);
-                } else if (webrtc[eventData.notify_data]) {
-                    webrtc[eventData.notify_data](eventData, _this);
-                }
-            },
-
-            /**
-             * both peers are notified with this function
-             * if all server side steps were made
-             */
-            chatConnectionEstablished: function() {
-                console.log('chatConnectionEstablished');
             }
 
         };
@@ -782,7 +758,6 @@ define('chat', [
         extend_core.prototype.inherit(chat, template_core);
         extend_core.prototype.inherit(chat, id_core);
         extend_core.prototype.inherit(chat, extend_core);
-        extend_core.prototype.inherit(chat, message_core);
         extend_core.prototype.inherit(chat, throw_event_core);
         extend_core.prototype.inherit(chat, switcher_core);
         extend_core.prototype.inherit(chat, model_core);

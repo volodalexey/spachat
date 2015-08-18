@@ -62,21 +62,24 @@ define('webrtc', [
             /**
              * this function is invoked when chat was created or joined
              */
-            handleConnectedDevices: function(wscs_device_ids, curInstance) {
+            handleConnectedDevices: function(wscs_descrs) {
                 var _this = this;
-                wscs_device_ids.forEach(function(ws_device_id) {
-                    _this.handleDeviceActive(ws_device_id, curInstance);
+                if (!wscs_descrs && !Array.isArray(wscs_descrs)) {
+                    return;
+                }
+                wscs_descrs.forEach(function(ws_descr) {
+                    _this.handleDeviceActive(ws_descr);
                 });
             },
 
-            handleDeviceActive: function(ws_device_id, curInstance) {
+            handleDeviceActive: function(ws_descr) {
                 var _this = this;
-                if (event_bus.ws_device_id === ws_device_id) {
+                if (event_bus.ws_device_id === ws_descr.ws_device_id) {
                     console.warn('the information about myself');
                     return;
                 }
 
-                var connection = _this.getConnection(ws_device_id);
+                var connection = _this.getConnection(ws_descr.ws_device_id);
                 if (connection && connection.canApplyNextState() === false) {
                     return;
                 }
@@ -88,7 +91,7 @@ define('webrtc', [
                 }
                 // change readyState for existing connection
                 connection.active.readyState = Connection.prototype.readyStates.WILL_CREATE_OFFER;
-                connection.storeInstance(curInstance);
+                connection.storeContext(ws_descr);
                 _this.onActiveChangeState(connection);
             },
 
@@ -96,7 +99,7 @@ define('webrtc', [
              * server stored local offer for current chat
              * need to join this offer of wait for connections if current user is creator
              */
-            handleDevicePassive: function(messageData, curInstance) {
+            handleDevicePassive: function(messageData) {
                 var _this = this;
                 if (event_bus.get_ws_device_id() === messageData.from_ws_device_id) {
                     console.warn('the information about myself');
@@ -116,11 +119,11 @@ define('webrtc', [
                 // change readyState for existing connection
                 connection.passive.readyState = Connection.prototype.readyStates.WILL_CREATE_ANSWER;
                 connection.passive.remoteOfferDescription = messageData.offerDescription;
-                connection.storeInstance(curInstance);
+                connection.storeContext(messageData);
                 _this.onPassiveChangeState(connection);
             },
 
-            handleDeviceAnswer: function(messageData, curInstance) {
+            handleDeviceAnswer: function(messageData) {
                 var _this = this;
                 // I am NOT the creator of server stored answer
                 if (event_bus.get_ws_device_id() === messageData.from_ws_device_id) {
@@ -139,12 +142,12 @@ define('webrtc', [
                     // Accept answer if I am the offer creator
                     connection.active.readyState = Connection.prototype.readyStates.WILL_ACCEPT_ANSWER;
                     connection.active.remoteAnswerDescription = messageData.answerDescription;
-                    connection.storeInstance(curInstance);
+                    connection.storeContext(messageData);
                     _this.onActiveChangeState(connection);
                 }
             },
 
-            extract_sdp_device_id: function(RTCSessionDescription) {
+            extractSDPDeviceId: function(RTCSessionDescription) {
                 return RTCSessionDescription.sdp.match(/a=fingerprint:sha-256\s*(.+)/)[1];
             },
 
@@ -157,10 +160,10 @@ define('webrtc', [
 
                 curConnection.active.readyState = Connection.prototype.readyStates.WAITING;
                 curConnection.sendToWebSocket({
-                    type: 'chat_offer',
+                    type: 'webrtc_offer',
                     from_user_id: users_bus.getUserId(),
                     from_ws_device_id: event_bus.get_ws_device_id(),
-                    to_ws_device_id: curConnection.get_ws_device_id(),
+                    to_ws_device_id: curConnection.getWSDeviceId(),
                     offerDescription: result.peerConnection.localDescription
                 });
             },
@@ -191,10 +194,10 @@ define('webrtc', [
                 }
 
                 curConnection.sendToWebSocket({
-                    type: 'chat_accept',
+                    type: 'webrtc_accept',
                     from_user_id: users_bus.getUserId(),
                     from_ws_device_id: event_bus.get_ws_device_id(),
-                    to_ws_device_id: curConnection.get_ws_device_id()
+                    to_ws_device_id: curConnection.getWSDeviceId()
                 });
             },
 
@@ -229,10 +232,10 @@ define('webrtc', [
                 //curConnection.passive.peerConnection.ondatachannel = _this.onReceivedDataChannel.bind(_this, curConnection);
                 curConnection.passive.readyState = Connection.prototype.readyStates.WAITING;
                 curConnection.sendToWebSocket({
-                    type: 'chat_answer',
+                    type: 'webrtc_answer',
                     from_user_id: users_bus.getUserId(),
                     from_ws_device_id: event_bus.get_ws_device_id(),
-                    to_ws_device_id: curConnection.get_ws_device_id(),
+                    to_ws_device_id: curConnection.getWSDeviceId(),
                     answerDescription: result.peerConnection.localDescription
                 });
             },
@@ -485,7 +488,7 @@ define('webrtc', [
                 var _this = this;
 
                 try {
-                    var dataChannel = peerConnection.createDataChannel(curConnection.get_ws_device_id(), {reliable: true});
+                    var dataChannel = peerConnection.createDataChannel(curConnection.getWSDeviceId(), {reliable: true});
                 } catch (error) {
                     if (onDataChannelCreated) {
                         onDataChannelCreated(error , null, null, null, callback);
@@ -661,7 +664,7 @@ define('webrtc', [
             destroyConnectionChat: function(chat_id) {
                 var _this = this;
                 _this.connections.forEach(function(connetion) {
-                    connetion.removeChatById(chat_id);
+                    connetion.removeChatId(chat_id);
                 });
             },
 
