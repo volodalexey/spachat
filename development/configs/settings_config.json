@@ -107,5 +107,39 @@
       "role": "sizeChatButton",
       "action": "changeChatSize"
     }
+  },
+  {
+    "element": "button",
+    "icon": "",
+    "text": 75,
+    "location": "size",
+    "data": {
+      "action": "saveAsCustomWidth",
+      "role": "saveAsCustomWidth"
+    },
+    "class": "hide",
+    "name": "saveAsCustomWidth"
+  },
+  {
+    "element": "input",
+    "type": "checkbox",
+    "class": "check-box-size hide",
+    "location": "size",
+    "name": "size",
+    "data": {
+      "key": "adjust_width",
+      "role": "adjust_width",
+      "action": "changeAdjustWidth"
+    }
+  },
+  {
+    "element": "label",
+    "text": 76,
+    "location": "size",
+    "class": "hide",
+    "sort": 2,
+    "data": {
+      "role": "adjust_width_label"
+    }
   }
 ]

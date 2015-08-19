@@ -227,6 +227,8 @@ define('chat', [
                 size_700: false,
                 size_1050: false,
                 size_custom: false,
+                adjust_width: false,
+                size_custom_value: '350px',
                 size_current: '350px'
             }
         };
@@ -328,13 +330,6 @@ define('chat', [
                 _this.chat_wrapper.insertAdjacentHTML('beforeend', _this.chat_template({chat: this}));
                 _this.cashElements();
                 _this.chat_element.style.width = _this.settings_ListOptions.size_current;
-                if (_this.settings_ListOptions.size_custom){
-                    _this.toggleShowSplitterItems(true, _this.splitter_left);
-                    _this.toggleShowSplitterItems(true, _this.splitter_right);
-                } else {
-                    _this.toggleShowSplitterItems(false, _this.splitter_left);
-                    _this.toggleShowSplitterItems(false, _this.splitter_right);
-                }
                 _this.header_waiter_container.innerHTML = _this.waiter_template();
                 _this.addEventListeners();
             },

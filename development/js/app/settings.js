@@ -65,6 +65,9 @@ define('settings', [
             cashElements: function() {
                 var _this = this;
                 _this.sizeButtonsArray = Array.prototype.slice.call(_this.chat.body_container.querySelectorAll('[data-role="sizeChatButton"]'));
+                _this.save_custom_width = _this.chat.body_container.querySelector('[data-role="saveAsCustomWidth"]');
+                _this.adjust_width = _this.chat.body_container.querySelector('[data-role="adjust_width"]');
+                _this.adjust_width_label = _this.chat.body_container.querySelector('[data-role="adjust_width_label"]');
             },
 
             //override extended throwEvent to use trigger on chat
@@ -87,12 +90,15 @@ define('settings', [
                         "size_350": _this.chat.settings_ListOptions.size_350,
                         "size_700": _this.chat.settings_ListOptions.size_700,
                         "size_1050": _this.chat.settings_ListOptions.size_1050,
+                        "adjust_width": _this.chat.settings_ListOptions.adjust_width,
                         "size_custom": _this.chat.settings_ListOptions.size_custom,
                         "index": _this.chat.index
                     };
                     _this.renderLayout(data, function(){
                         _this.addEventListener();
                         _this.cashElements();
+                        _this.showSizeElement();
+                        _this.showSplitterItems();
                     });
                 }
             },
@@ -106,25 +112,77 @@ define('settings', [
                 }
             },
 
+            saveAsCustomWidth: function() {
+                var _this = this;
+                _this.sizeButtonsArray.forEach(function(_input) {
+                    if (_input.dataset.value) {
+                        if (_this.chat.settings_ListOptions[_input.dataset.key]) {
+                            _this.chat.settings_ListOptions.size_custom_value = _input.dataset.value + 'px';
+                            _this.chat.settings_ListOptions.size_current = _input.dataset.value + 'px';
+                        }
+                        _this.chat.settings_ListOptions[_input.dataset.key] = false;
+                    } else {
+                        _this.chat.settings_ListOptions.size_custom = true;
+                    }
+                });
+                _this.chat.body.previousMode = null;
+                _this.renderSettings(null, _this.chat);
+            },
+
+            changeAdjustWidth: function(element) {
+                var _this = this;
+                if (element.checked) {
+                    _this.chat.settings_ListOptions.adjust_width = true;
+                } else {
+                    _this.chat.settings_ListOptions.adjust_width = false;
+                }
+                _this.showSplitterItems();
+            },
+
             changeChatSize: function(element) {
                 var _this = this;
                 if (element.dataset.value && _this.chat.chat_element) {
                     _this.chat.chat_element.style.width = element.dataset.value + 'px';
-                    _this.toggleShowSplitterItems(false, _this.chat.splitter_left);
-                    _this.toggleShowSplitterItems(false, _this.chat.splitter_right);
-                } else {
-                    _this.toggleShowSplitterItems(true, _this.chat.splitter_left);
-                    _this.toggleShowSplitterItems(true, _this.chat.splitter_right);
+                    _this.chat.settings_ListOptions.size_current = element.dataset.value + 'px';
                 }
                 if (element.dataset.key){
-                    _this.sizeButtonsArray.forEach(function(_button) {
-                        if (_button.dataset.key === element.dataset.key) {
-                            _this.chat.settings_ListOptions[_button.dataset.key] = true;
-                            _this.chat.settings_ListOptions.size_current = element.dataset.value + 'px';
+                    _this.sizeButtonsArray.forEach(function(_input) {
+                        if (_input.dataset.key === element.dataset.key) {
+                            _this.chat.settings_ListOptions[_input.dataset.key] = true;
+                            if (_input.dataset.key === 'size_custom') {
+                                _this.chat.chat_element.style.width = _this.chat.settings_ListOptions.size_custom_value;
+                                _this.chat.settings_ListOptions.size_current = _this.chat.settings_ListOptions.size_custom_value;
+                            }
                         } else {
-                            _this.chat.settings_ListOptions[_button.dataset.key] = false;
+                            _this.chat.settings_ListOptions[_input.dataset.key] = false;
                         }
                     });
+                }
+                _this.showSizeElement();
+                _this.showSplitterItems();
+            },
+
+            showSizeElement: function() {
+                var _this = this;
+                if (_this.chat.settings_ListOptions.size_custom) {
+                    _this.adjust_width.classList.remove('hide');
+                    _this.adjust_width_label.classList.remove('hide');
+                    _this.save_custom_width.classList.add('hide');
+                } else {
+                    _this.save_custom_width.classList.remove('hide');
+                    _this.adjust_width.classList.add('hide');
+                    _this.adjust_width_label.classList.add('hide');
+                }
+            },
+
+            showSplitterItems: function() {
+                var _this = this;
+                if (_this.chat.settings_ListOptions.size_custom && _this.chat.settings_ListOptions.adjust_width) {
+                    _this.toggleShowSplitterItems(true, _this.chat.splitter_left);
+                    _this.toggleShowSplitterItems(true, _this.chat.splitter_right);
+                } else {
+                    _this.toggleShowSplitterItems(false, _this.chat.splitter_left);
+                    _this.toggleShowSplitterItems(false, _this.chat.splitter_right);
                 }
             },
 
