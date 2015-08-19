@@ -667,10 +667,10 @@ define('chat', [
                 _this.addRemoveListener('add', _this.splitter_right, 'mousedown', _this.bindedStartResizer, false);
                 _this.addRemoveListener('add', _this.splitter_left, 'touchstart', _this.bindedStartResizer, false);
                 _this.addRemoveListener('add', _this.splitter_right, 'touchstart', _this.bindedStartResizer, false);
-
-
-                //_this.table_resize_container.$el.on('mouseup touchend mousemove touchmove', $.proxy(_this.handleResizer, _this));
-
+                _this.addRemoveListener('add', _this.splitter_right, 'touchmove', _this.bindedStartResizer, false);
+                _this.addRemoveListener('add', _this.splitter_left, 'touchmove', _this.bindedStartResizer, false);
+                _this.addRemoveListener('add', _this.splitter_right, 'touchend', _this.bindedStartResizer, false);
+                _this.addRemoveListener('add', _this.splitter_left, 'touchend', _this.bindedStartResizer, false);
             },
 
             removeEventListeners: function() {
@@ -681,6 +681,10 @@ define('chat', [
                 _this.addRemoveListener('remove', _this.splitter_left, 'touchstart', _this.bindedStartResizer, false);
                 _this.addRemoveListener('remove', _this.splitter_right, 'mousedown', _this.bindedStartResizer, false);
                 _this.addRemoveListener('remove', _this.splitter_right, 'touchstart', _this.bindedStartResizer, false);
+                _this.addRemoveListener('remove', _this.splitter_right, 'touchmove', _this.bindedStartResizer, false);
+                _this.addRemoveListener('remove', _this.splitter_left, 'touchmove', _this.bindedStartResizer, false);
+                _this.addRemoveListener('remove', _this.splitter_right, 'touchend', _this.bindedStartResizer, false);
+                _this.addRemoveListener('remove', _this.splitter_left, 'touchend', _this.bindedStartResizer, false);
             },
 
             throwRouter: function(action, event) {
@@ -696,6 +700,9 @@ define('chat', [
                 switch (event.type) {
                     case 'mousedown':case 'touchstart':
                     event_bus.trigger('transformToResizeState', event, _this);
+                    break;
+                    case 'touchmove': case 'touchend':
+                    event_bus.trigger('redirectResize', event, _this);
                     break;
                 }
             },
