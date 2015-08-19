@@ -107,6 +107,7 @@ define('chat_platform', [
                 _this.addRemoveListener('add', _this.chat_resize_container, 'mousemove', _this.bindedHandleResizer, false);
                 _this.addRemoveListener('add', _this.chat_resize_container, 'touchmove', _this.bindedHandleResizer, false);
                 event_bus.on('transformToResizeState', _this.transformToResizeState, _this);
+                event_bus.on('redirectResize', _this.handleResizer, _this);
             },
 
             removeEventListeners: function() {
@@ -118,6 +119,7 @@ define('chat_platform', [
                 event_bus.off('toCloseChat', _this.toCloseChat);
                 event_bus.off('notifyChat', _this.onChatMessageRouter);
                 event_bus.off('transformToResizeState', _this.transformToResizeState);
+                event_bus.off('redirectResize', _this.handleResizer, _this);
                 websocket.off('message', _this.onChatMessageRouter);
                 _this.off('joinByChatIdAuto');
                 _this.off('showChat');
@@ -138,7 +140,11 @@ define('chat_platform', [
             transformToResizeState: function(event, _chat) {
                 var _this = this;
                 _this.chat_resize_container.classList.add('draggable');
-                _this.line_resize.style.left = event.clientX + 'px';
+                if (event.type === 'touchstart' && event.changedTouches) {
+                    _this.line_resize.style.left = event.changedTouches[0].clientX + 'px';
+                } else {
+                    _this.line_resize.style.left = event.clientX + 'px';
+                }
                 _this.resizeMouseDown = true;
                 _this.positionrSplitterItem = event.currentTarget.dataset.splitteritem;
                 _this.chatResize = _chat;
@@ -150,8 +156,6 @@ define('chat_platform', [
 
             handleResizer: function(event) {
                 var _this = this;
-                event.stopPropagation();
-                event.preventDefault();
                 switch (event.type) {
                     case 'mousemove':
                     case 'touchmove':
