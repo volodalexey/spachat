@@ -118,7 +118,11 @@ function(
         },
 
         log: function(type, messageObject) {
-            console.log(type, messageObject.message);
+            if (console[type]) {
+                console[type](messageObject.message);
+            } else {
+                console.log(type, messageObject.message);
+            }
         },
 
         sendToWebSocket: function(messageData) {

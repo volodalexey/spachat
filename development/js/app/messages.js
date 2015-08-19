@@ -154,7 +154,7 @@ define('messages', [
                             mode === _this.chat.body.MODE.MESSAGES) {
                             var messageData = {
                                 type: "notifyChat",
-                                notify_data: "addRemoteMessage",
+                                chat_type: "chat_message",
                                 message: message,
                                 chat_description: _this.chat.valueOfChat()
                             };

@@ -258,7 +258,7 @@ define('chat_platform', [
                     case 'notifyChat':
                         Chat.prototype.chatsArray.forEach(function(_chat) {
                             if (messageData.chat_description.chat_id === _chat.chat_id) {
-                                _chat.trigger('notifyChat', messageData);
+                                _chat.trigger(messageData.chat_type, messageData);
                             }
                         });
                         break;

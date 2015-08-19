@@ -272,7 +272,7 @@ define('chat', [
 
             bindContexts: function() {
                 var _this = this;
-                //_this.bindedThrowRouter = _this.throwRouter.bind(_this);
+                _this.bindedOnChatMessage = _this.onChatMessage.bind(_this);
                 _this.bindedStartResizer = _this.startResizer.bind(_this);
             },
 
@@ -663,6 +663,7 @@ define('chat', [
                 _this.removeEventListeners();
                 _this.on('throw', _this.throwRouter, _this);
                 _this.on('log', _this.console.log, _this);
+                _this.on('chat_message', _this.bindedOnChatMessage, _this);
                 _this.addRemoveListener('add', _this.splitter_left, 'mousedown', _this.bindedStartResizer, false);
                 _this.addRemoveListener('add', _this.splitter_right, 'mousedown', _this.bindedStartResizer, false);
                 _this.addRemoveListener('add', _this.splitter_left, 'touchstart', _this.bindedStartResizer, false);
@@ -677,6 +678,7 @@ define('chat', [
                 var _this = this;
                 _this.off('throw', _this.throwRouter);
                 _this.off('log');
+                _this.off('chat_message', _this.bindedOnChatMessage);
                 _this.addRemoveListener('remove', _this.splitter_left, 'mousedown', _this.bindedStartResizer, false);
                 _this.addRemoveListener('remove', _this.splitter_left, 'touchstart', _this.bindedStartResizer, false);
                 _this.addRemoveListener('remove', _this.splitter_right, 'mousedown', _this.bindedStartResizer, false);
@@ -777,8 +779,11 @@ define('chat', [
             fillMessages: function(obj) {
                 var _this = this;
                 _this.messages.fillListMessage(obj);
-            }
+            },
 
+            onChatMessage: function(eventData) {
+                this.messages.addRemoteMessage(eventData);
+            }
         };
         extend_core.prototype.inherit(chat, ajax_core);
         extend_core.prototype.inherit(chat, template_core);
