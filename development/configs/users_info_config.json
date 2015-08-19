@@ -11,8 +11,7 @@
     "class": "",
     "location": "user_id",
     "data": {
-      "role": "user_id_label",
-      "mode": "JOIN_USER"
+      "role": "user_id_label"
     },
     "for": "user_id",
     "name": "",
@@ -26,12 +25,41 @@
     "class": "flex-item-w50p",
     "location": "user_id",
     "data": {
-      "role": "user_id_input",
-      "mode": "JOIN_USER"
+      "role": "user_id_input"
     },
     "name": "",
     "id": "user_id",
     "disabled": false
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-between",
+    "location": "user_message"
+  },
+  {
+    "element": "label",
+    "icon": "",
+    "text": 67,
+    "class": "",
+    "location": "user_message",
+    "data": {
+      "role": "user_message_label"
+    },
+    "for": "user_message",
+    "name": ""
+  },
+  {
+    "element": "input",
+    "type": "text",
+    "icon": "",
+    "text": "",
+    "class": "flex-item-w50p",
+    "location": "user_message",
+    "data": {
+      "role": "user_message_input"
+    },
+    "name": "",
+    "id": "user_message"
   },
   {
     "role": "locationWrapper",

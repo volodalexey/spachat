@@ -913,8 +913,9 @@ define('panel', [
             requestFriendByUserId: function() {
                 var _this = this;
                 var user_id_input = _this.body_container.querySelector('[data-role="user_id_input"]');
+                var user_message_input = _this.body_container.querySelector('[data-role="user_message_input"]');
 
-                if (user_id_input && user_id_input.value) {
+                if (user_id_input && user_id_input.value && user_message_input && user_message_input.value) {
                     users_bus.getUserDescription({}, function(error, user_description) {
                         if (error) {
                             console.error(error);
@@ -927,7 +928,7 @@ define('panel', [
                             from_user_description: user_description,
                             to_user_id: user_id_input.value,
                             request_body: {
-                                message: "Hi!"
+                                message: user_message_input.value
                             }
                         });
                     });
@@ -1004,7 +1005,7 @@ define('panel', [
                             return;
                         }
 
-                        if (!user_description) {
+                        if (!user_description && confirm(messageData.request_body.message)) {
                             _this.addNewUserToIndexedDB(messageData.from_user_description, function(error, user_description) {
                                 if (error) {
                                     console.error(error);
