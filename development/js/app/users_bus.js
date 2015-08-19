@@ -143,9 +143,11 @@ define('users_bus', [
 
                     if (!_this.hasInArray(userInfo[arrayName], item)) {
                         userInfo[arrayName].push(item);
-                        _this.saveMyInfo(userInfo, callback);
+                        _this.saveMyInfo(userInfo, function(err) {
+                            callback(err, userInfo);
+                        });
                     } else {
-                        callback(null);
+                        callback(null, userInfo);
                     }
                 });
             },

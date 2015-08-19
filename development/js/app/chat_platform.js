@@ -313,7 +313,16 @@ define('chat_platform', [
             chatCreateApproved: function(event) {
                 var _this = this;
                 event_bus.set_ws_device_id(event.from_ws_device_id);
-                _this.addNewChatToIndexedDB(event);
+
+                users_bus.putChatIdAndSave(event.chat_description.chat_id, function(err, userInfo) {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+
+                    event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
+                    _this.addNewChatToIndexedDB(event);
+                });
             },
 
             addNewChatToIndexedDB: function(event) {
@@ -330,34 +339,10 @@ define('chat_platform', [
                             console.error(error);
                             return;
                         }
-                        _this.addNewChatToUserChats(chat, function() {
-                            _this.chatWorkflow(event);
-                        });
+
+                        _this.chatWorkflow(event);
                     }
                 );
-            },
-
-            addNewChatToUserChats: function(chat, callback) {
-                users_bus.getMyInfo(null, function(error, options, info) {
-                    info.chat_ids.push(chat.chat_id);
-                    indexeddb.addOrUpdateAll(
-                        users_bus.collectionDescription,
-                        null,
-                        [
-                            info
-                        ],
-                        function(error) {
-                            if (error) {
-                                console.error(error);
-                                return;
-                            }
-                            event_bus.trigger('AddedNewChat', info.chat_ids.length);
-                            if (callback) {
-                                callback();
-                            }
-                        }
-                    );
-                });
             },
 
             chatWorkflow: function(event) {
@@ -470,13 +455,22 @@ define('chat_platform', [
                             return;
                         }
 
-                        if (!chat_description) {
-                            _this.addNewChatToIndexedDB(event);
-                        } else if (chat_description && !_this.isChatOpened(chat_description.chat_id)) {
-                            _this.chatWorkflow(event);
-                        } else if (chat_description && _this.isChatOpened(chat_description.chat_id) && event.chat_wscs_descrs) {
-                            webrtc.handleConnectedDevices(event.chat_wscs_descrs);
-                        }
+                        users_bus.putChatIdAndSave(event.chat_description.chat_id, function(err, userInfo) {
+                            if (err) {
+                                console.error(err);
+                                return;
+                            }
+
+                            event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
+
+                            if (!chat_description) {
+                                _this.addNewChatToIndexedDB(event);
+                            } else if (chat_description && !_this.isChatOpened(chat_description.chat_id)) {
+                                _this.chatWorkflow(event);
+                            } else if (chat_description && _this.isChatOpened(chat_description.chat_id) && event.chat_wscs_descrs) {
+                                webrtc.handleConnectedDevices(event.chat_wscs_descrs);
+                            }
+                        });
                     }
                 );
             },

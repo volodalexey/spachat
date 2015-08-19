@@ -154,7 +154,7 @@ define('body', [
                             break;
                         case _this.MODE.CHATS:
                             users_bus.getMyInfo(options, function(error, options, userInfo) {
-                                chats_bus.getChats(error, options, userInfo.chatsIds, function(error, options, chatsInfo) {
+                                chats_bus.getChats(error, options, userInfo.chat_ids, function(error, options, chatsInfo) {
                                     if (error) {
                                         _this.module.body_container.innerHTML = error;
                                         return;
