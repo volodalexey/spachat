@@ -967,6 +967,9 @@ define('panel', [
                             console.log('Friendship request was sent');
                         }
                         break;
+                    case 'device_toggled_ready':
+                        event_bus.set_ws_device_id(messageData.from_ws_device_id);
+                        break;
                 }
             },
 
@@ -990,6 +993,8 @@ define('panel', [
 
             userAddApproved: function(messageData) {
                 var _this = this;
+                event_bus.set_ws_device_id(messageData.target_ws_device_id);
+
                 indexeddb.getByKeyPath(
                     users_bus.collectionDescription,
                     messageData.from_user_id,

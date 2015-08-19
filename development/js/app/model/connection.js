@@ -105,8 +105,8 @@ function(
         storeContext: function(ws_descr) {
             if (ws_descr.chat_id) {
                 this.putChatId(ws_descr.chat_id);
-            } else if (ws_descr.user_id) {
-                this.putUserId(ws_descr);
+            } else if (ws_descr.user_id || ws_descr.from_user_id) {
+                this.putUserId(ws_descr.user_id || ws_descr.from_user_id);
             }
         },
 

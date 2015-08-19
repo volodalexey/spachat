@@ -103,7 +103,7 @@ define('webrtc', [
                 if (!connection) {
                     // if connection with such ws_device_id not found create offer for this connection
                     connection = _this.createConnection({
-                        ws_device_id : ws_device_id
+                        ws_device_id : ws_descr.ws_device_id
                     });
                 }
                 // change readyState for existing connection
@@ -155,7 +155,7 @@ define('webrtc', [
                     console.error(new Error('Answer for connection thet is not exist!'));
                 }
 
-                if (event_bus.ws_device_id === messageData.from_ws_device_id) {
+                if (event_bus.get_ws_device_id() === messageData.to_ws_device_id) {
                     // Accept answer if I am the offer creator
                     connection.active.readyState = Connection.prototype.readyStates.WILL_ACCEPT_ANSWER;
                     connection.active.remoteAnswerDescription = messageData.answerDescription;
