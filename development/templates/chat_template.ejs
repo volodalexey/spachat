@@ -1,7 +1,9 @@
 <% var _in = arguments[0];%>
 <section class="modal" data-chat_id="<%= _in.chat.chat_id %>">
-    <div class="chat-splitter-item hidden" data-role="splitter_item"></div>
-    <div class="chat-splitter-item right hidden" data-role="splitter_item"></div>
+    <div class="chat-splitter-item hidden" data-role="splitter_item" data-splitteritem="left">
+    </div>
+    <div class="chat-splitter-item right hidden" data-role="splitter_item" data-splitteritem="right">
+    </div>
     <header data-role="header_container" class="modal-header">
         <div data-role="waiter_container"></div>
     </header>

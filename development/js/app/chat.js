@@ -271,6 +271,7 @@ define('chat', [
             bindContexts: function() {
                 var _this = this;
                 //_this.bindedThrowRouter = _this.throwRouter.bind(_this);
+                _this.bindedStartResizer = _this.startResizer.bind(_this);
             },
 
             valueOfChat: function() {
@@ -294,7 +295,8 @@ define('chat', [
                 _this.body_container = _this.chat_element.querySelector('[data-role="body_container"]');
                 _this.pagination_container = _this.chat_element.querySelector('[data-role="pagination_container"]');
                 _this.go_to_container = _this.chat_element.querySelector('[data-role="go_to_container"]');
-                _this.splitter_items = Array.prototype.slice.call(_this.chat_element.querySelectorAll('[data-role="splitter_item"]'));
+                _this.splitter_left = _this.chat_element.querySelector('[data-splitteritem="left"]');
+                _this.splitter_right = _this.chat_element.querySelector('[data-splitteritem="right"]');
             },
 
             cashExtraToolbarElement: function() {
@@ -327,9 +329,11 @@ define('chat', [
                 _this.cashElements();
                 _this.chat_element.style.width = _this.settings_ListOptions.size_current;
                 if (_this.settings_ListOptions.size_custom){
-                    _this.toggleShowSplitterItems(true, _this.splitter_items);
+                    _this.toggleShowSplitterItems(true, _this.splitter_left);
+                    _this.toggleShowSplitterItems(true, _this.splitter_right);
                 } else {
-                    _this.toggleShowSplitterItems(false, _this.splitter_items);
+                    _this.toggleShowSplitterItems(false, _this.splitter_left);
+                    _this.toggleShowSplitterItems(false, _this.splitter_right);
                 }
                 _this.header_waiter_container.innerHTML = _this.waiter_template();
                 _this.addEventListeners();
@@ -664,17 +668,40 @@ define('chat', [
                 _this.removeEventListeners();
                 _this.on('throw', _this.throwRouter, _this);
                 _this.on('log', _this.console.log, _this);
+                _this.addRemoveListener('add', _this.splitter_left, 'mousedown', _this.bindedStartResizer, false);
+                _this.addRemoveListener('add', _this.splitter_right, 'mousedown', _this.bindedStartResizer, false);
+                _this.addRemoveListener('add', _this.splitter_left, 'touchstart', _this.bindedStartResizer, false);
+                _this.addRemoveListener('add', _this.splitter_right, 'touchstart', _this.bindedStartResizer, false);
+
+
+                //_this.table_resize_container.$el.on('mouseup touchend mousemove touchmove', $.proxy(_this.handleResizer, _this));
+
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 _this.off('throw', _this.throwRouter);
                 _this.off('log');
+                _this.addRemoveListener('remove', _this.splitter_left, 'mousedown', _this.bindedStartResizer, false);
+                _this.addRemoveListener('remove', _this.splitter_left, 'touchstart', _this.bindedStartResizer, false);
+                _this.addRemoveListener('remove', _this.splitter_right, 'mousedown', _this.bindedStartResizer, false);
+                _this.addRemoveListener('remove', _this.splitter_right, 'touchstart', _this.bindedStartResizer, false);
             },
 
             throwRouter: function(action, event) {
                 if (this[action]) {
                     this[action](event);
+                }
+            },
+
+            startResizer: function(event) {
+                var _this = this;
+                event.stopPropagation();
+                event.preventDefault();
+                switch (event.type) {
+                    case 'mousedown':case 'touchstart':
+                    event_bus.trigger('transformToResizeState', event, _this);
+                    break;
                 }
             },
 
