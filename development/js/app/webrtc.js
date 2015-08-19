@@ -374,7 +374,7 @@ define('webrtc', [
 
             _onICEConnectionStateChange: function(curConnection, event) {
                 if (event.target.iceConnectionState === 'disconnected') {
-                    console.warn(event);
+                    console.warn('Peer connection was disconnected', event);
                     curConnection.destroy();
                 } else {
                     console.log('oniceconnectionstatechange', event.target.iceConnectionState);
@@ -468,11 +468,11 @@ define('webrtc', [
             },
 
             onDataChannelClose: function(curConnection, event) {
-                console.log('onclose', event);
+                console.warn('Data channel was closed', event);
             },
 
             onDataChannelError: function(curConnection, event) {
-                console.log('onerror', event);
+                console.error('Data channel error', event);
             },
 
             _addDataChannelListeners: function(dataChannel, curConnection, activeOrPassive) {
