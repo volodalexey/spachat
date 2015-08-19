@@ -30,9 +30,9 @@ define('users_bus', [
 
             excludeUser: function(options, user_ids) {
                 var _this = this;
-                var result = user_ids.indexOf(_this.getUserId());
-                if (result !== -1) {
-                    user_ids.splice(user_ids.indexOf(_this.getUserId()), 1);
+                var index = user_ids.indexOf(_this.getUserId());
+                if (index !== -1) {
+                    user_ids.splice(index, 1);
                 }
                 return user_ids;
             },
@@ -42,15 +42,15 @@ define('users_bus', [
                 indexeddb.getByKeyPath(
                     chats_bus.collectionDescription,
                     chat_id,
-                    function(getError, chat) {
+                    function(getError, chat_description) {
                         if (getError) {
                             console.error(getError);
                             return;
                         }
 
-                        if (chat) {
-                            chat.user_ids = _this.excludeUser(null, chat.user_ids);
-                            _this.getContactsInfo(null, chat.user_ids, _callback);
+                        if (chat_description) {
+                            chat_description.user_ids = _this.excludeUser(null, chat_description.user_ids);
+                            _this.getContactsInfo(null, chat_description.user_ids, _callback);
                         }
                     }
                 );

@@ -16,11 +16,11 @@ define('chats_bus', [
         };
 
         chats_bus.prototype = {
-            getChats: function(getError, options, chatsIds, _callback) {
-                if (chatsIds && chatsIds.length) {
+            getChats: function(getError, options, chat_ids, _callback) {
+                if (chat_ids && chat_ids.length) {
                     indexeddb.getByKeysPath(
                         this.collectionDescription,
-                        chatsIds,
+                        chat_ids,
                         function(getError, chatsInfo) {
                             if (getError) {
                                 if (_callback){

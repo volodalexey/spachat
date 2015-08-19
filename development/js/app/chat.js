@@ -729,10 +729,7 @@ define('chat', [
                 var _this = this;
                 return {
                     chat_id: _this.chat_id,
-                    user_ids: ["126e15d1-8ae0-f240-bdb4-fdfd84e64ee440e051",
-                        "3434eac5-cd02-e372-1f62-86afc1d44ee4413460",
-                        "7ce57eee-c0a0-a7ab-0278-0db148bc4ee440fda1",
-                        "d43cdf4f-c855-8ff5-1063-44256a684ee441153b"],
+                    user_ids: _this.user_ids,
                     createdDatetime: _this.createdDatetime,
                     createdByUserId: _this.createdByUserId,
                     receivedDatetime: _this.receivedDatetime,

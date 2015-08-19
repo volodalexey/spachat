@@ -335,7 +335,7 @@ define('chat_platform', [
 
             addNewChatToUserChats: function(chat, callback) {
                 users_bus.getMyInfo(null, function(error, options, info) {
-                    info.chatsIds.push(chat.chat_id);
+                    info.chat_ids.push(chat.chat_id);
                     indexeddb.addOrUpdateAll(
                         users_bus.collectionDescription,
                         null,
@@ -347,7 +347,7 @@ define('chat_platform', [
                                 console.error(error);
                                 return;
                             }
-                            event_bus.trigger('AddedNewChat', info.chatsIds.length);
+                            event_bus.trigger('AddedNewChat', info.chat_ids.length);
                             if (callback) {
                                 callback();
                             }
