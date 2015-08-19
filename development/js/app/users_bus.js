@@ -120,6 +120,51 @@ define('users_bus', [
                         });
                     }
                 });
+            },
+
+            hasInArray: function(_array, item) {
+                var found;
+                _array.every(function(_item) {
+                    if (_item === item) {
+                        found = _item;
+                    }
+                    return !found;
+                });
+                return found;
+            },
+
+            putItemIntoArray: function(arrayName, item, callback) {
+                var _this = this;
+                _this.getMyInfo({}, function(error, _options, userInfo) {
+                    if (error) {
+                        callback(error);
+                        return;
+                    }
+
+                    if (!_this.hasInArray(userInfo[arrayName], item)) {
+                        userInfo[arrayName].push(item);
+                        _this.saveMyInfo(userInfo, callback);
+                    } else {
+                        callback(null);
+                    }
+                });
+            },
+
+            putUserIdAndSave: function(user_id, callback) {
+                this.putItemIntoArray('user_ids', user_id, callback);
+            },
+
+            putChatIdAndSave: function(chat_id, callback) {
+                this.putItemIntoArray('chat_ids', chat_id, callback);
+            },
+
+            saveMyInfo: function(userInfo, _callback) {
+                indexeddb.addOrUpdateAll(
+                    this.collectionDescription,
+                    null,
+                    [userInfo],
+                    _callback
+                )
             }
         };
 

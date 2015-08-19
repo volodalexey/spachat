@@ -992,6 +992,19 @@ define('panel', [
                 );
             },
 
+            addUserAndConnect: function(messageData) {
+                users_bus.putUserIdAndSave(messageData.from_user_description.user_id, function(err) {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+
+                    if (messageData.user_wscs_descrs) {
+                        webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
+                    }
+                });
+            },
+
             userAddApproved: function(messageData) {
                 var _this = this;
                 event_bus.set_ws_device_id(messageData.target_ws_device_id);
@@ -1012,14 +1025,10 @@ define('panel', [
                                     return;
                                 }
 
-                                if (messageData.user_wscs_descrs) {
-                                    webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
-                                }
+                                _this.addUserAndConnect(messageData);
                             });
                         } else if (user_description) {
-                            if (messageData.user_wscs_descrs) {
-                                webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
-                            }
+                            _this.addUserAndConnect(messageData);
                         }
                     }
                 );
