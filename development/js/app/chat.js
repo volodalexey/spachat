@@ -313,6 +313,12 @@ define('chat', [
                 _this.header_waiter_container = null;
                 _this.body_container = null;
                 _this.btn_Filter = null;
+                _this.extra_toolbar_container = null;
+                _this.filter_container = null;
+                _this.pagination_container = null;
+                _this.go_to_container = null;
+                _this.splitter_left = null;
+                _this.splitter_right = null;
             },
 
             console: {

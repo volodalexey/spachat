@@ -62,10 +62,10 @@ define('navigator',
 
                 _this.addRemoveListener('add', document.body, 'mousedown', _this.bindedShowDescription, false);
                 _this.addRemoveListener('add', document.body, 'mousemove', _this.bindedShowDescription, false);
-                _this.addRemoveListener('add', document.body, 'mouseup', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', document.body, 'touchend', _this.bindedShowDescription, true);
                 _this.addRemoveListener('add', document.body, 'touchmove', _this.bindedShowDescription, false);
                 _this.addRemoveListener('add', document.body, 'touchstart', _this.bindedShowDescription, false);
-                _this.addRemoveListener('add', document.body, 'touchend', _this.bindedShowDescription, false);
+                _this.addRemoveListener('add', document.body, 'click', _this.bindedShowDescription, true);
             },
 
             removeEventListeners: function() {
@@ -76,10 +76,10 @@ define('navigator',
 
                 _this.addRemoveListener('remove', document.body, 'mousedown', _this.bindedShowDescription, false);
                 _this.addRemoveListener('remove', document.body, 'mousemove', _this.bindedShowDescription, false);
-                _this.addRemoveListener('remove', document.body, 'mouseup', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', document.body, 'touchend', _this.bindedShowDescription, true);
                 _this.addRemoveListener('remove', document.body, 'touchmove', _this.bindedShowDescription, false);
                 _this.addRemoveListener('remove', document.body, 'touchstart', _this.bindedShowDescription, false);
-                _this.addRemoveListener('remove', document.body, 'touchend', _this.bindedShowDescription, false);
+                _this.addRemoveListener('remove', document.body, 'click', _this.bindedShowDescription, true);
             },
 
             getCurrentPage: function(href) {

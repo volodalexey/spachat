@@ -21,12 +21,11 @@ define('description_core', [
                             _this.checkReorderClientX = event.changedTouches[0].clientX;
                         }
                         _this.reorderMouseDown = true;
-
+                        return false;
                         break;
                     case 'mousemove':
                     case 'touchmove':
                         if (_this.reorderMouseDown) {
-                            //event.preventDefault();
                             var clientX = event.clientX;
                             if (event.type === 'touchmove' && event.changedTouches) {
                                 clientX = event.changedTouches[0].clientX;
@@ -191,7 +190,7 @@ define('description_core', [
                                             checkTop = result.offsetTop + element.offsetHeight;
                                             if (documentHeight > checkTop + description.offsetHeight) {
                                                 futureTop = checkTop;
-                                                if (documentWidth < result.offsetLeft + description.offsetWidth) {
+                                                if (documentWidth > result.offsetLeft + description.offsetWidth) {
                                                     futureLeft = 0;
                                                     positionFound = true;
                                                 } else {
@@ -213,18 +212,20 @@ define('description_core', [
                             }
                         }
                         break;
-                    case 'mouseup':
+                    case 'click':
                     case 'touchend':
                         _this.reorderMouseDown = false;
                         if (_this.descriptionShow) {
+                            event.preventDefault();
+                            event.stopPropagation();
                             _this.descriptionShow = false;
                             description.innerHTML = "";
                             description.style.left = "0px";
                             description.style.top = "0px";
                             description.classList.add("opacity-0");
-
                         }
                         break;
+
                 }
             },
 

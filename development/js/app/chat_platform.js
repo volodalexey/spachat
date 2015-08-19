@@ -88,6 +88,8 @@ define('chat_platform', [
                 var _this = this;
                 _this.mainConteiner = null;
                 _this.chat_wrapper = null;
+                _this.chat_resize_container = null;
+                _this.line_resize = null;
             },
 
             addEventListeners: function() {
