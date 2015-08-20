@@ -51,7 +51,7 @@ define('contact_list', [
                     }
 
                     contactsInfo = _this.chat.body.limitationQuantityRecords(contactsInfo, changeMode);
-                    if (!contactsInfo.data.length) {
+                    if (!contactsInfo.data || !contactsInfo.data.length) {
                         _this.chat.body_container.innerHTML = "";
                         return;
                     }

@@ -182,9 +182,9 @@ define('switcher_core',
             toggleActiveButton: function(btnsArray, mode) {
                 btnsArray.forEach(function(_button){
                     if (_button.dataset.mode_to === mode) {
-                        _button.classList.add('c-100');
+                        _button.classList.add('activeTollbar');
                     } else {
-                        _button.classList.remove('c-100');
+                        _button.classList.remove('activeTollbar');
                     }
                 })
             },

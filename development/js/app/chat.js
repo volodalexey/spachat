@@ -378,6 +378,8 @@ define('chat', [
                             switch (_obj.newMode) {
                                 case _this.body.MODE.SETTINGS:
                                     _this.bodyOptions.mode = _this.body.MODE.SETTINGS;
+                                    _this.messages_ListOptions.final = null;
+                                    _this.logger_ListOptions.final = null;
                                     _this.editorOptions.show = false;
                                     _this.toggleShowState({
                                         key: 'show',

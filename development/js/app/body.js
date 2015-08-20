@@ -196,7 +196,7 @@ define('body', [
                                 "DETAIL_VIEW": options.detail_view
                             };
                             _this.dataMap = {
-                                "DETAIL_VIEW": _this.module.collectionDescription
+                                "DETAIL_VIEW": chats_bus.collectionDescription
                             };
                             _this.body_mode = _this.MODE.DETAIL_VIEW;
                             _this.renderLayout(options, function() {

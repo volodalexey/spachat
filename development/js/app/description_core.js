@@ -225,7 +225,6 @@ define('description_core', [
                             description.classList.add("opacity-0");
                         }
                         break;
-
                 }
             },
 

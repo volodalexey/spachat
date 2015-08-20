@@ -59,14 +59,6 @@ define('panel', [
 
         var defaultOptions = {
 
-            collectionDescription: {
-                "id": 'chats',
-                "db_name": 'chats',
-                "table_names": ['chats'],
-                "db_version": 1,
-                "keyPath": "chat_id"
-            },
-
             chats_GoToOptions: {
                 show: false,
                 rteChoicePage: true,
