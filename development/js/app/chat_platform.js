@@ -12,6 +12,7 @@ define('chat_platform', [
         'template_core',
         'dom_core',
         'extend_core',
+        'disable_display_core',
         //
         'text!../templates/chat_platform_template.ejs'
     ],
@@ -28,6 +29,7 @@ define('chat_platform', [
              template_core,
              dom_core,
              extend_core,
+             disable_display_core,
              //
              chat_platform_template) {
 
@@ -35,7 +37,7 @@ define('chat_platform', [
             this.link = /chat/;
             this.withPanels = true;
             this.bindContexts();
-            this.UIbuttonsByChatId = {};
+            this.UIElements = {}; // for disable core
         };
 
         chat_platform.prototype = {
@@ -477,36 +479,6 @@ define('chat_platform', [
                 );
             },
 
-            hideUIButton: function(chat_id, buttonsElement) {
-                var _this = this;
-                if (!_this.UIbuttonsByChatId[chat_id]) {
-                    _this.UIbuttonsByChatId[chat_id] = {};
-                    _this.UIbuttonsByChatId[chat_id].buttons = [];
-                }
-                buttonsElement.forEach(function(buttonElement) {
-                    _this.UIbuttonsByChatId[chat_id].buttons.push(buttonElement);
-                    if (buttonElement.style.display === 'none') {
-                        buttonElement.style.display = 'inherit';
-                    } else {
-                        buttonElement.style.display = 'none';
-                    }
-                });
-            },
-
-            unHideUIButton: function(chat_id) {
-                var _this = this;
-                if (_this.UIbuttonsByChatId[chat_id] && _this.UIbuttonsByChatId[chat_id].buttons) {
-                    _this.UIbuttonsByChatId[chat_id].buttons.forEach(function(button) {
-                        if (button.style.display === 'none') {
-                            button.style.display = 'inherit';
-                        } else {
-                            button.style.display = 'none';
-                        }
-                    });
-                }
-                _this.UIbuttonsByChatId[chat_id].buttons = [];
-            },
-
             /**
              * find chat in the database and send chat id to the server
              * to receive approved join message
@@ -563,7 +535,7 @@ define('chat_platform', [
                 var _this = this;
                 _this.removeEventListeners();
                 _this.unCashElements();
-                _this.UIbuttonsByChatId = {};
+                _this.UIElements = {};
             },
 
             saveStatesChats: function(chatToDestroy) {
@@ -645,6 +617,7 @@ define('chat_platform', [
         extend_core.prototype.inherit(chat_platform, throw_event_core);
         extend_core.prototype.inherit(chat_platform, template_core);
         extend_core.prototype.inherit(chat_platform, dom_core);
+        extend_core.prototype.inherit(chat_platform, disable_display_core);
 
         chat_platform.prototype.chat_platform_template = chat_platform.prototype.template(chat_platform_template);
 

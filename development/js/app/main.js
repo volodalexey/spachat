@@ -24,6 +24,7 @@ require.config({
         "description_core": "app/description_core",
         "switcher_core": "app/extensions/switcher_core",
         "model_core": "app/extensions/model_core",
+        "disable_display_core": "app/extensions/disable_display_core",
         // instantiable
         "body": "app/body",
         "chat": "app/chat",

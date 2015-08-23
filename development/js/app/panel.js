@@ -7,8 +7,9 @@ define('panel', [
         'switcher_core',
         'overlay_core',
         'dom_core',
-        'chats_bus',
+        'disable_display_core',
         //
+        'chats_bus',
         'users_bus',
         'event_bus',
         'extra_toolbar',
@@ -36,8 +37,9 @@ define('panel', [
              switcher_core,
              overlay_core,
              dom_core,
-             chats_bus,
+             disable_display_core,
              //
+             chats_bus,
              users_bus,
              event_bus,
              Extra_toolbar,
@@ -315,6 +317,7 @@ define('panel', [
                 this.bodyOptions.mode = description.body_mode;
             }
 
+            this.UIElements = {};
             this.bindMainContexts();
 
             this.type = description.type;
@@ -386,6 +389,7 @@ define('panel', [
                 if (!_this.togglePanelElement) {
                     return;
                 }
+                _this.UIElements = {};
                 _this.removeMainEventListeners();
                 _this.togglePanel(true);
                 _this.hidePanel();
@@ -906,10 +910,13 @@ define('panel', [
                 var _this = this;
                 var user_id_input = _this.body_container.querySelector('[data-role="user_id_input"]');
                 var user_message_input = _this.body_container.querySelector('[data-role="user_message_input"]');
+                var requestButton = _this.body_container.querySelector('[data-action="requestFriendByUserId"]');
 
-                if (user_id_input && user_id_input.value && user_message_input && user_message_input.value) {
+                if (requestButton && user_id_input && user_id_input.value && user_message_input && user_message_input.value) {
+                    _this.disableButton('requestFriendByUserId', requestButton);
                     users_bus.getUserDescription({}, function(error, user_description) {
                         if (error) {
+                            _this.enableButton('requestFriendByUserId');
                             console.error(error);
                             return;
                         }
@@ -930,6 +937,7 @@ define('panel', [
             readyForFriendRequest: function(element) {
                 var _this = this;
                 _this.joinUser_ListOptions.readyForRequest = element.checked;
+                _this.disableButton('readyForFriendRequest', element);
 
                 websocket.sendMessage({
                     type: "user_toggle_ready",
@@ -957,10 +965,12 @@ define('panel', [
                     case 'user_add_sent':
                         // TODO check my allow user friendship status
                         if (_this.bodyOptions.mode === _this.MODE.JOIN_USER) {
+                            _this.enableButton('requestFriendByUserId');
                             console.log('Friendship request was sent');
                         }
                         break;
                     case 'device_toggled_ready':
+                        _this.enableButton('readyForFriendRequest');
                         event_bus.set_ws_device_id(messageData.from_ws_device_id);
                         break;
                 }
@@ -1097,6 +1107,7 @@ define('panel', [
         extend_core.prototype.inherit(panel, switcher_core);
         extend_core.prototype.inherit(panel, overlay_core);
         extend_core.prototype.inherit(panel, dom_core);
+        extend_core.prototype.inherit(panel, disable_display_core);
 
         panel.prototype.panel_left_template = panel.prototype.template(panel_left_template);
         panel.prototype.panel_right_template = panel.prototype.template(panel_right_template);

@@ -22,10 +22,10 @@ define('ajax_core', [],
 
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == 4) {
-                        if (!(xhr.status === 200 || xhr.status === 201)) {
-                            callback('Error ' + xhr.status + ': ' + xhr.statusText);
-                        } else {
+                        if ((xhr.status >= 200 || xhr.status < 300) || xhr.status === 304) {
                             callback(null, xhr.responseText);
+                        } else {
+                            callback('Error (' + xhr.status + ') : ' + xhr.statusText + ' : ' + xhr.responseText);
                         }
                     }
                 };
