@@ -424,6 +424,7 @@ define('panel', [
             cashToolbarElement: function() {
                 var _this = this;
                 _this.btns_toolbar = Array.prototype.slice.call(_this.panel_toolbar.querySelectorAll('[data-role="btnToolbar"]'));
+                _this.togglePanelElementToolbar = _this.panel_toolbar.querySelector('[data-role="togglePanelToolbar"]');
             },
 
             unCashElements: function() {
@@ -534,8 +535,10 @@ define('panel', [
                     _this.body_container.innerHTML = "";
                     _this.outer_container.style[_this.type] = (-_this.outer_container.offsetWidth) + 'px';
                     if (bigMode === true) {
-                        _this.togglePanelElement.classList.remove("pull-for-" + _this.type + "-panel");
-                        _this.togglePanelElement.classList.add("panel-button");
+                        _this.togglePanelElement.classList.add('hide');
+                        _this.togglePanelElementToolbar.classList.remove('hide');
+                    } else {
+                        _this.togglePanelElement.classList.remove('hide');
                     }
                 }
             },
@@ -808,8 +811,6 @@ define('panel', [
 
             logout: function() {
                 var _this = this;
-                //_this.bodyOptions.mode = _this.MODE.USER_INFO_SHOW;
-                //_this.previous_UserInfo_Mode = _this.bodyOptions.mode;
                 event_bus.trigger("chatsDestroy");
                 _this.removeMainEventListeners();
                 _this.removeToolbarEventListeners();
@@ -850,10 +851,13 @@ define('panel', [
                     var chat_id = parentElement.dataset.chat_id;
 
                     if (element.dataset.role === "closeChat") {
-                        saveStates = false;
+                        saveStates = 'close';
                     }
-                    if (element.dataset.role === "saveStatesChats") {
-                        saveStates = true;
+                    if (element.dataset.role === "saveStatesChat") {
+                        saveStates = 'save';
+                    }
+                    if (element.dataset.role === "saveAndCloseChat") {
+                        saveStates = 'save_close';
                     }
                     event_bus.trigger('toCloseChat', chat_id, saveStates);
                 }
@@ -885,12 +889,16 @@ define('panel', [
                 if (_this.outer_container.style[_this.type] === '0px') {
                     _this.inner_container.style.maxWidth = _this.calcMaxWidth();
                     if (_this.outer_container.clientWidth + _this.togglePanelElement_clientWidth > document.body.clientWidth) {
-                        _this.togglePanelElement.classList.add("pull-for-" + _this.type + "-panel");
-                        _this.togglePanelElement.classList.remove("panel-button");
+                        _this.togglePanelElement.classList.add('hide');
+                        if (_this.togglePanelElementToolbar) {
+                            _this.togglePanelElementToolbar.classList.remove('hide');
+                        }
                     }
                     else {
-                        _this.togglePanelElement.classList.remove("pull-for-" + _this.type + "-panel");
-                        _this.togglePanelElement.classList.add("panel-button");
+                        _this.togglePanelElement.classList.remove('hide');
+                        if (_this.togglePanelElementToolbar) {
+                            _this.togglePanelElementToolbar.classList.add('hide');
+                        }
                     }
                 }
             },

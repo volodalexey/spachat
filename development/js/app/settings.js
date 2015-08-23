@@ -175,8 +175,11 @@ define('settings', [
                 }
             },
 
-            showSplitterItems: function() {
+            showSplitterItems: function(chat) {
                 var _this = this;
+                if (!_this.chat){
+                    _this.chat = chat;
+                }
                 if (_this.chat.settings_ListOptions.size_custom && _this.chat.settings_ListOptions.adjust_width) {
                     _this.toggleShowSplitterItems(true, _this.chat.splitter_left);
                     _this.toggleShowSplitterItems(true, _this.chat.splitter_right);

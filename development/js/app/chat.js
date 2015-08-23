@@ -337,6 +337,7 @@ define('chat', [
                 _this.cashElements();
                 _this.chat_element.style.width = _this.settings_ListOptions.size_current;
                 _this.header_waiter_container.innerHTML = _this.waiter_template();
+                _this.settings.showSplitterItems(this);
                 _this.addEventListeners();
             },
 

@@ -234,13 +234,28 @@
   },
   {
     "element": "button",
+    "icon": "save_not_exit_icon",
+    "text": 43,
+    "location": "navbar",
+    "data": {
+      "role": "saveStatesChat",
+      "action": "closeChat",
+      "description": 78,
+      "mode": "DETAIL_VIEW"
+    },
+    "class": "button-convex",
+    "name": "SaveCloseChat"
+  },
+  {
+    "element": "button",
     "icon": "save_exit_icon",
     "location": "navbar",
     "text": 56,
     "data": {
-      "role": "saveStatesChats",
+      "role": "saveAndCloseChat",
       "action": "closeChat",
-      "mode": "DETAIL_VIEW"
+      "mode": "DETAIL_VIEW",
+      "description": 57
     },
     "class": "button-convex",
     "name": "SaveCloseChat"

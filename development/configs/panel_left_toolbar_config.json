@@ -2,6 +2,51 @@
   {
     "role": "locationWrapper",
     "classList": "flex",
+    "location": "users"
+  },
+  {
+    "element": "button",
+    "icon": "add_user_icon",
+    "text": 66,
+    "class": "flex-item-1-0p",
+    "location": "users",
+    "data": {
+      "role": "btnToolbar",
+      "action": "switchPanelMode",
+      "mode_to": "JOIN_USER"
+    },
+    "disable": false
+  },
+
+  {
+    "element": "button",
+    "icon": "users_icon",
+    "text": 32,
+    "class": "flex-item-1-0p",
+    "location": "users",
+    "data": {
+      "role": "btnToolbar",
+      "action": "switchPanelMode",
+      "mode_to": "USERS"
+    },
+    "disable": false
+  },
+
+  {
+    "element": "button",
+    "icon": "",
+    "text": 46,
+    "data": {
+      "action": "togglePanel",
+      "role": "togglePanelToolbar"
+    },
+    "location": "users",
+    "class": "flex-item-1-0p c-50 border-c300 hide"
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "flex",
     "location": "blogs"
   },
   {
@@ -87,39 +132,6 @@
       "role": "btnToolbar",
       "action": "switchPanelMode",
       "mode_to": "CHATS"
-    },
-    "disable": false
-  },
-
-  {
-    "role": "locationWrapper",
-    "classList": "flex",
-    "location": "users"
-  },
-  {
-    "element": "button",
-    "icon": "add_user_icon",
-    "text": 66,
-    "class": "flex-item-1-0p",
-    "location": "users",
-    "data": {
-      "role": "btnToolbar",
-      "action": "switchPanelMode",
-      "mode_to": "JOIN_USER"
-    },
-    "disable": false
-  },
-
-  {
-    "element": "button",
-    "icon": "users_icon",
-    "text": 32,
-    "class": "flex-item-1-0p",
-    "location": "users",
-    "data": {
-      "role": "btnToolbar",
-      "action": "switchPanelMode",
-      "mode_to": "USERS"
     },
     "disable": false
   }
