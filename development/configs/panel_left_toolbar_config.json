@@ -41,7 +41,7 @@
       "role": "togglePanelToolbar"
     },
     "location": "users",
-    "class": "flex-item-1-0p c-50 border-c300 hide"
+    "class": "flex-item-1-0p c-50 border-c300 min-height-2-6em hide"
   },
 
   {

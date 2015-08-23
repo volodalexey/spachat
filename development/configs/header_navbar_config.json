@@ -18,7 +18,7 @@
       "action": "closeChat",
       "description": 21
     },
-    "class": "button-margin-height",
+    "class": "button-margin-height min-width-4em",
     "name": "CloseChat"
   },
   {
@@ -30,9 +30,9 @@
       "throw": "true",
       "target": "event_bus",
       "action": "saveStatesChat",
-      "description": 56
+      "description": 78
     },
-    "class": "button-margin-height",
+    "class": "button-margin-height min-width-4em",
     "name": "SaveCloseChat"
   },
   {
@@ -46,7 +46,7 @@
       "action": "saveAndCloseChat",
       "description": 57
     },
-    "class": "button-margin-height",
+    "class": "button-margin-height min-width-4em",
     "name": "SaveCloseChat"
   },
   {
