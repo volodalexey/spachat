@@ -427,8 +427,9 @@ define('chat_platform', [
                     return;
                 }
 
-                _this['joinByChatIdAuto_'] = element;
-                element.disabled = true;
+                //_this['joinByChatIdAuto_'] = element;
+                //element.disabled = true;
+                // TODO use disable_display_core
 
                 var chat_description = {
                     "chat_id": input.value

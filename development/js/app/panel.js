@@ -914,22 +914,13 @@ define('panel', [
 
                 if (requestButton && user_id_input && user_id_input.value && user_message_input && user_message_input.value) {
                     _this.disableButton('requestFriendByUserId', requestButton);
-                    users_bus.getUserDescription({}, function(error, user_description) {
-                        if (error) {
-                            _this.enableButton('requestFriendByUserId');
-                            console.error(error);
-                            return;
+                    websocket.sendMessage({
+                        type: "user_add",
+                        from_user_id: users_bus.getUserId(),
+                        to_user_id: user_id_input.value,
+                        request_body: {
+                            message: user_message_input.value
                         }
-
-                        websocket.sendMessage({
-                            type: "user_add",
-                            from_user_id: users_bus.getUserId(),
-                            from_user_description: user_description,
-                            to_user_id: user_id_input.value,
-                            request_body: {
-                                message: user_message_input.value
-                            }
-                        });
                     });
                 }
             },
@@ -957,16 +948,18 @@ define('panel', [
 
                 switch (messageData.type) {
                     case 'user_add':
-                        // TODO check my allow user friendship status
                         if (_this.bodyOptions.mode === _this.MODE.JOIN_USER) {
                             _this.userAddApproved(messageData);
                         }
                         break;
                     case 'user_add_sent':
-                        // TODO check my allow user friendship status
                         if (_this.bodyOptions.mode === _this.MODE.JOIN_USER) {
                             _this.enableButton('requestFriendByUserId');
-                            console.log('Friendship request was sent');
+                            event_bus.set_ws_device_id(messageData.from_ws_device_id);
+                            if (messageData.user_wscs_descrs) {
+                                webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
+                                _this.listenWebRTCConnection(messageData.to_user_id);
+                            }
                         }
                         break;
                     case 'device_toggled_ready':
@@ -974,6 +967,30 @@ define('panel', [
                         event_bus.set_ws_device_id(messageData.from_ws_device_id);
                         break;
                 }
+            },
+
+            onNotifyUser: function(user_id, messageData) {
+                var _this = this;
+                console.log('onNotifyUser');
+                indexeddb.getByKeyPath(
+                    users_bus.collectionDescription,
+                    user_id,
+                    function(getError, user_description) {
+                        if (getError) {
+                            console.error(getError);
+                            return;
+                        }
+
+                        _this.addNewUserToIndexedDB(messageData.user_description, function(error, user_description) {
+                            if (error) {
+                                console.error(error);
+                                return;
+                            }
+
+                            users_bus.putUserIdAndSave(user_id);
+                        });
+                    }
+                );
             },
 
             addNewUserToIndexedDB: function(user_description, callback) {
@@ -994,54 +1011,58 @@ define('panel', [
                 );
             },
 
-            addUserAndConnect: function(messageData) {
-                users_bus.putUserIdAndSave(messageData.from_user_description.user_id, function(err) {
-                    if (err) {
-                        console.error(err);
-                        return;
-                    }
+            webRTCConnectionReady: function(user_id, triggerConnection) {
+                var _this = this;
+                console.log('webRTCConnectionReady');
+                if (triggerConnection.hasUserId(user_id)) {
+                    // if connection for user friendship
+                    users_bus.getUserDescription({}, function(error, user_description) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
 
-                    if (messageData.user_wscs_descrs) {
-                        webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
-                    }
-                });
+                        var messageData = {
+                            type: "notifyUser",
+                            user_description: user_description
+                        };
+                        if (triggerConnection.dataChannel && triggerConnection.dataChannel.readyState === "open") {
+                            triggerConnection.dataChannel.send(JSON.stringify(messageData));
+                        } else {
+                            console.warn('No friendship data channel!');
+                        }
+                    });
+                }
+            },
+
+            listenWebRTCConnection: function(user_id) {
+                if (this.bindedWebRTCConnectionReady) {
+                    webrtc.off('webrtc_connection_established', this.bindedWebRTCConnectionReady);
+                }
+                this.bindedWebRTCConnectionReady = this.webRTCConnectionReady.bind(this, user_id);
+                webrtc.on('webrtc_connection_established', this.bindedWebRTCConnectionReady);
+                if (this.bindedOnNotifyUser) {
+                    event_bus.off('notifyUser', this.bindedOnNotifyUser);
+                }
+                this.bindedOnNotifyUser = this.onNotifyUser.bind(this, user_id);
+                event_bus.on('notifyUser', this.bindedOnNotifyUser);
             },
 
             userAddApproved: function(messageData) {
                 var _this = this;
                 event_bus.set_ws_device_id(messageData.target_ws_device_id);
-
-                indexeddb.getByKeyPath(
-                    users_bus.collectionDescription,
-                    messageData.from_user_id,
-                    function(getError, user_description) {
-                        if (getError) {
-                            console.error(getError);
-                            return;
-                        }
-
-                        if (!user_description && confirm(messageData.request_body.message)) {
-                            _this.addNewUserToIndexedDB(messageData.from_user_description, function(error, user_description) {
-                                if (error) {
-                                    console.error(error);
-                                    return;
-                                }
-
-                                _this.addUserAndConnect(messageData);
-                            });
-                        } else if (user_description) {
-                            _this.addUserAndConnect(messageData);
-                        }
-                    }
-                );
+                if (messageData.user_wscs_descrs && confirm(messageData.request_body.message)) {
+                    webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
+                    _this.listenWebRTCConnection(messageData.from_user_id);
+                }
             },
 
             toPanelDescription: function() {
-                var _this = this, description = {};
+                var _this = this;
                 if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
                     _this.bodyOptions.mode = _this.MODE.CHATS;
                 }
-                return description = {
+                return {
                     chats_GoToOptions: _this.chats_GoToOptions,
                     chats_PaginationOptions: _this.chats_PaginationOptions,
                     chats_ExtraToolbarOptions: _this.chats_ExtraToolbarOptions,
@@ -1095,7 +1116,7 @@ define('panel', [
                     collectionDescription: _this.collectionDescription,
                     previous_UserInfo_Mode: _this.previous_UserInfo_Mode,
                     joinUser_ListOptions: _this.joinUser_ListOptions
-            };
+                };
             }
 
         };

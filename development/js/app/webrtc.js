@@ -2,6 +2,7 @@ define('webrtc', [
         'throw_event_core',
         'template_core',
         'extend_core',
+        'event_core',
         //
         'event_bus',
         'users_bus',
@@ -14,6 +15,7 @@ define('webrtc', [
     function(throw_event_core,
              template_core,
              extend_core,
+             event_core,
              //
              event_bus,
              users_bus,
@@ -98,6 +100,7 @@ define('webrtc', [
 
                 var connection = _this.getConnection(ws_descr.ws_device_id);
                 if (connection && connection.canApplyNextState() === false) {
+                    _this.trigger('webrtc_connection_established', connection);
                     return;
                 }
                 if (!connection) {
@@ -449,6 +452,7 @@ define('webrtc', [
                     this._removeDataChannelListeners(curConnection[notMode].dataChannel);
                     delete curConnection.active;
                     delete curConnection.passive;
+                    this.trigger('webrtc_connection_established', curConnection);
                 } else {
                     curConnection.log('log', { message: 'fail to set data channel for ' + activeOrPassive });
                 }
@@ -464,10 +468,13 @@ define('webrtc', [
 
                 if (messageData.type === 'notifyChat') {
                     event_bus.trigger('notifyChat', messageData);
+                } else if (messageData.type === 'notifyUser') {
+                    event_bus.trigger('notifyUser', messageData);
                 }
             },
 
             onDataChannelClose: function(curConnection, event) {
+                this._removeDataChannelListeners(curConnection.dataChannel);
                 console.warn('Data channel was closed', event);
             },
 
@@ -706,6 +713,7 @@ define('webrtc', [
         };
         extend_core.prototype.inherit(WebRTC, throw_event_core);
         extend_core.prototype.inherit(WebRTC, template_core);
+        extend_core.prototype.inherit(WebRTC, event_core);
 
         WebRTC.prototype.webrtc_template = WebRTC.prototype.template(webrtc_template);
         WebRTC.prototype.waiter_template = WebRTC.prototype.template(waiter_template);

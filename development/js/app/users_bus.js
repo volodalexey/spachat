@@ -137,17 +137,17 @@ define('users_bus', [
                 var _this = this;
                 _this.getMyInfo({}, function(error, _options, userInfo) {
                     if (error) {
-                        callback(error);
+                        callback && callback(error);
                         return;
                     }
 
                     if (!_this.hasInArray(userInfo[arrayName], item)) {
                         userInfo[arrayName].push(item);
                         _this.saveMyInfo(userInfo, function(err) {
-                            callback(err, userInfo);
+                            callback && callback(err, userInfo);
                         });
                     } else {
-                        callback(null, userInfo);
+                        callback && callback(null, userInfo);
                     }
                 });
             },
