@@ -10,7 +10,7 @@
   {
     "element": "button",
     "icon": "exit_icon",
-    "text": 20,
+    "text": null,
     "location": "topPanel",
     "data": {
       "throw": "true",
@@ -23,13 +23,27 @@
   },
   {
     "element": "button",
-    "icon": "save_exit_icon",
-    "text": 56,
+    "icon": "save_not_exit_icon",
+    "text": null,
     "location": "topPanel",
     "data": {
       "throw": "true",
       "target": "event_bus",
-      "action": "saveStatesChats",
+      "action": "saveStatesChat",
+      "description": 56
+    },
+    "class": "button-margin-height",
+    "name": "SaveCloseChat"
+  },
+  {
+    "element": "button",
+    "icon": "save_exit_icon",
+    "text": null,
+    "location": "topPanel",
+    "data": {
+      "throw": "true",
+      "target": "event_bus",
+      "action": "saveAndCloseChat",
       "description": 57
     },
     "class": "button-margin-height",

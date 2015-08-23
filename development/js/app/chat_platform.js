@@ -202,7 +202,7 @@ define('chat_platform', [
                         break;
                     case 'mouseup':
                     case 'touchend':
-                        if (_this.redraw_chat ) {
+                        if (_this.redraw_chat) {
                             if (_this.positionrSplitterItem === 'left') {
                                 if (_this.chatResizeWidth + _this.absoluteDeltaX >= _this.min_chats_width) {
                                     _this.chatResize.chat_element.style.width = _this.chatResizeWidth + _this.absoluteDeltaX + 'px';
@@ -538,26 +538,41 @@ define('chat_platform', [
                 _this.UIElements = {};
             },
 
-            saveStatesChats: function(chatToDestroy) {
+            saveStatesChats: function(chatDescription, callback) {
+                var _this = this;
+                indexeddb.addOrUpdateAll(
+                    chats_bus.collectionDescription,
+                    null,
+                    [
+                        chatDescription
+                    ],
+                    function(error) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
+                        if (callback) {
+                            callback();
+                        }
+                    }
+                );
+            },
+
+            saveStatesChat: function(chat) {
+                var _this = this;
+                if (confirm("Save settings this chat ?")) {
+                    var chatDescription = chat.toChatDescription();
+                    _this.saveStatesChats(chatDescription, null);
+                }
+            },
+
+            saveAndCloseChat: function(chatToDestroy) {
                 var _this = this;
                 if (confirm("Save settings this chat and close it ?")) {
-
                     var chatDescription = chatToDestroy.toChatDescription();
-
-                    indexeddb.addOrUpdateAll(
-                        chats_bus.collectionDescription,
-                        null,
-                        [
-                            chatDescription
-                        ],
-                        function(error) {
-                            if (error) {
-                                console.error(error);
-                                return;
-                            }
-                            _this.destroyChat(chatToDestroy);
-                        }
-                    );
+                    _this.saveStatesChats(chatDescription, function() {
+                        _this.destroyChat(chatToDestroy);
+                    });
                 }
             },
 
@@ -569,10 +584,16 @@ define('chat_platform', [
                     }
                     return !chatToDestroy;
                 });
-                if (saveStates) {
-                    _this.saveStatesChats(chatToDestroy);
-                } else {
-                    _this.closeChat(chatToDestroy);
+                switch (saveStates) {
+                    case 'close':
+                        _this.closeChat(chatToDestroy);
+                        break;
+                    case 'save':
+                        _this.saveStatesChat(chatToDestroy);
+                        break;
+                    case 'save_close':
+                        _this.saveAndCloseChat(chatToDestroy);
+                        break;
                 }
             },
 

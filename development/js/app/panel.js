@@ -850,10 +850,13 @@ define('panel', [
                     var chat_id = parentElement.dataset.chat_id;
 
                     if (element.dataset.role === "closeChat") {
-                        saveStates = false;
+                        saveStates = 'close';
                     }
-                    if (element.dataset.role === "saveStatesChats") {
-                        saveStates = true;
+                    if (element.dataset.role === "saveStatesChat") {
+                        saveStates = 'save';
+                    }
+                    if (element.dataset.role === "saveAndCloseChat") {
+                        saveStates = 'save_close';
                     }
                     event_bus.trigger('toCloseChat', chat_id, saveStates);
                 }
