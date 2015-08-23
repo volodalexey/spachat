@@ -6,6 +6,17 @@
   },
   {
     "element": "button",
+    "icon": "",
+    "text": 47,
+    "location": "buttons",
+    "data": {
+      "action": "togglePanel",
+      "role": "togglePanelToolbar"
+    },
+    "class": "flex-item-1-0p c-50 border-c300 hide"
+  },
+  {
+    "element": "button",
     "icon": "user_icon",
     "text": 33,
     "class": "floatR flex-item-1-0p",

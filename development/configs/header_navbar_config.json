@@ -1,7 +1,7 @@
 [
   {
     "role": "locationWrapper",
-    "classList": "flex-sp-end",
+    "classList": "flex-just-center",
     "location": "topPanel",
     "data": {
       "role": "topHeaderPanel"
