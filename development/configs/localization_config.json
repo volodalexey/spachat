@@ -388,5 +388,10 @@
     "id": 78,
     "en": "Save setting",
     "ru": "Сохранить настройки"
+  },
+  {
+    "id": 79,
+    "en": "Ready for new chat users requests",
+    "ru": "Ожидать новых пользователей"
   }
 ]

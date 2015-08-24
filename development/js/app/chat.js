@@ -274,6 +274,14 @@ define('chat', [
                 var _this = this;
                 _this.bindedOnChatMessage = _this.onChatMessage.bind(_this);
                 _this.bindedStartResizer = _this.startResizer.bind(_this);
+                _this.bindedOnChatToggledReady = _this.onChatToggledReady.bind(_this);
+            },
+
+            unbindContext: function() {
+                var _this = this;
+                _this.bindedOnChatMessage = null;
+                _this.bindedStartResizer = null;
+                _this.bindedOnChatToggledReady = null;
             },
 
             valueOfChat: function() {
@@ -673,6 +681,7 @@ define('chat', [
                 _this.on('throw', _this.throwRouter, _this);
                 _this.on('log', _this.console.log, _this);
                 _this.on('chat_message', _this.bindedOnChatMessage, _this);
+                _this.on('chat_toggled_ready', _this.bindedOnChatToggledReady, _this);
                 _this.addRemoveListener('add', _this.splitter_left, 'mousedown', _this.bindedStartResizer, false);
                 _this.addRemoveListener('add', _this.splitter_right, 'mousedown', _this.bindedStartResizer, false);
                 _this.addRemoveListener('add', _this.splitter_left, 'touchstart', _this.bindedStartResizer, false);
@@ -688,6 +697,7 @@ define('chat', [
                 _this.off('throw', _this.throwRouter);
                 _this.off('log');
                 _this.off('chat_message', _this.bindedOnChatMessage);
+                _this.off('chat_toggled_ready', _this.bindedOnChatToggledReady);
                 _this.addRemoveListener('remove', _this.splitter_left, 'mousedown', _this.bindedStartResizer, false);
                 _this.addRemoveListener('remove', _this.splitter_left, 'touchstart', _this.bindedStartResizer, false);
                 _this.addRemoveListener('remove', _this.splitter_right, 'mousedown', _this.bindedStartResizer, false);
@@ -741,6 +751,7 @@ define('chat', [
                 this.body = null;
                 _this.chat_element.remove();
                 _this.unCashElements();
+                _this.unbindContext();
             },
 
             toChatDescription: function() {
@@ -792,6 +803,10 @@ define('chat', [
 
             onChatMessage: function(eventData) {
                 this.messages.addRemoteMessage(eventData);
+            },
+
+            onChatToggledReady: function(eventData) {
+                this.chat_ready_state = eventData.ready_state;
             }
         };
         extend_core.prototype.inherit(chat, ajax_core);

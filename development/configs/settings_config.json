@@ -19,6 +19,21 @@
   {
     "role": "locationWrapper",
     "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+    "location": "chat_users_apply"
+  },
+  {
+    "element": "input",
+    "type": "checkbox",
+    "text": 79,
+    "class": "check-box-size",
+    "location": "chat_users_apply",
+    "data": {
+      "action": "toggleChatUsersFriendship"
+    }
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
     "location": "send_enter"
   },
   {

@@ -8,7 +8,10 @@ define('settings', [
         'overlay_core',
         'extend_core',
         'switcher_core',
-
+        //
+        'websocket',
+        'users_bus',
+        //
         'text!../templates/setting_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/location_wrapper_template.ejs',
@@ -16,22 +19,27 @@ define('settings', [
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs'
     ],
-    function(chat,
-             throw_event_core,
-             ajax_core,
-             template_core,
-             indexeddb,
-             render_layout_core,
-             overlay_core,
-             extend_core,
-             switcher_core,
-
-             setting_template,
-             triple_element_template,
-             location_wrapper_template,
-             button_template,
-             label_template,
-             input_template) {
+    function(
+        chat,
+        throw_event_core,
+        ajax_core,
+        template_core,
+        indexeddb,
+        render_layout_core,
+        overlay_core,
+        extend_core,
+        switcher_core,
+        //
+        websocket,
+        users_bus,
+        //
+        setting_template,
+        triple_element_template,
+        location_wrapper_template,
+        button_template,
+        label_template,
+        input_template
+    ) {
 
         var settings = function() {
             this.bindMainContexts();
@@ -110,6 +118,19 @@ define('settings', [
                 } else {
                     _this.chat.formatOptions.sendEnter = false;
                 }
+            },
+
+            toggleChatUsersFriendship: function(element) {
+                var _this = this;
+                //_this.joinUser_ListOptions.readyForRequest = element.checked;
+                //_this.disableButton('toggleChatUsersFriendship', element);
+
+                websocket.sendMessage({
+                    type: "chat_toggle_ready",
+                    chat_description: _this.chat.valueOfChat(),
+                    from_user_id: users_bus.getUserId(),
+                    ready_state: element.checked
+                });
             },
 
             saveAsCustomWidth: function() {

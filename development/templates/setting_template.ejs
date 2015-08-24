@@ -1,13 +1,12 @@
 <% var _in = arguments[0];
-
 _in.config._byDataLocation = {};
 _in.config._byDataLocation.logger_massage = _in.config.byDataLocation.logger_massage;
 _in.config._byDataLocation.send_enter = _in.config.byDataLocation.send_enter;
-
+_in.config._byDataLocation.chat_users_apply = _in.config.byDataLocation.chat_users_apply;
 %>
 
 <% if (_in.config && _in.config._byDataLocation) {
-        for (var locationKey in _in.config._byDataLocation) { %>
+    for (var locationKey in _in.config._byDataLocation) { %>
 <%= _in.location_wrapper_template({
     config: _in.config._byDataLocation[locationKey],
     data: _in.data ? _in.data : {},
