@@ -470,6 +470,8 @@ define('webrtc', [
                     event_bus.trigger('notifyChat', messageData);
                 } else if (messageData.type === 'notifyUser') {
                     event_bus.trigger('notifyUser', messageData);
+                } else if (messageData.type === 'chatJoinApproved') {
+                    event_bus.trigger('chatJoinApproved', messageData);
                 }
             },
 

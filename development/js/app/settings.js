@@ -127,7 +127,9 @@ define('settings', [
 
                 websocket.sendMessage({
                     type: "chat_toggle_ready",
-                    chat_description: _this.chat.valueOfChat(),
+                    chat_description: {
+                        chat_id: _this.chat.chat_id
+                    },
                     from_user_id: users_bus.getUserId(),
                     ready_state: element.checked
                 });

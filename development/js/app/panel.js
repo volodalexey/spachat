@@ -930,6 +930,34 @@ define('panel', [
                             message: user_message_input.value
                         }
                     });
+                } else {
+                    alert('Not enough information to make a request! User id and request message are required!')
+                }
+            },
+
+            /**
+             * request connection to chat by its id
+             * chat creator should be online to accept request and share chat
+             */
+            requestChatByChatId: function() {
+                var _this = this;
+                var chat_id_input = _this.body_container.querySelector('[data-role="chat_id_input"]');
+                var chat_message_input = _this.body_container.querySelector('[data-role="chat_message_input"]');
+                var requestButton = _this.body_container.querySelector('[data-action="requestChatByChatId"]');
+
+                if (requestButton && chat_id_input && chat_id_input.value && chat_message_input && chat_message_input.value) {
+                    //_this.disableButton('requestChatByChatId', requestButton);
+
+                    websocket.sendMessage({
+                        type: "chat_join_request",
+                        from_user_id: users_bus.getUserId(),
+                        to_chat_id: chat_id_input.value,
+                        request_body: {
+                            message: chat_message_input.value
+                        }
+                    });
+                } else {
+                    alert('Not enough information to make a request! Chat id and request message are required!')
                 }
             },
 

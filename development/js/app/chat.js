@@ -268,13 +268,14 @@ define('chat', [
                 }
             },
 
-            valueOfKeys: ['chat_id'],
+            valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids'],
 
             bindContexts: function() {
                 var _this = this;
                 _this.bindedOnChatMessage = _this.onChatMessage.bind(_this);
                 _this.bindedStartResizer = _this.startResizer.bind(_this);
                 _this.bindedOnChatToggledReady = _this.onChatToggledReady.bind(_this);
+                _this.bindedOnChatJoinRequest = _this.onChatJoinRequest.bind(_this);
             },
 
             unbindContext: function() {
@@ -282,6 +283,7 @@ define('chat', [
                 _this.bindedOnChatMessage = null;
                 _this.bindedStartResizer = null;
                 _this.bindedOnChatToggledReady = null;
+                _this.bindedOnChatJoinRequest = null;
             },
 
             valueOfChat: function() {
@@ -682,6 +684,7 @@ define('chat', [
                 _this.on('log', _this.console.log, _this);
                 _this.on('chat_message', _this.bindedOnChatMessage, _this);
                 _this.on('chat_toggled_ready', _this.bindedOnChatToggledReady, _this);
+                _this.on('srv_chat_join_request', _this.bindedOnChatJoinRequest, _this);
                 _this.addRemoveListener('add', _this.splitter_left, 'mousedown', _this.bindedStartResizer, false);
                 _this.addRemoveListener('add', _this.splitter_right, 'mousedown', _this.bindedStartResizer, false);
                 _this.addRemoveListener('add', _this.splitter_left, 'touchstart', _this.bindedStartResizer, false);
@@ -698,6 +701,7 @@ define('chat', [
                 _this.off('log');
                 _this.off('chat_message', _this.bindedOnChatMessage);
                 _this.off('chat_toggled_ready', _this.bindedOnChatToggledReady);
+                _this.off('srv_chat_join_request', _this.bindedOnChatJoinRequest);
                 _this.addRemoveListener('remove', _this.splitter_left, 'mousedown', _this.bindedStartResizer, false);
                 _this.addRemoveListener('remove', _this.splitter_left, 'touchstart', _this.bindedStartResizer, false);
                 _this.addRemoveListener('remove', _this.splitter_right, 'mousedown', _this.bindedStartResizer, false);
@@ -752,6 +756,7 @@ define('chat', [
                 _this.chat_element.remove();
                 _this.unCashElements();
                 _this.unbindContext();
+                _this._notListenWebRTCConnection();
             },
 
             toChatDescription: function() {
@@ -807,6 +812,44 @@ define('chat', [
 
             onChatToggledReady: function(eventData) {
                 this.chat_ready_state = eventData.ready_state;
+            },
+
+            onChatJoinRequest: function(eventData) {
+                var _this = this;
+                event_bus.set_ws_device_id(eventData.target_ws_device_id);
+                if (this.chat_ready_state &&
+                    this.createdByUserId === users_bus.getUserId() &&
+                    confirm(eventData.request_body.message)) {
+                    webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
+                    _this._listenWebRTCConnection();
+                }
+            },
+
+            _webRTCConnectionReady: function(triggerConnection) {
+                var _this = this;
+                if (triggerConnection.hasChatId(_this.chat_id)) {
+                    // if connection for chat join request
+                    var messageData = {
+                        type: "chatJoinApproved",
+                        from_user_id: users_bus.getUserId(),
+                        chat_description: _this.valueOfChat()
+                    };
+                    if (triggerConnection.dataChannel && triggerConnection.dataChannel.readyState === "open") {
+                        triggerConnection.dataChannel.send(JSON.stringify(messageData));
+                        _this._notListenWebRTCConnection();
+                    } else {
+                        console.warn('No friendship data channel!');
+                    }
+                }
+            },
+
+            _notListenWebRTCConnection: function() {
+                webrtc.off('webrtc_connection_established', this._webRTCConnectionReady);
+            },
+
+            _listenWebRTCConnection: function() {
+                this._notListenWebRTCConnection();
+                webrtc.on('webrtc_connection_established', this._webRTCConnectionReady, this);
             }
         };
         extend_core.prototype.inherit(chat, ajax_core);

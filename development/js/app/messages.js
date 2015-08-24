@@ -156,7 +156,9 @@ define('messages', [
                                 type: "notifyChat",
                                 chat_type: "chat_message",
                                 message: message,
-                                chat_description: _this.chat.valueOfChat()
+                                chat_description: {
+                                    chat_id: _this.chat.chat_id
+                                }
                             };
                             webrtc.broadcastMessage(JSON.stringify(messageData));
                         }

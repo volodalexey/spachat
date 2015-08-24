@@ -103,15 +103,15 @@ define('chat_platform', [
                 event_bus.on('chatsDestroy', _this.destroyChats, _this);
                 event_bus.on('toCloseChat', _this.toCloseChat, _this);
                 event_bus.on('notifyChat', _this.onChatMessageRouter, _this);
+                event_bus.on('chatJoinApproved', _this.chatCreateApproved, _this);
+                event_bus.on('transformToResizeState', _this.transformToResizeState, _this);
+                event_bus.on('redirectResize', _this.handleResizer, _this);
                 websocket.on('message', _this.onChatMessageRouter, _this);
-                _this.on('joinByChatIdAuto', _this.joinByChatIdAuto, _this);
                 _this.on('showChat', _this.showChat, _this);
                 _this.addRemoveListener('add', _this.chat_resize_container, 'mouseup', _this.bindedHandleResizer, false);
                 _this.addRemoveListener('add', _this.chat_resize_container, 'touchend', _this.bindedHandleResizer, false);
                 _this.addRemoveListener('add', _this.chat_resize_container, 'mousemove', _this.bindedHandleResizer, false);
                 _this.addRemoveListener('add', _this.chat_resize_container, 'touchmove', _this.bindedHandleResizer, false);
-                event_bus.on('transformToResizeState', _this.transformToResizeState, _this);
-                event_bus.on('redirectResize', _this.handleResizer, _this);
             },
 
             removeEventListeners: function() {
@@ -122,10 +122,10 @@ define('chat_platform', [
                 event_bus.off('chatsDestroy', _this.destroyChats);
                 event_bus.off('toCloseChat', _this.toCloseChat);
                 event_bus.off('notifyChat', _this.onChatMessageRouter);
+                event_bus.off('chatJoinApproved', _this.chatCreateApproved);
                 event_bus.off('transformToResizeState', _this.transformToResizeState);
                 event_bus.off('redirectResize', _this.handleResizer, _this);
                 websocket.off('message', _this.onChatMessageRouter);
-                _this.off('joinByChatIdAuto');
                 _this.off('showChat');
                 _this.addRemoveListener('remove', _this.chat_resize_container, 'mouseup', _this.bindedHandleResizer, false);
                 _this.addRemoveListener('remove', _this.chat_resize_container, 'touchend', _this.bindedHandleResizer, false);
@@ -310,28 +310,35 @@ define('chat_platform', [
             },
 
             /**
-             * received confirmation from server
+             * received confirmation from server or from webrtc connection
              * save into indexedDB
-             * @param event - server approved chat description
              */
             chatCreateApproved: function(event) {
                 var _this = this;
-                event_bus.set_ws_device_id(event.from_ws_device_id);
+                if (event.from_ws_device_id) {
+                    event_bus.set_ws_device_id(event.from_ws_device_id);
+                }
 
-                users_bus.putChatIdAndSave(event.chat_description.chat_id, function(err, userInfo) {
+                _this.addNewChatToIndexedDB(event.chat_description, function(err, chat) {
                     if (err) {
                         console.error(err);
                         return;
                     }
 
-                    event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
-                    _this.addNewChatToIndexedDB(event);
+                    users_bus.putChatIdAndSave(chat.chat_id, function(err, userInfo) {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
+
+                        event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
+                        _this.chatWorkflow(event);
+                    });
                 });
             },
 
-            addNewChatToIndexedDB: function(event) {
-                var _this = this;
-                var chat = new Chat(event.chat_description);
+            addNewChatToIndexedDB: function(chat_description, callback) {
+                var chat = new Chat(chat_description);
                 indexeddb.addOrUpdateAll(
                     chats_bus.collectionDescription,
                     null,
@@ -340,11 +347,11 @@ define('chat_platform', [
                     ],
                     function(error) {
                         if (error) {
-                            console.error(error);
+                            callback(error);
                             return;
                         }
 
-                        _this.chatWorkflow(event);
+                        callback(null, chat);
                     }
                 );
             },
@@ -416,34 +423,6 @@ define('chat_platform', [
             },
 
             /**
-             * sends current chat description to the server
-             * @param event - click event
-             */
-            joinByChatIdAuto: function(element) {
-                var _this = this;
-                var wrapper = element.parentNode.parentNode;
-                var input = wrapper.querySelector('[data-role="chat_id_input"]');
-                if (!_this.mainConteiner || !websocket || !wrapper || !input || !input.value) {
-                    return;
-                }
-
-                //_this['joinByChatIdAuto_'] = element;
-                //element.disabled = true;
-                // TODO use disable_display_core
-
-                var chat_description = {
-                    "chat_id": input.value
-                };
-
-                websocket.sendMessage({
-                    type: "chat_join",
-                    from_user_id: users_bus.getUserId(),
-                    chat_description: chat_description
-                });
-            }
-            ,
-
-            /**
              * join request for this chat was approved by the server
              * make offer for each device for this chat
              */
@@ -460,6 +439,11 @@ define('chat_platform', [
                             return;
                         }
 
+                        if (!chat_description) {
+                            alert('Chat is not found in the database!');
+                            return;
+                        }
+
                         users_bus.putChatIdAndSave(event.chat_description.chat_id, function(err, userInfo) {
                             if (err) {
                                 console.error(err);
@@ -468,11 +452,10 @@ define('chat_platform', [
 
                             event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
 
-                            if (!chat_description) {
-                                _this.addNewChatToIndexedDB(event);
-                            } else if (chat_description && !_this.isChatOpened(chat_description.chat_id)) {
+                            if (!_this.isChatOpened(chat_description.chat_id)) {
+                                // force to open chat
                                 _this.chatWorkflow(event);
-                            } else if (chat_description && _this.isChatOpened(chat_description.chat_id) && event.chat_wscs_descrs) {
+                            } else if (_this.isChatOpened(chat_description.chat_id) && event.chat_wscs_descrs) {
                                 webrtc.handleConnectedDevices(event.chat_wscs_descrs);
                             }
                         });

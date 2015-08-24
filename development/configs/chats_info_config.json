@@ -38,30 +38,45 @@
   {
     "role": "locationWrapper",
     "classList": "w-100p flex-sp-between",
-    "location": "chat_id"
+    "location": "chat_id_input"
   },
   {
     "element": "label",
     "text": 5,
-    "location": "chat_id",
-    "data": {
-      "role": "chat_id_label",
-      "mode": "JOIN_CHAT"
-    },
-    "for": "chat_id",
-    "disable": false
+    "location": "chat_id_input",
+    "for": "chat_id_input"
   },
   {
     "element": "input",
     "type": "text",
     "class": "flex-item-w50p",
-    "location": "chat_id",
+    "location": "chat_id_input",
     "data": {
-      "role": "chat_id_input",
-      "mode": "JOIN_CHAT"
+      "role": "chat_id_input"
     },
-    "id": "chat_id",
-    "disabled": false
+    "id": "chat_id_input"
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p flex-sp-between",
+    "location": "chat_message_input"
+  },
+  {
+    "element": "label",
+    "text": 77,
+    "location": "chat_message_input",
+    "for": "chat_message_input"
+  },
+  {
+    "element": "input",
+    "type": "text",
+    "class": "flex-item-w50p",
+    "location": "chat_message_input",
+    "data": {
+      "role": "chat_message_input"
+    },
+    "id": "chat_message_input"
   },
 
   {
@@ -76,7 +91,7 @@
     "location": "chat_id_btn",
     "data": {
       "throw": "true",
-      "action": "joinByChatIdAuto",
+      "action": "requestChatByChatId",
       "mode": "JOIN_CHAT"
     },
     "disable": false
