@@ -31,7 +31,6 @@ define('description_core', [
                                 clientX = event.changedTouches[0].clientX;
                             }
                             if (Math.abs(_this.checkReorderClientX - clientX) > 5 && !_this.descriptionShow) {
-                                _this.descriptionShow = true;
                                 var element;
                                 if (event.type === 'touchmove' && event.changedTouches) {
                                     element = _this.getDataParameter(event.changedTouches[0].target, 'description');
@@ -39,6 +38,7 @@ define('description_core', [
                                     element = _this.getDataParameter(event.target, 'description');
                                 }
                                 if (element && element.dataset.description) {
+                                    _this.descriptionShow = true;
                                     description.innerHTML = element.dataset.description;
                                     var result = _this.getOffset(element);
                                     var positionFound = false, checkLeft, checkTop;
@@ -191,11 +191,16 @@ define('description_core', [
                                             if (documentHeight > checkTop + description.offsetHeight) {
                                                 futureTop = checkTop;
                                                 if (documentWidth > result.offsetLeft + description.offsetWidth) {
-                                                    futureLeft = 0;
+                                                    futureLeft = result.offsetLeft;
                                                     positionFound = true;
                                                 } else {
-                                                    // not found
-                                                    futureLeft = result.offsetLeft + element.offsetWidth / 2 - description.offsetWidth / 2;
+                                                    if (documentWidth > description.offsetWidth){
+                                                        futureLeft = 0;
+                                                        positionFound = true;
+                                                    } else {
+                                                        // not found
+                                                        futureLeft = result.offsetLeft + element.offsetWidth / 2 - description.offsetWidth / 2;
+                                                    }
                                                 }
                                             }
                                         }
