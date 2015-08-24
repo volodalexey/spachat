@@ -967,6 +967,7 @@ define('panel', [
                             if (messageData.user_wscs_descrs) {
                                 webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
                                 _this.listenWebRTCConnection(messageData.to_user_id);
+                                _this.listenNotifyUser(messageData.to_user_id);
                             }
                         }
                         break;
@@ -979,7 +980,6 @@ define('panel', [
 
             onNotifyUser: function(user_id, messageData) {
                 var _this = this;
-                console.log('onNotifyUser');
                 indexeddb.getByKeyPath(
                     users_bus.collectionDescription,
                     user_id,
@@ -996,6 +996,7 @@ define('panel', [
                             }
 
                             users_bus.putUserIdAndSave(user_id);
+                            _this.notListenNotifyUser();
                         });
                     }
                 );
@@ -1021,7 +1022,6 @@ define('panel', [
 
             webRTCConnectionReady: function(user_id, triggerConnection) {
                 var _this = this;
-                console.log('webRTCConnectionReady');
                 if (triggerConnection.hasUserId(user_id)) {
                     // if connection for user friendship
                     users_bus.getUserDescription({}, function(error, user_description) {
@@ -1036,6 +1036,7 @@ define('panel', [
                         };
                         if (triggerConnection.dataChannel && triggerConnection.dataChannel.readyState === "open") {
                             triggerConnection.dataChannel.send(JSON.stringify(messageData));
+                            _this.notListenWebRTCConnection();
                         } else {
                             console.warn('No friendship data channel!');
                         }
@@ -1043,15 +1044,26 @@ define('panel', [
                 }
             },
 
-            listenWebRTCConnection: function(user_id) {
+            notListenWebRTCConnection: function() {
                 if (this.bindedWebRTCConnectionReady) {
                     webrtc.off('webrtc_connection_established', this.bindedWebRTCConnectionReady);
                 }
+            },
+
+            listenWebRTCConnection: function(user_id) {
+                this.notListenWebRTCConnection();
                 this.bindedWebRTCConnectionReady = this.webRTCConnectionReady.bind(this, user_id);
                 webrtc.on('webrtc_connection_established', this.bindedWebRTCConnectionReady);
+            },
+
+            notListenNotifyUser: function() {
                 if (this.bindedOnNotifyUser) {
                     event_bus.off('notifyUser', this.bindedOnNotifyUser);
                 }
+            },
+
+            listenNotifyUser: function(user_id) {
+                this.notListenNotifyUser();
                 this.bindedOnNotifyUser = this.onNotifyUser.bind(this, user_id);
                 event_bus.on('notifyUser', this.bindedOnNotifyUser);
             },
@@ -1062,6 +1074,7 @@ define('panel', [
                 if (messageData.user_wscs_descrs && confirm(messageData.request_body.message)) {
                     webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
                     _this.listenWebRTCConnection(messageData.from_user_id);
+                    _this.listenNotifyUser(messageData.from_user_id);
                 }
             },
 
