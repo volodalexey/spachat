@@ -13,6 +13,7 @@ define('chat', [
         'users_bus',
         'extra_toolbar',
         'filter',
+        'chats_bus',
         //
         'ajax_core',
         'template_core',
@@ -48,6 +49,7 @@ define('chat', [
              users_bus,
              Extra_toolbar,
              Filter,
+             chats_bus,
              //
              ajax_core,
              template_core,
@@ -817,11 +819,28 @@ define('chat', [
             onChatJoinRequest: function(eventData) {
                 var _this = this;
                 event_bus.set_ws_device_id(eventData.target_ws_device_id);
-                if (this.chat_ready_state &&
-                    this.createdByUserId === users_bus.getUserId() &&
+                if (_this.chat_ready_state &&
+                    _this.amICreator() &&
                     confirm(eventData.request_body.message)) {
-                    webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
-                    _this._listenWebRTCConnection();
+                    if (!_this.isInUsers(_this, eventData.from_user_id)) {
+                        _this.user_ids.push(eventData.from_user_id);
+                        indexeddb.addOrUpdateAll(
+                            chats_bus.collectionDescription,
+                            null,
+                            [
+                                _this.toChatDescription()
+                            ],
+                            function(error) {
+                                if (error) {
+                                    console.error(error);
+                                    return;
+                                }
+
+                                webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
+                                _this._listenWebRTCConnection();
+                            }
+                        );
+                    }
                 }
             },
 

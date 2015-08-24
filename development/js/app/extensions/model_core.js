@@ -22,13 +22,14 @@ define([
                 }
             },
 
-            isInUsers: function(_instance) {
+            isInUsers: function(_instance, user_id) {
                 var instance = _instance ? _instance : this;
+                var check_user_id = user_id ? user_id : users_bus.getUserId();
                 var inUsers;
                 if (instance.user_ids) {
-                    instance.user_ids.every(function(user_id) {
-                        if (user_id === users_bus.getUserId()) {
-                            inUsers = user_id;
+                    instance.user_ids.every(function(_user_id) {
+                        if (_user_id === check_user_id) {
+                            inUsers = _user_id;
                         }
                         return !inUsers;
                     });
