@@ -17,8 +17,10 @@ define('description_core', [
                     case 'mousedown':
                     case 'touchstart':
                         _this.checkReorderClientX = event.clientX;
+                        _this.checkReorderClientY = event.clientY;
                         if (event.type === 'touchstart') {
                             _this.checkReorderClientX = event.changedTouches[0].clientX;
+                            _this.checkReorderClientY = event.changedTouches[0].clientY;
                         }
                         _this.reorderMouseDown = true;
                         return false;
@@ -27,10 +29,16 @@ define('description_core', [
                     case 'touchmove':
                         if (_this.reorderMouseDown) {
                             var clientX = event.clientX;
+                            var clientY = event.clientY;
                             if (event.type === 'touchmove' && event.changedTouches) {
                                 clientX = event.changedTouches[0].clientX;
+                                clientY = event.changedTouches[0].clientY;
                             }
-                            if (Math.abs(_this.checkReorderClientX - clientX) > 5 && !_this.descriptionShow) {
+                            var radius = 5;
+                            var deltaX = Math.abs(_this.checkReorderClientX - clientX);
+                            var deltaY = Math.abs(_this.checkReorderClientY - clientY);
+                            var current_radius = Math.sqrt( Math.pow(deltaX,2) + Math.pow(deltaY,2) );
+                            if (current_radius > radius && !_this.descriptionShow) {
                                 var element;
                                 if (event.type === 'touchmove' && event.changedTouches) {
                                     element = _this.getDataParameter(event.changedTouches[0].target, 'description');
@@ -67,6 +75,18 @@ define('description_core', [
                                                 checkLeft = documentWidth - 5 - element.offsetWidth;
                                                 if (documentLeft < checkLeft) {
                                                     if (checkLeft + description.offsetWidth < documentWidth) {
+                                                        futureLeft = checkLeft;
+                                                        positionFound = true;
+                                                    } else {
+                                                        // not found
+                                                    }
+                                                }
+                                            }
+
+                                            if (!positionFound) {
+                                                checkLeft = result.offsetLeft - description.offsetWidth;
+                                                if (checkLeft + description.offsetWidth < documentWidth) {
+                                                    if (documentLeft < checkLeft) {
                                                         futureLeft = checkLeft;
                                                         positionFound = true;
                                                     } else {
