@@ -138,6 +138,10 @@ function(
             this.chats_ids = [];
             this.users_ids = [];
             event_bus.trigger('connectionDestroyed', this);
+        },
+
+        isActive: function() {
+            return this.dataChannel && this.dataChannel.readyState === "open";
         }
     };
 

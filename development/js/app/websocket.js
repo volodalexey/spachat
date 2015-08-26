@@ -1,11 +1,17 @@
 define('websocket', [
         'throw_event_core',
-        'extend_core'
+        'extend_core',
+        'id_core'
     ],
-    function(throw_event_core, extend_core) {
+    function(
+        throw_event_core,
+        extend_core,
+        id_core
+    ) {
 
         var websocket = function() {
             this.bindContexts();
+            this.responseCallbacks = [];
         };
 
         websocket.prototype = {
@@ -83,7 +89,24 @@ define('websocket', [
                     }
                 }
                 console.info('WebSocket received message data', parsedMessageData);
-                this.trigger('message', parsedMessageData);
+                if (parsedMessageData.response_id) {
+                    var depleted = [];
+                    this.responseCallbacks.forEach(function(callbDescr) {
+                        if (callbDescr.request_id === parsedMessageData.response_id) {
+                            callbDescr.responseCallback(parsedMessageData);
+                            depleted.push(callbDescr);
+                        }
+                    });
+                    while (depleted.length) {
+                        var toRemoveCallbDescr = depleted.shift();
+                        var removeIndex = this.responseCallbacks.indexOf(toRemoveCallbDescr);
+                        if (removeIndex !== -1) {
+                            this.responseCallbacks.splice(removeIndex, 1);
+                        }
+                    }
+                } else {
+                    this.trigger('message', parsedMessageData);
+                }
             },
 
             onError: function(error) {
@@ -93,12 +116,27 @@ define('websocket', [
             sendMessage: function(data) {
                 var senddata = data;
                 if (typeof data !== "string") {
-                    senddata = JSON.stringify(data);
+                    try {
+                        senddata = JSON.stringify(data);
+                    } catch (e) {
+                        console.error(e);
+                        return;
+                    }
                 }
                 this.socket.send(senddata);
+            },
+
+            wsRequest: function(requestData, responseCallback) {
+                requestData.request_id = this.generateId();
+                this.responseCallbacks.push({
+                    request_id: requestData.request_id,
+                    responseCallback: responseCallback
+                });
+                this.sendMessage(requestData);
             }
         };
         extend_core.prototype.inherit(websocket, throw_event_core);
+        extend_core.prototype.inherit(websocket, id_core);
 
         return new websocket();
     }

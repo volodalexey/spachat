@@ -114,6 +114,8 @@ define('login', [
                             alert(new Error('User with such username or password not found!'));
                         }
                     });
+                } else {
+                    alert(new Error('All fields are required!'));
                 }
             },
 

@@ -160,7 +160,7 @@ define('messages', [
                                     chat_id: _this.chat.chat_id
                                 }
                             };
-                            webrtc.broadcastMessage(JSON.stringify(messageData));
+                            webrtc.broadcastChatMessage(_this.chat.chat_id, JSON.stringify(messageData));
                         }
 
                         callback && callback(error, message);

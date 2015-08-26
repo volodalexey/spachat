@@ -665,12 +665,12 @@ define('webrtc', [
             },
 
             /**
-             * broadcast for all data channels
+             * broadcast for all connections data channels
              */
-            broadcastMessage: function(broadcastData) {
+            broadcastMessage: function(connections, broadcastData) {
                 var _this = this, unused = [];
-                _this.connections.forEach(function(_connection) {
-                    if (_connection.dataChannel && _connection.dataChannel.readyState === "open") {
+                connections.forEach(function(_connection) {
+                    if (_connection.isActive()) {
                         _connection.dataChannel.send(broadcastData);
                     } else if (_connection.dataChannel) {
                         unused.push(_connection);
@@ -678,13 +678,29 @@ define('webrtc', [
                 });
                 while (unused.length) {
                     var toRemoveConnection = unused.shift();
-                    var removeIndex = _this.connections.indexOf(toRemoveConnection);
+                    var removeIndex = connections.indexOf(toRemoveConnection);
                     if (removeIndex === -1) {
                         console.log('removed old client connection',
-                            'ws_device_id => ', _this.connections[removeIndex].ws_device_id);
-                        _this.connections.splice(removeIndex, 1);
+                            'ws_device_id => ', connections[removeIndex].ws_device_id);
+                        connections.splice(removeIndex, 1);
                     }
                 }
+            },
+
+            getChatConnections: function(connections, chat_id, active) {
+                var webrtc_chat_connections = [];
+                connections.forEach(function(webrtc_connection) {
+                    if (!active || webrtc_connection.isActive()) {
+                        if (webrtc_connection.hasChatId(chat_id)) {
+                            webrtc_chat_connections.push(webrtc_connection);
+                        }
+                    }
+                });
+                return webrtc_chat_connections;
+            },
+
+            broadcastChatMessage: function(chat_id, broadcastData) {
+                this.broadcastMessage(this.getChatConnections(this.connections, chat_id), broadcastData);
             },
 
             destroyConnectionChat: function(chat_id) {

@@ -1,6 +1,7 @@
 {
   "name": "spachat",
   "version": "0.0.1",
+  "private": true,
   "dependencies": {
     "express": "^4.12.3",
     "express-ws": "^0.2.6"

@@ -140,6 +140,8 @@ define('register', [
                         _this.registerForm.reset();
                         alert(new Error('Passwords don\'t match!'));
                     }
+                } else {
+                    alert(new Error('All fields are required!'));
                 }
             },
 

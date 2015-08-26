@@ -49,6 +49,7 @@ define('chat_platform', [
                 var _this = this;
                 _this.bindedOnThrowEvent = _this.onThrowEvent.bind(_this);
                 _this.bindedHandleResizer = _this.handleResizer.bind(_this);
+                _this.bindedOnVisibilityChange = _this.onVisibilityChange.bind(_this);
             },
 
             render: function
@@ -112,6 +113,7 @@ define('chat_platform', [
                 _this.addRemoveListener('add', _this.chat_resize_container, 'touchend', _this.bindedHandleResizer, false);
                 _this.addRemoveListener('add', _this.chat_resize_container, 'mousemove', _this.bindedHandleResizer, false);
                 _this.addRemoveListener('add', _this.chat_resize_container, 'touchmove', _this.bindedHandleResizer, false);
+                _this.addRemoveListener('add', document, 'visibilitychange', _this.bindedOnVisibilityChange, false);
             },
 
             removeEventListeners: function() {
@@ -131,6 +133,7 @@ define('chat_platform', [
                 _this.addRemoveListener('remove', _this.chat_resize_container, 'touchend', _this.bindedHandleResizer, false);
                 _this.addRemoveListener('remove', _this.chat_resize_container, 'mousemove', _this.bindedHandleResizer, false);
                 _this.addRemoveListener('remove', _this.chat_resize_container, 'touchmove', _this.bindedHandleResizer, false);
+                _this.addRemoveListener('remove', document, 'visibilitychange', _this.bindedOnVisibilityChange, false);
             },
 
             getOpenChats: function(callback) {
@@ -283,30 +286,6 @@ define('chat_platform', [
                     type: "chat_create",
                     from_user_id: users_bus.getUserId()
                 });
-            },
-
-            /**
-             * check generated chat id in the local database
-             */
-            checkGeneratedChatId: function(chat_id, callback) {
-                var _this = this;
-                indexeddb.getByKeyPath(
-                    chats_bus.collectionDescription,
-                    chat_id,
-                    function(getError, chat) {
-                        if (getError) {
-                            callback(getError);
-                            return;
-                        }
-
-                        if (chat) {
-                            console.log('Duplicated chat id found. Try generating the new one');
-                            _this.checkGeneratedChatId(chat_id, callback);
-                        } else {
-                            callback(null, chat_id);
-                        }
-                    }
-                );
             },
 
             /**
@@ -616,6 +595,19 @@ define('chat_platform', [
                 });
 
                 return openedChat;
+            },
+
+            onVisibilityChange: function(event) {
+                if (event.target.hidden === false) {
+                    Chat.prototype.chatsArray.every(function(chat) {
+                        websocket.wsRequest({
+                            chat_id: chat.chat_id,
+                            url: "/api/chat/websocketconnections"
+                        }, function(response) {
+                            webrtc.handleConnectedDevices(response.chat_wscs_descrs);
+                        });
+                    });
+                }
             }
         };
         extend_core.prototype.inherit(chat_platform, overlay_core);
