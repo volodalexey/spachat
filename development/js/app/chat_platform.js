@@ -6,6 +6,7 @@ define('chat_platform', [
         'indexeddb',
         'users_bus',
         'chats_bus',
+        'popap_manager',
         //
         'overlay_core',
         'throw_event_core',
@@ -23,6 +24,7 @@ define('chat_platform', [
              indexeddb,
              users_bus,
              chats_bus,
+             popap_manager,
              //
              overlay_core,
              throw_event_core,
@@ -523,20 +525,44 @@ define('chat_platform', [
 
             saveStatesChat: function(chat) {
                 var _this = this;
-                if (confirm("Save settings this chat ?")) {
-                    var chatDescription = chat.toChatDescription();
-                    _this.saveStatesChats(chatDescription, null);
-                }
+                popap_manager.renderPopap(
+                    'confirm',
+                    {message: 81},
+                    function(event) {
+                        switch (event.target.dataset.action) {
+                            case 'confirmOk':
+                                var chatDescription = chat.toChatDescription();
+                                _this.saveStatesChats(chatDescription, null);
+                                popap_manager.onClose();
+                                break;
+                            case 'confirmCancel':
+                                popap_manager.onClose();
+                                break;
+                        }
+                    }
+                );
             },
 
             saveAndCloseChat: function(chatToDestroy) {
                 var _this = this;
-                if (confirm("Save settings this chat and close it ?")) {
-                    var chatDescription = chatToDestroy.toChatDescription();
-                    _this.saveStatesChats(chatDescription, function() {
-                        _this.destroyChat(chatToDestroy);
-                    });
-                }
+                popap_manager.renderPopap(
+                    'confirm',
+                    {message: 82},
+                    function(event) {
+                        switch (event.target.dataset.action) {
+                            case 'confirmOk':
+                                var chatDescription = chatToDestroy.toChatDescription();
+                                _this.saveStatesChats(chatDescription, function() {
+                                    _this.destroyChat(chatToDestroy);
+                                });
+                                popap_manager.onClose();
+                                break;
+                            case 'confirmCancel':
+                                popap_manager.onClose();
+                                break;
+                        }
+                    }
+                );
             },
 
             toCloseChat: function(chatToDestroyId, saveStates) {
@@ -562,9 +588,21 @@ define('chat_platform', [
 
             closeChat: function(chatToDestroy) {
                 var _this = this;
-                if (confirm("Close this chat ?")) {
-                    _this.destroyChat(chatToDestroy);
-                }
+                popap_manager.renderPopap(
+                    'confirm',
+                    {message: 83},
+                    function(event) {
+                        switch (event.target.dataset.action) {
+                            case 'confirmOk':
+                                _this.destroyChat(chatToDestroy);
+                                popap_manager.onClose();
+                                break;
+                            case 'confirmCancel':
+                                popap_manager.onClose();
+                                break;
+                        }
+                    }
+                );
             },
 
             destroyChat: function(chatToDestroy) {

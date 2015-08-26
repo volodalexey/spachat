@@ -393,5 +393,25 @@
     "id": 79,
     "en": "Ready for new chat users requests",
     "ru": "Ожидать новых пользователей"
+  },
+  {
+    "id": 80,
+    "en": "Confirm",
+    "ru": "Подтверждение"
+  },
+  {
+    "id": 81,
+    "en": "Save settings this chat ?",
+    "ru": "Сохранить текущие настройки данного чата ?"
+  },
+  {
+    "id": 82,
+    "en": "Save settings this chat and close it ?",
+    "ru": "Сохранить текущие настройки данного чата и закрыть его ?"
+  },
+  {
+    "id": 83,
+    "en": "Close this chat ?",
+    "ru": "Закрыть данный чат ?"
   }
 ]

@@ -4,6 +4,7 @@ define('main_layout', [
         'navigator',
         'dom_core',
         'extend_core',
+        'popap_manager',
         //
         'text!../templates/index_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -15,6 +16,7 @@ define('main_layout', [
              navigator,
              dom_core,
              extend_core,
+             popap_manager,
             //
              index_template,
              triple_element_template,
@@ -48,6 +50,8 @@ define('main_layout', [
                         navigator.bindContexts();
                         navigator.addEventListeners();
                         navigator.navigate();
+                        popap_manager.cashElement();
+                        popap_manager.onHandlers();
                     });
                 });
             }

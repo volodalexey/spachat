@@ -1,0 +1,58 @@
+[
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-between",
+    "location": "header"
+  },
+  {
+    "element": "label",
+    "text": 80,
+    "class": "",
+    "location": "header",
+    "data": {
+      "role": ""
+    }
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-between",
+    "location": "body"
+  },
+  {
+    "element": "label",
+    "text": "",
+    "class": "",
+    "location": "body",
+    "data": {
+      "role": "",
+      "key": "body_text"
+    }
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "c-200 flex-sp-around",
+    "location": "footer"
+  },
+  {
+    "element": "button",
+    "location": "footer",
+    "class": "button c-red m-r70 f-s20",
+    "text": 42,
+    "data": {
+      "action": "confirmCancel",
+      "description": 21
+    }
+  },
+  {
+    "element": "button",
+    "location": "footer",
+    "class": "button c-red m-r70 f-s20",
+    "text": 43,
+    "data": {
+      "action": "confirmOk",
+      "description": 22
+    }
+  }
+]

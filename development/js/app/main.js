@@ -50,7 +50,8 @@ require.config({
         "localization": "app/localization",
         "main_layout": "app/main_layout",
         "extra_toolbar": "app/extra_toolbar",
-        "filter": "app/filter"
+        "filter": "app/filter",
+        "popap_manager": "app/popap_manager"
     }
 });
 
