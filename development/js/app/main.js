@@ -2,8 +2,12 @@ require.config({
     "baseUrl": "js",
     "waitSeconds": 10,
     "paths": {
-        // requireJS plugins
+        // libs
         "text": "lib/text",
+        "lib_rsa": "lib/rsa",
+        "lib_crypto_math": "lib/crypto_math",
+        "lib_convert": "lib/convert",
+        "lib_biginteger": "lib/biginteger",
         // models
         "html_message": "app/model/html_message",
         "html_log_message": "app/model/html_log_message",
@@ -50,7 +54,8 @@ require.config({
         "localization": "app/localization",
         "main_layout": "app/main_layout",
         "extra_toolbar": "app/extra_toolbar",
-        "filter": "app/filter"
+        "filter": "app/filter",
+        "crypto": "app/crypto"
     }
 });
 

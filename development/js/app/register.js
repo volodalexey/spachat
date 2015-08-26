@@ -10,6 +10,7 @@ define('register', [
         'users_bus',
         'websocket',
         'indexeddb',
+        'crypto',
         //
         'text!../templates/register_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -18,24 +19,27 @@ define('register', [
         'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/element/input_template.ejs'
     ],
-    function(overlay_core,
-             throw_event_core,
-             template_core,
-             ajax_core,
-             extend_core,
-             render_layout_core,
-            //
-             id_core,
-             users_bus,
-             websocket,
-             indexeddb,
-            //
-             register_template,
-             triple_element_template,
-             button_template,
-             label_template,
-             location_wrapper_template,
-             input_template) {
+    function(
+        overlay_core,
+        throw_event_core,
+        template_core,
+        ajax_core,
+        extend_core,
+        render_layout_core,
+        //
+        id_core,
+        users_bus,
+        websocket,
+        indexeddb,
+        crypto,
+        //
+        register_template,
+        triple_element_template,
+        button_template,
+        label_template,
+        location_wrapper_template,
+        input_template
+    ) {
 
         /**
          * register constructor
@@ -111,6 +115,8 @@ define('register', [
             registerWorkflow: function(event) {
                 var _this = this;
                 event.preventDefault();
+                crypto.generate_rsa_key();
+                return;
                 var userName = _this.registerForm.elements.userName.value;
                 var userPassword = _this.registerForm.elements.userPassword.value;
                 var userPasswordConfirm = _this.registerForm.elements.userPasswordConfirm.value;
