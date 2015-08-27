@@ -823,6 +823,7 @@ define('chat', [
                     _this.amICreator() &&
                     confirm(eventData.request_body.message)) {
                     if (!_this.isInUsers(_this, eventData.from_user_id)) {
+                        // add user and save chat with this user TODO update only user_ids in chat description
                         _this.user_ids.push(eventData.from_user_id);
                         indexeddb.addOrUpdateAll(
                             chats_bus.collectionDescription,
@@ -836,25 +837,28 @@ define('chat', [
                                     return;
                                 }
 
-                                webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
                                 _this._listenWebRTCConnection();
+                                webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
                             }
                         );
+                    } else {
+                        _this._listenWebRTCConnection();
+                        webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
                     }
                 }
             },
 
-            _webRTCConnectionReady: function(triggerConnection) {
+            _webRTCConnectionReady: function(eventConnection) {
                 var _this = this;
-                if (triggerConnection.hasChatId(_this.chat_id)) {
+                if (eventConnection.hasChatId(_this.chat_id)) {
                     // if connection for chat join request
                     var messageData = {
                         type: "chatJoinApproved",
                         from_user_id: users_bus.getUserId(),
                         chat_description: _this.valueOfChat()
                     };
-                    if (triggerConnection.dataChannel && triggerConnection.dataChannel.readyState === "open") {
-                        triggerConnection.dataChannel.send(JSON.stringify(messageData));
+                    if (eventConnection.isActive()) {
+                        eventConnection.dataChannel.send(JSON.stringify(messageData));
                         _this._notListenWebRTCConnection();
                     } else {
                         console.warn('No friendship data channel!');

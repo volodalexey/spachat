@@ -399,6 +399,13 @@ define('chat_platform', [
 
                     if (messageData.chat_wscs_descrs) {
                         webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
+                    } else {
+                        websocket.wsRequest({
+                            chat_id: newChat.chat_id,
+                            url: "/api/chat/websocketconnections"
+                        }, function(err, response) {
+                            webrtc.handleConnectedDevices(response.chat_wscs_descrs);
+                        });
                     }
                 });
             },

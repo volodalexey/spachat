@@ -100,6 +100,7 @@ define('webrtc', [
 
                 var connection = _this.getConnection(ws_descr.ws_device_id);
                 if (connection && connection.canApplyNextState() === false) {
+                    connection.storeContext(ws_descr);
                     _this.trigger('webrtc_connection_established', connection);
                     return;
                 }
@@ -127,6 +128,7 @@ define('webrtc', [
                 }
                 var connection = _this.getConnection(messageData.from_ws_device_id);
                 if (connection && connection.canApplyNextState() === false) {
+                    connection.storeContext(messageData);
                     return;
                 }
                 
@@ -153,6 +155,7 @@ define('webrtc', [
 
                 var connection = _this.getConnection(messageData.from_ws_device_id);
                 if (connection && connection.canApplyNextState() === false) {
+                    connection.storeContext(messageData);
                     return;
                 } else if (!connection) {
                     console.error(new Error('Answer for connection thet is not exist!'));

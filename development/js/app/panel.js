@@ -993,9 +993,9 @@ define('panel', [
                             _this.enableButton('requestFriendByUserId');
                             event_bus.set_ws_device_id(messageData.from_ws_device_id);
                             if (messageData.user_wscs_descrs) {
-                                webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
                                 _this.listenWebRTCConnection(messageData.to_user_id);
                                 _this.listenNotifyUser(messageData.to_user_id);
+                                webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
                             }
                         }
                         break;
@@ -1100,9 +1100,9 @@ define('panel', [
                 var _this = this;
                 event_bus.set_ws_device_id(messageData.target_ws_device_id);
                 if (messageData.user_wscs_descrs && confirm(messageData.request_body.message)) {
-                    webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
                     _this.listenWebRTCConnection(messageData.from_user_id);
                     _this.listenNotifyUser(messageData.from_user_id);
+                    webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
                 }
             },
 

@@ -63,7 +63,8 @@ define('users_bus', [
                         user_ids,
                         function(user_id) {
                             return {
-                                userName: 'unknown'
+                                user_id: user_id,
+                                userName: '-//-//-//-'
                             }
                         },
                         function(getError, contactsInfo) {

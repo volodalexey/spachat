@@ -275,6 +275,9 @@ define('indexeddb',
 
                     var getCursor;
                     var _array = [];
+                    trans.oncomplete = function() {
+                        callback(null, _array);
+                    };
                     getValues.forEach(function(getValue){
                         try {
                             getCursor = store.openCursor(IDBKeyRange.only(getValue));
@@ -291,15 +294,41 @@ define('indexeddb',
                                 return;
                             }
                             _array.push(cursor.value);
-                            cursor.continue();
                         };
                         getCursor.onerror = function(e) {
                             callback(e.currentTarget.error);
                         };
-                        trans.oncomplete = function() {
-                            callback(null, _array);
-                        };
                     });
+                    //_this.async_eachSeries(getValues, function(getValue, _callback) {
+                    //    try {
+                    //        getCursor = store.openCursor(IDBKeyRange.only(getValue));
+                    //    } catch (error) {
+                    //        _callback(error);
+                    //        return;
+                    //    }
+                    //    getCursor.onsuccess = function(event) {
+                    //        var cursor = event.target.result;
+                    //        if (!cursor) {
+                    //            if (nullWrapper) {
+                    //                //_array.push(nullWrapper(getValue));
+                    //                _callback(null, nullWrapper(getValue));
+                    //            } else {
+                    //                _callback(null);
+                    //            }
+                    //        } else {
+                    //            _callback(null, cursor.value);
+                    //        }
+                    //    };
+                    //    getCursor.onerror = function(e) {
+                    //        _callback(e.currentTarget.error);
+                    //    };
+                    //}, function(err, values) {
+                    //    if (err) {
+                    //        callback(err);
+                    //    } else {
+                    //        callback(null, values);
+                    //    }
+                    //});
                 };
 
                 if (_this.openDatabases[options.db_name]) {
