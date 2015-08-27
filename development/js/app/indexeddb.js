@@ -256,7 +256,7 @@ define('indexeddb',
                 }
             },
 
-            getByKeysPath: function(options, getValues, callback) {
+            getByKeysPath: function(options, getValues, nullWrapper, callback) {
                 var _this = this, cur_table_name;
 
                 if (_this.canNotProceed(callback)) { return; }
@@ -283,8 +283,13 @@ define('indexeddb',
                             return;
                         }
                         getCursor.onsuccess = function(event) {
-                           var cursor = this.result;
-                            if (!cursor) return;
+                            var cursor = event.target.result;
+                            if (!cursor) {
+                                if (nullWrapper) {
+                                    _array.push(nullWrapper(getValue));
+                                }
+                                return;
+                            }
                             _array.push(cursor.value);
                             cursor.continue();
                         };

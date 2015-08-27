@@ -61,6 +61,11 @@ define('users_bus', [
                     indexeddb.getByKeysPath(
                         this.collectionDescription,
                         user_ids,
+                        function(user_id) {
+                            return {
+                                userName: 'unknown'
+                            }
+                        },
                         function(getError, contactsInfo) {
                             if (getError) {
                                 if (_callback){

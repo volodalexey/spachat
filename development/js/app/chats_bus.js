@@ -21,6 +21,7 @@ define('chats_bus', [
                     indexeddb.getByKeysPath(
                         this.collectionDescription,
                         chat_ids,
+                        null,
                         function(getError, chatsInfo) {
                             if (getError) {
                                 if (_callback){

@@ -90,10 +90,13 @@ define('websocket', [
                 }
                 console.info('WebSocket received message data', parsedMessageData);
                 if (parsedMessageData.response_id) {
-                    var depleted = [];
+                    var depleted = [], nowDatetime = Date.now();
                     this.responseCallbacks.forEach(function(callbDescr) {
                         if (callbDescr.request_id === parsedMessageData.response_id) {
-                            callbDescr.responseCallback(parsedMessageData);
+                            callbDescr.responseCallback(null, parsedMessageData);
+                            depleted.push(callbDescr);
+                        } else if (nowDatetime - callbDescr.datetime > 50000) {
+                            callbDescr.responseCallback(new Error('Timeout fro request'));
                             depleted.push(callbDescr);
                         }
                     });
@@ -129,6 +132,7 @@ define('websocket', [
             wsRequest: function(requestData, responseCallback) {
                 requestData.request_id = this.generateId();
                 this.responseCallbacks.push({
+                    datetime: Date.now(),
                     request_id: requestData.request_id,
                     responseCallback: responseCallback
                 });

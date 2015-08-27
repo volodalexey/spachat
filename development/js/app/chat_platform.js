@@ -641,7 +641,7 @@ define('chat_platform', [
                         websocket.wsRequest({
                             chat_id: chat.chat_id,
                             url: "/api/chat/websocketconnections"
-                        }, function(response) {
+                        }, function(err, response) {
                             webrtc.handleConnectedDevices(response.chat_wscs_descrs);
                         });
                     });
