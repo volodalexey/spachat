@@ -313,7 +313,14 @@ define('chat_platform', [
                         }
 
                         event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
-                        _this.chatWorkflow(event);
+                        //_this.chatWorkflow(event);
+                        websocket.sendMessage({
+                            type: "chat_join",
+                            from_user_id: users_bus.getUserId(),
+                            chat_description: {
+                                chat_id: chat.chat_id
+                            }
+                        });
                     });
                 });
             },
@@ -404,6 +411,10 @@ define('chat_platform', [
                             chat_id: newChat.chat_id,
                             url: "/api/chat/websocketconnections"
                         }, function(err, response) {
+                            if (err) {
+                                console.error(err);
+                                return;
+                            }
                             webrtc.handleConnectedDevices(response.chat_wscs_descrs);
                         });
                     }
@@ -649,6 +660,10 @@ define('chat_platform', [
                             chat_id: chat.chat_id,
                             url: "/api/chat/websocketconnections"
                         }, function(err, response) {
+                            if (err) {
+                                console.error(err);
+                                return;
+                            }
                             webrtc.handleConnectedDevices(response.chat_wscs_descrs);
                         });
                     });

@@ -453,8 +453,8 @@ define('webrtc', [
                     var notMode = this.notMode(activeOrPassive);
                     this._removePeerConnectionListeners(curConnection[notMode].peerConnection);
                     this._removeDataChannelListeners(curConnection[notMode].dataChannel);
-                    delete curConnection.active;
-                    delete curConnection.passive;
+                    curConnection.setDefaultActive();
+                    curConnection.setDefaultPassive();
                     this.trigger('webrtc_connection_established', curConnection);
                 } else {
                     curConnection.log('log', { message: 'fail to set data channel for ' + activeOrPassive });

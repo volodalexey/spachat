@@ -15,17 +15,23 @@ function(
         this.chats_ids = [];
         this.users_ids = [];
         this.ws_device_id = options.ws_device_id;
-        this.active = {
-            readyState: options.active && options.active.readyState ? options.active.readyState : this.readyStates.WAITING,
-            remoteAnswerDescription: options.active && options.active.remoteAnswerDescription ? options.active.remoteAnswerDescription : null
-        };
-        this.passive = {
-            readyState: options.passive && options.passive.readyState ? options.passive.readyState : this.readyStates.WAITING,
-            remoteOfferDescription: options.passive && options.passive.remoteOfferDescription ? options.passive.remoteOfferDescription : null
-        }
+        this.setDefaultActive();
+        this.setDefaultPassive();
     };
 
     Connection.prototype = {
+
+        setDefaultActive: function() {
+            this.active = {
+                readyState: this.readyStates.WAITING
+            };
+        },
+
+        setDefaultPassive: function() {
+            this.passive = {
+                readyState: this.readyStates.WAITING
+            }
+        },
 
         readyStates: {
             WAITING: 'WAITING',
