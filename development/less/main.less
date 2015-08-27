@@ -62,10 +62,31 @@ body {
   padding-top: 0.5em;
   padding-bottom: 0.5em;
 }
+.p-r-l-1em{
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
+.p-tb-03em-lr-1em{
+  padding: 0.3em 1em;
+}
+
+.p-b-1em {
+  padding-bottom: 1em;
+}
 
 .p-t {
   padding-top: 0.1em;
 }
+
+.p-05em {
+  padding: 0.5em;
+}
+
+.padding-l-r{
+  padding: 0 1px 0 1px;
+}
+
 
 .width-40px{
   width: 40px;
@@ -91,10 +112,6 @@ body {
 
 .pull-for-right-panel {
   float: left;
-}
-
-.padding-l-r{
-  padding: 0 1px 0 1px;
 }
 
 .overflow-a{
@@ -147,5 +164,32 @@ body {
 
 .popap{
   z-index: 100;
-  background-color: rgba(207, 207, 207, 0.5);
+  opacity: 0;
+  background-color: rgba(207, 207, 207, 0.7);
+  transform: scale(0);
+  transition:  transform 0.2s 0s cubic-bezier(.23,1,.44,.91), opacity 0.2s 0s cubic-bezier(.23,1,.44,.91);
+  &.hidden-popap{
+    position: fixed;
+    //transform: scale(0);
+    height: 1px;
+    width: 1px;
+    top: -100px;
+    left: -100px;
+  }
+  &.in {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.border-radius-05em {
+  border-radius: 0.5em;
+}
+
+.border-radius-04em {
+  border-radius: 0.4em;
+}
+
+.border-popap-footer{
+  border-top: 0.1em solid #BCAAA4;
 }

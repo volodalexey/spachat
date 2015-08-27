@@ -12,7 +12,9 @@ define('popap_manager', [
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs',
         //
-        'text!../configs/popap/confirm_config.json'
+        'text!../configs/popap/confirm_config.json',
+        'text!../configs/popap/error_config.json',
+        'text!../configs/popap/succes_config.json'
 
     ],
     function(throw_event_core,
@@ -28,7 +30,9 @@ define('popap_manager', [
              label_template,
              input_template,
              //
-             confirm_config) {
+             confirm_config,
+             error_config,
+             succes_config) {
 
         var popap_manager = function() {
             this.bindMainContexts();
@@ -41,6 +45,8 @@ define('popap_manager', [
             },
 
             confirm_config: JSON.parse(confirm_config),
+            error_config: JSON.parse(error_config),
+            succes_config: JSON.parse(succes_config),
 
             bindMainContexts: function() {
                 var _this = this;
@@ -62,8 +68,10 @@ define('popap_manager', [
                 _this.config = _this.prepareConfig(options.config);
                 _this.getDescriptionIcon(null, null, null, function(res){
                     _this.icon_config = [{svg: res, name: 'description_icon'}];
-                    _this.fillBody(null, null, options, null);
-                    _this.popapOuterContainer.classList.remove('hide');
+                    _this.fillBody(null, null, options, function(){
+                        _this.popapOuterContainer.classList.remove('hidden-popap');
+                        _this.popapOuterContainer.classList.add('in');
+                    });
                 });
             },
 
@@ -75,10 +83,10 @@ define('popap_manager', [
                         config = _this.confirm_config;
                         break;
                     case 'error':
-
+                        config = _this.error_config;
                         break;
-                    case 'success':
-
+                    case 'succes':
+                        config = _this.succes_config;
                         break;
                 }
                 this.render({
@@ -90,15 +98,19 @@ define('popap_manager', [
             onDataActionClick: function(event) {
                 var _this = this;
                 if (_this.onDataActionClick) {
-                    _this.onDataActionClick(event);
+                    var element = _this.getDataParameter(event.target, 'action');
+                    if (element) {
+                        _this.onDataActionClick(element.dataset.action);
+                    }
                 }
             },
 
             onClose: function() {
                 var _this = this;
+                _this.popapOuterContainer.classList.remove('in');
+                _this.popapOuterContainer.classList.add('hidden-popap');
                 _this.popapContainer.innerHTML = null;
                 _this.onDataActionClick = null;
-                _this.popapOuterContainer.classList.add('hide');
             },
 
             onHandlers: function() {

@@ -546,8 +546,8 @@ define('chat_platform', [
                 popap_manager.renderPopap(
                     'confirm',
                     {message: 81},
-                    function(event) {
-                        switch (event.target.dataset.action) {
+                    function(action) {
+                        switch (action) {
                             case 'confirmOk':
                                 var chatDescription = chat.toChatDescription();
                                 _this.saveStatesChats(chatDescription, null);
@@ -564,10 +564,10 @@ define('chat_platform', [
             saveAndCloseChat: function(chatToDestroy) {
                 var _this = this;
                 popap_manager.renderPopap(
-                    'confirm',
+                    'error',
                     {message: 82},
-                    function(event) {
-                        switch (event.target.dataset.action) {
+                    function(action) {
+                        switch (action) {
                             case 'confirmOk':
                                 var chatDescription = chatToDestroy.toChatDescription();
                                 _this.saveStatesChats(chatDescription, function() {
@@ -607,10 +607,10 @@ define('chat_platform', [
             closeChat: function(chatToDestroy) {
                 var _this = this;
                 popap_manager.renderPopap(
-                    'confirm',
+                    'succes',
                     {message: 83},
-                    function(event) {
-                        switch (event.target.dataset.action) {
+                    function(action) {
+                        switch (action) {
                             case 'confirmOk':
                                 _this.destroyChat(chatToDestroy);
                                 popap_manager.onClose();

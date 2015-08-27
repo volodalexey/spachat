@@ -12,18 +12,26 @@ define('description_core', [
             __class_name: "description_core",
 
             showDescription: function(button_description, event) {
-                var _this = this, description = button_description;
+                var _this = this, description = button_description, element;
                 switch (event.type) {
                     case 'mousedown':
                     case 'touchstart':
-                        _this.checkReorderClientX = event.clientX;
-                        _this.checkReorderClientY = event.clientY;
-                        if (event.type === 'touchstart') {
-                            _this.checkReorderClientX = event.changedTouches[0].clientX;
-                            _this.checkReorderClientY = event.changedTouches[0].clientY;
+                        //var element;
+                        if (event.type === 'touchstart' && event.changedTouches) {
+                            element = _this.getDataParameter(event.changedTouches[0].target, 'description');
+                        } else {
+                            element = _this.getDataParameter(event.target, 'description');
                         }
-                        _this.reorderMouseDown = true;
-                        return false;
+                        if (element && element.dataset.description) {
+                            _this.checkReorderClientX = event.clientX;
+                            _this.checkReorderClientY = event.clientY;
+                            if (event.type === 'touchstart') {
+                                _this.checkReorderClientX = event.changedTouches[0].clientX;
+                                _this.checkReorderClientY = event.changedTouches[0].clientY;
+                            }
+                            _this.reorderMouseDown = true;
+                            return false;
+                        }
                         break;
                     case 'mousemove':
                     case 'touchmove':
@@ -39,7 +47,7 @@ define('description_core', [
                             var deltaY = Math.abs(_this.checkReorderClientY - clientY);
                             var current_radius = Math.sqrt( Math.pow(deltaX,2) + Math.pow(deltaY,2) );
                             if (current_radius > radius && !_this.descriptionShow) {
-                                var element;
+                                //var element;
                                 if (event.type === 'touchmove' && event.changedTouches) {
                                     element = _this.getDataParameter(event.changedTouches[0].target, 'description');
                                 } else {

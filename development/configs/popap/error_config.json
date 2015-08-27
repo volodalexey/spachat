@@ -1,12 +1,12 @@
 [
   {
     "role": "locationWrapper",
-    "classList": "w-100p p-t-b p-r-l-1em flex-sp-between text-underline color-blue",
+    "classList": "w-100p p-t-b p-r-l-1em flex-sp-between color-red",
     "location": "header"
   },
   {
     "element": "label",
-    "text": 80,
+    "text": 84,
     "class": "",
     "location": "header",
     "data": {
@@ -39,20 +39,10 @@
     "element": "button",
     "location": "footer",
     "class": "border-radius-04em p-tb-03em-lr-1em",
-    "text": 42,
+    "text": 20,
     "data": {
       "action": "confirmCancel",
       "description": 21
-    }
-  },
-  {
-    "element": "button",
-    "location": "footer",
-    "class": "border-radius-04em p-tb-03em-lr-1em",
-    "text": 43,
-    "data": {
-      "action": "confirmOk",
-      "description": 22
     }
   }
 ]
