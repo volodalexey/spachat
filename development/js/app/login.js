@@ -5,6 +5,7 @@ define('login', [
         //
         'users_bus',
         'indexeddb',
+        'popap_manager',
         'websocket'
     ],
     function(
@@ -14,6 +15,7 @@ define('login', [
         //
         users_bus,
         indexeddb,
+        popap_manager,
         websocket
     ) {
 
@@ -91,7 +93,17 @@ define('login', [
                     indexeddb.getAll(users_bus.collectionDescription, null,  function(getAllErr, users) {
                         _this.toggleWaiter();
                         if (getAllErr) {
-                            alert(getAllErr);
+                            popap_manager.renderPopap(
+                                'error',
+                                {message: getAllErr},
+                                function(action) {
+                                    switch (action) {
+                                        case 'confirmCancel':
+                                            popap_manager.onClose();
+                                            break;
+                                    }
+                                }
+                            );
                             return;
                         }
 
@@ -111,11 +123,31 @@ define('login', [
                         } else {
                             users_bus.setUserId(null);
                             _this.loginForm.reset();
-                            alert(new Error('User with such username or password not found!'));
+                            popap_manager.renderPopap(
+                                'error',
+                                {message: 87},
+                                function(action) {
+                                    switch (action) {
+                                        case 'confirmCancel':
+                                            popap_manager.onClose();
+                                            break;
+                                    }
+                                }
+                            );
                         }
                     });
                 } else {
-                    alert(new Error('All fields are required!'));
+                    popap_manager.renderPopap(
+                        'error',
+                        {message: 88},
+                        function(action) {
+                            switch (action) {
+                                case 'confirmCancel':
+                                    popap_manager.onClose();
+                                    break;
+                            }
+                        }
+                    );
                 }
             },
 

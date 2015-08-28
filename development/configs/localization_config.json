@@ -423,5 +423,55 @@
     "id": 85,
     "en": "Success",
     "ru": "Успех"
+  },
+  {
+    "id": 86,
+    "en": "Chat is not found in the database!",
+    "ru": "Чат не найден в базе данных!"
+  },
+  {
+    "id": 87,
+    "en": "User with such username or password not found!",
+    "ru": "Пользователь с таким именем и паролем не найден!"
+  },
+  {
+    "id": 88,
+    "en": "All fields are required!",
+    "ru": "Все поля обязательны для заполнения!"
+  },
+  {
+    "id": 89,
+    "en": "Not enough information to make a request! User id and request message are required!",
+    "ru": "Не достаточно информации, чтобы сделать запрос! Заполните идентификатор пользователя и сообщение запроса!"
+  },
+  {
+    "id": 90,
+    "en": "Not enough information to make a request! Chat id and request message are required!",
+    "ru": "Не достаточно информации, чтобы сделать запрос! Заполните идентификатор чата и сообщение запроса!"
+  },
+  {
+    "id": 91,
+    "en": "Passwords don't match!",
+    "ru": "Пароли не совпадают!"
+  },
+  {
+    "id": 92,
+    "en": "Invalid input options for render.",
+    "ru": "Недопустимые опции ввода для визуализации."
+  },
+  {
+    "id": 93,
+    "en": "Chat is already opened!",
+    "ru": "Чат уже открыт!"
+  },
+  {
+    "id": 94,
+    "en": "New password and confirm password do not match!",
+    "ru": "Новый пароль и подтверждение пароля не совпадают!"
+  },
+  {
+    "id": 95,
+    "en": "Old password is not correct!",
+    "ru": "Старный пароль введен неверно!"
   }
 ]

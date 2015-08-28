@@ -10,6 +10,7 @@ define('register', [
         'users_bus',
         'websocket',
         'indexeddb',
+        'popap_manager',
         //
         'text!../templates/register_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -29,6 +30,7 @@ define('register', [
              users_bus,
              websocket,
              indexeddb,
+             popap_manager,
             //
              register_template,
              triple_element_template,
@@ -69,7 +71,17 @@ define('register', [
 
             render: function(options) {
                 if (!options || !options.navigator || !options.navigator.main_container) {
-                    console.error(new Error('Invalid input options for render'));
+                    popap_manager.renderPopap(
+                        'error',
+                        {message: 92},
+                        function(action) {
+                            switch (action) {
+                                case 'confirmCancel':
+                                    popap_manager.onClose();
+                                    break;
+                            }
+                        }
+                    );
                     return;
                 }
                 var _this = this;
@@ -125,7 +137,17 @@ define('register', [
                             function(regErr, account) {
                                 if (regErr) {
                                     _this.toggleWaiter();
-                                    alert(regErr);
+                                    popap_manager.renderPopap(
+                                        'error',
+                                        {message: regErr},
+                                        function(action) {
+                                            switch (action) {
+                                                case 'confirmCancel':
+                                                    popap_manager.onClose();
+                                                    break;
+                                            }
+                                        }
+                                    );
                                     return;
                                 }
 
@@ -138,10 +160,30 @@ define('register', [
                     } else {
                         users_bus.setUserId(null);
                         _this.registerForm.reset();
-                        alert(new Error('Passwords don\'t match!'));
+                        popap_manager.renderPopap(
+                            'error',
+                            {message: 91},
+                            function(action) {
+                                switch (action) {
+                                    case 'confirmCancel':
+                                        popap_manager.onClose();
+                                        break;
+                                }
+                            }
+                        );
                     }
                 } else {
-                    alert(new Error('All fields are required!'));
+                    popap_manager.renderPopap(
+                        'error',
+                        {message: 88},
+                        function(action) {
+                            switch (action) {
+                                case 'confirmCancel':
+                                    popap_manager.onClose();
+                                    break;
+                            }
+                        }
+                    );
                 }
             },
 

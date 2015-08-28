@@ -439,7 +439,17 @@ define('chat_platform', [
                         }
 
                         if (!chat_description) {
-                            alert('Chat is not found in the database!');
+                            popap_manager.renderPopap(
+                                'error',
+                                {message: 86},
+                                function(action) {
+                                    switch (action) {
+                                        case 'confirmCancel':
+                                            popap_manager.onClose();
+                                            break;
+                                    }
+                                }
+                            );
                             return;
                         }
 
@@ -483,7 +493,17 @@ define('chat_platform', [
 
                 var chat_id = parentElement.dataset.chat_id;
                 if (_this.isChatOpened(chat_id)) {
-                    console.error(new Error('Chat is already opened!'));
+                    popap_manager.renderPopap(
+                        'error',
+                        {message: 93},
+                        function(action) {
+                            switch (action) {
+                                case 'confirmCancel':
+                                    popap_manager.onClose();
+                                    break;
+                            }
+                        }
+                    );
                     return;
                 }
                 _this.hideUIButton(chat_id, control_buttons);

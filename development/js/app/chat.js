@@ -14,6 +14,7 @@ define('chat', [
         'extra_toolbar',
         'filter',
         'chats_bus',
+        'popap_manager',
         //
         'ajax_core',
         'template_core',
@@ -50,6 +51,7 @@ define('chat', [
              Extra_toolbar,
              Filter,
              chats_bus,
+             popap_manager,
              //
              ajax_core,
              template_core,
@@ -833,7 +835,17 @@ define('chat', [
                             ],
                             function(error) {
                                 if (error) {
-                                    console.error(error);
+                                    popap_manager.renderPopap(
+                                        'error',
+                                        {message: error},
+                                        function(action) {
+                                            switch (action) {
+                                                case 'confirmCancel':
+                                                    popap_manager.onClose();
+                                                    break;
+                                            }
+                                        }
+                                    );
                                     return;
                                 }
 

@@ -19,6 +19,7 @@ define('panel', [
         'indexeddb',
         'websocket',
         'webrtc',
+        'popap_manager',
         //
         'text!../templates/panel_left_template.ejs',
         'text!../templates/panel_right_template.ejs',
@@ -49,6 +50,7 @@ define('panel', [
              indexeddb,
              websocket,
              webrtc,
+             popap_manager,
              //
              panel_left_template,
              panel_right_template,
@@ -368,7 +370,17 @@ define('panel', [
 
             initialization: function(options) {
                 if (!options || !options.navigator || !options.panel_platform) {
-                    console.error(new Error('Invalid input options for render'));
+                    popap_manager.renderPopap(
+                        'error',
+                        {message: 92},
+                        function(action) {
+                            switch (action) {
+                                case 'confirmCancel':
+                                    popap_manager.onClose();
+                                    break;
+                            }
+                        }
+                    );
                     return;
                 }
                 var _this = this;
@@ -765,18 +777,48 @@ define('panel', [
                                 _this.render();
                             })
                         } else {
-                            console.error(new Error("New password and confirm password do not match"));
-                            _this.new_password.value = "";
-                            _this.confirm_password.value = "";
+                            popap_manager.renderPopap(
+                                'error',
+                                {message: 94},
+                                function(action) {
+                                    switch (action) {
+                                        case 'confirmCancel':
+                                            popap_manager.onClose();
+                                            _this.new_password.value = "";
+                                            _this.confirm_password.value = "";
+                                            break;
+                                    }
+                                }
+                            );
                         }
                     } else {
-                        console.error(new Error("Old password is not correct"));
-                        _this.old_password.value = "";
-                        _this.new_password.value = "";
-                        _this.confirm_password.value = "";
+                        popap_manager.renderPopap(
+                            'error',
+                            {message: 95},
+                            function(action) {
+                                switch (action) {
+                                    case 'confirmCancel':
+                                        popap_manager.onClose();
+                                        _this.old_password.value = "";
+                                        _this.new_password.value = "";
+                                        _this.confirm_password.value = "";
+                                        break;
+                                }
+                            }
+                        );
                     }
                 } else {
-                    console.error(new Error("Fill in all the fields"));
+                    popap_manager.renderPopap(
+                        'error',
+                        {message: 88},
+                        function(action) {
+                            switch (action) {
+                                case 'confirmCancel':
+                                    popap_manager.onClose();
+                                    break;
+                            }
+                        }
+                    );
                 }
             },
 
@@ -931,7 +973,17 @@ define('panel', [
                         }
                     });
                 } else {
-                    alert('Not enough information to make a request! User id and request message are required!')
+                    popap_manager.renderPopap(
+                        'error',
+                        {message: 89},
+                        function(action) {
+                            switch (action) {
+                                case 'confirmCancel':
+                                    popap_manager.onClose();
+                                    break;
+                            }
+                        }
+                    );
                 }
             },
 
@@ -957,7 +1009,17 @@ define('panel', [
                         }
                     });
                 } else {
-                    alert('Not enough information to make a request! Chat id and request message are required!')
+                    popap_manager.renderPopap(
+                        'error',
+                        {message: 90},
+                        function(action) {
+                            switch (action) {
+                                case 'confirmCancel':
+                                    popap_manager.onClose();
+                                    break;
+                            }
+                        }
+                    );
                 }
             },
 
