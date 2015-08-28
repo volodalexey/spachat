@@ -68,7 +68,7 @@ define('popap_manager', [
                 _this.config = _this.prepareConfig(options.config);
                 _this.getDescriptionIcon(null, null, null, function(res){
                     _this.icon_config = [{svg: res, name: 'description_icon'}];
-                    _this.fillBody(null, null, options, function(){
+                    _this.fillBody(null, {"type": options.type}, options, function(){
                         _this.popapOuterContainer.classList.remove('hidden-popap');
                         _this.popapOuterContainer.classList.add('in');
                     });
@@ -91,7 +91,8 @@ define('popap_manager', [
                 }
                 this.render({
                     "body_text": typeof options.message === "number" ? window.getLocText(options.message) : options.message,
-                    "config": config
+                    "config": config,
+                    "type": type
                 });
             },
 
