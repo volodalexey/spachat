@@ -67,6 +67,11 @@ body {
   padding-left: 1em;
 }
 
+.p-r-l-04em{
+  padding-right: 0.4em;
+  padding-left: 0.4em;
+}
+
 .p-tb-03em-lr-1em{
   padding: 0.3em 1em;
 }
@@ -170,7 +175,6 @@ body {
   transition:  transform 0.2s 0s cubic-bezier(.23,1,.44,.91), opacity 0.2s 0s cubic-bezier(.23,1,.44,.91);
   &.hidden-popap{
     position: fixed;
-    //transform: scale(0);
     height: 1px;
     width: 1px;
     top: -100px;
@@ -192,4 +196,25 @@ body {
 
 .border-popap-footer{
   border-top: 0.1em solid #BCAAA4;
+}
+
+.tetx-line-center {
+  margin: 1.2em 0 0;
+  position: relative;
+  padding: 1em 0.5em 0;
+  &.succes {
+    border-top: 1px solid green;
+  }
+  &.confirm {
+    border-top: 1px solid blue;
+  }
+  &.error {
+    border-top: 1px solid red;
+  }
+}
+
+.title-popap {
+  position: relative;
+  height: 0.3em;
+  top: -1.7em;
 }

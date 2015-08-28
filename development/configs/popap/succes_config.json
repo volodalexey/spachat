@@ -1,13 +1,13 @@
 [
   {
     "role": "locationWrapper",
-    "classList": "w-100p p-t-b p-r-l-1em flex-sp-between color-green",
+    "classList": "p-r-l-04em color-green title-popap",
     "location": "header"
   },
   {
     "element": "label",
     "text": 85,
-    "class": "",
+    "class": "c-50 p-r-l-04em",
     "location": "header",
     "data": {
       "role": ""

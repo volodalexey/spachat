@@ -564,7 +564,7 @@ define('chat_platform', [
             saveAndCloseChat: function(chatToDestroy) {
                 var _this = this;
                 popap_manager.renderPopap(
-                    'error',
+                    'confirm',
                     {message: 82},
                     function(action) {
                         switch (action) {
@@ -607,7 +607,7 @@ define('chat_platform', [
             closeChat: function(chatToDestroy) {
                 var _this = this;
                 popap_manager.renderPopap(
-                    'succes',
+                    'confirm',
                     {message: 83},
                     function(action) {
                         switch (action) {

@@ -1,15 +1,34 @@
 <% var _in = arguments[0];
+_in.config._byDataLocation = {};
+_in.config._byDataLocation.body = _in.config.byDataLocation.body;
+_in.config._byDataLocation.footer = _in.config.byDataLocation.footer;
+%>
+<div class="tetx-line-center <%= _in.options.type%> flex-just-center">
+    <% if (_in.config && _in.config.byDataLocation) {%>
+    <%= _in.location_wrapper_template({
+        config: _in.config.byDataLocation.header,
+        data: _in.data ? _in.data : {},
+        icon_config: _in.icon_config,
+        triple_element_template: _in.triple_element_template,
+        button_template: _in.button_template,
+        input_template: _in.input_template,
+        label_template: _in.label_template,
+        description: _in.description
+    }) %>
+    <%  } %>
+</div>
 
- if (_in.config && _in.config.byDataLocation) {
-        for (var locationKey in _in.config.byDataLocation) { %>
+<% if (_in.config && _in.config._byDataLocation) {
+        for (var locationKey in _in.config._byDataLocation) { %>
 <%= _in.location_wrapper_template({
-    config: _in.config.byDataLocation[locationKey],
+    config: _in.config._byDataLocation[locationKey],
     data: _in.data ? _in.data : {},
     icon_config: _in.icon_config,
     triple_element_template: _in.triple_element_template,
     button_template: _in.button_template,
     input_template: _in.input_template,
-    label_template: _in.label_template
+    label_template: _in.label_template,
+    description: _in.description
 }) %>
 <% }
 } %>
