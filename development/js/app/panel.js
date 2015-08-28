@@ -992,11 +992,13 @@ define('panel', [
                         if (_this.bodyOptions.mode === _this.MODE.JOIN_USER) {
                             _this.enableButton('requestFriendByUserId');
                             event_bus.set_ws_device_id(messageData.from_ws_device_id);
-                            if (messageData.user_wscs_descrs) {
-                                _this.listenWebRTCConnection(messageData.to_user_id);
-                                _this.listenNotifyUser(messageData.to_user_id);
-                                webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
-                            }
+                            _this.listenNotifyUser(messageData.to_user_id);
+                        }
+                        break;
+                    case 'friendship_confirmed':
+                        if (messageData.user_wscs_descrs) {
+                            _this.listenWebRTCConnection(messageData.to_user_id);
+                            webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
                         }
                         break;
                     case 'device_toggled_ready':
@@ -1052,6 +1054,7 @@ define('panel', [
                 var _this = this;
                 if (triggerConnection.hasUserId(user_id)) {
                     // if connection for user friendship
+                    _this.notListenWebRTCConnection();
                     users_bus.getUserDescription({}, function(error, user_description) {
                         if (error) {
                             console.error(error);
@@ -1062,9 +1065,8 @@ define('panel', [
                             type: "notifyUser",
                             user_description: user_description
                         };
-                        if (triggerConnection.dataChannel && triggerConnection.dataChannel.readyState === "open") {
+                        if (triggerConnection.isActive()) {
                             triggerConnection.dataChannel.send(JSON.stringify(messageData));
-                            _this.notListenWebRTCConnection();
                         } else {
                             console.warn('No friendship data channel!');
                         }
@@ -1102,6 +1104,12 @@ define('panel', [
                 if (messageData.user_wscs_descrs && confirm(messageData.request_body.message)) {
                     _this.listenWebRTCConnection(messageData.from_user_id);
                     _this.listenNotifyUser(messageData.from_user_id);
+                    websocket.sendMessage({
+                        type: "friendship_confirmed",
+                        from_user_id: users_bus.getUserId(),
+                        to_user_id: messageData.from_user_id,
+                        request_body: messageData.request_body
+                    });
                     webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
                 }
             },

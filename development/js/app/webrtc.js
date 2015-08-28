@@ -508,6 +508,8 @@ define('webrtc', [
 
                 dataChannel.onopen = null;
                 dataChannel.onmessage = null;
+                dataChannel.onclose = null;
+                dataChannel.onerror = null;
             },
 
             /**
