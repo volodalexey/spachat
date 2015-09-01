@@ -58,14 +58,14 @@ define('extra_toolbar', [
                 _this.bindedThrowEventRouter = _this.throwEventRouter.bind(_this);
             },
 
-            addEventListener: function() {
+            addEventListeners: function() {
                 var _this = this;
-                _this.removeEventListener();
+                _this.removeEventListeners();
                 _this.addRemoveListener('add',  _this._module.extra_toolbar_container, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('add',  _this._module.extra_toolbar_container, 'click', _this._module.bindedDataActionRouter, false);
             },
 
-            removeEventListener: function() {
+            removeEventListeners: function() {
                 var _this = this;
                 _this.addRemoveListener('remove',  _this._module.extra_toolbar_container, 'click', _this.bindedThrowEventRouter, false);
                 _this.addRemoveListener('remove',  _this._module.extra_toolbar_container, 'click', _this._module.bindedDataActionRouter, false);
@@ -97,7 +97,7 @@ define('extra_toolbar', [
                         _this.previousExtraToolbar = _mode;
                         _this.renderLayout(null, function() {
                             _module.cashExtraToolbarElement();
-                            _this.addEventListener();
+                            _this.addEventListeners();
                             _callback();
                         });
                     } else {
@@ -116,7 +116,7 @@ define('extra_toolbar', [
 
             destroy: function() {
                 var _this = this;
-                _this.removeEventListener();
+                _this.removeEventListeners();
             }
 
         };

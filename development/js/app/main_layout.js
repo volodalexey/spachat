@@ -5,6 +5,7 @@ define('main_layout', [
         'dom_core',
         'extend_core',
         'popap_manager',
+        'description_manager',
         //
         'text!../templates/index_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -17,14 +18,15 @@ define('main_layout', [
              dom_core,
              extend_core,
              popap_manager,
-            //
+             description_manager,
+             //
              index_template,
              triple_element_template,
              button_template,
-             label_template
-    ) {
+             label_template) {
 
-        var Main_layout = function() {};
+        var Main_layout = function() {
+        };
 
         Main_layout.prototype = {
 
@@ -37,7 +39,7 @@ define('main_layout', [
                         return;
                     }
 
-                    _this.getDescriptionIcon(null, null, null, function(res){
+                    _this.getDescriptionIcon(null, null, null, function(res) {
                         document.body.innerHTML += _this.index_template({
                             config: config,
                             icon_config: [{svg: res, name: 'description_icon'}],
@@ -50,8 +52,10 @@ define('main_layout', [
                         navigator.bindContexts();
                         navigator.addEventListeners();
                         navigator.navigate();
-                        popap_manager.cashElement();
+                        popap_manager.cashElements();
                         popap_manager.onHandlers();
+                        description_manager.cashElements();
+                        description_manager.addEventListeners();
                     });
                 });
             }

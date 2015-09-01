@@ -53,7 +53,7 @@ define('popap_manager', [
                 _this.bindedOnDataActionClick = _this.onDataActionClick.bind(_this);
             },
 
-            cashElement: function() {
+            cashElements: function() {
                 var _this = this;
                 _this.popapOuterContainer = document.querySelector('[data-role="popap_outer_container"]');
                 _this.popapContainer = document.querySelector('[data-role="popap_inner_container"]');

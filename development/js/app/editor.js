@@ -5,7 +5,6 @@ define('editor', [
         'template_core',
         'indexeddb',
         'render_layout_core',
-        'description_core',
         'overlay_core',
         'extend_core',
         //
@@ -23,7 +22,6 @@ define('editor', [
              template_core,
              indexeddb,
              render_layout_core,
-             description_core,
              overlay_core,
              extend_core,
              //

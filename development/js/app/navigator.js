@@ -6,7 +6,6 @@ define('navigator',
         'register',
         'users_bus',
         //
-        'description_core',
         'throw_event_core',
         'dom_core',
         'extend_core'
@@ -18,7 +17,6 @@ define('navigator',
         register,
         users_bus,
         //
-        description_core,
         throw_event_core,
         dom_core,
         extend_core
@@ -33,14 +31,12 @@ define('navigator',
 
             cashElements: function() {
                 var _this = this;
-                _this.button_description = document.querySelector('[data-role="description"]');
                 _this.login_outer_container = document.querySelector('[data-role="login_outer_container"]');
                 _this.main_container = document.querySelector('[data-role="main_container"]');
             },
 
             unCashElements: function() {
                 var _this = this;
-                _this.button_description = null;
                 _this.login_outer_container = null;
                 _this.main_container = null;
             },
@@ -50,7 +46,6 @@ define('navigator',
                 _this.bindedNavigate = _this.navigate.bind(_this);
                 _this.bindedRedirectToLogin = _this.redirectToLogin.bind(_this);
                 _this.bindedNotifyCurrentPage = _this.notifyCurrentPage.bind(_this);
-                _this.bindedShowDescription = description_core.showDescription.bind(_this, _this.button_description);
             },
 
             addEventListeners: function() {
@@ -59,13 +54,6 @@ define('navigator',
                 window.addEventListener('popstate', _this.bindedNavigate, false);
                 window.addEventListener('resize', _this.bindedNotifyCurrentPage, false);
                 panel_platform.on('throw', _this.bindedNotifyCurrentPage, false);
-
-                _this.addRemoveListener('add', document.body, 'mousedown', _this.bindedShowDescription, false);
-                _this.addRemoveListener('add', document.body, 'mousemove', _this.bindedShowDescription, false);
-                _this.addRemoveListener('add', document.body, 'touchend', _this.bindedShowDescription, true);
-                _this.addRemoveListener('add', document.body, 'touchmove', _this.bindedShowDescription, false);
-                _this.addRemoveListener('add', document.body, 'touchstart', _this.bindedShowDescription, false);
-                _this.addRemoveListener('add', document.body, 'click', _this.bindedShowDescription, true);
             },
 
             removeEventListeners: function() {
@@ -73,13 +61,6 @@ define('navigator',
                 window.removeEventListener('popstate', _this.bindedNavigate, false);
                 window.removeEventListener('resize', _this.bindedNotifyCurrentPage, false);
                 panel_platform.off('addNewPanel');
-
-                _this.addRemoveListener('remove', document.body, 'mousedown', _this.bindedShowDescription, false);
-                _this.addRemoveListener('remove', document.body, 'mousemove', _this.bindedShowDescription, false);
-                _this.addRemoveListener('remove', document.body, 'touchend', _this.bindedShowDescription, true);
-                _this.addRemoveListener('remove', document.body, 'touchmove', _this.bindedShowDescription, false);
-                _this.addRemoveListener('remove', document.body, 'touchstart', _this.bindedShowDescription, false);
-                _this.addRemoveListener('remove', document.body, 'click', _this.bindedShowDescription, true);
             },
 
             getCurrentPage: function(href) {

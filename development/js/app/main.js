@@ -21,7 +21,7 @@ require.config({
         "extend_core": "app/extensions/extend_core",
         "message_core": "app/extensions/message_core",
         "dom_core": "app/extensions/dom_core",
-        "description_core": "app/description_core",
+        "description_manager": "app/description_manager",
         "switcher_core": "app/extensions/switcher_core",
         "model_core": "app/extensions/model_core",
         "disable_display_core": "app/extensions/disable_display_core",
