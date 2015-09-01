@@ -8,33 +8,33 @@ define('template_core', [],
 
             __class_name: "template_core",
 
-            template: function(text, settings, oldSettings) {
-
-                var templateSettings = {
-                    "evaluate": /<%([\s\S]+?)%>/g,
-                    "interpolate": /<%=([\s\S]+?)%>/g,
-                    "escape": /<%-([\s\S]+?)%>/g
-                };
-
-                var noMatch = /(.)^/;
-
-                var escapes = {
+            defaultSettings: {
+                noMatch: /(.)^/,
+                inputVariable: '_in',
+                outputVariable: '_out',
+                evaluate: /<%([\s\S]+?)%>/g,
+                interpolate: /<%=([\s\S]+?)%>/g,
+                escape: /<%-([\s\S]+?)%>/g,
+                escapes: {
                     "'": "'",
                     '\\': '\\',
                     '\r': 'r',
                     '\n': 'n',
                     '\u2028': 'u2028',
                     '\u2029': 'u2029'
-                };
+                },
+                escaper: /\\|'|\r|\n|\u2028|\u2029/g
+            },
 
-                var escaper = /\\|'|\r|\n|\u2028|\u2029/g;
+            template: function(text) {
+                var settings = this.defaultSettings;
+                var escapes = settings.escapes;
+                var escaper = settings.escaper;
+                var noMatch = settings.noMatch;
 
                 var escapeChar = function(match) {
                     return '\\' + escapes[match];
                 };
-
-                if (!settings && oldSettings) settings = oldSettings;
-                settings = templateSettings;
 
                 // Combine delimiters into one regular expression via alternation.
                 var matcher = RegExp([
@@ -45,47 +45,36 @@ define('template_core', [],
 
                 // Compile the template source, escaping string literals appropriately.
                 var index = 0;
-                var source = "__p+='";
+                var out_s_open = "\n" + settings.outputVariable + ".push('", out_s_close = "');\n";
+                var out_v_open = "\n" + settings.outputVariable + ".push(", out_v_close = ");\n";
+                var source = '';
                 text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
-                    source += text.slice(index, offset).replace(escaper, escapeChar);
+                    source += out_s_open + text.slice(index, offset).replace(escaper, escapeChar) + out_s_close;
                     index = offset + match.length;
 
                     if (escape) {
-                        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
+                        source += out_s_open + escape + out_s_close;
                     } else if (interpolate) {
-                        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+                        source += out_v_open + interpolate + out_v_close;
                     } else if (evaluate) {
-                        source += "';\n" + evaluate + "\n__p+='";
+                        source += evaluate;
                     }
 
                     // Adobe VMs need the match returned to produce the correct offest.
                     return match;
                 });
-                source += "';\n";
-
-                // If a variable is not specified, place data values in local scope.
-                if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
-
-                source = "var __t,__p='',__j=Array.prototype.join," +
-                    "print=function(){__p+=__j.call(arguments,'');};\n" +
-                    source + 'return __p;\n';
+                source += 'return ' + settings.outputVariable +';\n';
 
                 try {
-                    var render = new Function(settings.variable || 'obj', '_', source);
+                    var render = new Function(settings.inputVariable, settings.outputVariable, source);
                 } catch (e) {
                     e.source = source;
                     throw e;
                 }
 
-                var template = function(data) {
-                    return render.call(this, data);
+                return function(data) {
+                    return render.call(this, data, []).join('');
                 };
-
-                // Provide the compiled source as a convenience for precompilation.
-                var argument = settings.variable || 'obj';
-                template.source = 'function(' + argument + '){\n' + source + '}';
-
-                return template;
             }};
 
             return template_core;
