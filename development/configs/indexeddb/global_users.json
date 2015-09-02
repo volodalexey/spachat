@@ -1,0 +1,7 @@
+{
+  "db_name": "user_credentials",
+  "table_descriptions": [{
+    "table_name": "user_credentials",
+    "table_parameter": {"keyPath": "user_id"}
+  }]
+}

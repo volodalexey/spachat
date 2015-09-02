@@ -1,6 +1,15 @@
-define('indexeddb',
-    ['async_core', 'throw_event_core', 'extend_core'],
-    function (async_core, throw_event_core, extend_core) {
+define('indexeddb', [
+        'async_core',
+        'throw_event_core',
+        'extend_core',
+        //
+        'text!../configs/indexeddb/global_users.json'
+    ],
+    function(async_core,
+             throw_event_core,
+             extend_core,
+             //
+             global_users) {
 
         var indexeddb = function() {
             this.defaultVersion = 1;
@@ -8,10 +17,12 @@ define('indexeddb',
                 READY: 1
             };
             this.state = this.STATES.READY;
-            this.openDatabases =  {};
+            this.openDatabases = {};
         };
 
         indexeddb.prototype = {
+            // database for credentials for each user
+            globalUsersDatabaseDescription: JSON.parse(global_users),
 
             isTableInTables: function(db_name, table_name) {
                 var has = false;
@@ -28,7 +39,9 @@ define('indexeddb',
             open: function(options, force, callback) {
                 var _this = this;
 
-                if (_this.canNotProceed(callback)) { return; }
+                if (_this.canNotProceed(callback)) {
+                    return;
+                }
 
                 var version = _this.getVersion(options);
                 var upgraded = false;
@@ -73,8 +86,8 @@ define('indexeddb',
                         callback(e.currentTarget.error);
                     };
                     // only for provided tables !
-                    options.table_descriptions.forEach(function(table_description){
-                        if(db.objectStoreNames.contains(table_description.table_name)) {
+                    options.table_descriptions.forEach(function(table_description) {
+                        if (db.objectStoreNames.contains(table_description.table_name)) {
                             db.deleteObjectStore(table_description.table_name);
                         }
                         var objectStore = db.createObjectStore(table_description.table_name, table_description.table_parameter);
@@ -88,7 +101,7 @@ define('indexeddb',
                     });
                 };
 
-                openRequest.onblocked = function (e) {
+                openRequest.onblocked = function(e) {
                     e.currentTarget.error.options = options;
                     callback(e);
                 };
@@ -97,7 +110,9 @@ define('indexeddb',
             addOrUpdateAll: function(options, table_name, addOrUpdateData, callback) {
                 var _this = this, cur_table_description;
 
-                if (_this.canNotProceed(callback)) { return; }
+                if (_this.canNotProceed(callback)) {
+                    return;
+                }
 
                 cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
@@ -124,7 +139,7 @@ define('indexeddb',
                             return;
                         }
                         addOrUpdateCursor.onsuccess = function(event) {
-                            if(event.target.result) {
+                            if (event.target.result) {
                                 // Update
                                 var updateRequest = event.target.result.update(addOrPut);
                                 updateRequest.onsuccess = function() {
@@ -179,7 +194,9 @@ define('indexeddb',
             getAll: function(options, table_name, callback) {
                 var _this = this, cur_table_description;
 
-                if (_this.canNotProceed(callback)) { return; }
+                if (_this.canNotProceed(callback)) {
+                    return;
+                }
 
                 cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
@@ -216,7 +233,7 @@ define('indexeddb',
 
                 openRequest.onsuccess = function(e) {
                     var result = e.target.result;
-                    if(!!result === false) {
+                    if (!!result === false) {
                         callback(null, returnData);
                         return;
                     }
@@ -239,7 +256,9 @@ define('indexeddb',
             getByKeyPath: function(options, table_name, getValue, callback) {
                 var _this = this, cur_table_description;
 
-                if (_this.canNotProceed(callback)) { return; }
+                if (_this.canNotProceed(callback)) {
+                    return;
+                }
 
                 cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
@@ -299,7 +318,9 @@ define('indexeddb',
             getByKeysPath: function(options, table_name, getValues, nullWrapper, callback) {
                 var _this = this, cur_table_description;
 
-                if (_this.canNotProceed(callback)) { return; }
+                if (_this.canNotProceed(callback)) {
+                    return;
+                }
 
                 cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
@@ -320,7 +341,7 @@ define('indexeddb',
                     trans.oncomplete = function() {
                         callback(null, _array);
                     };
-                    getValues.forEach(function(getValue){
+                    getValues.forEach(function(getValue) {
                         try {
                             getCursor = store.openCursor(IDBKeyRange.only(getValue));
                         } catch (error) {
@@ -367,7 +388,9 @@ define('indexeddb',
             addAll: function(options, table_name, toAdd, callback) {
                 var _this = this, cur_table_description;
 
-                if (_this.canNotProceed(callback)) { return; }
+                if (_this.canNotProceed(callback)) {
+                    return;
+                }
 
                 cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
@@ -391,7 +414,9 @@ define('indexeddb',
 
             _executeAddAll: function(options, table_name, toAdd, callback) {
                 var _this = this, trans, store;
-                if (_this.canNotProceed(callback)) { return; }
+                if (_this.canNotProceed(callback)) {
+                    return;
+                }
 
                 try {
                     trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readwrite");
@@ -404,13 +429,17 @@ define('indexeddb',
                 }
 
                 _this.async_eachSeries(toAdd, function(curAdd, _callback) {
-                    if (_this.canNotProceed(callback)) { return; }
+                    if (_this.canNotProceed(callback)) {
+                        return;
+                    }
                     var putRequest = store.put(curAdd);
                     putRequest.onerror = function(e) {
                         _callback(e.currentTarget.error);
                     };
                     putRequest.onsuccess = function() {
-                        if (_this.canNotProceed(callback)) { return; }
+                        if (_this.canNotProceed(callback)) {
+                            return;
+                        }
                         _callback();
                     };
                 }, function(err) {
@@ -419,7 +448,9 @@ define('indexeddb',
                         err.table_name = table_name;
                         callback(err);
                     } else {
-                        if (_this.canNotProceed(callback)) { return; }
+                        if (_this.canNotProceed(callback)) {
+                            return;
+                        }
                         callback(null);
                     }
                 });
@@ -445,6 +476,91 @@ define('indexeddb',
                     return true;
                 }
                 return false;
+            },
+
+            getUserCredentials: function(userName, userPassword, callback) {
+                var _this = this;
+                _this.getAll(_this.globalUsersDatabaseDescription, null, function(getAllErr, allUsers) {
+                    if (getAllErr) {
+                        callback(getAllErr);
+                        return;
+                    }
+
+                    var userCredentials;
+                    allUsers.every(function(_user) {
+                        if (_user.userName === userName) {
+                            if (userPassword && _user.userPassword === userPassword) {
+                                userCredentials = _user;
+                            } else {
+                                userCredentials = _user;
+                            }
+                        }
+                        return !userCredentials;
+                    });
+
+                    callback(null, userCredentials);
+                });
+            },
+
+            storeNewUser: function(user_id, userName, userPassword, callback) {
+                var _this = this;
+                _this.getUserCredentials(userName, null, function(getAllErr, userCredentials) {
+                    if (getAllErr) {
+                        callback(getAllErr);
+                        return;
+                    }
+
+                    if (userCredentials) {
+                        callback(new Error('User with such username is already exist!'));
+                        return;
+                    }
+
+                    var accountCredentials = {
+                        user_id: user_id,
+                        userName: userName,
+                        userPassword: userPassword
+                    };
+
+                    indexeddb.addOrUpdateAll(
+                        _this.globalUsersDatabaseDescription,
+                        null,
+                        [
+                            accountCredentials
+                        ],
+                        function(error) {
+                            if (error) {
+                                callback(error);
+                                return;
+                            }
+
+                            // TODO use user model
+                            var userInfo = {
+                                user_id: user_id,
+                                userName: userName,
+                                userPassword: userPassword,
+                                user_ids: [],
+                                chat_ids: []
+                            };
+
+                            _this.userDatabaseDescription.db_name = user_id; // temp to store user
+                            indexeddb.addOrUpdateAll(
+                                _this.userDatabaseDescription,
+                                'information',
+                                [
+                                    userInfo
+                                ],
+                                function(err) {
+                                    _this.userDatabaseDescription.db_name = null; // roll back temp
+                                    if (err) {
+                                        callback(err);
+                                        return;
+                                    }
+                                    callback(null, userInfo);
+                                }
+                            );
+                        }
+                    );
+                });
             }
         };
         extend_core.prototype.inherit(indexeddb, async_core);

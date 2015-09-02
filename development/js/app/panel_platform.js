@@ -5,7 +5,8 @@ define('panel_platform', [
         'extend_core',
         'ping_core',
         'indexeddb',
-        'users_bus'
+        'users_bus',
+        'popap_manager'
     ],
     function(panel,
              overlay_core,
@@ -13,7 +14,8 @@ define('panel_platform', [
              extend_core,
              ping_core,
              indexeddb,
-             users_bus) {
+             users_bus,
+             popap_manager) {
 
         var panel_platform = function() {
             var _this = this;
@@ -77,7 +79,17 @@ define('panel_platform', [
                 _this.cashElements();
                 users_bus.getMyInfo(null, function(error, _options, userInfo){
                     if (error) {
-                        console.error(error);
+                        popap_manager.renderPopap(
+                            'error',
+                            error,
+                            function(action) {
+                                switch (action) {
+                                    case 'confirmCancel':
+                                        popap_manager.onClose();
+                                        break;
+                                }
+                            }
+                        );
                         return;
                     }
 
