@@ -8,10 +8,12 @@ define('chats_bus', [
     ) {
 
         var chats_bus = function() {
+            // db_name - depends from user id
             this.collectionDescription = {
-                "table_names": ['chats'],
-                "db_version": 1,
-                "keyPath": "chat_id"
+                "table_descriptions": [{
+                    "table_name": 'chats',
+                    "table_parameter": {"keyPath": "chat_id"}
+                }]
             };
         };
 

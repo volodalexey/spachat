@@ -266,8 +266,8 @@ define('chat', [
                         "db_name": users_bus.getUserId(),
                         "table_names": [ this.chat_id + '_messages', this.chat_id + '_log_messages'],
                         "table_options": [{ autoIncrement: true, keyPath: "id" }, { keyPath: "id" }],
-                        "table_indexes": [[ 'user_ids', 'user_ids', { multiEntry: true } ]],
-                        "db_version": 1
+                        "table_indexes": [[ 'user_ids', 'user_ids', { multiEntry: true } ]]
+                        //"db_version": 1
                     };
                 }
             },

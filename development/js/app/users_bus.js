@@ -10,17 +10,31 @@ define('users_bus', [
             // database only for credentials for each user
             this.credentialsDatabaseDescription = {
                 "db_name": 'user_credentials',
-                "table_names": ['user_credentials'],
-                "db_version": 1,
-                "table_indexes": [[ 'user_ids', 'user_ids', { multiEntry: true } ]],
-                "keyPath": "user_id"
+                "table_descriptions": [{
+                    "table_name": 'user_credentials',
+                    "table_parameter": {"keyPath": "user_id"}
+                }]
             };
             // database for all user content
+            // db_name - depends from user id
             this.userDatabaseDescription = {
-                "table_names": ['users', 'information'],
-                "db_version": 1,
-                "table_indexes": [[ 'user_ids', 'user_ids', { multiEntry: true } ]],
-                "keyPath": "user_id"
+                "table_descriptions": [{
+                    "table_name": 'users',
+                    "table_indexes": [{
+                        "indexName": 'user_ids',
+                        "indexKeyPath": 'user_ids',
+                        "indexParameter": { multiEntry: true }
+                    }],
+                    "table_parameter": {"keyPath": "user_id"}
+                }, {
+                    "table_name": 'information',
+                    "table_indexes": [{
+                        "indexName": 'user_ids',
+                        "indexKeyPath": 'user_ids',
+                        "indexParameter": { multiEntry: true }
+                    }],
+                    "table_parameter": {"keyPath": "user_id"}
+                }]
             }
         };
 

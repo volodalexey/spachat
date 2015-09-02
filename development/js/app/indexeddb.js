@@ -14,6 +14,14 @@ define('indexeddb',
 
         indexeddb.prototype = {
 
+            isTableInTables: function(db_name, table_name) {
+                var has = false;
+                if (this.openDatabases[db_name] && this.openDatabases[db_name].db) {
+                    has = this.openDatabases[db_name].db.objectStoreNames.contains(table_name);
+                }
+                return has;
+            },
+
             getKeyPath: function(options) {
                 return options.keyPath ? options.keyPath : this.defaultKeyPath;
             },
@@ -22,12 +30,11 @@ define('indexeddb',
                 return options.db_version ? options.db_version : this.defaultVersion;
             },
 
-            open: function(options, callback) {
+            open: function(options, force, callback) {
                 var _this = this;
 
                 if (_this.canNotProceed(callback)) { return; }
 
-                var keyPath = _this.getKeyPath(options);
                 var version = _this.getVersion(options);
                 var upgraded = false;
 
@@ -44,7 +51,14 @@ define('indexeddb',
 
                 if (_this.openDatabases[options.db_name] &&
                     _this.openDatabases[options.db_name].db) {
-                    onSuccess();
+                    if (force) {
+                        version = ++_this.openDatabases[options.db_name].db.version;
+                        _this.openDatabases[options.db_name].db.close();
+                        _this.openDatabases[options.db_name] = null;
+                        // store new version in credentials
+                    } else {
+                        onSuccess();
+                    }
                     return;
                 }
                 var openRequest = indexedDB.open(options.db_name, version);
@@ -62,21 +76,18 @@ define('indexeddb',
                     db.onerror = function(e) {
                         callback(e.currentTarget.error);
                     };
-
-                    options.table_names.forEach(function(_table_name, ind){
-                        if(db.objectStoreNames.contains(_table_name)) {
-                            db.deleteObjectStore(_table_name);
+                    // only for provided tables !
+                    options.table_descriptions.forEach(function(table_description, ind){
+                        if(db.objectStoreNames.contains(table_description.table_name)) {
+                            db.deleteObjectStore(table_description.table_name);
                         }
-                        var objectStore;
-                        if (options.table_options && options.table_options[ind]) {
-                            objectStore = db.createObjectStore(_table_name, options.table_options[ind]);
-                        } else {
-                            objectStore = db.createObjectStore(_table_name, { keyPath : keyPath });
-                        }
-                        if(objectStore && options.table_indexes && options.table_indexes[ind]) {
-                            // only one index per table is supported now
-                            var indexDescription = options.table_indexes[ind];
-                            objectStore.createIndex(indexDescription[0], indexDescription[1], indexDescription[2]);
+                        var objectStore = db.createObjectStore(table_description, table_description.table_parameter);
+                        if (table_description.table_indexes) {
+                            table_description.table_indexes.forEach(function(table_index) {
+                                objectStore.createIndex(
+                                    table_index.indexName, table_index.indexKeyPath, table_index.indexParameter
+                                );
+                            });
                         }
                     });
                 };
@@ -144,16 +155,20 @@ define('indexeddb',
                     });
                 };
 
-                if (_this.openDatabases[options.db_name]) {
+                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_name)) {
                     executeAddOrUpdateAll();
                 } else {
-                    _this.open(options, function(err, upgraded) {
-                        if (err) {
-                            callback(err, upgraded);
-                        } else {
-                            executeAddOrUpdateAll();
+                    _this.open(
+                        options,
+                        !_this.isTableInTables(options.db_name, cur_table_name),
+                        function(err, upgraded) {
+                            if (err) {
+                                callback(err, upgraded);
+                            } else {
+                                executeAddOrUpdateAll();
+                            }
                         }
-                    })
+                    );
                 }
             },
 
@@ -164,16 +179,20 @@ define('indexeddb',
 
                 cur_table_name = _this.defineCurrentTable(options, table_name);
 
-                if (_this.openDatabases[options.db_name]) {
+                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_name)) {
                     _this._executeGetAll(options, cur_table_name, callback);
                 } else {
-                    _this.open(options, function(err, upgraded) {
-                        if (err) {
-                            callback(err, upgraded);
-                        } else {
-                            _this._executeGetAll(options, cur_table_name, callback);
+                    _this.open(
+                        options,
+                        !_this.isTableInTables(options.db_name, cur_table_name),
+                        function(err, upgraded) {
+                            if (err) {
+                                callback(err, upgraded);
+                            } else {
+                                _this._executeGetAll(options, cur_table_name, callback);
+                            }
                         }
-                    });
+                    );
                 }
             },
 
@@ -242,16 +261,20 @@ define('indexeddb',
                     };
                 };
 
-                if (_this.openDatabases[options.db_name]) {
+                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_name)) {
                     executeGet();
                 } else {
-                    _this.open(options, function(err, upgraded) {
-                        if (err) {
-                            callback(err, upgraded);
-                        } else {
-                            executeGet();
+                    _this.open(
+                        options,
+                        !_this.isTableInTables(options.db_name, cur_table_name),
+                        function(err, upgraded) {
+                            if (err) {
+                                callback(err, upgraded);
+                            } else {
+                                executeGet();
+                            }
                         }
-                    })
+                    );
                 }
             },
 
@@ -300,16 +323,20 @@ define('indexeddb',
                     });
                 };
 
-                if (_this.openDatabases[options.db_name]) {
+                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_name)) {
                     executeGet();
                 } else {
-                    _this.open(options, function(err, upgraded) {
-                        if (err) {
-                            callback(err, upgraded);
-                        } else {
-                            executeGet();
+                    _this.open(
+                        options,
+                        !_this.isTableInTables(options.db_name, cur_table_name),
+                        function(err, upgraded) {
+                            if (err) {
+                                callback(err, upgraded);
+                            } else {
+                                executeGet();
+                            }
                         }
-                    })
+                    );
                 }
             },
 
@@ -320,16 +347,20 @@ define('indexeddb',
 
                 cur_table_name = _this.defineCurrentTable(options, table_name);
 
-                if (_this.openDatabases[options.db_name]) {
+                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_name)) {
                     _this._executeAddAll(options, cur_table_name, toAdd, callback);
                 } else {
-                    _this.open(options, function(err, upgraded) {
-                        if (err) {
-                            callback(err, upgraded);
-                        } else {
-                            _this._executeAddAll(options, cur_table_name, toAdd, callback);
+                    _this.open(
+                        options,
+                        !_this.isTableInTables(options.db_name, cur_table_name),
+                        function(err, upgraded) {
+                            if (err) {
+                                callback(err, upgraded);
+                            } else {
+                                _this._executeAddAll(options, cur_table_name, toAdd, callback);
+                            }
                         }
-                    })
+                    );
                 }
             },
 
