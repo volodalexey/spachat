@@ -72,11 +72,11 @@ define('indexeddb',
                         callback(e.currentTarget.error);
                     };
                     // only for provided tables !
-                    options.table_descriptions.forEach(function(table_description, ind){
+                    options.table_descriptions.forEach(function(table_description){
                         if(db.objectStoreNames.contains(table_description.table_name)) {
                             db.deleteObjectStore(table_description.table_name);
                         }
-                        var objectStore = db.createObjectStore(table_description, table_description.table_parameter);
+                        var objectStore = db.createObjectStore(table_description.table_name, table_description.table_parameter);
                         if (table_description.table_indexes) {
                             table_description.table_indexes.forEach(function(table_index) {
                                 objectStore.createIndex(

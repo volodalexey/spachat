@@ -135,8 +135,8 @@ define('register', [
                                 userPassword: userPassword
                             },
                             function(regErr, account) {
+                                _this.toggleWaiter();
                                 if (regErr) {
-                                    _this.toggleWaiter();
                                     popap_manager.renderPopap(
                                         'error',
                                         {message: regErr},
@@ -151,10 +151,18 @@ define('register', [
                                     return;
                                 }
 
-                                users_bus.setUserId(account.user_id);
-                                websocket.createAndListen();
-                                history.pushState(null, null, 'chat');
-                                _this.navigator.navigate();
+                                popap_manager.renderPopap(
+                                    'success',
+                                    {message: 96},
+                                    function(action) {
+                                        switch (action) {
+                                            case 'confirmCancel':
+                                                popap_manager.onClose();
+                                                _this.navigator.bindedRedirectToLogin();
+                                                break;
+                                        }
+                                    }
+                                );
                             }
                         );
                     } else {
