@@ -1,6 +1,4 @@
-<% var _in = arguments[0];
-
-_in.config.byDataLocation.per_page.configs = _in.config.byDataLocation.per_page.configs.filter( function(obj){
+<% _in.config.byDataLocation.per_page.configs = _in.config.byDataLocation.per_page.configs.filter( function(obj){
     return obj.redraw_mode === _in.data.mode_change } ); %>
 
 <% if (_in.config && _in.config.byDataLocation) {

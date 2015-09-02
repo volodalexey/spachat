@@ -1,6 +1,4 @@
-<% var _in = arguments[0];
-
-_in.config._byDataLocation = {};
+<% _in.config._byDataLocation = {};
 if (_in.mode !== 'CHATS') {
     if (_in.mode === 'CREATE_CHAT') {
         _in.config._byDataLocation.chatAuto = _in.config.byDataLocation.chatAuto;
@@ -73,7 +71,7 @@ if (_in.config && _in.config._byDataLocation) {
         <div data-role="detail_view_container" style="max-height: 15em;" class="max-height-auto max-height-0"
              data-state="expanded">
             <%= _in.data.detail_view_template({
-                config: config,
+                config: _in.config,
                 data: chat,
                 icon_config: _in.icon_config,
                 triple_element_template: _in.triple_element_template,

@@ -1,5 +1,4 @@
-<% var _in = arguments[0];
-if (_in.config && _in.config.byDataLocation) {
+<% if (_in.config && _in.config.byDataLocation) {
 for (var locationKey in _in.config.byDataLocation) { %>
 <%= _in.location_wrapper_template({
     config: _in.config.byDataLocation[locationKey],
