@@ -90,7 +90,7 @@ define('login', [
                 var userPassword = _this.loginForm.elements.userPassword.value;
                 if (userName && userPassword) {
                     _this.toggleWaiter(true);
-                    indexeddb.getUserCredentials(userName, userPassword, function(err, userCredentials) {
+                    indexeddb.getGlobalUserCredentials(userName, userPassword, function(err, userCredentials) {
                         _this.toggleWaiter();
                         if (err) {
                             popap_manager.renderPopap(

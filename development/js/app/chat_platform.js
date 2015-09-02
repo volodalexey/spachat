@@ -372,40 +372,44 @@ define('chat_platform', [
                 Chat.prototype.chatsArray.push(newChat);
                 newChat.index = Chat.prototype.chatsArray.indexOf(newChat);
 
-                indexeddb.open(newChat.collectionDescription, function(err) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    newChat.initialize(renderOptions);
-                    if (messageData.restore_chat_state &&
-                        messageData.chat_description.bodyOptions &&
-                        messageData.chat_description.bodyOptions.mode) {
-                        newChat.switchModes([{
-                            'chat_part': 'body',
-                            'newMode': messageData.chat_description.bodyOptions.mode
-                        }], renderOptions);
-                    } else {
-                        newChat.switchModes([{
-                            'chat_part': 'body',
-                            'newMode': newChat.body.MODE.MESSAGES
-                        }], renderOptions);
-                    }
+                indexeddb.open(
+                    newChat.collectionDescription,
+                    false,
+                    function(err) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        newChat.initialize(renderOptions);
+                        if (messageData.restore_chat_state &&
+                            messageData.chat_description.bodyOptions &&
+                            messageData.chat_description.bodyOptions.mode) {
+                            newChat.switchModes([{
+                                'chat_part': 'body',
+                                'newMode': messageData.chat_description.bodyOptions.mode
+                            }], renderOptions);
+                        } else {
+                            newChat.switchModes([{
+                                'chat_part': 'body',
+                                'newMode': newChat.body.MODE.MESSAGES
+                            }], renderOptions);
+                        }
 
-                    if (messageData.chat_wscs_descrs) {
-                        webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
-                    } else {
-                        websocket.wsRequest({
-                            chat_id: newChat.chat_id,
-                            url: "/api/chat/websocketconnections"
-                        }, function(err, response) {
-                            if (err) {
-                                console.error(err);
-                                return;
-                            }
-                            webrtc.handleConnectedDevices(response.chat_wscs_descrs);
-                        });
+                        if (messageData.chat_wscs_descrs) {
+                            webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
+                        } else {
+                            websocket.wsRequest({
+                                chat_id: newChat.chat_id,
+                                url: "/api/chat/websocketconnections"
+                            }, function(err, response) {
+                                if (err) {
+                                    console.error(err);
+                                    return;
+                                }
+                                webrtc.handleConnectedDevices(response.chat_wscs_descrs);
+                            });
+                        }
                     }
-                });
+                );
             },
 
             /**
@@ -543,7 +547,9 @@ define('chat_platform', [
                         switch (action) {
                             case 'confirmOk':
                                 var chatDescription = chat.toChatDescription();
-                                _this.saveStatesChats(chatDescription, null);
+                                _this.saveStatesChats(chatDescription, function() {
+                                    
+                                });
                                 popap_manager.onClose();
                                 break;
                             case 'confirmCancel':

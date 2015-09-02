@@ -3,11 +3,15 @@ define('indexeddb', [
         'throw_event_core',
         'extend_core',
         //
+        'event_bus',
+        //
         'text!../configs/indexeddb/global_users.json'
     ],
     function(async_core,
              throw_event_core,
              extend_core,
+             //
+             event_bus,
              //
              global_users) {
 
@@ -18,9 +22,25 @@ define('indexeddb', [
             };
             this.state = this.STATES.READY;
             this.openDatabases = {};
+            this.addEventListeners();
         };
 
         indexeddb.prototype = {
+
+            onSetUserId: function(user_id) {
+                this.user_id = user_id;
+            },
+
+            addEventListeners: function() {
+                var _this = this;
+                _this.removeEventListeners();
+                event_bus.on('setUserId', _this.onSetUserId, _this);
+            },
+
+            removeEventListeners: function() {
+                var _this = this;
+                event_bus.off('setUserId', _this.onSetUserId);
+            },
             // database for credentials for each user
             globalUsersDatabaseDescription: JSON.parse(global_users),
 
@@ -32,8 +52,53 @@ define('indexeddb', [
                 return has;
             },
 
-            getVersion: function(options) {
-                return options.db_version ? options.db_version : this.defaultVersion;
+            onOpenSuccess: function(options, callback, event) {
+                if (!this.openDatabases[options.db_name]) {
+                    this.openDatabases[options.db_name] = {};
+                }
+                if (event && event.target) {
+                    this.openDatabases[options.db_name].db = event.target.result;
+                }
+                this.openDatabases[options.db_name].options = options;
+                callback(null);
+            },
+
+            onOpenError: function(options, callback, event) {
+                event.currentTarget.error.options = options;
+                callback(event.currentTarget.error);
+            },
+
+            onOpenUpgrade: function(options, callback, event) {
+                var db = event.target.result;
+
+                // only for provided tables !
+                options.table_descriptions.forEach(function(table_description) {
+                    if (db.objectStoreNames.contains(table_description.table_name)) {
+                        db.deleteObjectStore(table_description.table_name);
+                    }
+                    var objectStore = db.createObjectStore(table_description.table_name, table_description.table_parameter);
+                    if (table_description.table_indexes) {
+                        table_description.table_indexes.forEach(function(table_index) {
+                            objectStore.createIndex(
+                                table_index.indexName, table_index.indexKeyPath, table_index.indexParameter
+                            );
+                        });
+                    }
+                });
+            },
+
+            onOpenBlocked: function(options, callback, event) {
+                event.currentTarget.error.options = options;
+                callback(event.currentTarget.error);
+            },
+
+            _proceedOpen: function(options, version, callback) {
+                var _this = this;
+                var openRequest = indexedDB.open(options.db_name, version);
+                openRequest.onsuccess = _this.onOpenSuccess.bind(_this, options, callback);
+                openRequest.onerror = _this.onOpenError.bind(_this, options, callback);
+                openRequest.onupgradeneeded = _this.onOpenUpgrade.bind(_this, options, callback);
+                openRequest.onblocked = _this.onOpenBlocked.bind(_this, options, callback);
             },
 
             open: function(options, force, callback) {
@@ -43,68 +108,43 @@ define('indexeddb', [
                     return;
                 }
 
-                var version = _this.getVersion(options);
-                var upgraded = false;
-
-                var onSuccess = function(event) {
-                    if (!_this.openDatabases[options.db_name]) {
-                        _this.openDatabases[options.db_name] = {};
-                    }
-                    if (event && event.target) {
-                        _this.openDatabases[options.db_name].db = event.target.result;
-                    }
-                    _this.openDatabases[options.db_name].options = options;
-                    callback(null, upgraded);
-                };
-
-                if (_this.openDatabases[options.db_name] &&
-                    _this.openDatabases[options.db_name].db) {
-                    if (force) {
-                        version = ++_this.openDatabases[options.db_name].db.version;
-                        _this.openDatabases[options.db_name].db.close();
-                        _this.openDatabases[options.db_name] = null;
-                        // store new version in credentials
-                    } else {
-                        onSuccess();
-                        return;
-                    }
-                }
-                var openRequest = indexedDB.open(options.db_name, version);
-
-                openRequest.onsuccess = onSuccess;
-
-                openRequest.onerror = function(e) {
-                    e.currentTarget.error.options = options;
-                    callback(e.currentTarget.error);
-                };
-
-                openRequest.onupgradeneeded = function(event) {
-                    upgraded = true;
-                    var db = event.target.result;
-
-                    db.onerror = function(e) {
-                        callback(e.currentTarget.error);
-                    };
-                    // only for provided tables !
-                    options.table_descriptions.forEach(function(table_description) {
-                        if (db.objectStoreNames.contains(table_description.table_name)) {
-                            db.deleteObjectStore(table_description.table_name);
+                if (options.db_name !== _this.globalUsersDatabaseDescription.db_name) {
+                    _this.getGlobalUser(_this.user_id, function(err, globalUserInfo) {
+                        if (err) {
+                            callback(err);
+                            return;
                         }
-                        var objectStore = db.createObjectStore(table_description.table_name, table_description.table_parameter);
-                        if (table_description.table_indexes) {
-                            table_description.table_indexes.forEach(function(table_index) {
-                                objectStore.createIndex(
-                                    table_index.indexName, table_index.indexKeyPath, table_index.indexParameter
-                                );
-                            });
+                        var version = globalUserInfo.db_versions[options.db_name] ?
+                            globalUserInfo.db_versions[options.db_name] : _this.defaultVersion;
+
+                        if (_this.openDatabases[options.db_name] &&
+                            _this.openDatabases[options.db_name].db) {
+                            if (force) {
+                                version = ++_this.openDatabases[options.db_name].db.version;
+                                _this.openDatabases[options.db_name].db.close();
+                                _this.openDatabases[options.db_name] = null;
+                                // store new version in user credentials
+                                _this.putGlobalUserDBVersion(
+                                    _this.user_id,
+                                    options.db_name,
+                                    version,
+                                    function(err) {
+                                        if (err) {
+                                            console.error(err);
+                                            return;
+                                        }
+                                    }
+                                )
+                            } else {
+                                _this.onOpenSuccess(options, callback);
+                                return;
+                            }
                         }
+                        _this._proceedOpen(options, version, callback);
                     });
-                };
-
-                openRequest.onblocked = function(e) {
-                    e.currentTarget.error.options = options;
-                    callback(e);
-                };
+                } else {
+                    _this._proceedOpen(options, _this.defaultVersion, callback);
+                }
             },
 
             addOrUpdateAll: function(options, table_name, addOrUpdateData, callback) {
@@ -478,7 +518,7 @@ define('indexeddb', [
                 return false;
             },
 
-            getUserCredentials: function(userName, userPassword, callback) {
+            getGlobalUserCredentials: function(userName, userPassword, callback) {
                 var _this = this;
                 _this.getAll(_this.globalUsersDatabaseDescription, null, function(getAllErr, allUsers) {
                     if (getAllErr) {
@@ -502,9 +542,9 @@ define('indexeddb', [
                 });
             },
 
-            storeNewUser: function(user_id, userName, userPassword, callback) {
+            addGlobalUser: function(user_id, userName, userPassword, callback) {
                 var _this = this;
-                _this.getUserCredentials(userName, null, function(getAllErr, userCredentials) {
+                _this.getGlobalUserCredentials(userName, null, function(getAllErr, userCredentials) {
                     if (getAllErr) {
                         callback(getAllErr);
                         return;
@@ -518,49 +558,61 @@ define('indexeddb', [
                     var accountCredentials = {
                         user_id: user_id,
                         userName: userName,
-                        userPassword: userPassword
+                        userPassword: userPassword,
+                        db_versions: {}
                     };
-
-                    indexeddb.addOrUpdateAll(
-                        _this.globalUsersDatabaseDescription,
-                        null,
-                        [
-                            accountCredentials
-                        ],
-                        function(error) {
-                            if (error) {
-                                callback(error);
-                                return;
-                            }
-
-                            // TODO use user model
-                            var userInfo = {
-                                user_id: user_id,
-                                userName: userName,
-                                userPassword: userPassword,
-                                user_ids: [],
-                                chat_ids: []
-                            };
-
-                            _this.userDatabaseDescription.db_name = user_id; // temp to store user
-                            indexeddb.addOrUpdateAll(
-                                _this.userDatabaseDescription,
-                                'information',
-                                [
-                                    userInfo
-                                ],
-                                function(err) {
-                                    _this.userDatabaseDescription.db_name = null; // roll back temp
-                                    if (err) {
-                                        callback(err);
-                                        return;
-                                    }
-                                    callback(null, userInfo);
-                                }
-                            );
-                        }
-                    );
+                    
+                    _this.saveGlobalUser(accountCredentials, callback);
                 });
+            },
+
+            putGlobalUserDBVersion: function(user_id, db_name, db_version, callback) {
+                var _this = this;
+                _this.getGlobalUser(user_id, function(err, globalUserInfo) {
+                    if (err) {
+                        callback(err);
+                        return;
+                    }
+
+                    globalUserInfo.db_versions[db_name] = db_version;
+                    _this.saveGlobalUser(globalUserInfo, callback);
+                });
+            },
+
+            getGlobalUser: function(user_id, callback) {
+                var _this = this;
+                _this.getByKeyPath(
+                    _this.globalUsersDatabaseDescription,
+                    null,
+                    user_id,
+                    function(getError, globalUserInfo) {
+                        if (getError) {
+                            callback(getError);
+                            return;
+                        }
+
+                        callback(null, globalUserInfo);
+                    }
+                );
+            },
+            
+            saveGlobalUser: function(globalUserInfo, callback) {
+                var _this = this;
+                _this.addOrUpdateAll(
+                    _this.globalUsersDatabaseDescription,
+                    null,
+                    [
+                        globalUserInfo
+                    ],
+                    function(error) {
+                        if (error) {
+                            callback(error);
+                            return;
+                        }
+
+                        callback(null);
+                    }
+                );
             }
         };
         extend_core.prototype.inherit(indexeddb, async_core);

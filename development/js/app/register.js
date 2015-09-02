@@ -203,7 +203,7 @@ define('register', [
                         return;
                     }
 
-                    indexeddb.storeNewUser(
+                    users_bus.storeNewUser(
                         res.uuid,
                         options.userName,
                         options.userPassword,

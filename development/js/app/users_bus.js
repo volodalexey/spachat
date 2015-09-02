@@ -197,6 +197,42 @@ define('users_bus', [
                         callback(null, user_description);
                     }
                 );
+            },
+
+            storeNewUser: function(user_id, userName, userPassword, callback) {
+                var _this = this;
+                indexeddb.addGlobalUser(user_id, userName, userPassword, function(err) {
+                    if (err) {
+                        callback(err);
+                        return;
+                    }
+
+                    // TODO use user model
+                    var userInfo = {
+                        user_id: user_id,
+                        userName: userName,
+                        userPassword: userPassword,
+                        user_ids: [],
+                        chat_ids: []
+                    };
+
+                    _this.setUserId(user_id); // temp to store user
+                    indexeddb.addOrUpdateAll(
+                        _this.userDatabaseDescription,
+                        'information',
+                        [
+                            userInfo
+                        ],
+                        function(err) {
+                            _this.setUserId(null); // roll back temp
+                            if (err) {
+                                callback(err);
+                                return;
+                            }
+                            callback(null, userInfo);
+                        }
+                    );
+                });
             }
         };
 

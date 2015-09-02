@@ -1,7 +1,7 @@
 {
-  "db_name": "user_credentials",
+  "db_name": "global_users",
   "table_descriptions": [{
-    "table_name": "user_credentials",
+    "table_name": "global_users",
     "table_parameter": {"keyPath": "user_id"}
   }]
 }
