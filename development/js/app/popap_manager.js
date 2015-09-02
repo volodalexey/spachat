@@ -84,6 +84,7 @@ define('popap_manager', [
                         break;
                     case 'error':
                         config = _this.error_config;
+                        console.error(options);
                         break;
                     case 'success':
                         config = _this.succes_config;

@@ -1,10 +1,12 @@
 define('chats_bus', [
         'indexeddb',
-        'users_bus'
+        'users_bus',
+        'event_bus'
     ],
     function(
         indexeddb,
-        users_bus
+        users_bus,
+        event_bus
     ) {
 
         var chats_bus = function() {
@@ -15,13 +17,28 @@ define('chats_bus', [
                     "table_parameter": {"keyPath": "chat_id"}
                 }]
             };
+            this.addEventListeners();
         };
 
         chats_bus.prototype = {
 
+            onSetUserId: function(user_id) {
+                this.collectionDescription.db_name = user_id;
+            },
+
+            addEventListeners: function() {
+                var _this = this;
+                _this.removeEventListeners();
+                event_bus.on('setUserId', _this.onSetUserId, _this);
+            },
+
+            removeEventListeners: function() {
+                var _this = this;
+                event_bus.off('setUserId', _this.onSetUserId);
+            },
+
             getChats: function(getError, options, chat_ids, _callback) {
                 if (chat_ids && chat_ids.length) {
-                    this.collectionDescription.db_name = users_bus.getUserId();
                     indexeddb.getByKeysPath(
                         this.collectionDescription,
                         null,

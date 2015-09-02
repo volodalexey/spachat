@@ -1,8 +1,10 @@
 define('users_bus', [
-        'indexeddb'
+        'indexeddb',
+        'event_bus'
     ],
     function(
-        indexeddb
+        indexeddb,
+        event_bus
     ) {
 
         var users_bus = function() {
@@ -136,6 +138,7 @@ define('users_bus', [
             setUserId: function(user_id) {
                 this.user_id = user_id;
                 this.userDatabaseDescription.db_name = user_id;
+                event_bus.trigger('setUserId', user_id);
             },
 
             getUserId: function() {

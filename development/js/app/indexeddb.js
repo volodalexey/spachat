@@ -53,14 +53,15 @@ define('indexeddb',
                         // store new version in credentials
                     } else {
                         onSuccess();
+                        return;
                     }
-                    return;
                 }
                 var openRequest = indexedDB.open(options.db_name, version);
 
                 openRequest.onsuccess = onSuccess;
 
                 openRequest.onerror = function(e) {
+                    e.currentTarget.error.options = options;
                     callback(e.currentTarget.error);
                 };
 
@@ -87,8 +88,9 @@ define('indexeddb',
                     });
                 };
 
-                openRequest.onblocked = function () {
-                    callback(new Error('BlockedState'));
+                openRequest.onblocked = function (e) {
+                    e.currentTarget.error.options = options;
+                    callback(e);
                 };
             },
 
@@ -105,6 +107,8 @@ define('indexeddb',
                         trans = _this.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readwrite");
                         store = trans.objectStore(cur_table_description.table_name);
                     } catch (error) {
+                        error.options = options;
+                        error.cur_table_description = cur_table_description;
                         callback(error);
                         return;
                     }
@@ -114,6 +118,8 @@ define('indexeddb',
                         try {
                             addOrUpdateCursor = store.openCursor(IDBKeyRange.only(addOrPut[cur_table_description.table_parameter.keyPath]));
                         } catch (error) {
+                            error.options = options;
+                            error.cur_table_description = cur_table_description;
                             callback(error);
                             return;
                         }
@@ -143,6 +149,8 @@ define('indexeddb',
                         };
                     }, function(err) {
                         if (err) {
+                            err.options = options;
+                            err.cur_table_description = cur_table_description;
                             callback(err);
                         } else {
                             callback(null);
@@ -150,12 +158,13 @@ define('indexeddb',
                     });
                 };
 
-                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_description.table_name)) {
+                var _isTableInTables = _this.isTableInTables(options.db_name, cur_table_description.table_name);
+                if (_this.openDatabases[options.db_name] && _isTableInTables) {
                     executeAddOrUpdateAll();
                 } else {
                     _this.open(
                         options,
-                        !_this.isTableInTables(options.db_name, cur_table_description.table_name),
+                        !_isTableInTables,
                         function(err, upgraded) {
                             if (err) {
                                 callback(err, upgraded);
@@ -174,12 +183,13 @@ define('indexeddb',
 
                 cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
-                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_description.table_name)) {
+                var _isTableInTables = _this.isTableInTables(options.db_name, cur_table_description.table_name);
+                if (_this.openDatabases[options.db_name] && _isTableInTables) {
                     _this._executeGetAll(options, cur_table_description.table_name, callback);
                 } else {
                     _this.open(
                         options,
-                        !_this.isTableInTables(options.db_name, cur_table_description.table_name),
+                        !_isTableInTables,
                         function(err, upgraded) {
                             if (err) {
                                 callback(err, upgraded);
@@ -198,6 +208,8 @@ define('indexeddb',
                     store = trans.objectStore(table_name);
                     openRequest = store.openCursor();
                 } catch (error) {
+                    error.options = options;
+                    error.table_name = table_name;
                     callback(error);
                     return;
                 }
@@ -214,7 +226,10 @@ define('indexeddb',
                 };
 
                 openRequest.onerror = function(e) {
-                    callback(e.currentTarget.error);
+                    var err = e.currentTarget.error;
+                    err.options = options;
+                    err.cur_table_description = cur_table_description;
+                    callback(err);
                 };
             },
 
@@ -234,6 +249,8 @@ define('indexeddb',
                         trans = _this.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readonly");
                         store = trans.objectStore(cur_table_description.table_name);
                     } catch (error) {
+                        error.options = options;
+                        error.cur_table_description = cur_table_description;
                         callback(error);
                         return;
                     }
@@ -242,6 +259,8 @@ define('indexeddb',
                     try {
                         getCursor = store.openCursor(IDBKeyRange.only(getValue));
                     } catch (error) {
+                        error.options = options;
+                        error.cur_table_description = cur_table_description;
                         callback(error);
                         return;
                     }
@@ -252,16 +271,20 @@ define('indexeddb',
                         callback(null, result);
                     };
                     getCursor.onerror = function(e) {
-                        callback(e.currentTarget.error);
+                        var err = e.currentTarget.error;
+                        err.options = options;
+                        err.cur_table_description = cur_table_description;
+                        callback(err);
                     };
                 };
 
-                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_description.table_name)) {
+                var _isTableInTables = _this.isTableInTables(options.db_name, cur_table_description.table_name);
+                if (_this.openDatabases[options.db_name] && _isTableInTables) {
                     executeGet();
                 } else {
                     _this.open(
                         options,
-                        !_this.isTableInTables(options.db_name, cur_table_description.table_name),
+                        !_isTableInTables,
                         function(err, upgraded) {
                             if (err) {
                                 callback(err, upgraded);
@@ -281,11 +304,13 @@ define('indexeddb',
                 cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
                 var executeGet = function() {
-                    var trans, store, result;
+                    var trans, store;
                     try {
                         trans = _this.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readonly");
                         store = trans.objectStore(cur_table_description.table_name);
                     } catch (error) {
+                        error.options = options;
+                        error.cur_table_description = cur_table_description;
                         callback(error);
                         return;
                     }
@@ -313,17 +338,21 @@ define('indexeddb',
                             _array.push(cursor.value);
                         };
                         getCursor.onerror = function(e) {
-                            callback(e.currentTarget.error);
+                            var err = e.currentTarget.error;
+                            err.options = options;
+                            err.cur_table_description = cur_table_description;
+                            callback(err);
                         };
                     });
                 };
 
-                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_description.table_name)) {
+                var _isTableInTables = _this.isTableInTables(options.db_name, cur_table_description.table_name);
+                if (_this.openDatabases[options.db_name] && _isTableInTables) {
                     executeGet();
                 } else {
                     _this.open(
                         options,
-                        !_this.isTableInTables(options.db_name, cur_table_description.table_name),
+                        !_isTableInTables,
                         function(err, upgraded) {
                             if (err) {
                                 callback(err, upgraded);
@@ -342,12 +371,13 @@ define('indexeddb',
 
                 cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
-                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_description.table_name)) {
+                var _isTableInTables = _this.isTableInTables(options.db_name, cur_table_description.table_name);
+                if (_this.openDatabases[options.db_name] && _isTableInTables) {
                     _this._executeAddAll(options, cur_table_description.table_name, toAdd, callback);
                 } else {
                     _this.open(
                         options,
-                        !_this.isTableInTables(options.db_name, cur_table_description.table_name),
+                        !_isTableInTables,
                         function(err, upgraded) {
                             if (err) {
                                 callback(err, upgraded);
@@ -367,6 +397,8 @@ define('indexeddb',
                     trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readwrite");
                     store = trans.objectStore(table_name);
                 } catch (error) {
+                    error.options = options;
+                    error.table_name = table_name;
                     callback(error);
                     return;
                 }
@@ -383,6 +415,8 @@ define('indexeddb',
                     };
                 }, function(err) {
                     if (err) {
+                        err.options = options;
+                        err.table_name = table_name;
                         callback(err);
                     } else {
                         if (_this.canNotProceed(callback)) { return; }
