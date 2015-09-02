@@ -264,10 +264,18 @@ define('chat', [
                 if (!this.collectionDescription) {
                     this.collectionDescription = {
                         "db_name": users_bus.getUserId(),
-                        "table_names": [ this.chat_id + '_messages', this.chat_id + '_log_messages'],
-                        "table_options": [{ autoIncrement: true, keyPath: "id" }, { keyPath: "id" }],
-                        "table_indexes": [[ 'user_ids', 'user_ids', { multiEntry: true } ]]
-                        //"db_version": 1
+                        "table_descriptions": [{
+                            "table_name": this.chat_id + '_messages',
+                            "table_indexes": [{
+                                "indexName": 'user_ids',
+                                "indexKeyPath": 'user_ids',
+                                "indexParameter": { multiEntry: true }
+                            }],
+                            "table_parameter": { autoIncrement: true, keyPath: "id" }
+                        }, {
+                            "table_name": this.chat_id + '_log_messages',
+                            "table_parameter": { keyPath: "id" }
+                        }]
                     };
                 }
             },

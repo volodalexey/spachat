@@ -3,7 +3,6 @@ define('indexeddb',
     function (async_core, throw_event_core, extend_core) {
 
         var indexeddb = function() {
-            this.defaultKeyPath = 'id';
             this.defaultVersion = 1;
             this.STATES = {
                 READY: 1
@@ -20,10 +19,6 @@ define('indexeddb',
                     has = this.openDatabases[db_name].db.objectStoreNames.contains(table_name);
                 }
                 return has;
-            },
-
-            getKeyPath: function(options) {
-                return options.keyPath ? options.keyPath : this.defaultKeyPath;
             },
 
             getVersion: function(options) {
@@ -98,17 +93,17 @@ define('indexeddb',
             },
 
             addOrUpdateAll: function(options, table_name, addOrUpdateData, callback) {
-                var _this = this, cur_table_name;
+                var _this = this, cur_table_description;
 
                 if (_this.canNotProceed(callback)) { return; }
 
-                cur_table_name = _this.defineCurrentTable(options, table_name);
+                cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
                 var executeAddOrUpdateAll = function() {
-                    var trans, store, keyPath = _this.getKeyPath(options);
+                    var trans, store;
                     try {
-                        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_name], "readwrite");
-                        store = trans.objectStore(cur_table_name);
+                        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readwrite");
+                        store = trans.objectStore(cur_table_description.table_name);
                     } catch (error) {
                         callback(error);
                         return;
@@ -117,7 +112,7 @@ define('indexeddb',
                     _this.async_eachSeries(addOrUpdateData, function(addOrPut, _callback) {
                         var addOrUpdateCursor;
                         try {
-                            addOrUpdateCursor = store.openCursor(IDBKeyRange.only(addOrPut[keyPath]));
+                            addOrUpdateCursor = store.openCursor(IDBKeyRange.only(addOrPut[cur_table_description.table_parameter.keyPath]));
                         } catch (error) {
                             callback(error);
                             return;
@@ -155,12 +150,12 @@ define('indexeddb',
                     });
                 };
 
-                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_name)) {
+                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_description.table_name)) {
                     executeAddOrUpdateAll();
                 } else {
                     _this.open(
                         options,
-                        !_this.isTableInTables(options.db_name, cur_table_name),
+                        !_this.isTableInTables(options.db_name, cur_table_description.table_name),
                         function(err, upgraded) {
                             if (err) {
                                 callback(err, upgraded);
@@ -173,23 +168,23 @@ define('indexeddb',
             },
 
             getAll: function(options, table_name, callback) {
-                var _this = this, cur_table_name;
+                var _this = this, cur_table_description;
 
                 if (_this.canNotProceed(callback)) { return; }
 
-                cur_table_name = _this.defineCurrentTable(options, table_name);
+                cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
-                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_name)) {
-                    _this._executeGetAll(options, cur_table_name, callback);
+                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_description.table_name)) {
+                    _this._executeGetAll(options, cur_table_description.table_name, callback);
                 } else {
                     _this.open(
                         options,
-                        !_this.isTableInTables(options.db_name, cur_table_name),
+                        !_this.isTableInTables(options.db_name, cur_table_description.table_name),
                         function(err, upgraded) {
                             if (err) {
                                 callback(err, upgraded);
                             } else {
-                                _this._executeGetAll(options, cur_table_name, callback);
+                                _this._executeGetAll(options, cur_table_description.table_name, callback);
                             }
                         }
                     );
@@ -227,17 +222,17 @@ define('indexeddb',
              * open indexedDB table and search through for requested key path
              */
             getByKeyPath: function(options, table_name, getValue, callback) {
-                var _this = this, cur_table_name;
+                var _this = this, cur_table_description;
 
                 if (_this.canNotProceed(callback)) { return; }
 
-                cur_table_name = _this.defineCurrentTable(options, table_name);
+                cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
                 var executeGet = function() {
                     var trans, store, result;
                     try {
-                        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_name], "readonly");
-                        store = trans.objectStore(cur_table_name);
+                        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readonly");
+                        store = trans.objectStore(cur_table_description.table_name);
                     } catch (error) {
                         callback(error);
                         return;
@@ -261,12 +256,12 @@ define('indexeddb',
                     };
                 };
 
-                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_name)) {
+                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_description.table_name)) {
                     executeGet();
                 } else {
                     _this.open(
                         options,
-                        !_this.isTableInTables(options.db_name, cur_table_name),
+                        !_this.isTableInTables(options.db_name, cur_table_description.table_name),
                         function(err, upgraded) {
                             if (err) {
                                 callback(err, upgraded);
@@ -279,17 +274,17 @@ define('indexeddb',
             },
 
             getByKeysPath: function(options, table_name, getValues, nullWrapper, callback) {
-                var _this = this, cur_table_name;
+                var _this = this, cur_table_description;
 
                 if (_this.canNotProceed(callback)) { return; }
 
-                cur_table_name = _this.defineCurrentTable(options, table_name);
+                cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
                 var executeGet = function() {
                     var trans, store, result;
                     try {
-                        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_name], "readonly");
-                        store = trans.objectStore(cur_table_name);
+                        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readonly");
+                        store = trans.objectStore(cur_table_description.table_name);
                     } catch (error) {
                         callback(error);
                         return;
@@ -323,12 +318,12 @@ define('indexeddb',
                     });
                 };
 
-                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_name)) {
+                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_description.table_name)) {
                     executeGet();
                 } else {
                     _this.open(
                         options,
-                        !_this.isTableInTables(options.db_name, cur_table_name),
+                        !_this.isTableInTables(options.db_name, cur_table_description.table_name),
                         function(err, upgraded) {
                             if (err) {
                                 callback(err, upgraded);
@@ -341,23 +336,23 @@ define('indexeddb',
             },
 
             addAll: function(options, table_name, toAdd, callback) {
-                var _this = this, cur_table_name;
+                var _this = this, cur_table_description;
 
                 if (_this.canNotProceed(callback)) { return; }
 
-                cur_table_name = _this.defineCurrentTable(options, table_name);
+                cur_table_description = _this.getCurrentTableDescription(options, table_name);
 
-                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_name)) {
-                    _this._executeAddAll(options, cur_table_name, toAdd, callback);
+                if (_this.openDatabases[options.db_name] && _this.isTableInTables(options.db_name, cur_table_description.table_name)) {
+                    _this._executeAddAll(options, cur_table_description.table_name, toAdd, callback);
                 } else {
                     _this.open(
                         options,
-                        !_this.isTableInTables(options.db_name, cur_table_name),
+                        !_this.isTableInTables(options.db_name, cur_table_description.table_name),
                         function(err, upgraded) {
                             if (err) {
                                 callback(err, upgraded);
                             } else {
-                                _this._executeAddAll(options, cur_table_name, toAdd, callback);
+                                _this._executeAddAll(options, cur_table_description.table_name, toAdd, callback);
                             }
                         }
                     );
@@ -365,7 +360,7 @@ define('indexeddb',
             },
 
             _executeAddAll: function(options, table_name, toAdd, callback) {
-                var _this = this, trans, store, keyPath = _this.getKeyPath(options);
+                var _this = this, trans, store;
                 if (_this.canNotProceed(callback)) { return; }
 
                 try {
@@ -396,11 +391,17 @@ define('indexeddb',
                 });
             },
 
-            defineCurrentTable: function(options, table_name) {
+            getCurrentTableDescription: function(options, table_name) {
+                var found_table_description;
                 if (table_name) {
-                    return table_name;
+                    options.table_descriptions.every(function(table_description) {
+                        if (table_description.table_name === table_name) {
+                            found_table_description = table_description;
+                        }
+                        return !found_table_description;
+                    });
                 }
-                return options.table_names[0];
+                return found_table_description ? found_table_description : options.table_descriptions[0];
             },
 
             canNotProceed: function(callback) {

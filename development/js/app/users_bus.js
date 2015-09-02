@@ -24,6 +24,10 @@ define('users_bus', [
                         "indexName": 'user_ids',
                         "indexKeyPath": 'user_ids',
                         "indexParameter": { multiEntry: true }
+                    }, {
+                        "indexName": 'chat_ids',
+                        "indexKeyPath": 'chat_ids',
+                        "indexParameter": { multiEntry: true }
                     }],
                     "table_parameter": {"keyPath": "user_id"}
                 }, {
@@ -31,6 +35,10 @@ define('users_bus', [
                     "table_indexes": [{
                         "indexName": 'user_ids',
                         "indexKeyPath": 'user_ids',
+                        "indexParameter": { multiEntry: true }
+                    }, {
+                        "indexName": 'chat_ids',
+                        "indexKeyPath": 'chat_ids',
                         "indexParameter": { multiEntry: true }
                     }],
                     "table_parameter": {"keyPath": "user_id"}
