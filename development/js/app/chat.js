@@ -263,8 +263,8 @@ define('chat', [
             setCollectionDescription: function() {
                 if (!this.collectionDescription) {
                     this.collectionDescription = {
-                        "db_name": this.chat_id + '_chat',
-                        "table_names": ['messages', 'log_messages'],
+                        "db_name": users_bus.getUserId(),
+                        "table_names": [ this.chat_id + '_messages', this.chat_id + '_log_messages'],
                         "table_options": [{ autoIncrement: true, keyPath: "id" }, { keyPath: "id" }],
                         "table_indexes": [[ 'user_ids', 'user_ids', { multiEntry: true } ]],
                         "db_version": 1
@@ -827,32 +827,25 @@ define('chat', [
                     if (!_this.isInUsers(_this, eventData.from_user_id)) {
                         // add user and save chat with this user TODO update only user_ids in chat description
                         _this.user_ids.push(eventData.from_user_id);
-                        indexeddb.addOrUpdateAll(
-                            chats_bus.collectionDescription,
-                            null,
-                            [
-                                _this.toChatDescription()
-                            ],
-                            function(error) {
-                                if (error) {
-                                    popap_manager.renderPopap(
-                                        'error',
-                                        {message: error},
-                                        function(action) {
-                                            switch (action) {
-                                                case 'confirmCancel':
-                                                    popap_manager.onClose();
-                                                    break;
-                                            }
+                        chats_bus.putChatToIndexedDB(_this.toChatDescription(), function(err) {
+                            if (err) {
+                                popap_manager.renderPopap(
+                                    'error',
+                                    {message: err},
+                                    function(action) {
+                                        switch (action) {
+                                            case 'confirmCancel':
+                                                popap_manager.onClose();
+                                                break;
                                         }
-                                    );
-                                    return;
-                                }
-
-                                _this._listenWebRTCConnection();
-                                webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
+                                    }
+                                );
+                                return;
                             }
-                        );
+
+                            _this._listenWebRTCConnection();
+                            webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
+                        });
                     } else {
                         _this._listenWebRTCConnection();
                         webrtc.handleConnectedDevices(eventData.user_wscs_descrs);

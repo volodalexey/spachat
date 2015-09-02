@@ -1,27 +1,119 @@
 define('users_bus', [
-        'indexeddb',
-        'chats_bus'
+        'indexeddb'
     ],
     function(
-        indexeddb,
-        chats_bus
+        indexeddb
     ) {
 
         var users_bus = function() {
             this.user_id = null;
-            this.collectionDescription = {
-                "db_name": 'users',
-                "table_names": ['users'],
+            // database only for credentials for each user
+            this.credentialsDatabaseDescription = {
+                "db_name": 'user_credentials',
+                "table_names": ['user_credentials'],
                 "db_version": 1,
                 "table_indexes": [[ 'user_ids', 'user_ids', { multiEntry: true } ]],
                 "keyPath": "user_id"
             };
+            // database for all user content
+            this.userDatabaseDescription = {
+                "table_names": ['users', 'information'],
+                "db_version": 1,
+                "table_indexes": [[ 'user_ids', 'user_ids', { multiEntry: true } ]],
+                "keyPath": "user_id"
+            }
         };
 
         users_bus.prototype = {
 
+            getUserCredentials: function(userName, userPassword, callback) {
+                var _this = this;
+                indexeddb.getAll(_this.credentialsDatabaseDescription, null, function(getAllErr, allUsers) {
+                    if (getAllErr) {
+                        callback(getAllErr);
+                        return;
+                    }
+
+                    var userCredentials;
+                    allUsers.every(function(_user) {
+                        if (_user.userName === userName) {
+                            if (userPassword && _user.userPassword === userPassword) {
+                                userCredentials = _user;
+                            } else {
+                                userCredentials = _user;
+                            }
+                        }
+                        return !userCredentials;
+                    });
+
+                    callback(null, userCredentials);
+                });
+            },
+
+            storeNewUser: function(user_id, userName, userPassword, callback) {
+                var _this = this;
+                _this.getUserCredentials(userName, null, function(getAllErr, userCredentials) {
+                    if (getAllErr) {
+                        callback(getAllErr);
+                        return;
+                    }
+
+                    if (userCredentials) {
+                        callback(new Error('User with such username is already exist!'));
+                        return;
+                    }
+
+                    var accountCredentials = {
+                        user_id: user_id,
+                        userName: userName,
+                        userPassword: userPassword
+                    };
+
+                    indexeddb.addOrUpdateAll(
+                        _this.credentialsDatabaseDescription,
+                        null,
+                        [
+                            accountCredentials
+                        ],
+                        function(error) {
+                            if (error) {
+                                callback(error);
+                                return;
+                            }
+
+                            // TODO use user model
+                            var userInfo = {
+                                user_id: user_id,
+                                userName: userName,
+                                userPassword: userPassword,
+                                user_ids: [],
+                                chat_ids: []
+                            };
+
+                            _this.userDatabaseDescription.db_name = user_id; // temp to store user
+                            indexeddb.addOrUpdateAll(
+                                _this.userDatabaseDescription,
+                                'information',
+                                [
+                                    userInfo
+                                ],
+                                function(err) {
+                                    _this.userDatabaseDescription.db_name = null; // roll back temp
+                                    if (err) {
+                                        callback(err);
+                                        return;
+                                    }
+                                    callback(null, userInfo);
+                                }
+                            );
+                        }
+                    );
+                });
+            },
+
             setUserId: function(user_id) {
                 this.user_id = user_id;
+                this.userDatabaseDescription.db_name = user_id;
             },
 
             getUserId: function() {
@@ -37,29 +129,11 @@ define('users_bus', [
                 return user_ids;
             },
 
-            getContactsId: function(chat_id, _callback) {
-                var _this = this;
-                indexeddb.getByKeyPath(
-                    chats_bus.collectionDescription,
-                    chat_id,
-                    function(getError, chat_description) {
-                        if (getError) {
-                            console.error(getError);
-                            return;
-                        }
-
-                        if (chat_description) {
-                            chat_description.user_ids = _this.excludeUser(null, chat_description.user_ids);
-                            _this.getContactsInfo(null, chat_description.user_ids, _callback);
-                        }
-                    }
-                );
-            },
-
             getContactsInfo: function(options, user_ids, _callback) {
                 if (user_ids.length) {
                     indexeddb.getByKeysPath(
-                        this.collectionDescription,
+                        this.userDatabaseDescription,
+                        'users',
                         user_ids,
                         function(user_id) {
                             return {
@@ -88,9 +162,11 @@ define('users_bus', [
             },
 
             getMyInfo: function(options, _callback) {
+                var _this = this;
                 indexeddb.getByKeyPath(
-                    this.collectionDescription,
-                    this.user_id,
+                    _this.userDatabaseDescription,
+                    'information',
+                    _this.user_id,
                     function(getError, userInfo) {
                         if (getError) {
                             if (_callback){
@@ -168,11 +244,29 @@ define('users_bus', [
 
             saveMyInfo: function(userInfo, _callback) {
                 indexeddb.addOrUpdateAll(
-                    this.collectionDescription,
-                    null,
+                    this.userDatabaseDescription,
+                    'information',
                     [userInfo],
                     _callback
                 )
+            },
+
+            addNewUserToIndexedDB: function(user_description, callback) {
+                indexeddb.addOrUpdateAll(
+                    this.userDatabaseDescription,
+                    'users',
+                    [
+                        user_description
+                    ],
+                    function(error) {
+                        if (error) {
+                            callback(error);
+                            return;
+                        }
+
+                        callback(null, user_description);
+                    }
+                );
             }
         };
 

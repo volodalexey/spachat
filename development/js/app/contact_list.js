@@ -44,7 +44,7 @@ define('contact_list', [
                 var _this = this;
                 _this.chat = chat;
                 var changeMode = _this.chat.body.previousMode !== _this.chat.bodyOptions.mode;
-                users_bus.getContactsId(_this.chat.chat_id, function(error, contactsInfo) {
+                chats_bus.getChatContacts(_this.chat.chat_id, function(error, contactsInfo) {
                     if (error) {
                         console.error(error);
                         return;

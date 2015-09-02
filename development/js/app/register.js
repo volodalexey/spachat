@@ -195,49 +195,20 @@ define('register', [
                         return;
                     }
 
-                    indexeddb.getAll(users_bus.collectionDescription, null, function(getAllErr, allUsers) {
-                        if (getAllErr) {
-                            callback(getAllErr);
-                            return;
-                        }
-
-                        var user;
-                        allUsers.every(function(_user) {
-                            if (_user.userName === options.userName && _user.userPassword) {
-                                user = _user;
+                    users_bus.storeNewUser(
+                        res.uuid,
+                        options.userName,
+                        options.userPassword,
+                        function(err, account) {
+                            if (err) {
+                                callback(err);
+                                return;
                             }
-                            return !user;
-                        });
 
-                        if (user) {
-                            callback(new Error('User with such username is already exist!'));
-                            return;
+                            // successful register
+                            callback(null, account);
                         }
-
-                        var account = {
-                            user_id: res.uuid,
-                            userName: options.userName,
-                            userPassword: options.userPassword,
-                            user_ids: [],
-                            chat_ids: []
-                        };
-
-                        indexeddb.addOrUpdateAll(
-                            users_bus.collectionDescription,
-                            null,
-                            [
-                                account
-                            ],
-                            function(error) {
-                                if (error) {
-                                    callback(error);
-                                    return;
-                                }
-
-                                callback(null, account);
-                            }
-                        );
-                    });
+                    );
                 });
             },
 

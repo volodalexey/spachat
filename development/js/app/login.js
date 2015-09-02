@@ -90,12 +90,12 @@ define('login', [
                 var userPassword = _this.loginForm.elements.userPassword.value;
                 if (userName && userPassword) {
                     _this.toggleWaiter(true);
-                    indexeddb.getAll(users_bus.collectionDescription, null,  function(getAllErr, users) {
+                    users_bus.getUserCredentials(userName, userPassword, function(err, userCredentials) {
                         _this.toggleWaiter();
-                        if (getAllErr) {
+                        if (err) {
                             popap_manager.renderPopap(
                                 'error',
-                                {message: getAllErr},
+                                {message: err},
                                 function(action) {
                                     switch (action) {
                                         case 'confirmCancel':
@@ -107,22 +107,14 @@ define('login', [
                             return;
                         }
 
-                        var user;
-                        users.every(function(_user) {
-                            if (_user.userName === userName && _user.userPassword === userPassword) {
-                                user = _user;
-                            }
-                            return !user;
-                        });
-
-                        if (user) {
-                            users_bus.setUserId(user.user_id);
+                        if (userCredentials) {
+                            users_bus.setUserId(userCredentials.user_id);
                             websocket.createAndListen();
                             history.pushState(null, null, 'chat');
                             _this.navigator.navigate();
                         } else {
                             users_bus.setUserId(null);
-                            _this.loginForm.reset();
+                            //_this.loginForm.reset();
                             popap_manager.renderPopap(
                                 'error',
                                 {message: 87},

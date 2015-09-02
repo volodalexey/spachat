@@ -327,21 +327,7 @@ define('chat_platform', [
 
             addNewChatToIndexedDB: function(chat_description, callback) {
                 var chat = new Chat(chat_description);
-                indexeddb.addOrUpdateAll(
-                    chats_bus.collectionDescription,
-                    null,
-                    [
-                        chat.toChatDescription()
-                    ],
-                    function(error) {
-                        if (error) {
-                            callback(error);
-                            return;
-                        }
-
-                        callback(null, chat);
-                    }
-                );
+                chats_bus.putChatToIndexedDB(chat.toChatDescription(), callback);
             },
 
             chatWorkflow: function(event) {
@@ -362,6 +348,7 @@ define('chat_platform', [
                 if (messageData.type === "chat_joined") {
                     indexeddb.getByKeyPath(
                         chats_bus.collectionDescription,
+                        null,
                         messageData.chat_description.chat_id,
                         function(getError, localChatDescription) {
                             if (getError) {
@@ -431,6 +418,7 @@ define('chat_platform', [
 
                 indexeddb.getByKeyPath(
                     chats_bus.collectionDescription,
+                    null,
                     event.chat_description.chat_id,
                     function(getError, chat_description) {
                         if (getError) {
@@ -509,6 +497,7 @@ define('chat_platform', [
                 _this.hideUIButton(chat_id, control_buttons);
                 indexeddb.getByKeyPath(
                     chats_bus.collectionDescription,
+                    null,
                     chat_id,
                     function(getError, chatDescription) {
                         if (getError) {
@@ -541,24 +530,8 @@ define('chat_platform', [
                 _this.UIElements = {};
             },
 
-            saveStatesChats: function(chatDescription, callback) {
-                var _this = this;
-                indexeddb.addOrUpdateAll(
-                    chats_bus.collectionDescription,
-                    null,
-                    [
-                        chatDescription
-                    ],
-                    function(error) {
-                        if (error) {
-                            console.error(error);
-                            return;
-                        }
-                        if (callback) {
-                            callback();
-                        }
-                    }
-                );
+            saveStatesChats: function(chat_description, callback) {
+                chats_bus.putChatToIndexedDB(chat_description, callback);
             },
 
             saveStatesChat: function(chat) {

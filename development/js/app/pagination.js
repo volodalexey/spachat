@@ -206,7 +206,7 @@ define('pagination', [
                 } else {
                     switch (_this.module.bodyOptions.mode){
                         case _this.module.body.MODE.CONTACT_LIST:
-                            users_bus.getContactsId(_this.module.chat_id, function(error, contactsInfo) {
+                            chats_bus.getChatContacts(_this.module.chat_id, function(error, contactsInfo) {
                                 if (error) {
                                     console.error(error);
                                     return;

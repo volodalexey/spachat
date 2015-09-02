@@ -145,19 +145,12 @@ define('panel_platform', [
                     }
 
                     _this.extend(userInfo, panelDescription);
-                    indexeddb.addOrUpdateAll(
-                        users_bus.collectionDescription,
-                        null,
-                        [
-                            userInfo
-                        ],
-                        function(error) {
-                            if (error){
-                                console.error(error);
-                                return;
-                            }
+                    users_bus.saveMyInfo(userInfo, function(err) {
+                        if (err) {
+                            console.error(err);
+                            return;
                         }
-                    );
+                    });
                 });
             },
 

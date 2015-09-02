@@ -827,20 +827,7 @@ define('panel', [
                 users_bus.getMyInfo(null, function(err, options, userInfo){
                     userInfo.userPassword = _this.new_password.value;
                     userInfo.userName = _this.user_name.value;
-                    indexeddb.addOrUpdateAll(
-                        users_bus.collectionDescription,
-                        null,
-                        [
-                            userInfo
-                        ],
-                        function(error) {
-                            if (error) {
-                                console.error(error);
-                                return;
-                            }
-                            callback();
-                        }
-                    );
+                    users_bus.saveMyInfo(userInfo, callback);
                 });
             },
 
@@ -1072,44 +1059,15 @@ define('panel', [
 
             onNotifyUser: function(user_id, messageData) {
                 var _this = this;
-                indexeddb.getByKeyPath(
-                    users_bus.collectionDescription,
-                    user_id,
-                    function(getError, user_description) {
-                        if (getError) {
-                            console.error(getError);
-                            return;
-                        }
-
-                        _this.addNewUserToIndexedDB(messageData.user_description, function(error, user_description) {
-                            if (error) {
-                                console.error(error);
-                                return;
-                            }
-
-                            users_bus.putUserIdAndSave(user_id);
-                            _this.notListenNotifyUser();
-                        });
+                users_bus.addNewUserToIndexedDB(messageData.user_description, function(error, user_description) {
+                    if (error) {
+                        console.error(error);
+                        return;
                     }
-                );
-            },
 
-            addNewUserToIndexedDB: function(user_description, callback) {
-                indexeddb.addOrUpdateAll(
-                    users_bus.collectionDescription,
-                    null,
-                    [
-                        user_description
-                    ],
-                    function(error) {
-                        if (error) {
-                            callback(error);
-                            return;
-                        }
-
-                        callback(null, user_description);
-                    }
-                );
+                    users_bus.putUserIdAndSave(user_id);
+                    _this.notListenNotifyUser();
+                });
             },
 
             webRTCConnectionReady: function(user_id, triggerConnection) {

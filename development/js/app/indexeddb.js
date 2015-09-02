@@ -74,6 +74,7 @@ define('indexeddb',
                             objectStore = db.createObjectStore(_table_name, { keyPath : keyPath });
                         }
                         if(objectStore && options.table_indexes && options.table_indexes[ind]) {
+                            // only one index per table is supported now
                             var indexDescription = options.table_indexes[ind];
                             objectStore.createIndex(indexDescription[0], indexDescription[1], indexDescription[2]);
                         }
@@ -85,20 +86,18 @@ define('indexeddb',
                 };
             },
 
-            addOrUpdateAll: function(options, tables, addOrUpdateData, callback) {
-                var _this = this, table_name;
+            addOrUpdateAll: function(options, table_name, addOrUpdateData, callback) {
+                var _this = this, cur_table_name;
 
                 if (_this.canNotProceed(callback)) { return; }
 
-                if (!tables) {
-                    table_name = options.table_names[0];
-                }
+                cur_table_name = _this.defineCurrentTable(options, table_name);
 
                 var executeAddOrUpdateAll = function() {
                     var trans, store, keyPath = _this.getKeyPath(options);
                     try {
-                        trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readwrite");
-                        store = trans.objectStore(table_name);
+                        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_name], "readwrite");
+                        store = trans.objectStore(cur_table_name);
                     } catch (error) {
                         callback(error);
                         return;
@@ -208,12 +207,12 @@ define('indexeddb',
             /**
              * open indexedDB table and search through for requested key path
              */
-            getByKeyPath: function(options, getValue, callback) {
+            getByKeyPath: function(options, table_name, getValue, callback) {
                 var _this = this, cur_table_name;
 
                 if (_this.canNotProceed(callback)) { return; }
 
-                cur_table_name = _this.defineCurrentTable(options);
+                cur_table_name = _this.defineCurrentTable(options, table_name);
 
                 var executeGet = function() {
                     var trans, store, result;
@@ -256,12 +255,12 @@ define('indexeddb',
                 }
             },
 
-            getByKeysPath: function(options, getValues, nullWrapper, callback) {
+            getByKeysPath: function(options, table_name, getValues, nullWrapper, callback) {
                 var _this = this, cur_table_name;
 
                 if (_this.canNotProceed(callback)) { return; }
 
-                cur_table_name = _this.defineCurrentTable(options);
+                cur_table_name = _this.defineCurrentTable(options, table_name);
 
                 var executeGet = function() {
                     var trans, store, result;
@@ -299,36 +298,6 @@ define('indexeddb',
                             callback(e.currentTarget.error);
                         };
                     });
-                    //_this.async_eachSeries(getValues, function(getValue, _callback) {
-                    //    try {
-                    //        getCursor = store.openCursor(IDBKeyRange.only(getValue));
-                    //    } catch (error) {
-                    //        _callback(error);
-                    //        return;
-                    //    }
-                    //    getCursor.onsuccess = function(event) {
-                    //        var cursor = event.target.result;
-                    //        if (!cursor) {
-                    //            if (nullWrapper) {
-                    //                //_array.push(nullWrapper(getValue));
-                    //                _callback(null, nullWrapper(getValue));
-                    //            } else {
-                    //                _callback(null);
-                    //            }
-                    //        } else {
-                    //            _callback(null, cursor.value);
-                    //        }
-                    //    };
-                    //    getCursor.onerror = function(e) {
-                    //        _callback(e.currentTarget.error);
-                    //    };
-                    //}, function(err, values) {
-                    //    if (err) {
-                    //        callback(err);
-                    //    } else {
-                    //        callback(null, values);
-                    //    }
-                    //});
                 };
 
                 if (_this.openDatabases[options.db_name]) {

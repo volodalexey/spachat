@@ -1,14 +1,14 @@
 define('chats_bus', [
-        'indexeddb'
+        'indexeddb',
+        'users_bus'
     ],
     function(
-        indexeddb
+        indexeddb,
+        users_bus
     ) {
 
         var chats_bus = function() {
             this.collectionDescription = {
-                "id": 'chats',
-                "db_name": 'chats',
                 "table_names": ['chats'],
                 "db_version": 1,
                 "keyPath": "chat_id"
@@ -16,10 +16,13 @@ define('chats_bus', [
         };
 
         chats_bus.prototype = {
+
             getChats: function(getError, options, chat_ids, _callback) {
                 if (chat_ids && chat_ids.length) {
+                    this.collectionDescription.db_name = users_bus.getUserId();
                     indexeddb.getByKeysPath(
                         this.collectionDescription,
+                        null,
                         chat_ids,
                         null,
                         function(getError, chatsInfo) {
@@ -40,6 +43,44 @@ define('chats_bus', [
                 } else {
                     _callback(null, options, null);
                 }
+            },
+
+            getChatContacts: function(chat_id, callback) {
+                var _this = this;
+                indexeddb.getByKeyPath(
+                    _this.collectionDescription,
+                    null,
+                    chat_id,
+                    function(getError, chat_description) {
+                        if (getError) {
+                            console.error(getError);
+                            return;
+                        }
+
+                        if (chat_description) {
+                            chat_description.user_ids = users_bus.excludeUser(null, chat_description.user_ids);
+                            users_bus.getContactsInfo(null, chat_description.user_ids, callback);
+                        }
+                    }
+                );
+            },
+
+            putChatToIndexedDB: function(chat_description, callback) {
+                indexeddb.addOrUpdateAll(
+                    this.collectionDescription,
+                    null,
+                    [
+                        chat_description
+                    ],
+                    function(error) {
+                        if (error) {
+                            callback(error);
+                            return;
+                        }
+
+                        callback(null, chat_description);
+                    }
+                );
             }
 
         };
