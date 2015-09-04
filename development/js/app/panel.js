@@ -369,7 +369,7 @@ define('panel', [
             z_index: 80,
 
             initialization: function(options) {
-                if (!options || !options.navigator || !options.panel_platform) {
+                if (!options || !options.panel_platform) {
                     popap_manager.renderPopap(
                         'error',
                         {message: 92},
@@ -385,7 +385,6 @@ define('panel', [
                 }
                 var _this = this;
                 _this.optionsDefinition(_this, _this.bodyOptions.mode);
-                _this.navigator = options.navigator;
                 _this.cashElements();
                 _this.elementMap = {};
                 _this.addMainEventListener();
@@ -449,6 +448,7 @@ define('panel', [
                 _this.btns_toolbar = null;
                 _this.togglePanelElement = null;
                 _this.body_container = null;
+                _this.togglePanelElementToolbar = null;
             },
 
             bindMainContexts: function() {
@@ -463,6 +463,19 @@ define('panel', [
                 _this.bindedToggleListOptions = _this.toggleListOptions.bind(_this);
                 _this.bindedCloseChat = _this.closeChat.bind(_this);
                 _this.bindedOnPanelMessageRouter = _this.onPanelMessageRouter.bind(_this);
+            },
+
+            unbindMainContexts: function() {
+                var _this = this;
+                _this.bindedTogglePanelWorkflow = null;
+                _this.bindedInputUserInfo = null;
+                _this.bindedDataActionRouter = null;
+                _this.bindedThrowEventRouter = null;
+                _this.bindedTransitionEnd = null;
+                _this.bindedOnChatDestroyed = null;
+                _this.bindedToggleListOptions = null;
+                _this.bindedCloseChat = null;
+                _this.bindedOnPanelMessageRouter = null;
             },
 
             addMainEventListener: function() {
@@ -838,15 +851,12 @@ define('panel', [
                 _this.render();
             },
 
-            logout: function() {
+            destroy: function() {
                 var _this = this;
-                event_bus.trigger("chatsDestroy");
                 _this.removeMainEventListeners();
                 _this.removeToolbarEventListeners();
-                websocket.dispose();
-                webrtc.destroy();
-                history.pushState(null, null, 'login');
-                _this.navigator.navigate();
+                _this.unCashElements();
+                //_this.unbindMainContexts();
             },
 
             show_more_info: function(element) {

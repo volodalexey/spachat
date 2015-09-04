@@ -103,6 +103,7 @@
     "location": "navbar",
     "data": {
       "role": "",
+      "throw": "true",
       "action": "logout"
     },
     "name": "",

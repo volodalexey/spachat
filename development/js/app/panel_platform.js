@@ -6,7 +6,10 @@ define('panel_platform', [
         'ping_core',
         'indexeddb',
         'users_bus',
-        'popap_manager'
+        'popap_manager',
+        'websocket',
+        'webrtc',
+        'event_bus'
     ],
     function(panel,
              overlay_core,
@@ -15,7 +18,10 @@ define('panel_platform', [
              ping_core,
              indexeddb,
              users_bus,
-             popap_manager) {
+             popap_manager,
+             websocket,
+             webrtc,
+             event_bus) {
 
         var panel_platform = function() {
             var _this = this;
@@ -76,6 +82,7 @@ define('panel_platform', [
 
             renderPanels: function(options) {
                 var _this = this;
+                _this.navigator = options.navigator;
                 _this.cashElements();
                 users_bus.getMyInfo(null, function(error, _options, userInfo){
                     if (error) {
@@ -134,34 +141,39 @@ define('panel_platform', [
             },
 
             disposePanels: function() {
-                var _this = this, panelDescription = {};
+                var _this = this;
                 _this.removeEventListeners();
-                if (panel.prototype.panelArray.length){
-                    panel.prototype.panelArray.forEach(function(_panel) {
-                        panelDescription[_panel.type] = _panel.toPanelDescription();
-                        _panel.dispose();
-                    });
-                    _this.savePanelStates(panelDescription);
-                    panel.prototype.panelArray = [];
-                }
-                users_bus.setUserId(null);
+                panel.prototype.panelArray.forEach(function(_panel) {
+                    _panel.dispose();
+                });
+                panel.prototype.panelArray = [];
             },
 
-            savePanelStates: function(panelDescription) {
+            getPanelDescription: function() {
+                var panelDescription = {};
+                panel.prototype.panelArray.forEach(function(_panel) {
+                    panelDescription[_panel.type] = _panel.toPanelDescription();
+                });
+                return panelDescription;
+            },
+
+            savePanelStates: function(panelDescription, callback) {
                 var _this = this;
 
                 users_bus.getMyInfo(null, function(error, options, userInfo){
                     if (error) {
-                        console.error(error);
+                        callback(error);
                         return;
                     }
 
                     _this.extend(userInfo, panelDescription);
                     users_bus.saveMyInfo(userInfo, function(err) {
                         if (err) {
-                            console.error(err);
+                            callback(err);
                             return;
                         }
+
+                        callback(null);
                     });
                 });
             },
@@ -170,11 +182,13 @@ define('panel_platform', [
                 var _this = this;
                 _this.removeEventListeners();
                 _this.on('resize', _this.bindedResizePanel, _this);
+                event_bus.on('throw', _this.onThrowEvent, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 _this.off('resize');
+                event_bus.off('throw', _this.onThrowEvent);
             },
 
             resizePanels: function(){
@@ -187,6 +201,46 @@ define('panel_platform', [
                 var _this = this;
                 _this.removeEventListeners();
                 _this.unCashMainElements();
+            },
+
+            logout: function() {
+                var _this = this;
+                _this.toggleWaiter(true);
+                _this.savePanelStates(_this.getPanelDescription(), function(err) {
+                    _this.toggleWaiter();
+                    if (err) {
+                        popap_manager.renderPopap(
+                            'error',
+                            {message: err},
+                            function(action) {
+                                switch (action) {
+                                    case 'confirmCancel':
+                                        popap_manager.onClose();
+                                        break;
+                                }
+                            }
+                        );
+                        return;
+                    }
+
+                    _this.disposePanels();
+                    event_bus.trigger("chatsDestroy");
+                    websocket.dispose();
+                    webrtc.destroy();
+                    history.pushState(null, null, 'login');
+                    _this.navigator.navigate();
+                });
+            },
+
+            onThrowEvent: function(eventName, eventData) {
+                if (!eventName) {
+                    return;
+                }
+
+                if (this[eventName]) {
+                    this[eventName](eventData);
+                }
+
             }
 
         };
