@@ -42,17 +42,17 @@
     "text": 42,
     "data": {
       "action": "confirmCancel",
-      "description": 21
+      "description": 98
     }
   },
   {
     "element": "button",
     "location": "footer",
     "class": "border-radius-04em p-tb-03em-lr-1em",
-    "text": 43,
+    "text": 97,
     "data": {
       "action": "confirmOk",
-      "description": 22
+      "description": 99
     }
   }
 ]

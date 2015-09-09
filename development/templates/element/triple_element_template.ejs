@@ -15,20 +15,6 @@
 <% } %>
 
 <% if(_in.config.element === "svg") { %>
-
-    <% var icon;
-    _in.icon_config.every(function(_icon) {
-        if (_icon.name === _in.config.icon) {
-        icon = _icon;
-        }
-        return !icon;
-    } ); %>
-
-    <% if (icon) { %>
-
-    <%= icon.svg %>
-    <% } %>
-
-
+    <img src="templates/icon/<%= _in.config.icon %>" class="transition-all" data-role="pointer">
 <% } %>
 

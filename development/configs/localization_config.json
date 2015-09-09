@@ -478,5 +478,20 @@
     "id": 96,
     "en": "Registered",
     "ru": "Зарегистрирован"
+  },
+  {
+    "id": 97,
+    "en": "Submit",
+    "ru": "Подтвердить"
+  },
+  {
+    "id": 98,
+    "en": "Undo without saving",
+    "ru": "Отменить действие без сохранения данных"
+  },
+  {
+    "id": 99,
+    "en": "Confirm the action described in the message",
+    "ru": "Подтвердить действие описанное в сообщении"
   }
 ]

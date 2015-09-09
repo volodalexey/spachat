@@ -46,6 +46,7 @@ define('navigator',
                 _this.bindedNavigate = _this.navigate.bind(_this);
                 _this.bindedRedirectToLogin = _this.redirectToLogin.bind(_this);
                 _this.bindedNotifyCurrentPage = _this.notifyCurrentPage.bind(_this);
+                _this.bindedOnDragstart = _this.onDragstart.bind(_this);
             },
 
             addEventListeners: function() {
@@ -53,6 +54,7 @@ define('navigator',
                 _this.removeEventListeners();
                 window.addEventListener('popstate', _this.bindedNavigate, false);
                 window.addEventListener('resize', _this.bindedNotifyCurrentPage, false);
+                window.addEventListener('dragstart', _this.bindedOnDragstart, false);
                 panel_platform.on('throw', _this.bindedNotifyCurrentPage, false);
             },
 
@@ -60,7 +62,12 @@ define('navigator',
                 var _this = this;
                 window.removeEventListener('popstate', _this.bindedNavigate, false);
                 window.removeEventListener('resize', _this.bindedNotifyCurrentPage, false);
+                window.removeEventListener('dragstart', _this.bindedOnDragstart, false);
                 panel_platform.off('addNewPanel');
+            },
+
+            onDragstart: function(event) {
+                event.preventDefault();
             },
 
             getCurrentPage: function(href) {

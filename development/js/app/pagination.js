@@ -241,8 +241,12 @@ define('pagination', [
             },
 
             handleCountPagination: function(data, callback) {
-                var _this = this, quantityPages;
-                var quantityData = data.length;
+                var _this = this, quantityPages, quantityData;
+                if (data){
+                    quantityData = data.length;
+                } else {
+                    quantityData = 0;
+                }
                 if (quantityData !== 0) {
                     quantityPages = Math.ceil(quantityData / _this.module.currentPaginationOptions.perPageValue);
                 } else {

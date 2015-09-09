@@ -696,10 +696,7 @@ define('panel', [
                         }
 
                         _this.panel_config = res;
-                        _this.getDescriptionIcon(null, null, null, function(res) {
-                            _this.description_icon = res;
-                            _this.togglePanel();
-                        });
+                        _this.togglePanel();
                     });
                 }
             },
@@ -707,57 +704,19 @@ define('panel', [
             fillPanelToolbar: function() {
                 var _this = this;
                 _this.showHorizontalSpinner(_this.panel_toolbar);
-
-                _this.loadToolbarIcons(function(icon_config) {
-                    _this.panel_config = _this.prepareConfig(_this.panel_config);
-                    _this.panel_toolbar.innerHTML = _this['panel_' + _this.type + '_template']({
-                        config: _this.panel_config,
-                        icon_config: icon_config,
-                        triple_element_template: _this.triple_element_template,
-                        location_wrapper_template: _this.location_wrapper_template,
-                        button_template: _this.button_template,
-                        input_template: _this.input_template,
-                        label_template: _this.label_template
-                    });
-                    _this.addToolbarEventListener();
-                    _this.cashToolbarElement();
-                    _this.toggleActiveButton(_this.btns_toolbar, _this.bodyOptions.mode);
-                    _this.resizePanel();
+                _this.panel_config = _this.prepareConfig(_this.panel_config);
+                _this.panel_toolbar.innerHTML = _this['panel_' + _this.type + '_template']({
+                    config: _this.panel_config,
+                    triple_element_template: _this.triple_element_template,
+                    location_wrapper_template: _this.location_wrapper_template,
+                    button_template: _this.button_template,
+                    input_template: _this.input_template,
+                    label_template: _this.label_template
                 });
-            },
-
-            loadToolbarIcons: function(callback) {
-                var _this = this, iconsArray = [], icon_config = [];
-                _this.panel_config.forEach(function(_config) {
-                    if (_config.icon && _config.icon !== "") {
-                        iconsArray.push(
-                            {icon: '/templates/icon/' + _config.icon + '.html', name: _config.icon}
-                        );
-                    }
-                });
-                if (iconsArray.length) {
-                    _this.async_eachSeries(iconsArray,
-                        function(obj, _callback) {
-                            _this.getRequest(obj.icon, function(err, res) {
-                                if (err) {
-                                    _callback(err);
-                                } else {
-                                    obj.svg = res;
-                                    _callback();
-                                }
-                            })
-                        },
-                        function(allError) {
-                            if (allError) {
-                                console.error(allError);
-                            } else {
-                                icon_config = iconsArray;
-                                icon_config.push({svg: _this.description_icon, name: 'description_icon'});
-                                callback(icon_config);
-                            }
-                        }
-                    );
-                }
+                _this.addToolbarEventListener();
+                _this.cashToolbarElement();
+                _this.toggleActiveButton(_this.btns_toolbar, _this.bodyOptions.mode);
+                _this.resizePanel();
             },
 
             inputUserInfo: function(event) {
@@ -913,12 +872,14 @@ define('panel', [
 
             transitionEnd: function(event) {
                 var _this = this;
-                var action = event.target.dataset.role;
-                if (action === 'detail_view_container') {
-                    if (event.target.style.maxHeight === '0em') {
-                        delete event.target.dataset.state;
-                        event.target.innerHTML = "";
-                        _this.resizePanel();
+                if (event.target.dataset) {
+                    var action = event.target.dataset.role;
+                    if (action === 'detail_view_container') {
+                        if (event.target.style.maxHeight === '0em') {
+                            delete event.target.dataset.state;
+                            event.target.innerHTML = "";
+                            _this.resizePanel();
+                        }
                     }
                 }
             },

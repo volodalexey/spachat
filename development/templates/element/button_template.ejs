@@ -28,24 +28,15 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
 
     <% if(_in.config.type){ %> type="<%= _in.config.type%>" <%}%>
     <% if(_in.config.data && _in.config.data.key){ %> data-value="<%= _in.data[_in.config.data.key]%>" <%}%>
-><% if (_in.config.icon) {
-    if (_in.icon_config) {
-        var icon;
-        _in.icon_config.every(function(_icon) {
-            if (_icon.name === _in.config.icon) {
-                icon = _icon;
-            }
-            return !icon;
-        } );
-        if (icon) {
-            if (flag)  { %>
-                  <div class="opacity-05 cursor-not-allowed">   <%= icon.svg %></div>
-           <% } else { %>
-            <%= icon.svg %>
+><% if (_in.config.icon) { %>
+  <%  if (flag)  { %>
+    <div class="opacity-05 cursor-not-allowed">   <img src="templates/icon/<%= _in.config.icon %>.svg"></div>
+    <% } else { %>
+    <img src="templates/icon/<%= _in.config.icon %>.svg">
     <%}%>
-        <% }
-    }
-} %>
+
+<%} %>
+
     <%if (_in.config.text) {%>
     <%= typeof _in.config.text === "number" ? window.getLocText(_in.config.text) : _in.config.text %>
     <%} else {%>
@@ -55,15 +46,8 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
 <%= _in.data[_in.config.data.key] %>
 <%} %>
 
-    <%if (_in.config.data && _in.config.data.description && _in.icon_config) {
-       var icon_description;
-    _in.icon_config.every(function(_icon) {
-        if (_icon.name === "description_icon") {
-            icon_description = _icon;
-        }
-        return !icon_description;
-    } );%>
-    <%= icon_description.svg  %>
+    <%if (_in.config.data && _in.config.data.description) {%>
+    <img src="templates/icon/description_icon.svg" class="description_icon-position">
     <%}%>
 
 </button>

@@ -39,24 +39,21 @@ define('main_layout', [
                         return;
                     }
 
-                    _this.getDescriptionIcon(null, null, null, function(res) {
-                        document.body.innerHTML += _this.index_template({
-                            config: config,
-                            icon_config: [{svg: res, name: 'description_icon'}],
-                            triple_element_template: _this.triple_element_template,
-                            button_template: _this.button_template,
-                            label_template: _this.label_template
-                        });
-
-                        navigator.cashElements();
-                        navigator.bindContexts();
-                        navigator.addEventListeners();
-                        navigator.navigate();
-                        popap_manager.cashElements();
-                        popap_manager.onHandlers();
-                        description_manager.cashElements();
-                        description_manager.addEventListeners();
+                    document.body.innerHTML += _this.index_template({
+                        config: config,
+                        triple_element_template: _this.triple_element_template,
+                        button_template: _this.button_template,
+                        label_template: _this.label_template
                     });
+
+                    navigator.cashElements();
+                    navigator.bindContexts();
+                    navigator.addEventListeners();
+                    navigator.navigate();
+                    popap_manager.cashElements();
+                    popap_manager.onHandlers();
+                    description_manager.cashElements();
+                    description_manager.addEventListeners();
                 });
             }
         };

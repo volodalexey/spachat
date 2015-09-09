@@ -19,7 +19,6 @@ if (_in.config && _in.config._byDataLocation) {
 <%= _in.location_wrapper_template({
     config: _in.config._byDataLocation[locationKey],
     data: _in.data ? _in.data : {},
-    icon_config: _in.icon_config,
     triple_element_template: _in.triple_element_template,
     button_template: _in.button_template,
     input_template: _in.input_template,
@@ -44,7 +43,6 @@ if (_in.config && _in.config._byDataLocation) {
             <%_in.config._byDataLocation.chats.configs.forEach(function (config) { %>
             <%  var element = _in.triple_element_template({
                 config: config,
-                icon_config: _in.icon_config,
                 button_template: _in.button_template,
                 input_template: _in.input_template,
                 label_template: _in.label_template,
@@ -73,7 +71,6 @@ if (_in.config && _in.config._byDataLocation) {
             <%= _in.data.detail_view_template({
                 config: _in.config,
                 data: chat,
-                icon_config: _in.icon_config,
                 triple_element_template: _in.triple_element_template,
                 location_wrapper_template: _in.location_wrapper_template,
                 button_template: _in.button_template,

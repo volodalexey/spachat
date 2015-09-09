@@ -155,7 +155,7 @@
   },
   {
     "element": "svg",
-    "icon": "pointer_icon",
+    "icon": "pointer_icon.svg",
     "location": "chats",
     "data": {
       "mode": "CHATS"
