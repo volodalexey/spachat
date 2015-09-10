@@ -34,8 +34,7 @@
 
   {
     "element": "button",
-    "icon": "",
-    "text": 46,
+    "icon": "notepad_icon",
     "data": {
       "action": "togglePanel",
       "role": "togglePanelToolbar"

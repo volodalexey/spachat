@@ -1,21 +1,21 @@
 [
   {
     "element": "button",
-    "icon": "",
-    "text": 46,
+    "icon": "notepad_icon",
     "data": {
       "action": "togglePanel",
-      "role": "mainButtonLeftPanel"
+      "role": "mainButtonLeftPanel",
+      "description": 46
     },
     "class": "panel-button left-panel-button"
   },
   {
     "element": "button",
-    "icon": "",
-    "text": 47,
+    "icon": "folder_icon",
     "data": {
       "action": "togglePanel",
-      "role": "mainButtonRightPanel"
+      "role": "mainButtonRightPanel",
+      "description": 47
     },
     "class": "panel-button right-panel-button"
   },

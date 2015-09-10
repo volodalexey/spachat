@@ -6,8 +6,7 @@
   },
   {
     "element": "button",
-    "icon": "",
-    "text": 47,
+    "icon": "folder_icon",
     "location": "buttons",
     "data": {
       "action": "togglePanel",
