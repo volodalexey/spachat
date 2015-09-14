@@ -31,19 +31,21 @@
       "role": "selectLanguage"
     }
   },
+
   {
     "role": "locationWrapper",
     "classList": "w-100p p-t-b flex-sp-around",
-    "location": "loginButton"
+    "location": "registerButton"
   },
   {
     "element": "button",
     "type": "button",
-    "text": 52,
-    "location": "loginButton",
+    "location": "registerButton",
+    "text": 48,
     "data": {
-      "action": "redirectToLogin",
-      "role": "loginButton"
+      "description": 54,
+      "action": "clickRedirectToRegister",
+      "role": "registerNewUser"
     },
     "class": "button-inset"
   },
@@ -97,42 +99,17 @@
   },
   {
     "role": "locationWrapper",
-    "classList": "w-100p p-t-b flex-sp-between",
-    "location": "userPasswordConfirm"
-  },
-  {
-    "element": "label",
-    "text": 41,
-    "class": "flex-item-w50p",
-    "location": "userPasswordConfirm",
-    "data": {
-      "role": "labelConfirmUserPassword"
-    }
-  },
-  {
-    "element": "input",
-    "type": "password",
-    "class": "flex-item-w50p",
-    "location": "userPasswordConfirm",
-    "name": "userPasswordConfirm",
-    "data": {
-      "key": "userPasswordConfirm"
-    }
-  },
-  {
-    "role": "locationWrapper",
     "classList": "w-100p p-t-b flex-sp-around",
-    "location": "registerButton"
+    "location": "loginButton"
   },
   {
     "element": "button",
     "type": "submit",
-    "text": 53,
-    "location": "registerButton",
+    "text": 51,
+    "location": "loginButton",
     "data": {
-      "description": 55,
-      "action": "register",
-      "role": "registerButton"
+      "action": "submit",
+      "role": "loginButton"
     },
     "class": "button-inset"
   }

@@ -14,6 +14,10 @@
 <%= _in.textarea_template(_in) %>
 <% } %>
 
+<% if(_in.config.element === "select") { %>
+<%= _in.select_template(_in) %>
+<% } %>
+
 <% if(_in.config.element === "svg") { %>
     <img src="templates/icon/<%= _in.config.icon %>" class="transition-all" data-role="pointer">
 <% } %>

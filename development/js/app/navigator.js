@@ -46,6 +46,7 @@ define('navigator',
                 _this.bindedNavigate = _this.navigate.bind(_this);
                 _this.bindedRedirectToLogin = _this.redirectToLogin.bind(_this);
                 _this.bindedNotifyCurrentPage = _this.notifyCurrentPage.bind(_this);
+                _this.bindedChangeLanguage = _this.changeLanguage.bind(_this);
             },
 
             addEventListeners: function() {
@@ -53,6 +54,7 @@ define('navigator',
                 _this.removeEventListeners();
                 window.addEventListener('popstate', _this.bindedNavigate, false);
                 window.addEventListener('resize', _this.bindedNotifyCurrentPage, false);
+                window.addEventListener('change', _this.bindedChangeLanguage, false);
                 panel_platform.on('throw', _this.bindedNotifyCurrentPage, false);
             },
 
@@ -60,7 +62,21 @@ define('navigator',
                 var _this = this;
                 window.removeEventListener('popstate', _this.bindedNavigate, false);
                 window.removeEventListener('resize', _this.bindedNotifyCurrentPage, false);
+                window.removeEventListener('change', _this.bindedChangeLanguage, false);
                 panel_platform.off('addNewPanel');
+            },
+
+            changeLanguage: function(event) {
+                if (event.target.dataset.role === 'selectLanguage'){
+                    var language = localStorage.getItem('language');
+                    if (!language || language !== event.target.value) {
+                        localStorage.setItem('language', event.target.value);
+                    }
+                    if (window.localization !== event.target.value) {
+                        window.localization = event.target.value;
+                        this.navigate();
+                    }
+                }
             },
 
             getCurrentPage: function(href) {
@@ -93,11 +109,7 @@ define('navigator',
                 if(!(_this.currentPage === login || _this.currentPage === register) && !users_bus.getUserId() ) {
                     _this.redirectToLogin();
                 } else if (_this.currentPage) {
-                    if (_this.currentPage !== login) {
-                        _this.login_outer_container.classList.add("hidden");
-                    } else {
-                        _this.main_container.innerHTML = '';
-                    }
+                    _this.main_container.innerHTML = '';
                     if (_this.currentPage.withPanels) {
                         panel_platform.renderPanels({ navigator: _this });
                     }

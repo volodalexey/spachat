@@ -18,7 +18,7 @@ define('localization', [
                         return;
                     }
                     window.localization_config = res;
-                    window.localization = "ru";
+                    window.localization = "en";
                     callback();
                 });
             }

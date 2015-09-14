@@ -110,5 +110,38 @@
     "disable": false,
     "sort": 6,
     "mode": "USER_INFO_SHOW"
+  },
+
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-start",
+    "location": "language"
+  },
+  {
+    "element": "label",
+    "text": 100,
+    "class": "p-r-l-1em",
+    "location": "language",
+    "data": {
+      "role": "labelLanguage"
+    }
+  },
+  {
+    "element": "select",
+    "location": "language",
+    "select_options": [
+      {
+        "text": "English",
+        "value": "en"
+      },
+      {
+        "text": "Русский",
+        "value": "ru"
+      }
+    ],
+    "data": {
+      "action": "changeLanguage",
+      "role": "selectLanguage"
+    }
   }
 ]

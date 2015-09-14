@@ -47,40 +47,8 @@
 
 <div data-role="main_container" class="w-100p h-100p p-abs"></div>
 
-<div data-role="login_outer_container" class="flex-outer-container p-fx login-outer-container hidden">
-    <form class="flex-inner-container form-small" data-role="loginForm" >
-        <div class="w-100p p-t-b flex-sp-around">
-            <%= _in.triple_element_template({
-                config: registerNewUser[0],
-                button_template: _in.button_template,
-                label_template: _in.label_template
-            }) %>
-        </div>
-        <div class="w-100p p-t-b flex-sp-between">
-            <%= _in.triple_element_template({
-                config: labelUserName[0],
-                button_template: _in.button_template,
-                label_template: _in.label_template
-            }) %>
-            <input class="flex-item-w50p" type="text" name="userName">
-        </div>
-        <div class="w-100p p-t-b flex-sp-between">
-            <%= _in.triple_element_template({
-                config: labelUserPassword[0],
-                button_template: _in.button_template,
-                label_template: _in.label_template
-            }) %>
-            <input class="flex-item-w50p" type="password" name="userPassword">
-        </div>
-        <div class="w-100p p-t-b flex-sp-around">
-            <%= _in.triple_element_template({
-                config: loginButton[0],
-                button_template: _in.button_template,
-                label_template: _in.label_template
-            }) %>
-        </div>
-    </form>
-</div>
+<div data-role="login_outer_container" class="flex-outer-container p-fx login-outer-container hidden"></div>
+
 <div data-role="popap_outer_container" class="flex-outer-container p-fx popap hidden-popap">
     <div data-role="popap_inner_container" class="c-50 border-radius-05em min-width-350"></div>
 </div>

@@ -17,7 +17,8 @@ define('register', [
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/location_wrapper_template.ejs',
-        'text!../templates/element/input_template.ejs'
+        'text!../templates/element/input_template.ejs',
+        'text!../templates/element/select_template.ejs'
     ],
     function(overlay_core,
              throw_event_core,
@@ -37,7 +38,8 @@ define('register', [
              button_template,
              label_template,
              location_wrapper_template,
-             input_template) {
+             input_template,
+             select_template) {
 
         /**
          * register constructor
@@ -86,6 +88,10 @@ define('register', [
                 }
                 var _this = this;
                 _this.navigator = options.navigator;
+                var language  = localStorage.getItem('language');
+                if (language && window.localization !== language) {
+                    window.localization = language;
+                }
                 _this.elementMap = {
                     "REGISTER": _this.navigator.main_container
                 };
@@ -240,6 +246,7 @@ define('register', [
         register.prototype.label_template = register.prototype.template(label_template);
         register.prototype.location_wrapper_template = register.prototype.template(location_wrapper_template);
         register.prototype.input_template = register.prototype.template(input_template);
+        register.prototype.select_template = register.prototype.template(select_template);
 
         register.prototype.dataMap = {
             "REGISTER": ''

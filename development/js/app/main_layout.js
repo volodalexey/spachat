@@ -10,7 +10,8 @@ define('main_layout', [
         'text!../templates/index_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
-        'text!../templates/element/label_template.ejs'
+        'text!../templates/element/label_template.ejs',
+        'text!../templates/element/select_template.ejs'
     ],
     function(template_core,
              ajax_core,
@@ -23,7 +24,8 @@ define('main_layout', [
              index_template,
              triple_element_template,
              button_template,
-             label_template) {
+             label_template,
+             select_template) {
 
         var Main_layout = function() {
         };
@@ -43,6 +45,7 @@ define('main_layout', [
                         config: config,
                         triple_element_template: _this.triple_element_template,
                         button_template: _this.button_template,
+                        select_template: _this.select_template,
                         label_template: _this.label_template
                     });
 
@@ -64,8 +67,11 @@ define('main_layout', [
         Main_layout.prototype.triple_element_template = Main_layout.prototype.template(triple_element_template);
         Main_layout.prototype.button_template = Main_layout.prototype.template(button_template);
         Main_layout.prototype.label_template = Main_layout.prototype.template(label_template);
+        Main_layout.prototype.select_template = Main_layout.prototype.template(select_template);
 
         return new Main_layout();
 
     }
 );
+
+

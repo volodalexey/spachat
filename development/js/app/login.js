@@ -1,22 +1,40 @@
 define('login', [
         'overlay_core',
+        'render_layout_core',
         'throw_event_core',
         'extend_core',
         //
         'users_bus',
         'indexeddb',
         'popap_manager',
-        'websocket'
+        'websocket',
+        //
+        'text!../templates/login_template.ejs',
+        'text!../templates/element/triple_element_template.ejs',
+        'text!../templates/element/button_template.ejs',
+        'text!../templates/element/label_template.ejs',
+        'text!../templates/element/location_wrapper_template.ejs',
+        'text!../templates/element/input_template.ejs',
+        'text!../templates/element/select_template.ejs'
     ],
     function(
         overlay_core,
+        render_layout_core,
         throw_event_core,
         extend_core,
         //
         users_bus,
         indexeddb,
         popap_manager,
-        websocket
+        websocket,
+        //
+        login_template,
+        triple_element_template,
+        button_template,
+        label_template,
+        location_wrapper_template,
+        input_template,
+        select_template
     ) {
 
         /**
@@ -32,10 +50,17 @@ define('login', [
 
         login.prototype = {
 
+            configMap: {
+                "LOGIN": '/configs/login_config.json'
+            },
+
+            MODE: {
+                LOGIN: 'LOGIN'
+            },
+
             cashElements: function() {
                 var _this = this;
-                _this.login_outer_container = document.querySelector('[data-role="login_outer_container"]');
-                _this.loginForm = _this.login_outer_container.querySelector('[data-role="loginForm"]');
+                _this.loginForm = _this.navigator.main_container.querySelector('[data-role="loginForm"]');
                 _this.redirectToRegisterElement = _this.loginForm.querySelector('[data-action="clickRedirectToRegister"]');
             },
 
@@ -52,11 +77,20 @@ define('login', [
                     return;
                 }
                 var _this = this;
-                _this.cashElements();
                 _this.navigator = options.navigator;
-                _this.login_outer_container.classList.remove("hidden");
-                _this.addEventListeners();
-                _this.toggleWaiter();
+                _this.elementMap = {
+                    "LOGIN": _this.navigator.main_container
+                };
+                _this.body_mode = _this.MODE.LOGIN;
+                var language  = localStorage.getItem('language');
+                if (language && window.localization !== language) {
+                    window.localization = language;
+                }
+                _this.renderLayout(null, function() {
+                    _this.cashElements();
+                    _this.addEventListeners();
+                    _this.toggleWaiter();
+                });
             },
 
             dispose: function() {
@@ -158,6 +192,34 @@ define('login', [
 
         extend_core.prototype.inherit(login, overlay_core);
         extend_core.prototype.inherit(login, throw_event_core);
+        extend_core.prototype.inherit(login, render_layout_core);
+
+        login.prototype.login_template = login.prototype.template(login_template);
+        login.prototype.triple_element_template = login.prototype.template(triple_element_template);
+        login.prototype.button_template = login.prototype.template(button_template);
+        login.prototype.label_template = login.prototype.template(label_template);
+        login.prototype.location_wrapper_template = login.prototype.template(location_wrapper_template);
+        login.prototype.input_template = login.prototype.template(input_template);
+        login.prototype.select_template = login.prototype.template(select_template);
+
+        login.prototype.dataMap = {
+            "LOGIN": ''
+        };
+
+        login.prototype.templateMap = {
+            "LOGIN": login.prototype.login_template
+        };
+
+        login.prototype.configHandlerMap = {
+            "LOGIN": login.prototype.prepareConfig
+        };
+        login.prototype.configHandlerContextMap = {};
+        login.prototype.dataHandlerMap = {
+            "LOGIN": ''
+        };
+        login.prototype.dataHandlerContextMap = {
+            "LOGIN": null
+        };
 
         return new login();
 

@@ -20,7 +20,8 @@ define('body', [
         'text!../templates/user_info_template.ejs',
         'text!../templates/join_locations_template.ejs',
         'text!../templates/element/location_wrapper_template.ejs',
-        'text!../templates/connections_template.ejs'
+        'text!../templates/connections_template.ejs',
+        'text!../templates/element/select_template.ejs'
     ],
     function(
         throw_event_core,
@@ -44,7 +45,8 @@ define('body', [
         user_info_template,
         join_locations_template,
         location_wrapper_template,
-        connections_template
+        connections_template,
+        select_template
     ) {
 
         var body = function(options) {
@@ -290,6 +292,7 @@ define('body', [
         body.prototype.join_locations_template = body.prototype.template(join_locations_template);
         body.prototype.location_wrapper_template = body.prototype.template(location_wrapper_template);
         body.prototype.connections_template = body.prototype.template(connections_template);
+        body.prototype.select_template = body.prototype.template(select_template);
 
         body.prototype.dataMap = {
             "USER_INFO_EDIT": '',

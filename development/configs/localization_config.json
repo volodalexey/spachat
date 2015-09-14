@@ -493,5 +493,10 @@
     "id": 99,
     "en": "Confirm the action described in the message",
     "ru": "Подтвердить действие описанное в сообщении"
+  },
+  {
+    "id": 100,
+    "en": "Language:",
+    "ru": "Язык:"
   }
 ]

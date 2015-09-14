@@ -1,0 +1,25 @@
+<select <% if (_in.config.class) { %> class="<%= _in.config.class %>" <% } %>
+        <% if (_in.config.name) { %> name="<%= _in.config.name%>" <% } %>
+        <% if (_in.config.for) { %> for="<%= _in.config.for%>" <%}%>
+        <% if(_in.config.data) {
+                for (var configDataKey in _in.config.data) {
+        if (_in.config.data[configDataKey] !== "") { %>
+        <%= 'data-' + configDataKey + '=\"' + _in.config.data[configDataKey] + '\"' %>
+        <%
+        }
+        }
+        } %>>
+    <%if (_in.config.select_options) {
+
+    for (var i = 0; i<_in.config.select_options.length; i++ ) {%>
+    <option value="<%= _in.config.select_options[i].value %>"
+            <% console.log(_in.data.language,_in.config.select_options[i].value);
+            if (window.localization === _in.config.select_options[i].value){%>
+               selected="selected"
+            <%}%>> <%= _in.config.select_options[i].text %> </option>
+    <% } %>
+
+
+
+  <%  }%>
+</select>

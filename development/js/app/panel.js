@@ -28,6 +28,7 @@ define('panel', [
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs',
+        'text!../templates/element/select_template.ejs',
         'text!../templates/element/textarea_template.ejs'
     ],
     function(throw_event_core,
@@ -59,6 +60,7 @@ define('panel', [
              button_template,
              label_template,
              input_template,
+             select_template,
              textarea_template) {
 
         var defaultOptions = {
@@ -711,7 +713,8 @@ define('panel', [
                     location_wrapper_template: _this.location_wrapper_template,
                     button_template: _this.button_template,
                     input_template: _this.input_template,
-                    label_template: _this.label_template
+                    label_template: _this.label_template,
+                    select_template: _this.select_template
                 });
                 _this.addToolbarEventListener();
                 _this.cashToolbarElement();
@@ -1186,6 +1189,7 @@ define('panel', [
         panel.prototype.label_template = panel.prototype.template(label_template);
         panel.prototype.input_template = panel.prototype.template(input_template);
         panel.prototype.textarea_template = panel.prototype.template(textarea_template);
+        panel.prototype.select_template = panel.prototype.template(select_template);
 
         panel.prototype.templateMap = {};
         panel.prototype.configHandlerMap = {};

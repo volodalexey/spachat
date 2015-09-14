@@ -125,7 +125,8 @@ define('render_layout_core', [
                         button_template: _this.button_template,
                         input_template: _this.input_template,
                         label_template: _this.label_template,
-                        textarea_template: _this.textarea_template
+                        textarea_template: _this.textarea_template,
+                        select_template: _this.select_template
                     });
                     if (_this.cashBodyElement) {
                         _this.cashBodyElement();
