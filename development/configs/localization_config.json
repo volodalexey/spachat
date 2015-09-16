@@ -498,5 +498,10 @@
     "id": 100,
     "en": "Language:",
     "ru": "Язык:"
+  },
+  {
+    "id": 101,
+    "en": "Chats and panels will be closed without saving the data. Continue?",
+    "ru": "Чаты и панели будут закрыты без сохранения данных. Продолжить?"
   }
 ]

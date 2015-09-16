@@ -137,11 +137,16 @@
       {
         "text": "Русский",
         "value": "ru"
+      },
+      {
+        "text": "Авторский",
+        "value": "aut"
       }
     ],
     "data": {
       "action": "changeLanguage",
-      "role": "selectLanguage"
+      "role": "selectLanguage",
+      "warn": true
     }
   }
 ]

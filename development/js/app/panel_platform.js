@@ -183,12 +183,14 @@ define('panel_platform', [
                 _this.removeEventListeners();
                 _this.on('resize', _this.bindedResizePanel, _this);
                 event_bus.on('throw', _this.onThrowEvent, _this);
+                event_bus.on('panelsDestroy', _this.disposePanels, _this);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 _this.off('resize');
                 event_bus.off('throw', _this.onThrowEvent);
+                event_bus.off('panelsDestroy', _this.disposePanels);
             },
 
             resizePanels: function(){

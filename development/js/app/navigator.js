@@ -5,6 +5,8 @@ define('navigator',
         'login',
         'register',
         'users_bus',
+        'event_bus',
+        'popap_manager',
         //
         'throw_event_core',
         'dom_core',
@@ -16,6 +18,8 @@ define('navigator',
         login,
         register,
         users_bus,
+        event_bus,
+        popap_manager,
         //
         throw_event_core,
         dom_core,
@@ -46,7 +50,7 @@ define('navigator',
                 _this.bindedNavigate = _this.navigate.bind(_this);
                 _this.bindedRedirectToLogin = _this.redirectToLogin.bind(_this);
                 _this.bindedNotifyCurrentPage = _this.notifyCurrentPage.bind(_this);
-                _this.bindedChangeLanguage = _this.changeLanguage.bind(_this);
+                _this.bindedOnChangeLanguage = _this.onChangeLanguage.bind(_this);
             },
 
             addEventListeners: function() {
@@ -54,7 +58,7 @@ define('navigator',
                 _this.removeEventListeners();
                 window.addEventListener('popstate', _this.bindedNavigate, false);
                 window.addEventListener('resize', _this.bindedNotifyCurrentPage, false);
-                window.addEventListener('change', _this.bindedChangeLanguage, false);
+                window.addEventListener('change', _this.bindedOnChangeLanguage, false);
                 panel_platform.on('throw', _this.bindedNotifyCurrentPage, false);
             },
 
@@ -62,12 +66,43 @@ define('navigator',
                 var _this = this;
                 window.removeEventListener('popstate', _this.bindedNavigate, false);
                 window.removeEventListener('resize', _this.bindedNotifyCurrentPage, false);
-                window.removeEventListener('change', _this.bindedChangeLanguage, false);
+                window.removeEventListener('change', _this.bindedOnChangeLanguage, false);
                 panel_platform.off('addNewPanel');
             },
 
+            onChangeLanguage: function(event) {
+                var _this = this;
+                if (event.target.dataset.role === 'selectLanguage') {
+
+                    if (event.target.dataset.warn) {
+                        popap_manager.renderPopap(
+                            'confirm',
+                            {message: 101},
+                            function(action) {
+                                switch (action) {
+                                    case 'confirmOk':
+                                        _this.changeLanguage(event);
+                                        popap_manager.onClose();
+                                        break;
+                                    case 'confirmCancel':
+                                        event.target.value = window.localization;
+                                        popap_manager.onClose();
+                                        break;
+                                }
+                            }
+                        );
+                    } else{
+                        _this.changeLanguage(event);
+                    }
+                }
+            },
+
             changeLanguage: function(event) {
-                if (event.target.dataset.role === 'selectLanguage'){
+                var _this = this;
+                    if (_this.currentPage && _this.currentPage.withPanels) {
+                        event_bus.trigger("chatsDestroy");
+                        event_bus.trigger("panelsDestroy");
+                    }
                     var language = localStorage.getItem('language');
                     if (!language || language !== event.target.value) {
                         localStorage.setItem('language', event.target.value);
@@ -76,7 +111,6 @@ define('navigator',
                         window.localization = event.target.value;
                         this.navigate();
                     }
-                }
             },
 
             getCurrentPage: function(href) {
