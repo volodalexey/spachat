@@ -3,7 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "express": "^4.12.3",
-    "express-ws": "^0.2.6"
+    "express": "^4.13.3",
+    "express-ws": "^0.2.6",
+    "gulp": "^3.9.0",
+    "gulp-html-replace": "^1.5.3",
+    "gulp-less": "^3.0.3",
+    "gulp-rename": "^1.2.2",
+    "gulp-requirejs": "^0.1.3"
   }
 }
