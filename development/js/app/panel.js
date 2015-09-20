@@ -1008,7 +1008,7 @@ define('panel', [
                 switch (messageData.type) {
                     case 'user_add':
                         if (_this.bodyOptions.mode === _this.MODE.JOIN_USER) {
-                            _this.userAddApproved(messageData);
+                            _this.showRemoteFriendshipRequest(messageData);
                         }
                         break;
                     case 'user_add_sent':
@@ -1020,7 +1020,8 @@ define('panel', [
                         break;
                     case 'friendship_confirmed':
                         if (messageData.user_wscs_descrs) {
-                            _this.listenWebRTCConnection(messageData.to_user_id);
+                            _this.listenWebRTCConnection(messageData.from_user_id);
+                            console.log('handleConnectedDevices', messageData.user_wscs_descrs);
                             webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
                         }
                         break;
@@ -1033,6 +1034,7 @@ define('panel', [
 
             onNotifyUser: function(user_id, messageData) {
                 var _this = this;
+                console.log('onNotifyUser', user_id);
                 users_bus.addNewUserToIndexedDB(messageData.user_description, function(error, user_description) {
                     if (error) {
                         console.error(error);
@@ -1040,12 +1042,14 @@ define('panel', [
                     }
 
                     users_bus.putUserIdAndSave(user_id);
+                    console.log('putUserIdAndSave', user_id);
                     _this.notListenNotifyUser();
                 });
             },
 
             webRTCConnectionReady: function(user_id, triggerConnection) {
                 var _this = this;
+                console.log('webRTCConnectionReady', triggerConnection.hasUserId(user_id), user_id);
                 if (triggerConnection.hasUserId(user_id)) {
                     // if connection for user friendship
                     _this.notListenWebRTCConnection();
@@ -1054,7 +1058,6 @@ define('panel', [
                             console.error(error);
                             return;
                         }
-
                         var messageData = {
                             type: "notifyUser",
                             user_description: user_description
@@ -1087,25 +1090,42 @@ define('panel', [
             },
 
             listenNotifyUser: function(user_id) {
+                console.log('listenNotifyUser', user_id);
                 this.notListenNotifyUser();
                 this.bindedOnNotifyUser = this.onNotifyUser.bind(this, user_id);
                 event_bus.on('notifyUser', this.bindedOnNotifyUser);
             },
 
-            userAddApproved: function(messageData) {
+            showRemoteFriendshipRequest: function(messageData) {
                 var _this = this;
                 event_bus.set_ws_device_id(messageData.target_ws_device_id);
-                if (messageData.user_wscs_descrs && confirm(messageData.request_body.message)) {
-                    _this.listenWebRTCConnection(messageData.from_user_id);
-                    _this.listenNotifyUser(messageData.from_user_id);
-                    websocket.sendMessage({
-                        type: "friendship_confirmed",
-                        from_user_id: users_bus.getUserId(),
-                        to_user_id: messageData.from_user_id,
-                        request_body: messageData.request_body
-                    });
-                    webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
+                if (!messageData.user_wscs_descrs) {
+                    return;
                 }
+                popap_manager.renderPopap(
+                    'confirm',
+                    {message: messageData.request_body.message},
+                    function(action) {
+                        switch (action) {
+                            case 'confirmOk':
+                                _this.listenWebRTCConnection(messageData.from_user_id);
+                                _this.listenNotifyUser(messageData.from_user_id);
+                                websocket.sendMessage({
+                                    type: "friendship_confirmed",
+                                    from_user_id: users_bus.getUserId(),
+                                    to_user_id: messageData.from_user_id,
+                                    request_body: messageData.request_body
+                                });
+                                console.log('handleConnectedDevices', messageData.user_wscs_descrs);
+                                webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
+                                popap_manager.onClose();
+                                break;
+                            case 'confirmCancel':
+                                popap_manager.onClose();
+                                break;
+                        }
+                    }
+                );
             },
 
             toPanelDescription: function() {

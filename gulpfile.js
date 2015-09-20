@@ -6,8 +6,8 @@ var rjs = require('gulp-requirejs');
 
 // node node_modules/gulp/bin/gulp.js production
 gulp.task('production', function() {
-    var all_js_name = 'all.js';
-    var all_css_name = 'all.css';
+    var all_js_name = 'all.min.js';
+    var all_css_name = 'all.min.css';
 
     var config = {};
     config.mainConfigFile = 'development/js/app/main.js';
