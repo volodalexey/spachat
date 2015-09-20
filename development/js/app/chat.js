@@ -829,36 +829,49 @@ define('chat', [
             onChatJoinRequest: function(eventData) {
                 var _this = this;
                 event_bus.set_ws_device_id(eventData.target_ws_device_id);
-                if (_this.chat_ready_state &&
-                    _this.amICreator() &&
-                    confirm(eventData.request_body.message)) {
-                    if (!_this.isInUsers(_this, eventData.from_user_id)) {
-                        // add user and save chat with this user TODO update only user_ids in chat description
-                        _this.user_ids.push(eventData.from_user_id);
-                        chats_bus.putChatToIndexedDB(_this.toChatDescription(), function(err) {
-                            if (err) {
-                                popap_manager.renderPopap(
-                                    'error',
-                                    {message: err},
-                                    function(action) {
-                                        switch (action) {
-                                            case 'confirmCancel':
-                                                popap_manager.onClose();
-                                                break;
-                                        }
-                                    }
-                                );
-                                return;
-                            }
-
-                            _this._listenWebRTCConnection();
-                            webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
-                        });
-                    } else {
-                        _this._listenWebRTCConnection();
-                        webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
-                    }
+                if (!_this.chat_ready_state || !_this.amICreator()) {
+                    return;
                 }
+                popap_manager.renderPopap(
+                    'confirm',
+                    {message: eventData.request_body.message},
+                    function(action) {
+                        switch (action) {
+                            case 'confirmOk':
+                                if (!_this.isInUsers(_this, eventData.from_user_id)) {
+                                    // add user and save chat with this user
+                                    _this.user_ids.push(eventData.from_user_id);
+                                    chats_bus.updateChatField(_this.chat_id, 'user_ids', _this.user_ids, function(error) {
+                                        if (error) {
+                                            popap_manager.renderPopap(
+                                                'error',
+                                                {message: err},
+                                                function(action) {
+                                                    switch (action) {
+                                                        case 'confirmCancel':
+                                                            popap_manager.onClose();
+                                                            break;
+                                                    }
+                                                }
+                                            );
+                                            return;
+                                        }
+
+                                        _this._listenWebRTCConnection();
+                                        webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
+                                    });
+                                } else {
+                                    _this._listenWebRTCConnection();
+                                    webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
+                                }
+                                popap_manager.onClose();
+                                break;
+                            case 'confirmCancel':
+                                popap_manager.onClose();
+                                break;
+                        }
+                    }
+                );
             },
 
             _webRTCConnectionReady: function(eventConnection) {
