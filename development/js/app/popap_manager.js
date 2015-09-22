@@ -59,6 +59,12 @@ define('popap_manager', [
                 _this.popapContainer = document.querySelector('[data-role="popap_inner_container"]');
             },
 
+            unCashElements: function() {
+                var _this = this;
+                _this.popapOuterContainer = null;
+                _this.popapContainer = null;
+            },
+
             render: function(options) {
                 var _this = this;
                 _this.body_mode = _this.MODE.POPAP;

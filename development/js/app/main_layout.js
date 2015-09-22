@@ -6,6 +6,7 @@ define('main_layout', [
         'extend_core',
         'popap_manager',
         'description_manager',
+        'event_bus',
         //
         'text!../templates/index_template.ejs',
         'text!../templates/element/triple_element_template.ejs',
@@ -22,6 +23,7 @@ define('main_layout', [
              extend_core,
              popap_manager,
              description_manager,
+             event_bus,
              //
              index_template,
              triple_element_template,
@@ -38,8 +40,22 @@ define('main_layout', [
 
             indexed_config: JSON.parse(indexed_config),
 
+            cashElements: function() {
+                var _this = this;
+                _this.waiter = document.body.innerHTML;
+                //_this.waiter_innerHTML = _this.waiter.innerHTML;
+            },
+
+            unCashElements: function() {
+                var _this = this;
+                _this.waiter = null;
+                //_this.waiter_innerHTML = null;
+            },
+
             render: function() {
                 var _this = this;
+                _this.addEventListeners();
+                _this.cashElements();
                 document.body.innerHTML += _this.index_template({
                     config: _this.indexed_config,
                     triple_element_template: _this.triple_element_template,
@@ -56,6 +72,37 @@ define('main_layout', [
                 popap_manager.onHandlers();
                 description_manager.cashElements();
                 description_manager.addEventListeners();
+            },
+
+            addEventListeners: function() {
+                var _this = this;
+                _this.removeEventListeners();
+                event_bus.on('mainRebuild', _this.rebuild, _this);
+            },
+
+            removeEventListeners: function() {
+                var _this = this;
+                event_bus.off('mainRebuild', _this.rebuild);
+            },
+
+            rebuild: function() {
+                var _this = this;
+                document.body.innerHTML = '';
+                document.body.innerHTML = _this.waiter;
+                _this.destroy();
+                _this.render();
+            },
+
+            destroy: function() {
+                var _this = this;
+                _this.unCashElements();
+                navigator.unCashElements();
+                navigator.unBindContexts();
+                navigator.removeEventListeners();
+                popap_manager.unCashElements();
+                popap_manager.offHandlers();
+                description_manager.unCashElements();
+                description_manager.removeEventListeners();
             }
         };
         extend_core.prototype.inherit(Main_layout, ajax_core);

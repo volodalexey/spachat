@@ -51,6 +51,14 @@ define('navigator',
                 _this.bindedOnChangeLanguage = _this.onChangeLanguage.bind(_this);
             },
 
+            unBindContexts: function() {
+                var _this = this;
+                _this.bindedNavigate = null;
+                _this.bindedRedirectToLogin = null;
+                _this.bindedNotifyCurrentPage = null;
+                _this.bindedOnChangeLanguage = null;
+            },
+
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
@@ -96,17 +104,18 @@ define('navigator',
 
             changeLanguage: function(event) {
                 var _this = this;
+                window.localization = event.target.value;
                 if (_this.currentPage && _this.currentPage.withPanels) {
                     event_bus.trigger("chatsDestroy");
                     event_bus.trigger("panelsDestroy");
                     event_bus.trigger("changeToggleDescription");
+                    event_bus.trigger("mainRebuild");
                 }
                 var language = localStorage.getItem('language');
                 if (!language || language !== event.target.value) {
                     localStorage.setItem('language', event.target.value);
                 }
                 if (window.localization !== event.target.value) {
-                    window.localization = event.target.value;
                     this.navigate();
                 }
             },
