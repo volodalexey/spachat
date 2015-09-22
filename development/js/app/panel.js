@@ -29,7 +29,10 @@ define('panel', [
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs',
         'text!../templates/element/select_template.ejs',
-        'text!../templates/element/textarea_template.ejs'
+        'text!../templates/element/textarea_template.ejs',
+        //
+        "text!../configs/panel_left_toolbar_config.json",
+        "text!../configs/panel_right_toolbar_config.json"
     ],
     function(throw_event_core,
              ajax_core,
@@ -61,7 +64,10 @@ define('panel', [
              label_template,
              input_template,
              select_template,
-             textarea_template) {
+             textarea_template,
+            //
+             panel_left_toolbar_config,
+             panel_right_toolbar_config    ) {
 
         var defaultOptions = {
 
@@ -345,6 +351,9 @@ define('panel', [
             panelArray: [],
 
             openChatsInfoArray: [],
+
+            panel_left_toolbar_config: JSON.parse(panel_left_toolbar_config),
+            panel_right_toolbar_config: JSON.parse(panel_right_toolbar_config),
 
             MODE: {
                 CREATE_CHAT: 'CREATE_CHAT',
@@ -691,15 +700,8 @@ define('panel', [
                 if (_this.panel_config) {
                     _this.togglePanel();
                 } else {
-                    _this.get_JSON_res("/configs/panel_" + _this.type + "_toolbar_config.json", function(err, res) {
-                        if (err) {
-                            console.error(err);
-                            return;
-                        }
-
-                        _this.panel_config = res;
-                        _this.togglePanel();
-                    });
+                    _this.panel_config = eval("_this.panel_" + _this.type + "_toolbar_config");
+                    _this.togglePanel();
                 }
             },
 

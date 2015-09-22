@@ -16,7 +16,10 @@ define('pagination', [
         'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
-        'text!../templates/element/input_template.ejs'
+        'text!../templates/element/input_template.ejs',
+        //
+        'text!../configs/pagination_navbar_config.json',
+        'text!../configs/choice_per_page_config.json'
     ],
     function(throw_event_core,
              ajax_core,
@@ -35,7 +38,10 @@ define('pagination', [
              location_wrapper_template,
              button_template,
              label_template,
-             input_template) {
+             input_template,
+            //
+             pagination_navbar_config,
+             choice_per_page_config    ) {
 
         var pagination = function() {
             this.bindMainContexts();
@@ -43,14 +49,12 @@ define('pagination', [
 
         pagination.prototype = {
 
+            pagination_navbar_config: JSON.parse(pagination_navbar_config),
+            choice_per_page_config: JSON.parse(choice_per_page_config),
+
             MODE: {
                 "PAGINATION": 'PAGINATION',
                 "GO_TO": 'GO_TO'
-            },
-
-            configMap: {
-                "PAGINATION": '/configs/pagination_navbar_config.json',
-                "GO_TO": '/configs/choice_per_page_config.json'
             },
 
             bindMainContexts: function() {
@@ -366,6 +370,12 @@ define('pagination', [
         pagination.prototype.button_template = pagination.prototype.template(button_template);
         pagination.prototype.label_template = pagination.prototype.template(label_template);
         pagination.prototype.input_template = pagination.prototype.template(input_template);
+
+
+        pagination.prototype.configMap = {
+            "PAGINATION": pagination.prototype.pagination_navbar_config,
+            "GO_TO": pagination.prototype.choice_per_page_config
+        };
 
         pagination.prototype.dataMap = {
             "PAGINATION": "",

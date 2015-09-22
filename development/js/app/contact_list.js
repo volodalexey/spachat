@@ -13,7 +13,9 @@ define('contact_list', [
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
-        'text!../templates/element/input_template.ejs'
+        'text!../templates/element/input_template.ejs',
+        //
+        'text!../configs/contact_list_config.json'
     ],
     function(throw_event_core,
              ajax_core,
@@ -29,16 +31,16 @@ define('contact_list', [
              triple_element_template,
              button_template,
              label_template,
-             input_template) {
+             input_template,
+            //
+             contact_list_config) {
 
         var contact_list = function(options) {
         };
 
         contact_list.prototype = {
 
-            configMap: {
-                CONTACT_LIST: '/configs/contact_list_config.json'
-            },
+            contact_list_config: JSON.parse(contact_list_config),
 
             renderContactList: function(options, chat) {
                 var _this = this;
@@ -81,6 +83,10 @@ define('contact_list', [
         contact_list.prototype.button_template = contact_list.prototype.template(button_template);
         contact_list.prototype.label_template = contact_list.prototype.template(label_template);
         contact_list.prototype.input_template = contact_list.prototype.template(input_template);
+
+        contact_list.prototype.configMap = {
+            CONTACT_LIST: contact_list.prototype.contact_list_config
+        };
 
         contact_list.prototype.dataMap = {
             "CONTACT_LIST": ""

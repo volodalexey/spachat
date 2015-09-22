@@ -61,7 +61,6 @@ define('description_manager', [
                 switch (event.type) {
                     case 'mousedown':
                     case 'touchstart':
-                        //var element;
                         if (event.type === 'touchstart' && event.changedTouches) {
                             element = _this.getDataParameter(event.changedTouches[0].target, 'description');
                         } else {
@@ -296,10 +295,15 @@ define('description_manager', [
                         _this.curDescriptionElement = null;
                         break;
                     case 'mouseup':
-                        if (_this.curDescriptionElement &&
-                            _this.curDescriptionElement !== event.target &&
-                            description !== event.target) {
-                            _this.releaseDescription(event, description);
+                        //if (_this.curDescriptionElement &&
+                        //    _this.curDescriptionElement !== event.target &&
+                        //    description !== event.target) {
+                        //    _this.releaseDescription(event, description);
+                        //}
+                        //_this.curDescriptionElement = null;
+                        var target = document.elementFromPoint(event.clientX, event.clientY);
+                        if (target !== description) {
+                            _this.releaseDescription(event, description, true);
                         }
                         _this.curDescriptionElement = null;
                         break;

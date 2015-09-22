@@ -18,7 +18,9 @@ define('register', [
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/element/input_template.ejs',
-        'text!../templates/element/select_template.ejs'
+        'text!../templates/element/select_template.ejs',
+        //
+        'text!../configs/register_config.json'
     ],
     function(overlay_core,
              throw_event_core,
@@ -39,7 +41,9 @@ define('register', [
              label_template,
              location_wrapper_template,
              input_template,
-             select_template) {
+             select_template,
+             //
+             register_config) {
 
         /**
          * register constructor
@@ -51,9 +55,7 @@ define('register', [
 
         register.prototype = {
 
-            configMap: {
-                "REGISTER": '/configs/register_config.json'
-            },
+            register_config: JSON.parse(register_config),
 
             MODE: {
                 REGISTER: 'REGISTER'
@@ -88,10 +90,6 @@ define('register', [
                 }
                 var _this = this;
                 _this.navigator = options.navigator;
-                var language  = localStorage.getItem('language');
-                if (language && window.localization !== language) {
-                    window.localization = language;
-                }
                 _this.elementMap = {
                     "REGISTER": _this.navigator.main_container
                 };
@@ -247,6 +245,10 @@ define('register', [
         register.prototype.location_wrapper_template = register.prototype.template(location_wrapper_template);
         register.prototype.input_template = register.prototype.template(input_template);
         register.prototype.select_template = register.prototype.template(select_template);
+
+        register.prototype.configMap = {
+            "REGISTER": register.prototype.register_config
+        };
 
         register.prototype.dataMap = {
             "REGISTER": ''

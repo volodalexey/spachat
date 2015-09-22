@@ -17,7 +17,9 @@ define('settings', [
         'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
-        'text!../templates/element/input_template.ejs'
+        'text!../templates/element/input_template.ejs',
+        //
+        'text!../configs/settings_config.json'
     ],
     function(
         chat,
@@ -38,8 +40,9 @@ define('settings', [
         location_wrapper_template,
         button_template,
         label_template,
-        input_template
-    ) {
+        input_template,
+        //
+        settings_config    ) {
 
         var settings = function() {
             this.bindMainContexts();
@@ -47,9 +50,7 @@ define('settings', [
 
         settings.prototype = {
 
-            configMap: {
-                SETTINGS: '/configs/settings_config.json'
-            },
+            settings_config: JSON.parse(settings_config),
 
             bindMainContexts: function() {
                 var _this = this;
@@ -232,6 +233,10 @@ define('settings', [
         settings.prototype.button_template = settings.prototype.template(button_template);
         settings.prototype.label_template = settings.prototype.template(label_template);
         settings.prototype.input_template = settings.prototype.template(input_template);
+
+        settings.prototype.configMap = {
+            SETTINGS: settings.prototype.settings_config
+        };
 
         settings.prototype.configHandlerMap = {
             SETTINGS: settings.prototype.prepareConfig

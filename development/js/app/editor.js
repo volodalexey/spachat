@@ -14,7 +14,10 @@ define('editor', [
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs',
-        'text!../templates/element/location_wrapper_template.ejs'
+        'text!../templates/element/location_wrapper_template.ejs',
+        //
+        'text!../configs/editor_navbar_config.json',
+        'text!../configs/edit_navbar_config.json'
     ],
     function(throw_event_core,
              async_core,
@@ -31,7 +34,10 @@ define('editor', [
              button_template,
              label_template,
              input_template,
-             location_wrapper_template) {
+             location_wrapper_template,
+            //
+             editor_navbar_config,
+             edit_navbar_config) {
 
         var editor = function(options) {
             this.chatElem = options.chat.chatElem;
@@ -40,14 +46,12 @@ define('editor', [
 
         editor.prototype = {
 
+            editor_navbar_config: JSON.parse(editor_navbar_config),
+            edit_navbar_config: JSON.parse(edit_navbar_config),
+
             MODE: {
                 "MAIN_PANEL": 'MAIN_PANEL',
                 "FORMAT_PANEL": 'FORMAT_PANEL'
-            },
-
-            configMap: {
-                "MAIN_PANEL": '/configs/editor_navbar_config.json',
-                "FORMAT_PANEL": '/configs/edit_navbar_config.json'
             },
 
             bindMainContexts: function() {
@@ -245,6 +249,12 @@ define('editor', [
         editor.prototype.label_template = editor.prototype.template(label_template);
         editor.prototype.input_template = editor.prototype.template(input_template);
         editor.prototype.location_wrapper_template = editor.prototype.template(location_wrapper_template);
+
+
+        editor.prototype.configMap = {
+            "MAIN_PANEL": editor.prototype.editor_navbar_config,
+            "FORMAT_PANEL": editor.prototype.edit_navbar_config
+        };
 
         editor.prototype.configHandlerMap = {
             "FORMAT_PANEL": editor.prototype.prepareConfig

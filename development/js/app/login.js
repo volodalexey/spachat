@@ -15,7 +15,9 @@ define('login', [
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/element/input_template.ejs',
-        'text!../templates/element/select_template.ejs'
+        'text!../templates/element/select_template.ejs',
+        //
+        'text!../configs/login_config.json'
     ],
     function(
         overlay_core,
@@ -34,7 +36,9 @@ define('login', [
         label_template,
         location_wrapper_template,
         input_template,
-        select_template
+        select_template,
+        //
+        login_config
     ) {
 
         /**
@@ -50,9 +54,7 @@ define('login', [
 
         login.prototype = {
 
-            configMap: {
-                "LOGIN": '/configs/login_config.json'
-            },
+            login_config: JSON.parse(login_config),
 
             MODE: {
                 LOGIN: 'LOGIN'
@@ -82,10 +84,6 @@ define('login', [
                     "LOGIN": _this.navigator.main_container
                 };
                 _this.body_mode = _this.MODE.LOGIN;
-                var language  = localStorage.getItem('language');
-                if (language && window.localization !== language) {
-                    window.localization = language;
-                }
                 _this.renderLayout(null, function() {
                     _this.cashElements();
                     _this.addEventListeners();
@@ -201,6 +199,10 @@ define('login', [
         login.prototype.location_wrapper_template = login.prototype.template(location_wrapper_template);
         login.prototype.input_template = login.prototype.template(input_template);
         login.prototype.select_template = login.prototype.template(select_template);
+
+        login.prototype.configMap = {
+            "LOGIN": login.prototype.login_config
+        };
 
         login.prototype.dataMap = {
             "LOGIN": ''

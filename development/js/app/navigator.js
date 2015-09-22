@@ -12,19 +12,17 @@ define('navigator',
         'dom_core',
         'extend_core'
     ],
-    function (
-        chat_platform,
-        panel_platform,
-        login,
-        register,
-        users_bus,
-        event_bus,
-        popap_manager,
-        //
-        throw_event_core,
-        dom_core,
-        extend_core
-    ) {
+    function(chat_platform,
+             panel_platform,
+             login,
+             register,
+             users_bus,
+             event_bus,
+             popap_manager,
+             //
+             throw_event_core,
+             dom_core,
+             extend_core) {
 
         var navigator = function() {
             this.pages = [chat_platform, login, register];
@@ -73,7 +71,6 @@ define('navigator',
             onChangeLanguage: function(event) {
                 var _this = this;
                 if (event.target.dataset.role === 'selectLanguage') {
-
                     if (event.target.dataset.warn) {
                         popap_manager.renderPopap(
                             'confirm',
@@ -91,7 +88,7 @@ define('navigator',
                                 }
                             }
                         );
-                    } else{
+                    } else {
                         _this.changeLanguage(event);
                     }
                 }
@@ -99,18 +96,19 @@ define('navigator',
 
             changeLanguage: function(event) {
                 var _this = this;
-                    if (_this.currentPage && _this.currentPage.withPanels) {
-                        event_bus.trigger("chatsDestroy");
-                        event_bus.trigger("panelsDestroy");
-                    }
-                    var language = localStorage.getItem('language');
-                    if (!language || language !== event.target.value) {
-                        localStorage.setItem('language', event.target.value);
-                    }
-                    if (window.localization !== event.target.value) {
-                        window.localization = event.target.value;
-                        this.navigate();
-                    }
+                if (_this.currentPage && _this.currentPage.withPanels) {
+                    event_bus.trigger("chatsDestroy");
+                    event_bus.trigger("panelsDestroy");
+                    event_bus.trigger("changeToggleDescription");
+                }
+                var language = localStorage.getItem('language');
+                if (!language || language !== event.target.value) {
+                    localStorage.setItem('language', event.target.value);
+                }
+                if (window.localization !== event.target.value) {
+                    window.localization = event.target.value;
+                    this.navigate();
+                }
             },
 
             getCurrentPage: function(href) {
@@ -123,7 +121,7 @@ define('navigator',
                     return !_this.currentPage;
                 });
             },
-            
+
             redirectToLogin: function() {
                 history.pushState(null, null, 'login');
                 this.navigate();
@@ -140,14 +138,14 @@ define('navigator',
                         panel_platform.disposePanels();
                     }
                 }
-                if(!(_this.currentPage === login || _this.currentPage === register) && !users_bus.getUserId() ) {
+                if (!(_this.currentPage === login || _this.currentPage === register) && !users_bus.getUserId()) {
                     _this.redirectToLogin();
                 } else if (_this.currentPage) {
                     _this.main_container.innerHTML = '';
                     if (_this.currentPage.withPanels) {
-                        panel_platform.renderPanels({ navigator: _this });
+                        panel_platform.renderPanels({navigator: _this});
                     }
-                    _this.currentPage.render && _this.currentPage.render({ navigator: _this });
+                    _this.currentPage.render && _this.currentPage.render({navigator: _this});
                 } else {
                     _this.redirectToLogin();
                 }
@@ -176,7 +174,6 @@ define('navigator',
         };
         extend_core.prototype.inherit(navigator, throw_event_core);
         extend_core.prototype.inherit(navigator, dom_core);
-
 
         return new navigator();
     }

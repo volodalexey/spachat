@@ -11,7 +11,13 @@ define('extra_toolbar', [
         'text!../templates/element/input_template.ejs',
         'text!../templates/panel_extra_toolbar_template.ejs',
         'text!../templates/messages_extra_toolbar_template.ejs',
-        'text!../templates/contact_list_extra_toolbar_template.ejs'
+        'text!../templates/contact_list_extra_toolbar_template.ejs',
+        //
+        'text!../configs/panel_chats_extra_toolbar_config.json',
+        'text!../configs/panel_users_extra_toolbar_config.json',
+        'text!../configs/messages_extra_toolbar_config.json',
+        'text!../configs/contact_list_extra_toolbar_config.json',
+        'text!../configs/logger_extra_toolbar_config.json'
     ],
     function(switcher_core,
              overlay_core,
@@ -25,7 +31,13 @@ define('extra_toolbar', [
              input_template,
              panel_extra_toolbar_template,
              messages_extra_toolbar_template,
-             contact_list_extra_toolbar_template) {
+             contact_list_extra_toolbar_template,
+            //
+             panel_chats_extra_toolbar_config,
+             panel_users_extra_toolbar_config,
+             messages_extra_toolbar_config,
+             contact_list_extra_toolbar_config,
+             logger_extra_toolbar_config) {
 
         var extra_toolbar = function() {
             this.bindContext();
@@ -33,15 +45,11 @@ define('extra_toolbar', [
 
         extra_toolbar.prototype = {
 
-            configMap: {
-                BLOGS_EXTRA_TOOLBAR: '',
-                CHATS_EXTRA_TOOLBAR: '/configs/panel_chats_extra_toolbar_config.json',
-                USERS_EXTRA_TOOLBAR: '/configs/panel_users_extra_toolbar_config.json',
-                MESSAGES_EXTRA_TOOLBAR: '/configs/messages_extra_toolbar_config.json',
-                CONTACT_LIST_EXTRA_TOOLBAR: '/configs/contact_list_extra_toolbar_config.json',
-                LOGGER_EXTRA_TOOLBAR: '/configs/logger_extra_toolbar_config.json',
-                CONNECTIONS_EXTRA_TOOLBAR: ''
-            },
+            panel_chats_extra_toolbar_config: JSON.parse(panel_chats_extra_toolbar_config),
+            panel_users_extra_toolbar_config: JSON.parse(panel_users_extra_toolbar_config),
+            messages_extra_toolbar_config: JSON.parse(messages_extra_toolbar_config),
+            contact_list_extra_toolbar_config: JSON.parse(contact_list_extra_toolbar_config),
+            logger_extra_toolbar_config: JSON.parse(logger_extra_toolbar_config),
 
             MODE: {
                 BLOGS_EXTRA_TOOLBAR: 'BLOGS_EXTRA_TOOLBAR',
@@ -133,6 +141,17 @@ define('extra_toolbar', [
         extra_toolbar.prototype.panel_extra_toolbar_template = extra_toolbar.prototype.template(panel_extra_toolbar_template);
         extra_toolbar.prototype.messages_extra_toolbar_template = extra_toolbar.prototype.template(messages_extra_toolbar_template);
         extra_toolbar.prototype.contact_list_extra_toolbar_template = extra_toolbar.prototype.template(contact_list_extra_toolbar_template);
+
+
+        extra_toolbar.prototype.configMap = {
+            BLOGS_EXTRA_TOOLBAR: '',
+            CHATS_EXTRA_TOOLBAR: extra_toolbar.prototype.panel_chats_extra_toolbar_config,
+            USERS_EXTRA_TOOLBAR: extra_toolbar.prototype.panel_users_extra_toolbar_config,
+            MESSAGES_EXTRA_TOOLBAR: extra_toolbar.prototype.messages_extra_toolbar_config,
+            CONTACT_LIST_EXTRA_TOOLBAR: extra_toolbar.prototype.contact_list_extra_toolbar_config,
+            LOGGER_EXTRA_TOOLBAR: extra_toolbar.prototype.logger_extra_toolbar_config,
+            CONNECTIONS_EXTRA_TOOLBAR: ''
+        },
 
         extra_toolbar.prototype.templateMap = {
             BLOGS_EXTRA_TOOLBAR: '',

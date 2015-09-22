@@ -43,30 +43,20 @@ define('render_layout_core', [
                     return;
                 }
 
-                if (_this.configMap[_this.body_mode] || _this.configIconMap && _this.configIconMap[_this.body_mode]) {
+                if (_this.configMap[_this.body_mode]) {
+                    var currentConfig = _this.configMap[_this.body_mode];
 
-                    if (!_this.configMap[_this.body_mode]) {
-                        _this.loadBodyIconConfig(callback);
-                        return;
+                    if (_this.configHandlerMap[_this.body_mode]) {
+                        var context = _this.configHandlerContextMap[_this.body_mode] ? _this.configHandlerContextMap[_this.body_mode] : _this;
+                        _this.config = _this.configHandlerMap[_this.body_mode].call(context, currentConfig);
+                    } else {
+                        _this.config = currentConfig;
                     }
-
-                    _this.get_JSON_res(_this.configMap[_this.body_mode], function(err, res) {
-                        if (err) {
-                            callback(err);
-                            return;
-                        }
-                        if (_this.configHandlerMap[_this.body_mode]) {
-                            var context = _this.configHandlerContextMap[_this.body_mode] ? _this.configHandlerContextMap[_this.body_mode] : _this;
-                            _this.config = _this.configHandlerMap[_this.body_mode].call(context, res);
-                        } else {
-                            _this.config = res;
-                        }
-                        if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW ||
-                            _this.MODE && _this.body_mode === _this.MODE.USER_INFO_EDIT) {
-                            _this.module.config = _this.config;
-                        }
-                        callback();
-                    });
+                    if (_this.MODE && _this.body_mode === _this.MODE.USER_INFO_SHOW ||
+                        _this.MODE && _this.body_mode === _this.MODE.USER_INFO_EDIT) {
+                        _this.module.config = _this.config;
+                    }
+                    callback();
                 } else {
                     callback();
                 }

@@ -11,7 +11,12 @@ define('filter', [
         'text!../templates/element/label_template.ejs',
         'text!../templates/element/input_template.ejs',
         'text!../templates/filter_my_chats_template.ejs',
-        'text!../templates/filter_template.ejs'
+        'text!../templates/filter_template.ejs',
+        //
+        'text!../configs/panel_chats_filter_config.json',
+        'text!../configs/panel_users_filter_config.json',
+        'text!../configs/messages_filter_config.json',
+        'text!../configs/messages_filter_config.json',
     ],
     function(switcher_core,
              overlay_core,
@@ -25,7 +30,12 @@ define('filter', [
              label_template,
              input_template,
              filter_my_chats_template,
-             filter_template) {
+             filter_template,
+                //
+             panel_chats_filter_config,
+             panel_users_filter_config,
+             messages_filter_config,
+             messages_filter_config    ) {
 
         var filter = function() {
             this.bindContext();
@@ -33,15 +43,10 @@ define('filter', [
 
         filter.prototype = {
 
-            configMap: {
-                BLOGS_FILTER: '',
-                CHATS_FILTER: '/configs/panel_chats_filter_config.json',
-                USERS_FILTER: '/configs/panel_users_filter_config.json',
-                MESSAGES_FILTER: '/configs/messages_filter_config.json',
-                CONTACT_LIST_FILTER: '/configs/panel_chats_filter_config.json',
-                LOGGER_FILTER: '/configs/messages_filter_config.json',
-                CONNECTIONS_FILTER: ''
-            },
+            panel_chats_filter_config: JSON.parse(panel_chats_filter_config),
+            panel_users_filter_config: JSON.parse(panel_users_filter_config),
+            messages_filter_config: JSON.parse(messages_filter_config),
+            messages_filter_config: JSON.parse(messages_filter_config),
 
             MODE: {
                 BLOGS_FILTER: 'BLOGS_FILTER',
@@ -204,6 +209,17 @@ define('filter', [
 
         filter.prototype.filter_my_chats_template = filter.prototype.template(filter_my_chats_template);
         filter.prototype.filter_template = filter.prototype.template(filter_template);
+
+
+        filter.prototype.configMap = {
+            BLOGS_FILTER: '',
+            CHATS_FILTER: filter.prototype.panel_chats_filter_config,
+            USERS_FILTER: filter.prototype.panel_users_filter_config,
+            MESSAGES_FILTER: filter.prototype.messages_filter_config,
+            CONTACT_LIST_FILTER: filter.prototype.panel_chats_filter_config,
+            LOGGER_FILTER: filter.prototype.messages_filter_config,
+            CONNECTIONS_FILTER: ''
+        };
 
         filter.prototype.templateMap = {
             BLOGS_FILTER: '',

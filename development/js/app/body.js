@@ -21,7 +21,13 @@ define('body', [
         'text!../templates/join_locations_template.ejs',
         'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/connections_template.ejs',
-        'text!../templates/element/select_template.ejs'
+        'text!../templates/element/select_template.ejs',
+        //
+        'text!../configs/user_info_edit_config.json',
+        'text!../configs/user_info_show_config.json',
+        'text!../configs/chats_info_config.json',
+        'text!../configs/connections_config.json',
+        'text!../configs/users_info_config.json'
     ],
     function(
         throw_event_core,
@@ -46,7 +52,13 @@ define('body', [
         join_locations_template,
         location_wrapper_template,
         connections_template,
-        select_template
+        select_template,
+        //
+        user_info_edit_config,
+        user_info_show_config,
+        chats_info_config,
+        connections_config,
+        users_info_config
     ) {
 
         var body = function(options) {
@@ -54,20 +66,11 @@ define('body', [
 
         body.prototype = {
 
-            configMap: {
-                "USER_INFO_EDIT": '/configs/user_info_edit_config.json',
-                "USER_INFO_SHOW": '/configs/user_info_show_config.json',
-                "CREATE_CHAT": '/configs/chats_info_config.json',
-                "JOIN_CHAT": '/configs/chats_info_config.json',
-                "CHATS": '/configs/chats_info_config.json',
-                "USERS": '/configs/users_info_config.json',
-                "JOIN_USER": '/configs/users_info_config.json',
-                "DETAIL_VIEW": '/configs/chats_info_config.json',
-                "CREATE_BLOG": '',
-                "JOIN_BLOG": '',
-                "BLOGS": '',
-                "CONNECTIONS": '/configs/connections_config.json'
-            },
+            user_info_edit_config: JSON.parse(user_info_edit_config),
+            user_info_show_config: JSON.parse(user_info_show_config),
+            chats_info_config: JSON.parse(chats_info_config),
+            connections_config: JSON.parse(connections_config),
+            users_info_config: JSON.parse(users_info_config),
 
             MODE: {
                 SETTINGS: 'SETTINGS',
@@ -293,6 +296,22 @@ define('body', [
         body.prototype.location_wrapper_template = body.prototype.template(location_wrapper_template);
         body.prototype.connections_template = body.prototype.template(connections_template);
         body.prototype.select_template = body.prototype.template(select_template);
+
+
+        body.prototype.configMap = {
+            "USER_INFO_EDIT": body.prototype.user_info_edit_config,
+                "USER_INFO_SHOW": body.prototype.user_info_show_config,
+                "CREATE_CHAT": body.prototype.chats_info_config,
+                "JOIN_CHAT": body.prototype.chats_info_config,
+                "CHATS": body.prototype.chats_info_config,
+                "USERS": body.prototype.users_info_config,
+                "JOIN_USER": body.prototype.users_info_config,
+                "DETAIL_VIEW": body.prototype.chats_info_config,
+                "CREATE_BLOG": '',
+                "JOIN_BLOG": '',
+                "BLOGS": '',
+                "CONNECTIONS": body.prototype.connections_config
+        };
 
         body.prototype.dataMap = {
             "USER_INFO_EDIT": '',

@@ -18,7 +18,9 @@ define('header', [
         'text!../templates/element/location_wrapper_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
-        'text!../templates/element/input_template.ejs'
+        'text!../templates/element/input_template.ejs',
+        //
+        'text!../configs/header_navbar_config.json'
     ],
     function(throw_event_core,
              ajax_core,
@@ -38,7 +40,9 @@ define('header', [
              location_wrapper_template,
              button_template,
              label_template,
-             input_template) {
+             input_template,
+                //
+             header_navbar_config) {
 
         var header = function() {
             this.bindToolbarContext();
@@ -46,12 +50,7 @@ define('header', [
 
         header.prototype = {
 
-            configMap: {
-                WEBRTC: '',
-                TAB: '/configs/header_navbar_config.json',
-                FILTER: '',
-                WAITER: ''
-            },
+            header_navbar_config: JSON.parse(header_navbar_config),
 
             MODE_DESCRIPTION: {
                 WEBRTC: 60,
@@ -222,6 +221,13 @@ define('header', [
         header.prototype.button_template = header.prototype.template(button_template);
         header.prototype.label_template = header.prototype.template(label_template);
         header.prototype.input_template = header.prototype.template(input_template);
+
+        header.prototype.configMap = {
+            WEBRTC: '',
+            TAB: header.prototype.header_navbar_config,
+            FILTER: '',
+            WAITER: ''
+        };
 
         header.prototype.configHandlerMap = {
             TAB: header.prototype.prepareConfig

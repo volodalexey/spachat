@@ -11,7 +11,9 @@ define('main_layout', [
         'text!../templates/element/triple_element_template.ejs',
         'text!../templates/element/button_template.ejs',
         'text!../templates/element/label_template.ejs',
-        'text!../templates/element/select_template.ejs'
+        'text!../templates/element/select_template.ejs',
+        //
+        'text!../configs/indexed_config.json'
     ],
     function(template_core,
              ajax_core,
@@ -25,39 +27,35 @@ define('main_layout', [
              triple_element_template,
              button_template,
              label_template,
-             select_template) {
+             select_template,
+             //
+             indexed_config) {
 
         var Main_layout = function() {
         };
 
         Main_layout.prototype = {
 
+            indexed_config: JSON.parse(indexed_config),
+
             render: function() {
                 var _this = this;
-
-                _this.get_JSON_res('/configs/indexed_config.json', function(err, config) {
-                    if (err) {
-                        document.body.innerHTML = err;
-                        return;
-                    }
-
-                    document.body.innerHTML += _this.index_template({
-                        config: config,
-                        triple_element_template: _this.triple_element_template,
-                        button_template: _this.button_template,
-                        select_template: _this.select_template,
-                        label_template: _this.label_template
-                    });
-
-                    navigator.cashElements();
-                    navigator.bindContexts();
-                    navigator.addEventListeners();
-                    navigator.navigate();
-                    popap_manager.cashElements();
-                    popap_manager.onHandlers();
-                    description_manager.cashElements();
-                    description_manager.addEventListeners();
+                document.body.innerHTML += _this.index_template({
+                    config: _this.indexed_config,
+                    triple_element_template: _this.triple_element_template,
+                    button_template: _this.button_template,
+                    select_template: _this.select_template,
+                    label_template: _this.label_template
                 });
+
+                navigator.cashElements();
+                navigator.bindContexts();
+                navigator.addEventListeners();
+                navigator.navigate();
+                popap_manager.cashElements();
+                popap_manager.onHandlers();
+                description_manager.cashElements();
+                description_manager.addEventListeners();
             }
         };
         extend_core.prototype.inherit(Main_layout, ajax_core);

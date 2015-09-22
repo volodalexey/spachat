@@ -10,7 +10,8 @@
     "location": "buttons",
     "data": {
       "action": "togglePanel",
-      "role": "togglePanelToolbar"
+      "role": "togglePanelToolbar",
+      "description": 47
     },
     "class": "flex-item-1-0p c-50 border-c300 min-height-2-6em hide"
   },

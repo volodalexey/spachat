@@ -63,6 +63,10 @@ require(['main_layout', 'localization'
             document.body.innerHTML = err;
             return;
         }
+        var language  = localStorage.getItem('language');
+        if (language && window.localization !== language) {
+            window.localization = language;
+        }
         main_layout.render();
     });
 
