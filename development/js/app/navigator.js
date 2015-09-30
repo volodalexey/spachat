@@ -103,7 +103,7 @@ define('navigator',
             },
 
             changeLanguage: function(event) {
-                var _this = this;
+                var _this = this, current_localization = window.localization;
                 window.localization = event.target.value;
                 if (_this.currentPage && _this.currentPage.withPanels) {
                     event_bus.trigger("chatsDestroy");
@@ -115,7 +115,7 @@ define('navigator',
                 if (!language || language !== event.target.value) {
                     localStorage.setItem('language', event.target.value);
                 }
-                if (window.localization !== event.target.value) {
+                if (current_localization !== event.target.value && _this.currentPage && !_this.currentPage.withPanels) {
                     this.navigate();
                 }
             },

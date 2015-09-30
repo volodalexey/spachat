@@ -6,7 +6,7 @@
         if (_in.config.data[dataKey] !== "" && dataKey !== "description") { %>
                 <%= 'data-' + dataKey + '=\"' + _in.config.data[dataKey] + '\"' %>
         <% }
-         if (dataKey === "description" && typeof _in.config.data[dataKey] === 'number') { console.log(window.localization)%>
+         if (dataKey === "description" && typeof _in.config.data[dataKey] === 'number') { %>
         <%= 'data-' + dataKey + '=\"' + window.getLocText(_in.config.data[dataKey]) + '\"' %>
          <%}
     }

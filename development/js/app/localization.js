@@ -1,8 +1,13 @@
 define('localization', [
         'ajax_core',
-        'extend_core'
+        'extend_core',
+        //
+        'text!../configs/localization_config.json'
     ],
-    function(ajax_core, extend_core) {
+    function(ajax_core,
+             extend_core,
+             //
+             localization_config) {
 
         var localization = function() {
         };
@@ -11,16 +16,12 @@ define('localization', [
 
             __class_name: "localization",
 
+            localization_config: JSON.parse(localization_config),
+
             getLocConfig: function(callback) {
-                this.get_JSON_res('/configs/localization_config.json', function(err, res) {
-                    if (err) {
-                        callback(err);
-                        return;
-                    }
-                    window.localization_config = res;
-                    window.localization = "en";
-                    callback();
-                });
+                window.localization_config = this.localization_config;
+                window.localization = "en";
+                callback();
             }
         };
 
