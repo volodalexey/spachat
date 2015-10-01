@@ -47,7 +47,7 @@ define('login', [
          * if it is visible => cash all elements in initialization
          */
         var login = function() {
-            this.link = /login/; // is used for navigator
+            this.link = /\/login/; // is used for navigator
 
             this.bindContexts();
         };

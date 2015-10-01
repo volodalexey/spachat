@@ -1,0 +1,11 @@
+<svg width="30" height="18" viewBox="15 -45 48 20" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+    <g transform="matrix(1 0 0 -1 0 0)" fill="none">
+        <ellipse color="#000080" stroke="currentColor" stroke-width="0.15em" cx="32.7" cy="36.5" rx="14.7" ry="10"/>
+        <path color="#000080" stroke="currentColor" stroke-width="0.15em" d="M 37 27 A 12 7.5 3.7 1  1 47 38"/>
+        <line x1="26" y1="41" x2="41" y2="41" color="#000080" stroke="currentColor" stroke-width="0.15em"/>
+        <line x1="21" y1="37" x2="44" y2="37" color="#000080" stroke="currentColor" stroke-width="0.15em"/>
+        <line x1="25" y1="32" x2="41" y2="32" color="#000080" stroke="currentColor" stroke-width="0.15em"/>
+        <line x1="42" y1="29" x2="55" y2="29" color="#000080" stroke="currentColor" stroke-width="0.15em"/>
+        <line x1="46" y1="33" x2="54" y2="33" color="#000080" stroke="currentColor" stroke-width="0.15em"/>
+    </g>
+</svg>

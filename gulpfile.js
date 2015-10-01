@@ -38,4 +38,10 @@ gulp.task('production', function() {
         }))
         .pipe(rename('index.html'))
         .pipe(gulp.dest('production/'));
+
+    // just to copy some files for production
+    gulp.src(['development/js/node_modules/**/*']).pipe(gulp.dest('production/js/node_modules/'));
+    gulp.src(['development/img/**/*']).pipe(gulp.dest('production/img/'));
+    gulp.src(['development/templates/icon/**/*']).pipe(gulp.dest('production/templates/icon/'));
+    gulp.src(['development/favicon.ico']).pipe(gulp.dest('production/'));
 });

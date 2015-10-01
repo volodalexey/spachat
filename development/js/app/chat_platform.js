@@ -36,7 +36,7 @@ define('chat_platform', [
              chat_platform_template) {
 
         var chat_platform = function() {
-            this.link = /chat/;
+            this.link = /\/chat/;
             this.withPanels = true;
             this.bindContexts();
             this.UIElements = {}; // for disable core

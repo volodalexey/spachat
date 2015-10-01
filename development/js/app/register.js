@@ -49,7 +49,7 @@ define('register', [
          * register constructor
          */
         var register = function() {
-            this.link = /register/; // is used for navigator
+            this.link = /\/register/; // is used for navigator
             this.bindContexts();
         };
 
