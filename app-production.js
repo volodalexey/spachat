@@ -1,7 +1,7 @@
 var express = require('express'),
     web_socket_connections_collection = require('./development/js/node_modules/web_socket_connections_collection'),
     expressApp      = express(),
-    port            = 8899,
+    port            = (process.env.PORT || 8899),
     dirPath = '/production',
     path = require('path'),
     fullPath = path.join(__dirname, dirPath),
