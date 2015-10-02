@@ -551,7 +551,7 @@ define('indexeddb', [
                     }
 
                     if (userCredentials) {
-                        callback(new Error('User with such username is already exist!'));
+                        callback(102);
                         return;
                     }
 

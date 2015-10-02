@@ -2,6 +2,27 @@
   {
     "role": "locationWrapper",
     "classList": "w-100p p-t-b flex-sp-between",
+    "location": "chat_id_container"
+  },
+  {
+    "element": "label",
+    "icon": "",
+    "text": 5,
+    "class": "",
+    "location": "chat_id_container"
+  },
+  {
+    "element": "input",
+    "type": "text",
+    "location": "chat_id_container",
+    "data": {
+      "key": "chat_id"
+    },
+    "disabled": true
+  },
+  {
+    "role": "locationWrapper",
+    "classList": "w-100p p-t-b flex-sp-between",
     "location": "logger_massage"
   },
   {
@@ -14,7 +35,7 @@
       "chat_part": "body",
       "mode_to": "LOGGER"
     },
-    "disable": false
+    "disable": true
   },
   {
     "role": "locationWrapper",

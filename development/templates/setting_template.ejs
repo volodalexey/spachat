@@ -1,49 +1,27 @@
-<% _in.config._byDataLocation = {};
-_in.config._byDataLocation.logger_massage = _in.config.byDataLocation.logger_massage;
-_in.config._byDataLocation.send_enter = _in.config.byDataLocation.send_enter;
-_in.config._byDataLocation.chat_users_apply = _in.config.byDataLocation.chat_users_apply;
+<% var locations = [
+    'chat_id_container', 'logger_massage', 'send_enter', 'chat_users_apply'];
+    var _prepare = {
+        data: _in.data ? _in.data : {},
+        triple_element_template: _in.triple_element_template,
+        button_template: _in.button_template,
+        input_template: _in.input_template,
+        label_template: _in.label_template,
+        description: _in.description
+    };
 %>
 
-<% if (_in.config && _in.config._byDataLocation) {
-    for (var locationKey in _in.config._byDataLocation) { %>
-<%= _in.location_wrapper_template({
-    config: _in.config._byDataLocation[locationKey],
-    data: _in.data ? _in.data : {},
-    triple_element_template: _in.triple_element_template,
-    button_template: _in.button_template,
-    input_template: _in.input_template,
-    label_template: _in.label_template,
-    description: _in.description
-}) %>
-<% }
-} %>
+<%  locations.forEach(function(loc) {
+    _prepare.config = _in.config.byDataLocation[loc]; %>
+    <%= _in.location_wrapper_template(_prepare) %>
+<% }); %>
 
 <div class="textbox">
         <div class="title c-100">
-            <% if (_in.config && _in.config.byDataLocation) {%>
-            <%= _in.location_wrapper_template({
-                config: _in.config.byDataLocation.size_container,
-                data: _in.data ? _in.data : {},
-                triple_element_template: _in.triple_element_template,
-                button_template: _in.button_template,
-                input_template: _in.input_template,
-                label_template: _in.label_template,
-                description: _in.description
-            }) %>
-            <%  } %>
+            <% _prepare.config = _in.config.byDataLocation.size_container; %>
+            <%= _in.location_wrapper_template(_prepare) %>
         </div>
-        <% if (_in.config && _in.config.byDataLocation) {%>
-        <%= _in.location_wrapper_template({
-            config: _in.config.byDataLocation.size,
-            data: _in.data ? _in.data : {},
-            triple_element_template: _in.triple_element_template,
-            button_template: _in.button_template,
-            input_template: _in.input_template,
-            label_template: _in.label_template,
-            description: _in.description,
-            index: _in.data.index
-        }) %>
-        <%  } %>
+        <% _prepare.config = _in.config.byDataLocation.size; %>
+        <%= _in.location_wrapper_template(_prepare) %>
 </div>
 
 

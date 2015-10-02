@@ -64,13 +64,13 @@ define('register', [
             cashMainElements: function() {
                 var _this = this;
                 _this.registerForm = _this.navigator.main_container.querySelector('[data-role="registerForm"]');
-                _this.redirectToLogin = _this.registerForm.querySelector('[data-action="redirectToLogin"]');
+                _this.redirectToLoginElement = _this.registerForm.querySelector('[data-action="redirectToLogin"]');
             },
 
             unCashMainElements: function() {
                 var _this = this;
                 _this.registerForm = null;
-                _this.redirectToLogin = null;
+                _this.redirectToLoginElement = null;
             },
 
             render: function(options) {
@@ -109,19 +109,20 @@ define('register', [
             bindContexts: function() {
                 var _this = this;
                 _this.bindedRegisterWorkflow = _this.registerWorkflow.bind(_this);
+                _this.bindedRedirectToLogin = _this.redirectToLogin.bind(_this);
             },
 
             addEventListeners: function() {
                 var _this = this;
                 _this.removeEventListeners();
                 _this.addRemoveListener('add', _this.registerForm, 'submit', _this.bindedRegisterWorkflow, false);
-                _this.addRemoveListener('add', _this.redirectToLogin, 'click', _this.navigator.bindedRedirectToLogin, false);
+                _this.addRemoveListener('add', _this.redirectToLoginElement, 'click', _this.bindedRedirectToLogin, false);
             },
 
             removeEventListeners: function() {
                 var _this = this;
                 _this.addRemoveListener('remove', _this.registerForm, 'submit', _this.bindedRegisterWorkflow, false);
-                _this.addRemoveListener('remove', _this.redirectToLogin, 'click', _this.navigator.bindedRedirectToLogin, false);
+                _this.addRemoveListener('remove', _this.redirectToLoginElement, 'click', _this.bindedRedirectToLogin, false);
             },
 
             registerWorkflow: function(event) {
@@ -162,7 +163,7 @@ define('register', [
                                         switch (action) {
                                             case 'confirmCancel':
                                                 popap_manager.onClose();
-                                                _this.navigator.bindedRedirectToLogin();
+                                                _this.redirectToLogin();
                                                 break;
                                         }
                                     }
@@ -222,6 +223,13 @@ define('register', [
                         }
                     );
                 });
+            },
+
+            redirectToLogin: function() {
+                var _this = this;
+                _this.registerForm.reset();
+                history.pushState(null, null, 'login');
+                _this.navigator.navigate();
             },
 
             destroy: function() {

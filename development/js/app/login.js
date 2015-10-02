@@ -177,6 +177,7 @@ define('login', [
 
             redirectToRegister: function() {
                 var _this = this;
+                _this.loginForm.reset();
                 history.pushState(null, null, 'register');
                 _this.navigator.navigate();
             },

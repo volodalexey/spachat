@@ -95,6 +95,7 @@ define('settings', [
                         "SETTINGS": _this.body_container
                     };
                     var data = {
+                        "chat_id": _this.chat.chat_id,
                         "sendEnter": _this.chat.formatOptions.sendEnter,
                         "size_350": _this.chat.settings_ListOptions.size_350,
                         "size_700": _this.chat.settings_ListOptions.size_700,
