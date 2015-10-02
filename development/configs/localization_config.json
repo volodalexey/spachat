@@ -508,5 +508,10 @@
     "id": 102,
     "en": "User with such username is already exist!",
     "ru": "Пользователь с таким именем уже существует!"
+  },
+  {
+    "id": 103,
+    "en": "WebSocket connection abort",
+    "ru": "Соединение по веб сокету прервано"
   }
 ]

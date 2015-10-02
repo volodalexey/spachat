@@ -1,17 +1,20 @@
 define('websocket', [
         'throw_event_core',
         'extend_core',
-        'id_core'
+        'id_core',
+        'popap_manager'
     ],
     function(
         throw_event_core,
         extend_core,
-        id_core
+        id_core,
+        popap_manager
     ) {
 
         var websocket = function() {
             this.bindContexts();
             this.responseCallbacks = [];
+            this.protocol = window.location.origin.indexOf('https') >= 0 ? 'wss://' : 'ws://';
         };
 
         websocket.prototype = {
@@ -32,7 +35,7 @@ define('websocket', [
             },
 
             create: function() {
-                this.socket = new WebSocket('ws://' + window.location.host + this.href);
+                this.socket = new WebSocket(this.protocol + window.location.host + this.href);
             },
 
             dispose: function() {
@@ -74,9 +77,19 @@ define('websocket', [
                 if (event.wasClean) {
                     console.warn('WebSocket connection closed');
                 } else {
-                    console.error(new Error('WebSocket connection abort'));
+                    popap_manager.renderPopap(
+                      'error',
+                      {message: 103},
+                      function(action) {
+                          switch (action) {
+                              case 'confirmCancel':
+                                  popap_manager.onClose();
+                                  break;
+                          }
+                      }
+                    );
                 }
-                console.log('Code: ' + event.code + ' reason: ' + event.reason);
+                console.warn('Code: ' + event.code + ' reason: ' + event.reason);
             },
 
             onMessage: function(event) {
