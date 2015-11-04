@@ -1,9 +1,16 @@
 define('users_bus', [
+        'extend_core',
+        'cookie_core',
+        //
         'indexeddb',
         'event_bus'
     ],
-    function(indexeddb,
-             event_bus) {
+    function(
+        extend_core,
+        cookie_core,
+        //
+        indexeddb,
+        event_bus) {
 
         var users_bus = function() {
             this.user_id = null;
@@ -40,10 +47,22 @@ define('users_bus', [
 
         users_bus.prototype = {
 
+            checkLoginState: function() {
+                var user_id = this.getCookie('user_id');
+                if (user_id && !this.user_id) {
+                    this.setUserId(user_id);
+                }
+            },
+
             setUserId: function(user_id) {
                 this.user_id = user_id;
                 this.userDatabaseDescription.db_name = user_id;
                 event_bus.trigger('setUserId', user_id);
+                if (user_id) {
+                    this.setCookie('user_id', user_id, { expires: 24 * 60 * 60 });
+                } else {
+                    this.deleteCookie('user_id');
+                }
             },
 
             getUserId: function() {
@@ -235,6 +254,8 @@ define('users_bus', [
                 });
             }
         };
+
+        extend_core.prototype.inherit(users_bus, cookie_core);
 
         return new users_bus();
     })

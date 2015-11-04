@@ -229,6 +229,7 @@ define('panel_platform', [
                     event_bus.trigger("chatsDestroy");
                     websocket.dispose();
                     webrtc.destroy();
+                    users_bus.setUserId(null);
                     history.pushState(null, null, 'login');
                     _this.navigator.navigate();
                 });

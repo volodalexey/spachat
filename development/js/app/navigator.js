@@ -147,7 +147,11 @@ define('navigator',
                         panel_platform.disposePanels();
                     }
                 }
-                if (!(_this.currentPage === login || _this.currentPage === register) && !users_bus.getUserId()) {
+                var is_login_required_page = !(_this.currentPage === login || _this.currentPage === register);
+                if (is_login_required_page) {
+                    users_bus.checkLoginState();
+                }
+                if (is_login_required_page && !users_bus.getUserId()) {
                     _this.redirectToLogin();
                 } else if (_this.currentPage) {
                     _this.main_container.innerHTML = '';
