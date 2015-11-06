@@ -1,0 +1,34 @@
+.chat-resize-container {
+  position: absolute;
+  cursor: e-resize;
+  z-index: 200;
+  &.draggable {
+    width: 100%;
+    height: 100%;
+  }
+  &.draggable .line{
+    width: 2px;
+    height: 100%;
+    background-color: #cccc00;
+    box-shadow: 0 3px 7px #cccc00;
+    position: absolute;
+  }
+}
+
+.chat-splitter-item {
+  position: absolute;
+  width: 20px;
+  height: 100%;
+  z-index: 20;
+  box-shadow: 0 0 3px 6px rgba(109, 76, 65, 0.5);
+  background-color: black;
+  opacity: 0.4;
+  &.right{
+    right: 0;
+  }
+  &:hover{
+    cursor: e-resize;
+  }
+}
+
+

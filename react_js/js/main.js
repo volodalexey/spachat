@@ -3,9 +3,18 @@ import { render } from 'react-dom'
 import { createHistory, useBasename } from 'history'
 import { Router, Route, Link, History, Redirect } from 'react-router'
 
+import Less from '../less/total.less'
+
+
+import Login from '../components/login'
+
+
+
 const history = useBasename(createHistory)({
     basename: '/index.html'
 });
+
+
 
 const Chat = React.createClass({
     render() {
@@ -49,7 +58,7 @@ render((
         <Route path="/">
             <Route path="chat" component={Chat}/>
             <Route path="register" component={Register}/>
-            <Route path="login" component={Register}/>
+            <Route path="login" component={Login}/>
         </Route>
     </Router>
 ), document.getElementById('example'));
