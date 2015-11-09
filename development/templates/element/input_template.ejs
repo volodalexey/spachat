@@ -39,6 +39,8 @@ value= "<%= _in.data[_in.config.data.key] %>"
 <% if(_in.config.data.key) { %> value= "<%= _in.data[_in.config.data.key] %>" <%} %>
 <% } %>
  >
+
+
 <%if (_in.config.text) {%>
 <span><%= typeof _in.config.text === "number" ? window.getLocText(_in.config.text) : _in.config.text %></span>
 <%} else {%>

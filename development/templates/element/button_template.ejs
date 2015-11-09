@@ -11,6 +11,8 @@
          <%}
     }
 } %>
+
+
 <% if (_in.config.disable === true){ %> disabled <%}%>
 
 <% if (_in.config.data && _in.config.data.key_disable && _in.data[_in.config.data.key_disable]) { %>
@@ -28,7 +30,9 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
 
     <% if(_in.config.type){ %> type="<%= _in.config.type%>" <%}%>
     <% if(_in.config.data && _in.config.data.key){ %> data-value="<%= _in.data[_in.config.data.key]%>" <%}%>
-><% if (_in.config.icon) { %>
+>
+
+    <% if (_in.config.icon) { %>
   <%  if (flag)  { %>
     <div class="opacity-05 cursor-not-allowed">   <img src="templates/icon/<%= _in.config.icon %>.svg"></div>
     <% } else { %>
@@ -42,6 +46,8 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
     <%} else {%>
         <%= ''%>
     <% }%>
+
+
 <% if (_in.config.data && _in.config.data.key) { %>
 <%= _in.data[_in.config.data.key] %>
 <%} %>
@@ -51,3 +57,7 @@ disabled ="<%= _in.data[_in.config.data.key_disabled]%>"
     <%}%>
 
 </button>
+
+
+
+

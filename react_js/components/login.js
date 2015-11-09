@@ -4,11 +4,17 @@ import { Router, Route, Link, History, Redirect } from 'react-router'
 import Button from './button'
 import Input from './input'
 import Label from './label'
+import Location_Wrapper from './location_wrapper'
 
 const Login = React.createClass({
     getDefaultProps() {
         return {
             configs: [
+                {
+                    "role": "locationWrapper",
+                    "classList": "w-100p p-t-b flex-sp-around",
+                    "location": "registerButton"
+                },
                 {
                     "element": "button",
                     "type": "button",
@@ -20,6 +26,11 @@ const Login = React.createClass({
                         "role": "registerNewUser"
                     },
                     "class": "button-inset"
+                },
+                {
+                    "role": "locationWrapper",
+                    "classList": "w-100p p-t-b flex-sp-around",
+                    "location": "userName"
                 },
                 {
                     "element": "label",
@@ -48,11 +59,7 @@ const Login = React.createClass({
         return (
             <div>
                 {
-                    this.props.configs.map(function(el, idx) {
-                        if (el.element === "button"){
-                            return <Button key={idx} config={el}/>
-                        }
-                    })
+                    <Location_Wrapper configs={this.props.configs} />
                 }
             </div>
         )
