@@ -6,25 +6,24 @@ import Input from './input'
 import Label from './label'
 import Location_Wrapper from './location_wrapper'
 
-const Login = React.createClass({
+const Register = React.createClass({
   getDefaultProps() {
     return {
       configs: [
         {
           "role": "locationWrapper",
           "classList": "w-100p p-t-b flex-sp-around",
-          "location": "registerButton"
+          "location": "loginButton"
         },
         {
           "element": "button",
           "type": "button",
-          "location": "registerButton",
-          "link": "/register",
-          "text": 48,
+          "text": 52,
+          "location": "loginButton",
+          "link": "/login",
           "data": {
-            "description": 54,
-            "action": "clickRedirectToRegister",
-            "role": "registerNewUser"
+            "action": "redirectToLogin",
+            "role": "loginButton"
           },
           "class": "button-inset"
         },
@@ -78,18 +77,43 @@ const Login = React.createClass({
         },
         {
           "role": "locationWrapper",
+          "classList": "w-100p p-t-b flex-sp-between",
+          "location": "userPasswordConfirm"
+        },
+        {
+          "element": "label",
+          "text": 41,
+          "class": "flex-item-w50p",
+          "location": "userPasswordConfirm",
+          "data": {
+            "role": "labelConfirmUserPassword"
+          }
+        },
+        {
+          "element": "input",
+          "type": "password",
+          "class": "flex-item-w50p",
+          "location": "userPasswordConfirm",
+          "name": "userPasswordConfirm",
+          "data": {
+            "key": "userPasswordConfirm"
+          }
+        },
+        {
+          "role": "locationWrapper",
           "classList": "w-100p p-t-b flex-sp-around",
-          "location": "loginButton"
+          "location": "registerButton"
         },
         {
           "element": "button",
           "type": "submit",
-          "text": 51,
-          "location": "loginButton",
+          "text": 53,
+          "location": "registerButton",
           "link": "/chat",
           "data": {
-            "action": "submit",
-            "role": "loginButton"
+            "description": 55,
+            "action": "register",
+            "role": "registerButton"
           },
           "class": "button-inset"
         }
@@ -99,11 +123,11 @@ const Login = React.createClass({
 
   render() {
     return (
-      <form className="flex-inner-container form-small" data-role="loginForm">
+      <form className="flex-inner-container form-small" data-role="registerForm">
         <Location_Wrapper configs={this.props.configs}/>
       </form>
     )
   }
 });
 
-export default Login
+export default Register

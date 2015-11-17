@@ -5,23 +5,19 @@ import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import Less from '../less/total.less'
 
-
 import Login from '../components/login'
-
-
+import Register from '../components/register'
 
 const history = useBasename(createHistory)({
     basename: '/index.html'
 });
-
-
 
 const Chat = React.createClass({
     render() {
         return (
             <div>
                 <h1>Welcome to chat!</h1>
-                <Link to="/">
+                <Link to="/login">
                     <button>Log out</button>
                 </Link>
             </div>
@@ -29,7 +25,7 @@ const Chat = React.createClass({
     }
 });
 
-const Register = React.createClass({
+const Register2 = React.createClass({
     mixins: [History],
 
     render() {
@@ -53,12 +49,16 @@ const Register = React.createClass({
 });
 
 render((
-    <Router history={history}>
-        <Redirect from="/" to="/login"/>
-        <Route path="/">
-            <Route path="chat" component={Chat}/>
-            <Route path="register" component={Register}/>
-            <Route path="login" component={Login}/>
-        </Route>
-    </Router>
-), document.getElementById('example'));
+<div data-role="main_container" className="w-100p h-100p p-abs">
+  <div className="flex-outer-container p-fx">
+  <Router history={history}>
+    <Redirect from="/" to="/login"/>
+    <Route path="/">
+      <Route path="chat" component={Chat}/>
+      <Route path="register" component={Register}/>
+      <Route path="login" component={Login}/>
+    </Route>
+  </Router>
+    </div>
+</div>
+), document.getElementById('app'));
