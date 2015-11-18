@@ -9,7 +9,43 @@ import Location_Wrapper from './location_wrapper'
 const Register = React.createClass({
   getDefaultProps() {
     return {
+      mainContainer: {
+        "element": "div",
+        "class": "flex-inner-container"
+      },
       configs: [
+        {
+          "role": "locationWrapper",
+          "classList": "w-100p p-t-b flex-just-center",
+          "location": "language"
+        },
+        {
+          "element": "label",
+          "text": 100,
+          "class": "p-r-l-1em",
+          "location": "language",
+          "data": {
+            "role": "labelLanguage"
+          }
+        },
+        {
+          "element": "select",
+          "location": "language",
+          "select_options": [
+            {
+              "text": "English",
+              "value": "en"
+            },
+            {
+              "text": "Русский",
+              "value": "ru"
+            }
+          ],
+          "data": {
+            "action": "changeLanguage",
+            "role": "selectLanguage"
+          }
+        },
         {
           "role": "locationWrapper",
           "classList": "w-100p p-t-b flex-sp-around",
@@ -124,7 +160,7 @@ const Register = React.createClass({
   render() {
     return (
       <form className="flex-inner-container form-small" data-role="registerForm">
-        <Location_Wrapper configs={this.props.configs}/>
+        <Location_Wrapper mainContainer={this.props.mainContainer} configs={this.props.configs}/>
       </form>
     )
   }

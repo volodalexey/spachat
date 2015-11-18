@@ -4,6 +4,7 @@ import Button from './button'
 import Link_button from './link_button'
 import Input from './input'
 import Label from './label'
+import Select from './select'
 
 const Triple_element = React.createClass({
   definingElement(){
@@ -18,6 +19,9 @@ const Triple_element = React.createClass({
     }
     if (this.props.config.element === "input") {
       return <Input config={this.props.config}/>
+    }
+    if (this.props.config.element === "select") {
+      return <Select config={this.props.config}/>
     }
   },
 

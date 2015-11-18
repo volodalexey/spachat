@@ -1,5 +1,5 @@
 import React from 'react'
-import { Router, Route, Link, History, Redirect } from 'react-router'
+import { Router, Route, Link, History, Redirect, Lifecycle } from 'react-router'
 
 import Button from './button'
 import Input from './input'
@@ -7,9 +7,46 @@ import Label from './label'
 import Location_Wrapper from './location_wrapper'
 
 const Login = React.createClass({
+  //mixins: [ Lifecycle ],
   getDefaultProps() {
     return {
+      mainContainer: {
+        "element": "div",
+        "class": "flex-inner-container"
+      },
       configs: [
+        {
+          "role": "locationWrapper",
+          "classList": "w-100p p-t-b flex-just-center",
+          "location": "language"
+        },
+        {
+          "element": "label",
+          "text": 100,
+          "class": "p-r-l-1em",
+          "location": "language",
+          "data": {
+            "role": "labelLanguage"
+          }
+        },
+        {
+          "element": "select",
+          "location": "language",
+          "select_options": [
+            {
+              "text": "English",
+              "value": "en"
+            },
+            {
+              "text": "Русский",
+              "value": "ru"
+            }
+          ],
+          "data": {
+            "action": "changeLanguage",
+            "role": "selectLanguage"
+          }
+        },
         {
           "role": "locationWrapper",
           "classList": "w-100p p-t-b flex-sp-around",
@@ -97,13 +134,17 @@ const Login = React.createClass({
     }
   },
 
+  //routerWillLeave() {
+  //    return 'Leave page ?'
+  //},
+
   render() {
     return (
       <form className="flex-inner-container form-small" data-role="loginForm">
-        <Location_Wrapper configs={this.props.configs}/>
+        <Location_Wrapper mainContainer={this.props.mainContainer} configs={this.props.configs}/>
       </form>
     )
   }
 });
 
-export default Login
+export default Login;

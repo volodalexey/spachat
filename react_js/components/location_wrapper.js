@@ -58,9 +58,7 @@ const Location_Wrapper = React.createClass({
       let wrapperItems = rawConfig.byDataLocation[key].configs;
       elements.push(this.wrapper(wrapperConfig, wrapperItems));
     }
-    return <div>{elements}</div>
-
-
+    return <div className={this.props.mainContainer ? this.props.mainContainer.class : ""}>{elements}</div>
   }
 });
 

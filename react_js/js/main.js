@@ -25,29 +25,6 @@ const Chat = React.createClass({
     }
 });
 
-const Register2 = React.createClass({
-    mixins: [History],
-
-    render() {
-        return (
-            <div>
-                <Link to="/chat">
-                    <button>Login</button>
-                    <h1></h1>
-                </Link>
-                <form>
-                    <label>Name</label><input/><br />
-                    <label>Password</label><input/><br />
-                    <label>New password</label><input/><br />
-                    <Link to="/chat">
-                        <button>Register!</button>
-                    </Link>
-                </form>
-            </div>
-        )
-    }
-});
-
 render((
 <div data-role="main_container" className="w-100p h-100p p-abs">
   <div className="flex-outer-container p-fx">
