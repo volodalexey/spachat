@@ -24,7 +24,7 @@ const Button = React.createClass({
     if (this.props.config.data && this.props.config.data.key_disable && this.props.data[this.props.config.data.key_disable]) {
       params['disabled'] = this.props.data[this.props.config.data.key_disabled];
       var flag = true;
-      var src = "templates/icon/" + this.props.config.icon + ".svg";
+      var src = "components/icon/" + this.props.config.icon + ".svg";
     }
 
     var display;
@@ -46,43 +46,41 @@ const Button = React.createClass({
   },
 
   render_icon() {
+  },
 
+  renderContent(){
+    var content = [];
+    if (this.props.config.icon) {
+      if (this.flag) {
+        content.push(
+          <div>
+            <div className="opacity-05 cursor-not-allowed">
+              <img src={this.src}/>
+            </div>
+          </div>)
+      } else {
+        content.push(<img src={"components/icon/" + this.props.config.icon + ".svg"}/>);
+      }
+    }
+    if (this.props.config.text) {
+      content.push(typeof this.props.config.text === "number" ? Localization.getLocText(this.props.config.text) : this.props.config.text) ;
+    } else {
+      content.push("");
+    }
+    if (this.props.config.data && this.props.config.data.key) {
+      content.push(this.props.data[this.props.config.data.key]);
+    }
+    if (this.props.config.data && this.props.config.data.description) {
+      content.push(<img src="components/icon/description_icon.svg" className="description_icon-position"/>);
+    }
+    return content;
   },
 
   render() {
     return (
       <Link to={this.props.config.link}>
-        <button
-          className={this.props.config.class ? this.props.config.class : ''}
-          {...this.render_att()}
-        >
-          {(() => {
-            if (this.props.config.icon) {
-              if (this.flag) {
-                return
-                <div>
-                  <div className="opacity-05 cursor-not-allowed">
-                    <img src={this.src}/>
-                  </div>
-                </div>
-              } else {
-                return <img src={this.src}/>
-              }
-            }
-            if (this.props.config.text) {
-              return typeof this.props.config.text === "number" ? Localization.getLocText(this.props.config.text) : this.props.config.text
-            } else {
-              return ''
-            }
-
-            if (this.props.config.data && this.props.config.data.key) {
-              return this.props.data[this.props.config.data.key]
-            }
-
-            if (this.props.config.data && this.props.config.data.description) {
-              return <img src="templates/icon/description_icon.svg" className="description_icon-position"/>
-            }
-          })()}
+        <button className={this.props.config.class ? this.props.config.class : ''} {...this.render_att()} >
+          {this.renderContent()}
         </button>
       </Link>
 
