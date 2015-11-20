@@ -8,20 +8,23 @@ import Select from './select'
 
 const Triple_element = React.createClass({
   definingElement(){
-    if (this.props.config.element === "button" && this.props.config.link) {
-      return <Link_button config={this.props.config}/>
-    }
-    if(this.props.config.element === "button" && !this.props.config.link) {
-      return <Button config={this.props.config}/>
-    }
-    if (this.props.config.element === "label") {
-      return <Label config={this.props.config}/>
-    }
-    if (this.props.config.element === "input") {
-      return <Input config={this.props.config}/>
-    }
-    if (this.props.config.element === "select") {
-      return <Select config={this.props.config}/>
+    switch (this.props.config.element) {
+      case "button":
+        if (this.props.config.link) {
+          return <Link_button config={this.props.config}/>;
+        } else {
+          return <Button config={this.props.config}/>;
+        }
+        break;
+      case "label":
+        return <Label config={this.props.config}/>;
+        break;
+      case "input":
+        return <Input config={this.props.config}/>;
+        break;
+      case "select":
+        return <Select config={this.props.config}/>;
+        break;
     }
   },
 

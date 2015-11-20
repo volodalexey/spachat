@@ -9,10 +9,10 @@ const Button = React.createClass({
     if (this.props.config.data) {
       for (var dataKey in this.props.config.data) {
         if (this.props.config.data[dataKey] !== "" && dataKey !== "description") {
-          params['data-' + dataKey] = '\"' + this.props.config.data[dataKey] + '\"';
+          params['data-' + dataKey] = this.props.config.data[dataKey];
         }
         if (dataKey === "description" && typeof this.props.config.data[dataKey] === 'number') {
-          params['data-' + dataKey] = '\"' + Localization.getLocText(this.props.config.data[dataKey]) + '\"';
+          params['data-' + dataKey] = Localization.getLocText(this.props.config.data[dataKey]);
         }
       }
     }

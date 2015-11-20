@@ -166,4 +166,4 @@ const Register = React.createClass({
   }
 });
 
-export default Register
+export default Register;

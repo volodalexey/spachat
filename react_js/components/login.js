@@ -6,8 +6,9 @@ import Input from './input'
 import Label from './label'
 import Location_Wrapper from './location_wrapper'
 
+import Localization from '../js/localization.js'
+
 const Login = React.createClass({
-  //mixins: [ Lifecycle ],
   getDefaultProps() {
     return {
       mainContainer: {
@@ -131,6 +132,12 @@ const Login = React.createClass({
           "class": "button-inset"
         }
       ]
+    }
+  },
+
+  getInitialState(){
+    return {
+      lang: Localization.lang
     }
   },
 

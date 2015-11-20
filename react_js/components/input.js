@@ -10,7 +10,7 @@ const Input = React.createClass({
     if (this.props.config.data) {
       for (var dataKey in this.props.config.data) {
         if (this.props.config.data[dataKey] !== "") {
-          params['data-' + dataKey] = '\"' + this.props.config.data[dataKey] + '\"';
+          params['data-' + dataKey] = this.props.config.data[dataKey];
         }
       }
     }
@@ -64,17 +64,16 @@ const Input = React.createClass({
 
   routerWillLeave() {
     if (this.state.value)
-      return 'You have unsaved information, are you sure you want to leave this page?'
+      return 'You have unsaved information, are you sure you want to leave this page?';
   },
 
   handleChange: function(event) {
     this.setState({value: event.target.value});
-    console.log("change")
   },
 
   render() {
-    return <input type="text" onChange={this.handleChange} {...this.render_att()} />
+    return <input type="text" onChange={this.handleChange} {...this.render_att()} />;
   }
 });
 
-export default Input
+export default Input;

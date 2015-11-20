@@ -37,15 +37,15 @@ const Location_Wrapper = React.createClass({
   },
 
   wrapper(wrapperConfig, wrapperItems){
-    return <div key={wrapperConfig.location} {...this.render_att(wrapperConfig)}>
+    return (<div key={wrapperConfig.location} {...this.render_att(wrapperConfig)}>
       {this.wrapperItems(wrapperItems)}
-    </div>
+    </div>)
   },
 
   wrapperItems(wrapperItems){
     var items = [];
     wrapperItems.map((element_config, idx) => {
-      items.push(<Triple_Element key={idx} config={element_config}/>)
+      items.push(<Triple_Element key={idx} config={element_config}/>);
     });
     return items;
   },
@@ -62,4 +62,4 @@ const Location_Wrapper = React.createClass({
   }
 });
 
-export default Location_Wrapper
+export default Location_Wrapper;

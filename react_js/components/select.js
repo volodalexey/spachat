@@ -16,7 +16,7 @@ const Select = React.createClass({
     if (this.props.config.data) {
       for (var configDataKey in this.props.config.data) {
         if (this.props.config.data[configDataKey] !== "") {
-          params['data-' + configDataKey] = '\"' + this.props.config.data[configDataKey] + '\"';
+          params['data-' + configDataKey] = this.props.config.data[configDataKey];
         }
       }
     }
@@ -25,24 +25,29 @@ const Select = React.createClass({
   },
 
   handleChange: function(event) {
-    Localization.lang = event.target.value;
+    switch (event.target.dataset.action) {
+      case "changeLanguage":
+        Localization.changeLanguage(event.target.value);
+        break;
+    }
   },
 
   render() {
     var defaultValue;
-    var options = this.props.config.select_options.map(function(option, i){
-      if(Localization.lang === option.value) {
+    var options = this.props.config.select_options.map(function(option, i) {
+      if (Localization.lang === option.value) {
         defaultValue = option.value;
       }
-      return <option key={i} value={option.value}>{option.value}</option>
+      return <option key={i} value={option.value}>{option.text}</option>
     }, this);
-
     return (
-    <select defaultValue={defaultValue}  {...this.render_att()} onChange={this.handleChange}>
-      {options}
-      </select>
+      <div>
+        <select defaultValue={defaultValue}  {...this.render_att()} onChange={this.handleChange}>
+          {options}
+        </select>
+      </div>
     )
   }
 });
 
-export default Select
+export default Select;
