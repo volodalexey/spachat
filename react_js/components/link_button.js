@@ -3,7 +3,8 @@ import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import Localization from '../js/localization.js'
 
-const Button = React.createClass({
+const LinkButton = React.createClass({
+  displayName: 'LinkButton',
   render_att() {
     var params = {};
     if (this.props.config.data) {
@@ -59,7 +60,7 @@ const Button = React.createClass({
             </div>
           </div>)
       } else {
-        content.push(<img src={"components/icon/" + this.props.config.icon + ".svg"}/>);
+        content.push(<img key={this.props.config.icon} src={"components/icon/" + this.props.config.icon + ".svg"}/>);
       }
     }
     if (this.props.config.text) {
@@ -71,7 +72,7 @@ const Button = React.createClass({
       content.push(this.props.data[this.props.config.data.key]);
     }
     if (this.props.config.data && this.props.config.data.description) {
-      content.push(<img src="components/icon/description_icon.svg" className="description_icon-position"/>);
+      content.push(<img key={"description"} src="components/icon/description_icon.svg" className="description_icon-position"/>);
     }
     return content;
   },
@@ -83,9 +84,8 @@ const Button = React.createClass({
           {this.renderContent()}
         </button>
       </Link>
-
     )
   }
 });
 
-export default Button
+export default LinkButton

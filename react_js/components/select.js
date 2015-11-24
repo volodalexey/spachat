@@ -2,6 +2,7 @@ import React from 'react'
 import Localization from '../js/localization.js'
 
 const Select = React.createClass({
+  displayName: 'Select',
   render_att() {
     var params = {};
     if (this.props.config.class) {

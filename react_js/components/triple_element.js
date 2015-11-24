@@ -1,17 +1,17 @@
 import React from 'react'
 
 import Button from './button'
-import Link_button from './link_button'
+import LinkButton from './link_button'
 import Input from './input'
 import Label from './label'
 import Select from './select'
 
-const Triple_element = React.createClass({
+const TripleElement = React.createClass({
   definingElement(){
     switch (this.props.config.element) {
       case "button":
         if (this.props.config.link) {
-          return <Link_button config={this.props.config}/>;
+          return <LinkButton config={this.props.config}/>;
         } else {
           return <Button config={this.props.config}/>;
         }
@@ -33,4 +33,4 @@ const Triple_element = React.createClass({
   }
 });
 
-export default Triple_element;
+export default TripleElement;

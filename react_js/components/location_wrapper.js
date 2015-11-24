@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Triple_Element from './triple_element'
+import TripleElement from './triple_element'
 
 const Location_Wrapper = React.createClass({
   prepareConfig(){
@@ -45,7 +45,7 @@ const Location_Wrapper = React.createClass({
   wrapperItems(wrapperItems){
     var items = [];
     wrapperItems.map((element_config, idx) => {
-      items.push(<Triple_Element key={idx} config={element_config}/>);
+      items.push(<TripleElement key={idx} config={element_config}/>);
     });
     return items;
   },
