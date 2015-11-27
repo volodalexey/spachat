@@ -11,19 +11,19 @@ const TripleElement = React.createClass({
     switch (this.props.config.element) {
       case "button":
         if (this.props.config.link) {
-          return <LinkButton config={this.props.config}/>;
+          return <LinkButton dateParent={this.props.dateParent} events={this.props.events} config={this.props.config}/>;
         } else {
-          return <Button config={this.props.config}/>;
+          return <Button dateParent={this.props.dateParent} events={this.props.events} config={this.props.config}/>;
         }
         break;
       case "label":
-        return <Label config={this.props.config}/>;
+        return <Label dateParent={this.props.dateParent} events={this.props.events} config={this.props.config}/>;
         break;
       case "input":
-        return <Input config={this.props.config}/>;
+        return <Input dateParent={this.props.dateParent} events={this.props.events} config={this.props.config}/>;
         break;
       case "select":
-        return <Select config={this.props.config}/>;
+        return <Select dateParent={this.props.dateParent} events={this.props.events} config={this.props.config}/>;
         break;
     }
   },

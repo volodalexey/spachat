@@ -45,7 +45,7 @@ const Location_Wrapper = React.createClass({
   wrapperItems(wrapperItems){
     var items = [];
     wrapperItems.map((element_config, idx) => {
-      items.push(<TripleElement key={idx} config={element_config}/>);
+      items.push(<TripleElement dateParent={this.props.dateParent} events={this.props.events} key={idx} config={element_config}/>);
     });
     return items;
   },

@@ -27,7 +27,7 @@ const ChatApp = React.createClass({
         </div>
         <Panel location={this.props.RIGHT} />
         <Popup />
-        <Decription />
+        <Description />
         <ChatResize />
       </div>
     )

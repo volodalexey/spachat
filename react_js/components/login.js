@@ -147,13 +147,30 @@ const Login = React.createClass({
   //    return 'Leave page ?'
   //},
 
+  onClick(){
+    console.log('click login');
+  },
+
+  onChange: function(event) {
+    switch (event.target.dataset.action) {
+      case "changeLanguage":
+        Localization.changeLanguage(event.target.value);
+        break;
+    }
+  },
+
   render() {
+    let onEvent = {
+      onClick: this.onClick,
+      onChange: this.onChange
+    };
+
     return (
       <div>
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
             <form className="flex-inner-container form-small" data-role="loginForm">
-              <Location_Wrapper mainContainer={this.props.mainContainer} configs={this.props.configs}/>
+              <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}/>
             </form>
           </div>
         </div>

@@ -43,7 +43,7 @@ const PanelExtraToolbar = React.createClass({
     }
   },
 
-  defineMode(mode){
+  defineConfig(mode){
     switch (mode){
       case 'CHATS':
         return this.props.panelChatsExtraToolbarConfig;
@@ -55,7 +55,7 @@ const PanelExtraToolbar = React.createClass({
   },
 
   render(){
-    var configs = this.defineMode(this.props.mode);
+    var configs = this.defineConfig(this.props.mode);
     if(!configs){
       return <div></div>
     }
@@ -63,8 +63,8 @@ const PanelExtraToolbar = React.createClass({
     return <div>
       {
         configs.map(function(config, i) {
-          return <Triple_Element key={i} config={config} />
-        })
+          return <Triple_Element key={i} events={this.props.events} config={config} />
+        }, this)
       }
     </div>
   }

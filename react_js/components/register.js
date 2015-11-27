@@ -7,6 +7,7 @@ import Label from './label'
 import Location_Wrapper from './location_wrapper'
 import Popup from '../components/popup'
 import Decription from '../components/description'
+import Localization from '../js/localization.js'
 
 const Register = React.createClass({
   getDefaultProps() {
@@ -159,13 +160,30 @@ const Register = React.createClass({
     }
   },
 
+  onClick(){
+    console.log('click register');
+  },
+
+  onChange: function(event) {
+    switch (event.target.dataset.action) {
+      case "changeLanguage":
+        Localization.changeLanguage(event.target.value);
+        break;
+    }
+  },
+
   render() {
+    let onEvent = {
+      onClick: this.onClick,
+      onChange: this.onChange
+    };
+
     return (
       <div>
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
             <form className="flex-inner-container form-small" data-role="registerForm">
-              <Location_Wrapper mainContainer={this.props.mainContainer} configs={this.props.configs}/>
+              <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}/>
             </form>
           </div>
         </div>

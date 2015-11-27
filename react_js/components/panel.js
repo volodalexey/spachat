@@ -8,6 +8,7 @@ import Popup from '../components/popup'
 import Decription from '../components/description'
 import ChatResize from '../components/chat_resize'
 import PanelExtraToolbar from '../components/panel_extra_toolbar'
+import PanelToolbar from '../components/panel_toolbar'
 
 const Panel = React.createClass({
   getDefaultProps() {
@@ -15,6 +16,10 @@ const Panel = React.createClass({
       mainContainer: {
         "element": "div",
         "class": "flex-inner-container"
+      },
+      dateParent: {
+        context: "",
+        parent: "panel"
       },
       MODE: {
         LEFT: 'LEFT',
@@ -39,211 +44,57 @@ const Panel = React.createClass({
           "description": 47
         },
         "class": "panel-button right-panel-button"
-      },
-      panelLeftToolbarConfig: [
-        {
-          "role": "locationWrapper",
-          "classList": "flex",
-          "location": "users"
-        },
-        {
-          "element": "button",
-          "icon": "add_user_icon",
-          "text": 66,
-          "class": "flex-item-1-0p",
-          "location": "users",
-          "data": {
-            "role": "btnToolbar",
-            "action": "switchPanelMode",
-            "mode_to": "JOIN_USER"
-          },
-          "disable": false
-        },
-
-        {
-          "element": "button",
-          "icon": "users_icon",
-          "text": 32,
-          "class": "flex-item-1-0p",
-          "location": "users",
-          "data": {
-            "role": "btnToolbar",
-            "action": "switchPanelMode",
-            "mode_to": "USERS"
-          },
-          "disable": false
-        },
-
-        {
-          "element": "button",
-          "icon": "notepad_icon",
-          "data": {
-            "action": "togglePanel",
-            "role": "togglePanelToolbar",
-            "description": 46
-          },
-          "location": "users",
-          "class": "flex-item-1-0p c-50 border-c300 min-height-2-6em hide"
-        },
-
-        {
-          "role": "locationWrapper",
-          "classList": "flex",
-          "location": "blogs"
-        },
-        {
-          "element": "button",
-          "icon": "new_blog_icon",
-          "text": 63,
-          "class": "flex-item-1-0p",
-          "location": "blogs",
-          "data": {
-            "role": "btnToolbar",
-            "action": "switchPanelMode",
-            "mode_to": "CREATE_BLOG"
-          },
-          "disable": false
-        },
-        {
-          "element": "button",
-          "icon": "add_blog_icon",
-          "text": 64,
-          "class": "flex-item-1-0p",
-          "location": "blogs",
-          "data": {
-            "role": "btnToolbar",
-            "action": "switchPanelMode",
-            "mode_to": "JOIN_BLOG"
-          },
-          "disable": false
-        },
-        {
-          "element": "button",
-          "icon": "blogs_icon",
-          "text": 65,
-          "class": "flex-item-1-0p",
-          "location": "blogs",
-          "data": {
-            "role": "btnToolbar",
-            "action": "switchPanelMode",
-            "mode_to": "BLOGS"
-          },
-          "disable": false
-        },
-
-        {
-          "role": "locationWrapper",
-          "classList": "flex",
-          "location": "chats"
-        },
-        {
-          "element": "button",
-          "icon": "new_chat_icon",
-          "text": 1,
-          "class": "flex-item-1-0p",
-          "location": "chats",
-          "data": {
-            "description": 2,
-            "role": "btnToolbar",
-            "action": "switchPanelMode",
-            "mode_to": "CREATE_CHAT"
-          },
-          "disable": false
-        },
-        {
-          "element": "button",
-          "icon": "add_chat_icon",
-          "text": 29,
-          "class": "flex-item-1-0p",
-          "location": "chats",
-          "data": {
-            "role": "btnToolbar",
-            "action": "switchPanelMode",
-            "mode_to": "JOIN_CHAT"
-          },
-          "disable": false
-        },
-        {
-          "element": "button",
-          "icon": "chats_icon",
-          "text": 30,
-          "class": "flex-item-1-0p",
-          "location": "chats",
-          "data": {
-            "description": 31,
-            "role": "btnToolbar",
-            "action": "switchPanelMode",
-            "mode_to": "CHATS"
-          },
-          "disable": false
-        }
-      ],
-      panelRightToolbarConfig: [
-        {
-          "role": "locationWrapper",
-          "classList": "flex",
-          "location": "buttons"
-        },
-        {
-          "element": "button",
-          "icon": "folder_icon",
-          "location": "buttons",
-          "data": {
-            "action": "togglePanel",
-            "role": "togglePanelToolbar",
-            "description": 47
-          },
-          "class": "flex-item-1-0p c-50 border-c300 min-height-2-6em hide"
-        },
-        {
-          "element": "button",
-          "icon": "user_icon",
-          "text": 33,
-          "class": "floatR flex-item-1-0p",
-          "location": "buttons",
-          "data": {
-            "role": "btnToolbar",
-            "action": "switchPanelMode",
-            "mode_to": "USER_INFO_SHOW"
-          },
-          "disable": false
-        },
-        {
-          "element": "button",
-          "icon": "connections_icon",
-          "text": 13,
-          "class": "floatR flex-item-1-0p",
-          "location": "buttons",
-          "data": {
-            "role": "btnToolbar",
-            "action": "switchPanelMode",
-            "mode_to": "CONNECTIONS"
-          },
-          "disable": false
-        }
-      ]
+      }
     }
   },
 
-  render() {
-    let location = this.props.location;
+  getInitialState(){
+    return {
+      left_activeTab: "CHATS",
+      right_activeTab: ""
+    }
+  },
 
-    var left_activeTab = "CHATS";
-    var right_activeTab = "";
-    let mode_toolbar = location === 'left' ? left_activeTab : right_activeTab;
+  onClick(){
+    console.log('click panel');
+
+  },
+
+  onInput(){
+
+  },
+
+  onTransitionEnd(){
+
+  },
+
+  render() {
+    let onEvent = {
+      onClick: this.onClick,
+      onInput: this.onInput,
+      onTransitionEnd: this.onTransitionEnd
+    };
+
+    let location = this.props.location;
+    let dateParent = this.props.dateParent;
+    dateParent['context'] = location;
+
+    let extra_toolbar_mode = location === 'left' ? this.state.left_activeTab : this.state.right_activeTab;
 
     let btnConfig = (location === 'left') ? this.props.leftBtnConfig : this.props.rightBtnConfig;
     let panel_toolbar_class = (location === 'left') ? 'w-100p flex-dir-col flex-item-auto c-200' : 'w-100p flex-dir-col c-200';
     return (
       <section data-role={location + '_panel_outer_container'} className={location + '-panel p-fx panel animate c-100'}>
         <div className="p-rel h-100p flex-dir-col">
-          <Triple_Element config={btnConfig}/>
+          <Triple_Element dateParent={dateParent} events={onEvent} config={btnConfig}/>
           <div data-role={location + '_panel_inner_container'}
                className="min-width-350 flex-item-1-auto clear flex-dir-col h-100p">
-            <header id={location} data-role={location + '_panel_toolbar'} className={panel_toolbar_class}></header>
+            <header id={location} data-role={location + '_panel_toolbar'} className={panel_toolbar_class}>
+            <PanelToolbar location={location} events={onEvent} />
+            </header>
             <div data-role={location + '_extra_toolbar_container'}
                  className="flex-sp-around flex-item-auto c-200">
-              <PanelExtraToolbar mode={mode_toolbar}/>
+              <PanelExtraToolbar mode={extra_toolbar_mode} events={onEvent} />
             </div>
             <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
             </div>

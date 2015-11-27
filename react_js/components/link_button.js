@@ -46,6 +46,16 @@ const LinkButton = React.createClass({
     return params
   },
 
+  renderHandlers(){
+    var handlers = {};
+    if (this.props.events) {
+      for (var dataKey in this.props.events) {
+        handlers[dataKey] = this.props.events[dataKey];
+      }
+    }
+    return handlers;
+  },
+
   render_icon() {
   },
 
@@ -80,7 +90,7 @@ const LinkButton = React.createClass({
   render() {
     return (
       <Link to={this.props.config.link}>
-        <button className={this.props.config.class ? this.props.config.class : ''} {...this.render_att()} >
+        <button className={this.props.config.class ? this.props.config.class : ''} {...this.render_att()} {...this.renderHandlers()}>
           {this.renderContent()}
         </button>
       </Link>

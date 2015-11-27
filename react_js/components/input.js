@@ -67,12 +67,18 @@ const Input = React.createClass({
       return 'You have unsaved information, are you sure you want to leave this page?';
   },
 
-  handleChange: function(event) {
-    this.setState({value: event.target.value});
+  renderHandlers(){
+    var handlers = {};
+    if (this.props.events) {
+      for (var dataKey in this.props.events) {
+        handlers[dataKey] = this.props.events[dataKey];
+      }
+    }
+    return handlers;
   },
 
   render() {
-    return <input type="text" onChange={this.handleChange} {...this.render_att()} />;
+    return <input type="text" onChange={this.handleChange} {...this.render_att()} {...this.renderHandlers()} />;
   }
 });
 

@@ -33,6 +33,16 @@ const Select = React.createClass({
     }
   },
 
+  renderHandlers(){
+    var handlers = {};
+    if (this.props.events) {
+      for (var dataKey in this.props.events) {
+        handlers[dataKey] = this.props.events[dataKey];
+      }
+    }
+    return handlers;
+  },
+
   render() {
     var defaultValue;
     var options = this.props.config.select_options.map(function(option, i) {
@@ -43,7 +53,7 @@ const Select = React.createClass({
     }, this);
     return (
       <div>
-        <select defaultValue={defaultValue}  {...this.render_att()} onChange={this.handleChange}>
+        <select defaultValue={defaultValue}  {...this.render_att()} {...this.renderHandlers()}>
           {options}
         </select>
       </div>
