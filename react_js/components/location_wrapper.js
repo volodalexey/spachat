@@ -43,9 +43,15 @@ const Location_Wrapper = React.createClass({
   },
 
   wrapperItems(wrapperItems){
-    var items = [];
+    var items = [], hide, self = this;
     wrapperItems.map((element_config, idx) => {
-      items.push(<TripleElement dateParent={this.props.dateParent} events={this.props.events} key={idx} config={element_config}/>);
+      if(element_config.data.action === "togglePanel" && self.props.hide) {
+        hide = true;
+      } else {
+        hide = false;
+      }
+      items.push(<TripleElement dateParent={this.props.dateParent} events={this.props.events} key={idx} config={element_config}
+                                hide={hide} />);
     });
     return items;
   },

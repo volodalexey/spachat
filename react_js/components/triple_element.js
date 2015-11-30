@@ -13,7 +13,8 @@ const TripleElement = React.createClass({
         if (this.props.config.link) {
           return <LinkButton dateParent={this.props.dateParent} events={this.props.events} config={this.props.config}/>;
         } else {
-          return <Button dateParent={this.props.dateParent} events={this.props.events} config={this.props.config}/>;
+          return <Button dateParent={this.props.dateParent} events={this.props.events} config={this.props.config}
+                  hide={this.props.hide} />;
         }
         break;
       case "label":

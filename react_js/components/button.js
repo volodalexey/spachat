@@ -90,8 +90,15 @@ const Button = React.createClass({
 
   render() {
     var self = this;
+    var className;
+    if(this.props.hide) {
+      className = this.props.config.class ? this.props.config.class + 'hide' : '';
+    } else{
+      className = this.props.config.class ? this.props.config.class : '';
+    }
+
     return (
-      <button className={this.props.config.class ? this.props.config.class : ''} {...this.render_att()}
+      <button className={className} {...this.render_att()}
         {...this.renderHandlers()} >
         {this.renderContent()}
       </button>

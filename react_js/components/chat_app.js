@@ -9,11 +9,23 @@ import Description from '../components/description'
 import ChatResize from '../components/chat_resize'
 
 const ChatApp = React.createClass({
+  getInitialState: function() {
+    return {windowWidth: window.innerWidth};
+  },
+
   getDefaultProps() {
     return {
         LEFT: 'left',
         RIGHT: 'right'
     }
+  },
+
+  handleResize: function(e) {
+    this.setState({windowWidth: window.innerWidth});
+  },
+
+  componentDidMount: function() {
+    window.addEventListener('resize', this.handleResize);
   },
 
   render() {

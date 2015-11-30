@@ -50,7 +50,7 @@ const PanelToolbar = React.createClass({
             "description": 46
           },
           "location": "users",
-          "class": "flex-item-1-0p c-50 border-c300 min-height-2-6em hide"
+          "class": "flex-item-1-0p c-50 border-c300 min-height-2-6em "
         },
 
         {
@@ -160,7 +160,7 @@ const PanelToolbar = React.createClass({
             "role": "togglePanelToolbar",
             "description": 47
           },
-          "class": "flex-item-1-0p c-50 border-c300 min-height-2-6em hide"
+          "class": "flex-item-1-0p c-50 border-c300 min-height-2-6em "
         },
         {
           "element": "button",
@@ -209,7 +209,7 @@ const PanelToolbar = React.createClass({
       return <div></div>
     }
 
-    return <Location_Wrapper events={this.props.events} configs={configs}/>;
+    return <Location_Wrapper events={this.props.events} configs={configs} hide={this.props.hide}/>;
   }
 });
 
