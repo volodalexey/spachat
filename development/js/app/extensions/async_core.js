@@ -8,6 +8,9 @@ define('async_core',
 
       __class_name: "async_core",
 
+      /**
+       * defines if the callback was already called
+       */
       only_once: function(root, fn) {
         var called = false;
         return function() {
@@ -17,6 +20,9 @@ define('async_core',
         }
       },
 
+      /**
+       * invoke all iterators almost simultaneously
+       */
       async_each: function(arr, iterator, callback) {
         var _this = this;
         callback = callback || function() {
@@ -42,6 +48,9 @@ define('async_core',
         }
       },
 
+      /**
+       * invoke all iterators one by one
+       */
       async_eachSeries: function(arr, iterator, callback) {
         callback = callback || function() {
           };
