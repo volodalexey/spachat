@@ -8,5 +8,5 @@ import Less from '../less/total.less'
 import Index from '../components/index'
 
 render((
-    <Index />
+  <Index />
 ), document.getElementById('app'));

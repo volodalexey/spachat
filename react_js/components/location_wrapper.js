@@ -5,6 +5,7 @@ import TripleElement from './triple_element'
 const Location_Wrapper = React.createClass({
   prepareConfig(){
     var rawConfig = this.props.configs;
+    if(!rawConfig) return rawConfig;
     var byDataLocation = {};
     rawConfig.forEach(function(_config) {
       if (!_config.location) {
@@ -45,12 +46,12 @@ const Location_Wrapper = React.createClass({
   wrapperItems(wrapperItems){
     var items = [], hide, self = this;
     wrapperItems.map((element_config, idx) => {
-      if(element_config.data.action === "togglePanel" && self.props.hide) {
+      if(element_config.data && element_config.data.action === "togglePanel" && self.props.hide) {
         hide = true;
       } else {
         hide = false;
       }
-      items.push(<TripleElement dateParent={this.props.dateParent} events={this.props.events} key={idx} config={element_config}
+      items.push(<TripleElement mode={this.props.mode} events={this.props.events} key={idx} config={element_config}
                                 hide={hide} />);
     });
     return items;

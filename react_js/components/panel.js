@@ -9,8 +9,31 @@ import Decription from '../components/description'
 import ChatResize from '../components/chat_resize'
 import PanelExtraToolbar from '../components/panel_extra_toolbar'
 import PanelToolbar from '../components/panel_toolbar'
+import Body from '../components/body'
 
 var z_index = 80;
+
+const MODE = {
+  CREATE_CHAT: 'CREATE_CHAT',
+  JOIN_CHAT: 'JOIN_CHAT',
+  CHATS: 'CHATS',
+  USERS: 'USERS',
+  JOIN_USER: 'JOIN_USER',
+
+  USER_INFO_EDIT: 'USER_INFO_EDIT',
+  USER_INFO_SHOW: 'USER_INFO_SHOW',
+  DETAIL_VIEW: 'DETAIL_VIEW',
+
+  CONNECTIONS: 'CONNECTIONS',
+
+  CREATE_BLOG: 'CREATE_BLOG',
+  JOIN_BLOG: 'JOIN_BLOG',
+  BLOGS: 'BLOGS',
+
+  PAGINATION: "PAGINATION",
+  GO_TO: "GO_TO",
+  FILTER: 'FILTER'
+};
 
 
 const Panel = React.createClass({
@@ -20,14 +43,6 @@ const Panel = React.createClass({
         "element": "div",
         "class": "flex-inner-container"
       },
-      dateParent: {
-        context: "",
-        parent: "panel"
-      },
-      MODE: {
-        LEFT: 'LEFT',
-        RIGHT: "RIGHT"
-      },
       leftBtnConfig: {
         "element": "button",
         "icon": "notepad_icon",
@@ -36,6 +51,7 @@ const Panel = React.createClass({
           "role": "mainButtonLeftPanel",
           "description": 46
         },
+        onload: true,
         "class": "panel-button left-panel-button "
       },
       rightBtnConfig: {
@@ -46,6 +62,7 @@ const Panel = React.createClass({
           "role": "mainButtonRightPanel",
           "description": 47
         },
+        onload: true,
         "class": "panel-button right-panel-button "
       }
     }
@@ -54,20 +71,22 @@ const Panel = React.createClass({
   getInitialState(){
     if (this.props.location === 'left') {
       return {
-        activeTab: "CHATS",
+        //activeTab: "CHATS",
         openedState: false,
         left: '-700px',
         toggleElemHide: false,
-        toggleToolbarElemHide: true
+        toggleToolbarElemHide: true,
+        bodyMode: "CHATS"
       }
     }
     if (this.props.location === 'right') {
       return {
-        activeTab: "",
+        //activeTab: "",
         openedState: false,
         right: '-700px',
         toggleElemHide: false,
-        toggleToolbarElemHide: true
+        toggleToolbarElemHide: true,
+        bodyMode: "USER_INFO_SHOW"
       }
     }
   },
@@ -115,17 +134,17 @@ const Panel = React.createClass({
       case 'togglePanel':
         this.togglePanel();
         break;
-      case 'togglePanel2':
-
+      case 'switchPanelMode':
+        this.switchPanelMode(event.currentTarget);
         break;
     }
   },
 
   onLoad: function(event) {
-    if(this.props.location === "left" && event.target.dataset.role === "notepad_icon"){
+    if(this.props.location === "left" && event.target.dataset.onload){
       this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
     }
-    if(this.props.location === "right" && event.target.dataset.role === "folder_icon"){
+    if(this.props.location === "right" && event.target.dataset.onload){
       this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
     }
     this.resizePanel();
@@ -177,6 +196,24 @@ const Panel = React.createClass({
           toggleElemHide: false
         });
       }
+    }
+  },
+
+  switchPanelMode: function(element) {
+    if (element.dataset.mode_to === MODE.USER_INFO_SHOW && this.previous_UserInfo_Mode) {
+      this.setState({bodyMode: this.previous_UserInfo_Mode});
+    } else {
+      this.setState({bodyMode: element.dataset.mode_to});
+    }
+    this.previous_Filter_Options = false;
+
+      if (this.previous_BodyMode && this.previous_BodyMode !== this.state.bodyMode) {
+        //this.showSpinner(this.body_container);
+      }
+      this.previous_BodyMode = this.state.bodyMode;
+
+    if (this.state.bodyMode === MODE.USER_INFO_SHOW) {
+      this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
     }
   },
 
@@ -233,10 +270,7 @@ const Panel = React.createClass({
     };
 
     let location = this.props.location;
-    let dateParent = this.props.dateParent;
-    dateParent['context'] = location;
 
-    let extra_toolbar_mode = location === 'left' ? this.state.activeTab : this.state.activeTab;
 
     let btnConfig = (location === 'left') ? this.props.leftBtnConfig : this.props.rightBtnConfig;
     let panel_toolbar_class = (location === 'left') ? 'w-100p flex-dir-col flex-item-auto c-200' : 'w-100p flex-dir-col c-200';
@@ -245,19 +279,21 @@ const Panel = React.createClass({
     return (
       <section style={style} data-role={location + '_panel_outer_container'} className={location + '-panel hide p-fx panel animate c-100'}>
         <div className="p-rel h-100p flex-dir-col">
-          <Triple_Element dateParent={dateParent} events={onEvent} config={btnConfig} hide={this.state.toggleElemHide}/>
+          <Triple_Element events={onEvent} config={btnConfig} hide={this.state.toggleElemHide}/>
           <div data-role={location + '_panel_inner_container'}
                className="min-width-350 flex-item-1-auto clear flex-dir-col h-100p">
             <header id={location} data-role={location + '_panel_toolbar'} className={panel_toolbar_class}>
-            <PanelToolbar location={location} events={onEvent} hide={this.state.toggleToolbarElemHide} />
+            <PanelToolbar location={location} mode={this.state.bodyMode} events={onEvent} hide={this.state.toggleToolbarElemHide} />
             </header>
             <div data-role={location + '_extra_toolbar_container'}
                  className="flex-sp-around flex-item-auto c-200">
-              <PanelExtraToolbar mode={extra_toolbar_mode} events={onEvent} />
+              <PanelExtraToolbar mode={this.state.bodyMode} events={onEvent} />
             </div>
             <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
             </div>
-            <div data-role="panel_body" className="overflow-a flex-item-1-auto"></div>
+            <div data-role="panel_body" className="overflow-a flex-item-1-auto">
+              <Body mode={this.state.bodyMode} events={onEvent} />
+            </div>
             <footer className="flex-item-auto">
               <div data-role={location + '_go_to_container'} className="c-200"></div>
               <div data-role={location + '_pagination_containe'}

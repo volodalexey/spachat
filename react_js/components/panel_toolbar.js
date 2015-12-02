@@ -209,7 +209,7 @@ const PanelToolbar = React.createClass({
       return <div></div>
     }
 
-    return <Location_Wrapper events={this.props.events} configs={configs} hide={this.props.hide}/>;
+    return <Location_Wrapper events={this.props.events} configs={configs} mode={this.props.mode} hide={this.props.hide}/>;
   }
 });
 

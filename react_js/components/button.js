@@ -1,6 +1,5 @@
 import React from 'react'
 import Localization from '../js/localization.js'
-import Storage from '../js/storage'
 
 const Button = React.createClass({
   displayName: 'Button',
@@ -66,7 +65,7 @@ const Button = React.createClass({
             </div>
           </div>))
       } else {
-        content.push(<img key={this.props.config.icon} data-role={this.props.config.icon} src={"components/icon/" + this.props.config.icon + ".svg"}/>);
+        content.push(<img key={this.props.config.icon} data-onload={this.props.config.onload ? 'true' : ''} src={"components/icon/" + this.props.config.icon + ".svg"}/>);
       }
     }
     if (this.props.config.text) {
@@ -84,12 +83,7 @@ const Button = React.createClass({
     return content;
   },
 
-  render_icon() {
-
-  },
-
-  render() {
-    var self = this;
+  renderClassName(){
     var className;
     if(this.props.hide) {
       className = this.props.config.class ? this.props.config.class + 'hide' : '';
@@ -97,8 +91,22 @@ const Button = React.createClass({
       className = this.props.config.class ? this.props.config.class : '';
     }
 
+    if(this.props.config.data.mode_to && this.props.config.data.mode_to === this.props.mode){
+      className = className + ' activeTollbar';
+    }
+    return className;
+  },
+
+  render_icon() {
+
+  },
+
+  render() {
+    var self = this;
+
+
     return (
-      <button className={className} {...this.render_att()}
+      <button className={this.renderClassName()} {...this.render_att()}
         {...this.renderHandlers()} >
         {this.renderContent()}
       </button>
