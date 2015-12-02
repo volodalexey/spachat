@@ -73,6 +73,8 @@ const Panel = React.createClass({
   },
 
   componentDidMount(){
+    document.addEventListener('load', this.onLoad, true);
+
     if(this.props.location === "left"){
       this.outer_container = document.querySelector('[data-role="left_panel_outer_container"]');
       this.inner_container = document.querySelector('[data-role="left_panel_inner_container"]');
@@ -89,14 +91,17 @@ const Panel = React.createClass({
     this.outer_container.classList.remove("hide");
     this.outer_container.style.maxWidth = window.innerWidth + 'px';
     this.outer_container.style.zIndex = z_index;
-    this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
-    this.resizePanel();
+  },
+
+  componentWillUnmount: function() {
+    window.removeEventListener('load', this.onLoad);
+    this.outer_container = null;
+    this.inner_container = null;
+    this.togglePanelElement = null;
+    this.togglePanelElementToolbar = null;
   },
 
   componentDidUpdate(){
-    if(this.togglePanelElement.clientWidth !== 0){
-      this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
-    }
     this.resizePanel();
   },
 
@@ -114,6 +119,16 @@ const Panel = React.createClass({
 
         break;
     }
+  },
+
+  onLoad: function(event) {
+    if(this.props.location === "left" && event.target.dataset.role === "notepad_icon"){
+      this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
+    }
+    if(this.props.location === "right" && event.target.dataset.role === "folder_icon"){
+      this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
+    }
+    this.resizePanel();
   },
 
   onInput(){

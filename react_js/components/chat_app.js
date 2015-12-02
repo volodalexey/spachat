@@ -28,6 +28,10 @@ const ChatApp = React.createClass({
     window.addEventListener('resize', this.handleResize);
   },
 
+  componentWillUnmount: function() {
+    window.removeEventListener('resize', this.handleResize);
+  },
+
   render() {
     return (
       <div>

@@ -66,7 +66,7 @@ const Button = React.createClass({
             </div>
           </div>))
       } else {
-        content.push(<img key={this.props.config.icon} src={"components/icon/" + this.props.config.icon + ".svg"}/>);
+        content.push(<img key={this.props.config.icon} data-role={this.props.config.icon} src={"components/icon/" + this.props.config.icon + ".svg"}/>);
       }
     }
     if (this.props.config.text) {
