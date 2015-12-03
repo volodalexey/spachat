@@ -2,7 +2,7 @@ import React from 'react'
 import Localization from '../js/localization.js'
 
 const Input = React.createClass({
-  render_att() {
+  renderAtt() {
     var params = {};
     if (this.props.config.class) {
       params["className"] = this.props.config.class;
@@ -23,19 +23,16 @@ const Input = React.createClass({
     if (this.props.config.onkeypress) {
       params["onkeypress"] = this.props.config.onkeypress;
     }
-
-    if (this.props.config.type === "checkbox" || this.props.config.type === "radio") {
-      if (this.props.config.data.key) {
-        if (this.props.data[this.props.config.data.key]) {
-          params["checked"] = 'true';
-        }
-      }
-    }
-
+    //if (this.props.config.type === "checkbox" || this.props.config.type === "radio") {
+    //  if (this.props.config.data.key) {
+    //    if (this.props.data[this.props.config.data.key]) {
+    //      params["checked"] = 'true';
+    //    }
+    //  }
+    //}
     if (this.props.config.data && this.props.config.data.key === "page") {
       params["value"] = this.props.data[this.props.config.data.key];
     }
-
     if (this.props.config.name) {
       params['id'] = this.props.config.id;
       if (this.props.config.type === "radio" && this.props.index !== undefined) {
@@ -44,22 +41,23 @@ const Input = React.createClass({
         params['name'] = this.props.config.name;
       }
     }
-
     if (this.props.config.type === "text") {
       if (this.props.config.key) {
         params["value"] = this.props.data[this.props.config.data.key];
       }
     }
 
-    if (this.props.config.text) {
-      if (typeof this.props.config.text === "number") {
-        params["value"] = Localization.getLocText(this.props.config.text);
-      } else {
-        this.props.config.text;
-      }
-    }
+    return params;
+  },
 
-    return params
+  renderContent(){
+    var content;
+    if (typeof this.props.config.text === "number") {
+      content = Localization.getLocText(this.props.config.text);
+    } else {
+      content = this.props.config.text;
+    }
+    return {__html: content};
   },
 
   routerWillLeave() {
@@ -78,7 +76,16 @@ const Input = React.createClass({
   },
 
   render() {
-    return <input type="text" onChange={this.handleChange} {...this.render_att()} {...this.renderHandlers()} />;
+    if (this.props.config.text) {
+      return (
+        <div className="flex-item flex-wrap flex-align-c flex-item-auto">
+          <input type={this.props.config.type} {...this.renderAtt()} {...this.renderHandlers()}/>
+          <span dangerouslySetInnerHTML={this.renderContent()}/>
+        </div>
+      );
+    } else {
+      return <input type={this.props.config.type} {...this.renderAtt()} {...this.renderHandlers()}/>;
+    }
   }
 });
 

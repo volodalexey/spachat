@@ -25,11 +25,11 @@ const ChatApp = React.createClass({
   },
 
   componentDidMount: function() {
-    window.addEventListener('resize', this.handleResize);
+    //window.addEventListener('resize', this.handleResize);
   },
 
   componentWillUnmount: function() {
-    window.removeEventListener('resize', this.handleResize);
+    //window.removeEventListener('resize', this.handleResize);
   },
 
   render() {

@@ -93,6 +93,7 @@ const Panel = React.createClass({
 
   componentDidMount(){
     document.addEventListener('load', this.onLoad, true);
+    document.addEventListener('resize', this.handleResize);
 
     if(this.props.location === "left"){
       this.outer_container = document.querySelector('[data-role="left_panel_outer_container"]');
@@ -114,6 +115,7 @@ const Panel = React.createClass({
 
   componentWillUnmount: function() {
     window.removeEventListener('load', this.onLoad);
+    document.removeEventListener('resize', this.handleResize);
     this.outer_container = null;
     this.inner_container = null;
     this.togglePanelElement = null;
@@ -122,11 +124,6 @@ const Panel = React.createClass({
 
   componentDidUpdate(){
     this.resizePanel();
-  },
-
-  componentWillUnmount(){
-    this.outer_container = null;
-    this.togglePanelElement = null;
   },
 
   onClick(event){
@@ -141,6 +138,7 @@ const Panel = React.createClass({
   },
 
   onLoad: function(event) {
+    if(!this.togglePanelElement) return;
     if(this.props.location === "left" && event.target.dataset.onload){
       this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
     }
@@ -222,7 +220,7 @@ const Panel = React.createClass({
   },
 
   resizePanel: function(flag) {
-    if (this.state.openedState) {
+    if (this.state.openedState && this.outer_container) {
       if (this.outer_container.clientWidth + this.togglePanelElement_clientWidth > document.body.clientWidth) {
         this.inner_container.style.maxWidth = this.calcMaxWidth();
 

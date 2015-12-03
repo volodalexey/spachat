@@ -5,7 +5,7 @@ import Localization from '../js/localization.js'
 
 const LinkButton = React.createClass({
   displayName: 'LinkButton',
-  render_att() {
+  renderAtt() {
     var params = {};
     if (this.props.config.data) {
       for (var dataKey in this.props.config.data) {
@@ -56,9 +56,6 @@ const LinkButton = React.createClass({
     return handlers;
   },
 
-  render_icon() {
-  },
-
   renderContent(){
     var content = [];
     if (this.props.config.icon) {
@@ -90,7 +87,7 @@ const LinkButton = React.createClass({
   render() {
     return (
       <Link to={this.props.config.link}>
-        <button className={this.props.config.class ? this.props.config.class : ''} {...this.render_att()} {...this.renderHandlers()}>
+        <button className={this.props.config.class ? this.props.config.class : ''} {...this.renderAtt()} {...this.renderHandlers()}>
           {this.renderContent()}
         </button>
       </Link>

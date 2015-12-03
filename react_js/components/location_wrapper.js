@@ -52,7 +52,7 @@ const Location_Wrapper = React.createClass({
         hide = false;
       }
       items.push(<TripleElement mode={this.props.mode} events={this.props.events} key={idx} config={element_config}
-                                hide={hide} />);
+                                hide={hide} data={this.props.data}/>);
     });
     return items;
   },
@@ -60,11 +60,16 @@ const Location_Wrapper = React.createClass({
   render(){
     var rawConfig = this.prepareConfig();
     var elements = [];
-    for (let key in rawConfig.byDataLocation) {
-      let wrapperConfig = rawConfig.byDataLocation[key].wrapperConfig;
-      let wrapperItems = rawConfig.byDataLocation[key].configs;
-      elements.push(this.wrapper(wrapperConfig, wrapperItems));
+    if(Object.keys(rawConfig.byDataLocation).length === 0){
+      elements.push(this.wrapperItems(rawConfig));
+    } else {
+      for (let key in rawConfig.byDataLocation) {
+        let wrapperConfig = rawConfig.byDataLocation[key].wrapperConfig;
+        let wrapperItems = rawConfig.byDataLocation[key].configs;
+        elements.push(this.wrapper(wrapperConfig, wrapperItems));
+      }
     }
+
     return <div className={this.props.mainContainer ? this.props.mainContainer.class : ""}>{elements}</div>
   }
 });

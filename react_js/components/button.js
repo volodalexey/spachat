@@ -3,7 +3,7 @@ import Localization from '../js/localization.js'
 
 const Button = React.createClass({
   displayName: 'Button',
-  render_att() {
+  renderAtt() {
     var params = {};
     if (this.props.config.data) {
       for (var dataKey in this.props.config.data) {
@@ -97,16 +97,12 @@ const Button = React.createClass({
     return className;
   },
 
-  render_icon() {
-
-  },
-
   render() {
     var self = this;
 
 
     return (
-      <button className={this.renderClassName()} {...this.render_att()}
+      <button className={this.renderClassName()} {...this.renderAtt()}
         {...this.renderHandlers()} >
         {this.renderContent()}
       </button>

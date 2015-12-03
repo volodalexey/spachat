@@ -2,6 +2,8 @@ import React from 'react'
 import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import Location_Wrapper from './location_wrapper'
+import PanelUsers from './panel_users'
+import PanelChats from './panel_chats'
 
 const MODE = {
   CREATE_CHAT: 'CREATE_CHAT',
@@ -64,7 +66,7 @@ const Body = React.createClass({
           },
           "name": "",
           "id": "user_name",
-          "disabled" : false,
+          "disabled": false,
           "sort": 2,
           "mode": "USER_INFO_EDIT"
         },
@@ -102,7 +104,7 @@ const Body = React.createClass({
           },
           "name": "",
           "id": "user_old_password",
-          "disabled" : false,
+          "disabled": false,
           "sort": 4,
           "mode": "USER_INFO_EDIT"
         },
@@ -140,7 +142,7 @@ const Body = React.createClass({
           },
           "name": "",
           "id": "user_new_password",
-          "disabled" : false,
+          "disabled": false,
           "sort": 6,
           "mode": "USER_INFO_EDIT"
         },
@@ -178,7 +180,7 @@ const Body = React.createClass({
           },
           "name": "",
           "id": "user_confirm_password",
-          "disabled" : false,
+          "disabled": false,
           "sort": 8,
           "mode": "USER_INFO_EDIT"
         },
@@ -252,7 +254,7 @@ const Body = React.createClass({
           },
           "name": "",
           "id": "user_id",
-          "disabled" : true,
+          "disabled": true,
           "sort": 2,
           "mode": "USER_INFO_SHOW"
         },
@@ -290,7 +292,7 @@ const Body = React.createClass({
           },
           "name": "",
           "id": "user_name",
-          "disabled" : true,
+          "disabled": true,
           "sort": 4,
           "mode": "USER_INFO_SHOW"
         },
@@ -366,7 +368,7 @@ const Body = React.createClass({
           }
         }
       ],
-      chats_info_config: [
+      create_chat_config: [
         {
           "role": "locationWrapper",
           "classList": "w-100p p-t-b flex-sp-around",
@@ -401,8 +403,9 @@ const Body = React.createClass({
             "mode": "CREATE_CHAT"
           },
           "disable": false
-        },
-
+        }
+      ],
+      join_chat_config: [
         {
           "role": "locationWrapper",
           "classList": "w-100p flex-sp-between",
@@ -515,32 +518,8 @@ const Body = React.createClass({
           },
           "disable": false
         },
-
-        {
-          "role": "locationWrapper",
-          "classList": "w-100p flex-sp-between",
-          "location": "chats"
-        },
-        {
-          "element": "svg",
-          "icon": "pointer_icon.svg",
-          "location": "chats",
-          "data": {
-            "mode": "CHATS"
-          }
-        },
-        {
-          "element": "label",
-          "type": "text",
-          "location": "chats",
-          "data": {
-            "role": "my_chat_id_label",
-            "key": "chat_id",
-            "mode": "CHATS"
-          },
-          "disabled": false
-        },
-
+      ],
+      detail_view_config: [
         {
           "role": "locationWrapper",
           "classList": "w-100p flex-sp-between",
@@ -642,6 +621,25 @@ const Body = React.createClass({
           },
           "class": "button-convex",
           "name": "SaveCloseChat"
+        }
+      ],
+      chats_info_config: [
+        {
+          "element": "svg",
+          "icon": "pointer_icon.svg",
+          "data": {
+            "mode": "CHATS"
+          }
+        },
+        {
+          "element": "label",
+          "type": "text",
+          "data": {
+            "role": "my_chat_id_label",
+            "key": "chat_id",
+            "mode": "CHATS"
+          },
+          "disabled": false
         }
       ],
       connections_config: [
@@ -767,19 +765,31 @@ const Body = React.createClass({
   },
 
   defineConfigs(mode){
-    switch(mode){
-      case MODE.CHATS: case MODE.CREATE_CHAT: case MODE.JOIN_CHAT:
-        return this.props.chats_info_config;
+    switch (mode) {
+      case MODE.CHATS:
+        return {
+          chats_info_config: this.props.chats_info_config,
+          detail_view_config: this.props.detail_view_config
+        };
+        break;
+      case MODE.CREATE_CHAT:
+        return this.props.create_chat_config;
+        break;
+      case MODE.JOIN_CHAT:
+        return this.props.join_chat_config;
         break;
       case MODE.DETAIL_VIEW:
-        return this.props.chats_info_config;
+        return this.props.detail_view_config;
         break;
-      case MODE.USERS: case MODE.JOIN_USER:
+      case MODE.USERS:
+      case MODE.JOIN_USER:
         return this.props.users_info_config;
         break;
-      case MODE.CREATE_BLOG: case MODE.JOIN_BLOG: case MODE.BLOGS:
+      case MODE.CREATE_BLOG:
+      case MODE.JOIN_BLOG:
+      case MODE.BLOGS:
         return null;
-      break;
+        break;
 
       case MODE.USER_INFO_SHOW:
         return this.props.user_info_show_config;
@@ -793,24 +803,59 @@ const Body = React.createClass({
 
       default:
         return null;
-      break;
+        break;
     }
+  },
+
+  defineComponents(mode, configs){
+    var items = [], data;
+    switch (mode) {
+      case MODE.USERS:
+        data = [{
+          userName: "Bacy",
+          user_id: "fghnjmd-f-beb-erg84g5t4g4"
+        },
+          {
+            userName: "Pety",
+            user_id: "454857y75 5yt4n5nt45t-n4597"
+          }];
+        return <PanelUsers data={data}/>;
+        break;
+      case MODE.CHATS:
+        data = {
+          "chat_ids": [
+            {chat_id: "0001-4422-3806-9811-2158-1d43-b4af-0777-0778-1e8d-b082-f7c6",
+              user_ids: ["0001-4419-1911-2840-a1c9-3faa-7286-a086-1cb4-f8f6-9736-8ae0 ",
+                "0001-4419-1911-2840-a1c9-3faa-7286-a086-1cb4-f8f6-9736-8ae0 "]},
+            {chat_id: "0001-4422-5577-2727-6438-8a24-6f95-c0f9-4c75-a123-d894-4901",
+              user_ids: ["00jhngfvdc-fg-bfg-b-fg--bf-g-fg8n7fh6nf76g7nf7g7e0"]}
+          ],
+          "openChatsInfoArray": [
+            '0001-4422-3806-9811-2158-1d43-b4af-0777-0778-1e8d-b082-f7c6'
+          ],
+          "openChats": ["0001-4422-5577-2727-6438-8a24-6f95-c0f9-4c75-a123-d894-4901"]
+        };
+        return <PanelChats data={data} configs={configs}/>;
+        break;
+      default:
+        items.push(<Location_Wrapper key={1} configs={configs}/>);
+        break;
+    }
+    return items;
   },
 
   render(){
     let configs = this.defineConfigs(this.props.mode);
-    if(!configs){
+    if (!configs) {
       return <div></div>
     } else {
       return (
         <div>
-          <Location_Wrapper configs={configs} />
+          {this.defineComponents(this.props.mode, configs)}
         </div>
       )
     }
   }
 });
-
-
 
 export default Body;

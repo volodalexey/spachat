@@ -2,7 +2,7 @@ import React from 'react'
 import Localization from '../js/localization.js'
 
 const Label = React.createClass({
-  render_att() {
+  renderAtt() {
     var params = {};
     if (this.props.config.class) {
       params["className"] = this.props.config.class;
@@ -26,26 +26,32 @@ const Label = React.createClass({
     return params;
   },
 
+  renderContent(){
+    let text;
+    if (this.props.config.text) {
+      text = typeof this.props.config.text === "number" ? Localization.getLocText(this.props.config.text) : this.props.config.text
+    } else {
+      text = '';
+    }
+
+    if(this.props.config.description){
+      if (typeof this.props.config.description === 'number') {
+        text = Localization.getLocText(this.props.config.description);
+      } else {
+        text = this.props.config.description;
+      }
+    }
+
+    if (this.props.config.data && this.props.config.data.key) {
+      text = this.props.data[this.props.config.data.key];
+    }
+    return text;
+  },
+
   render() {
     return (
-      <label {...this.render_att()}>
-        {(() => {
-          if (this.props.config.text) {
-            return typeof this.props.config.text === "number" ? Localization.getLocText(this.props.config.text) : this.props.config.text
-          } else {
-            return ''
-          }
-
-          if (this.props.config.description && typeof this.props.config.description === 'number') {
-            return Localization.getLocText(this.props.config.description);
-          } else {
-            return this.props.config.description;
-          }
-
-          if (this.props.config.data && this.props.config.data.key) {
-            return this.props.data[this.props.config.data.key];
-          }
-        })()}
+      <label {...this.renderAtt()}>
+        {this.renderContent()}
       </label>
     )
   }

@@ -6,6 +6,7 @@ import Input from './input'
 import Label from './label'
 import Select from './select'
 import Textarea from './textarea'
+import Svg from './svg'
 
 const TripleElement = React.createClass({
   definingElement(){
@@ -19,7 +20,7 @@ const TripleElement = React.createClass({
         }
         break;
       case "label":
-        return <Label events={this.props.events} config={this.props.config}/>;
+        return <Label events={this.props.events} config={this.props.config} data={this.props.data}/>;
         break;
       case "input":
         return <Input events={this.props.events} config={this.props.config}/>;
@@ -31,7 +32,7 @@ const TripleElement = React.createClass({
         return <Textarea events={this.props.events} config={this.props.config}/>;
         break;
       case "svg":
-        return <img src={"components/icon/" + this.props.config.icon} className="transition-all" data-role="pointer" />;
+        return <Svg events={this.props.events} config={this.props.config} data={this.props.data} />;
         break;
       default:
         return <div/>
