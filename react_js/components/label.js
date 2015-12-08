@@ -26,6 +26,16 @@ const Label = React.createClass({
     return params;
   },
 
+  renderHandlers(){
+    var handlers = {};
+    if (this.props.events) {
+      for (var dataKey in this.props.events) {
+        handlers[dataKey] = this.props.events[dataKey];
+      }
+    }
+    return handlers;
+  },
+
   renderContent(){
     let text;
     if (this.props.config.text) {
@@ -50,8 +60,8 @@ const Label = React.createClass({
 
   render() {
     return (
-      <label {...this.renderAtt()}>
-        {this.renderContent()}
+      <label {...this.renderAtt()} {...this.renderHandlers()}>
+        {this.renderContent() }
       </label>
     )
   }

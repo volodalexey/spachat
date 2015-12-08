@@ -61,7 +61,7 @@ const Input = React.createClass({
   },
 
   routerWillLeave() {
-    if (this.state.value)
+    if (this.stateInfo.value)
       return 'You have unsaved information, are you sure you want to leave this page?';
   },
 

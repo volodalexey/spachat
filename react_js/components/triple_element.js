@@ -20,7 +20,7 @@ const TripleElement = React.createClass({
         }
         break;
       case "label":
-        return <Label events={this.props.events} config={this.props.config} data={this.props.data}/>;
+        return <Label events={this.props.events} events={this.props.events} config={this.props.config} data={this.props.data}/>;
         break;
       case "input":
         return <Input events={this.props.events} config={this.props.config}/>;

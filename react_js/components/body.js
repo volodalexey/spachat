@@ -830,15 +830,14 @@ const Body = React.createClass({
             {chat_id: "0001-4422-5577-2727-6438-8a24-6f95-c0f9-4c75-a123-d894-4901",
               user_ids: ["00jhngfvdc-fg-bfg-b-fg--bf-g-fg8n7fh6nf76g7nf7g7e0"]}
           ],
-          "openChatsInfoArray": [
-            '0001-4422-3806-9811-2158-1d43-b4af-0777-0778-1e8d-b082-f7c6'
-          ],
+          "openChatsInfoArray": this.props.data.openChatsInfoArray,
+          "closingChatsInfoArray": this.props.data.closingChatsInfoArray,
           "openChats": ["0001-4422-5577-2727-6438-8a24-6f95-c0f9-4c75-a123-d894-4901"]
         };
-        return <PanelChats data={data} configs={configs}/>;
+        return <PanelChats events={this.props.events} data={data} configs={configs}/>;
         break;
       default:
-        items.push(<Location_Wrapper key={1} configs={configs}/>);
+        items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs}/>);
         break;
     }
     return items;

@@ -71,7 +71,8 @@ const Panel = React.createClass({
   getInitialState(){
     if (this.props.location === 'left') {
       return {
-        //activeTab: "CHATS",
+        openChatsInfoArray: [],
+        closingChatsInfoArray: [],
         openedState: false,
         left: '-700px',
         toggleElemHide: false,
@@ -81,7 +82,8 @@ const Panel = React.createClass({
     }
     if (this.props.location === 'right') {
       return {
-        //activeTab: "",
+        openChatsInfoArray: [],
+        closingChatsInfoArray: [],
         openedState: false,
         right: '-700px',
         toggleElemHide: false,
@@ -96,27 +98,30 @@ const Panel = React.createClass({
     document.addEventListener('resize', this.handleResize);
 
     if(this.props.location === "left"){
-      this.outer_container = document.querySelector('[data-role="left_panel_outer_container"]');
+      this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
       this.inner_container = document.querySelector('[data-role="left_panel_inner_container"]');
-      this.outer_container.style.right = '100vw';
+      this.outerContainer.style.right = '100vw';
     }
     if(this.props.location === "right"){
-      this.outer_container = document.querySelector('[data-role="right_panel_outer_container"]');
+      this.outerContainer = document.querySelector('[data-role="right_panel_outer_container"]');
       this.inner_container = document.querySelector('[data-role="right_panel_inner_container"]');
-      this.outer_container.style.left = '100vw';
+      this.outerContainer.style.left = '100vw';
     }
-    this.togglePanelElement = this.outer_container.querySelector('[data-action="togglePanel"]');
-    this.togglePanelElementToolbar = this.outer_container.querySelector('[data-role="togglePanelToolbar"]');
+    this.togglePanelElement = this.outerContainer.querySelector('[data-action="togglePanel"]');
+    this.togglePanelElementToolbar = this.outerContainer.querySelector('[data-role="togglePanelToolbar"]');
 
-    this.outer_container.classList.remove("hide");
-    this.outer_container.style.maxWidth = window.innerWidth + 'px';
-    this.outer_container.style.zIndex = z_index;
+    this.outerContainer.classList.remove("hide");
+    this.outerContainer.style.maxWidth = window.innerWidth + 'px';
+    this.outerContainer.style.zIndex = z_index;
+
+    this.outerContainer.addEventListener('transitionend', this.onTransitionEnd);
+
   },
 
   componentWillUnmount: function() {
     window.removeEventListener('load', this.onLoad);
     document.removeEventListener('resize', this.handleResize);
-    this.outer_container = null;
+    this.outerContainer = null;
     this.inner_container = null;
     this.togglePanelElement = null;
     this.togglePanelElementToolbar = null;
@@ -127,13 +132,19 @@ const Panel = React.createClass({
   },
 
   onClick(event){
-    switch (event.currentTarget.dataset.action){
-      case 'togglePanel':
-        this.togglePanel();
-        break;
-      case 'switchPanelMode':
-        this.switchPanelMode(event.currentTarget);
-        break;
+    var element = this.getDataParameter(event.currentTarget, 'action');
+    if(element) {
+      switch (element.dataset.action){
+        case 'togglePanel':
+          this.togglePanel();
+          break;
+        case 'show_more_info':
+          this.showMoreInfo(element);
+          break;
+        case 'switchPanelMode':
+          this.switchPanelMode(element);
+          break;
+      }
     }
   },
 
@@ -152,26 +163,35 @@ const Panel = React.createClass({
 
   },
 
-  onTransitionEnd(){
-
+  onTransitionEnd(event){
+    if(event.target.dataset && event.target.dataset.role === 'detail_view_container'){
+      let chatIdValue = event.target.dataset.chat_id;
+      var resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
+      if(resultClosing !== -1) {
+        this.state.closingChatsInfoArray.splice(this.state.closingChatsInfoArray.indexOf(chatIdValue), 1);
+        this.setState({
+          closingChatsInfoArray: this.state.closingChatsInfoArray
+        });
+      }
+    }
   },
 
   togglePanel(forceClose){
-    this.openOrClosePanel(this.outer_container.clientWidth + this.togglePanelElement.clientWidth >
+    this.openOrClosePanel(this.outerContainer.clientWidth + this.togglePanelElement.clientWidth >
       document.body.clientWidth, forceClose);
   },
 
   openOrClosePanel(bigMode, forceClose) {
-    if(this.props.location === 'left' && this.outer_container.style.right === '100vw'){
-      this.outer_container.style.right = '';
+    if(this.props.location === 'left' && this.outerContainer.style.right === '100vw'){
+      this.outerContainer.style.right = '';
     }
-    if(this.props.location === 'right' && this.outer_container.style.left === '100vw'){
-      this.outer_container.style.left = '';
+    if(this.props.location === 'right' && this.outerContainer.style.left === '100vw'){
+      this.outerContainer.style.left = '';
     }
 
     if (!forceClose && !this.state.openedState) {
-      this.previous_z_index = this.outer_container.style.zIndex;
-      this.outer_container.style.zIndex = ++z_index;
+      this.previous_z_index = this.outerContainer.style.zIndex;
+      this.outerContainer.style.zIndex = ++z_index;
       this.inner_container.style.maxWidth = this.calcMaxWidth();
       this.setState({
         openedState: true,
@@ -181,9 +201,9 @@ const Panel = React.createClass({
       z_index--;
       this.setState({
         openedState: false,
-        [this.props.location]: (-this.outer_container.offsetWidth) + 'px'
+        [this.props.location]: (-this.outerContainer.offsetWidth) + 'px'
       });
-      this.outer_container.style.zIndex = this.previous_z_index;
+      this.outerContainer.style.zIndex = this.previous_z_index;
       if (bigMode === true) {
         this.setState({
           toggleElemHide: false,
@@ -219,9 +239,33 @@ const Panel = React.createClass({
     return document.body.offsetWidth + 'px';
   },
 
+  showMoreInfo(element){
+    var chatIdValue = element.dataset.chat_id;
+    var detailView = element.querySelector('[data-role="detail_view_container"]');
+    var pointer = element.querySelector('[data-role="pointer"]');
+    var resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
+    if(resultClosing !== -1) return;
+    if (detailView.dataset.state) {
+      this.state.openChatsInfoArray.splice(this.state.openChatsInfoArray.indexOf(chatIdValue), 1);
+      this.state.closingChatsInfoArray.push(chatIdValue);
+      this.setState({
+        closingChatsInfoArray: this.state.closingChatsInfoArray,
+        openChatsInfoArray: this.state.openChatsInfoArray
+      });
+      return;
+    }
+
+    if(element){
+      this.state.openChatsInfoArray.push(chatIdValue);
+      this.setState({
+        openChatsInfoArray: this.state.openChatsInfoArray
+      });
+    }
+  },
+
   resizePanel: function(flag) {
-    if (this.state.openedState && this.outer_container) {
-      if (this.outer_container.clientWidth + this.togglePanelElement_clientWidth > document.body.clientWidth) {
+    if (this.state.openedState && this.outerContainer) {
+      if (this.outerContainer.clientWidth + this.togglePanelElement_clientWidth > document.body.clientWidth) {
         this.inner_container.style.maxWidth = this.calcMaxWidth();
 
         if (!this.state.toggleElemHide){
@@ -260,6 +304,16 @@ const Panel = React.createClass({
     }
   },
 
+  renderHandlers(events){
+    var handlers = {};
+    if (events) {
+      for (var dataKey in events) {
+        handlers[dataKey] = events[dataKey];
+      }
+    }
+    return handlers;
+  },
+
   render() {
     let onEvent = {
       onClick: this.onClick,
@@ -289,8 +343,8 @@ const Panel = React.createClass({
             </div>
             <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
             </div>
-            <div data-role="panel_body" className="overflow-a flex-item-1-auto">
-              <Body mode={this.state.bodyMode} events={onEvent} />
+            <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
+              <Body mode={this.state.bodyMode} data={this.state} events={onEvent} />
             </div>
             <footer className="flex-item-auto">
               <div data-role={location + '_go_to_container'} className="c-200"></div>
@@ -301,7 +355,27 @@ const Panel = React.createClass({
         </div>
       </section>
     )
+  },
+
+  getDataParameter(element, param, _n) {
+    if (!element) {
+      return null;
+    }
+    if (element.disabled && param !== "description") {
+      return null;
+    }
+    var n = !( _n === undefined || _n === null ) ? _n : 5;
+    if (n > 0) {
+      if (!element.dataset || !element.dataset[param]) {
+        return this.getDataParameter(element.parentNode, param, n - 1);
+      } else if (element.dataset[param]) {
+        return element;
+      }
+    }
+    return null;
   }
+
+
 });
 
 

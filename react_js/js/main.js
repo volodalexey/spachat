@@ -10,3 +10,4 @@ import Index from '../components/index'
 render((
   <Index />
 ), document.getElementById('app'));
+

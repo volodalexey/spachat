@@ -331,7 +331,7 @@ define('panel', [
       this.bindMainContexts();
 
       this.type = description.type;
-      this.outer_container = description.outer_container;
+      this.outerContainer = description.outerContainer;
       this.inner_container = description.inner_container;
       this.filter_container = description.filter_container;
       this.go_to_container = description.go_to_container;
@@ -399,10 +399,10 @@ define('panel', [
         _this.cashElements();
         _this.elementMap = {};
         _this.addMainEventListener();
-        _this.outer_container.classList.remove("hide");
-        _this.outer_container.style.maxWidth = window.innerWidth + 'px';
-        _this.outer_container.style[_this.type] = (-_this.outer_container.offsetWidth) + 'px';
-        _this.outer_container.style.zIndex = panel.prototype.z_index;
+        _this.outerContainer.classList.remove("hide");
+        _this.outerContainer.style.maxWidth = window.innerWidth + 'px';
+        _this.outerContainer.style[_this.type] = (-_this.outerContainer.offsetWidth) + 'px';
+        _this.outerContainer.style.zIndex = panel.prototype.z_index;
         _this.togglePanelElement_clientWidth = _this.togglePanelElement.clientWidth;
       },
 
@@ -419,13 +419,13 @@ define('panel', [
 
       hidePanel: function() {
         var _this = this;
-        _this.outer_container.classList.add("hide");
+        _this.outerContainer.classList.add("hide");
       },
 
       cashElements: function() {
         var _this = this;
-        _this.togglePanelElement = _this.outer_container.querySelector('[data-action="togglePanel"]');
-        _this.body_container = _this.outer_container.querySelector('[data-role="panel_body"]');
+        _this.togglePanelElement = _this.outerContainer.querySelector('[data-action="togglePanel"]');
+        _this.body_container = _this.outerContainer.querySelector('[data-role="panel_body"]');
       },
 
       cashBodyElement: function() {
@@ -531,7 +531,7 @@ define('panel', [
           var chat_info_container = _this.body_container.querySelector('[data-chat_id="' + chat_id + '"]');
           if (chat_info_container) {
             var detail_view = chat_info_container.querySelector('[data-role="detail_view_container"]');
-            if (detail_view.dataset.state) {
+            if (detail_view.dataset.stateInfo) {
               _this.bodyOptions.mode = _this.MODE.DETAIL_VIEW;
               var pointer = chat_info_container.querySelector('[data-role="pointer"]');
               _this.render({
@@ -555,10 +555,10 @@ define('panel', [
       openOrClosePanel: function(bigMode, forceClose) {
         var _this = this;
         _this.showSpinner(_this.body_container);
-        if (!forceClose && _this.outer_container.style[_this.type] !== '0px') {
-          _this.previous_z_index = _this.outer_container.style.zIndex;
-          _this.outer_container.style.zIndex = ++panel.prototype.z_index;
-          _this.outer_container.style[_this.type] = "0px";
+        if (!forceClose && _this.outerContainer.style[_this.type] !== '0px') {
+          _this.previous_z_index = _this.outerContainer.style.zIndex;
+          _this.outerContainer.style.zIndex = ++panel.prototype.z_index;
+          _this.outerContainer.style[_this.type] = "0px";
           _this.inner_container.style.maxWidth = _this.calcMaxWidth();
           _this.fillPanelToolbar();
           _this.render();
@@ -567,9 +567,9 @@ define('panel', [
           if (_this.bodyOptions.mode === _this.MODE.DETAIL_VIEW) {
             _this.bodyOptions.mode = _this.MODE.CHATS;
           }
-          _this.outer_container.style.zIndex = _this.previous_z_index;
+          _this.outerContainer.style.zIndex = _this.previous_z_index;
           _this.body_container.innerHTML = "";
-          _this.outer_container.style[_this.type] = (-_this.outer_container.offsetWidth) + 'px';
+          _this.outerContainer.style[_this.type] = (-_this.outerContainer.offsetWidth) + 'px';
           if (bigMode === true) {
             _this.togglePanelElement.classList.add('hide');
             _this.togglePanelElementToolbar.classList.remove('hide');
@@ -692,7 +692,7 @@ define('panel', [
 
       togglePanel: function(forceClose) {
         var _this = this;
-        _this.openOrClosePanel(_this.outer_container.clientWidth + _this.togglePanelElement.clientWidth > document.body.clientWidth, forceClose);
+        _this.openOrClosePanel(_this.outerContainer.clientWidth + _this.togglePanelElement.clientWidth > document.body.clientWidth, forceClose);
       },
 
       togglePanelWorkflow: function() {
@@ -828,7 +828,7 @@ define('panel', [
         chat_id_value = element.dataset.chat_id;
         var detail_view = element.querySelector('[data-role="detail_view_container"]');
         var pointer = element.querySelector('[data-role="pointer"]');
-        if (detail_view.dataset.state) {
+        if (detail_view.dataset.stateInfo) {
           _this.openChatsInfoArray.splice(_this.openChatsInfoArray.indexOf(chat_id_value), 1);
           detail_view.classList.remove("max-height-auto");
           pointer.classList.remove("rotate-90");
@@ -868,7 +868,7 @@ define('panel', [
 
       rotatePointer: function(options) {
         var _this = this;
-        options.detail_view.dataset.state = "expanded";
+        options.detail_view.dataset.stateInfo = "expanded";
         options.detail_view.classList.add("max-height-auto");
         options.detail_view.style.maxHeight = '15em';
         options.pointer.classList.add("rotate-90");
@@ -881,7 +881,7 @@ define('panel', [
           var action = event.target.dataset.role;
           if (action === 'detail_view_container') {
             if (event.target.style.maxHeight === '0em') {
-              delete event.target.dataset.state;
+              delete event.target.dataset.stateInfo;
               event.target.innerHTML = "";
               _this.resizePanel();
             }
@@ -891,9 +891,9 @@ define('panel', [
 
       resizePanel: function() {
         var _this = this;
-        if (_this.outer_container.style[_this.type] === '0px') {
+        if (_this.outerContainer.style[_this.type] === '0px') {
           _this.inner_container.style.maxWidth = _this.calcMaxWidth();
-          if (_this.outer_container.clientWidth + _this.togglePanelElement_clientWidth > document.body.clientWidth) {
+          if (_this.outerContainer.clientWidth + _this.togglePanelElement_clientWidth > document.body.clientWidth) {
             _this.togglePanelElement.classList.add('hide');
             if (_this.togglePanelElementToolbar) {
               _this.togglePanelElementToolbar.classList.remove('hide');
