@@ -8,6 +8,7 @@ import Popup from '../components/popup'
 import Decription from '../components/description'
 import ChatResize from '../components/chat_resize'
 import PanelExtraToolbar from '../components/panel_extra_toolbar'
+import PanelFilter from '../components/panel_filter'
 import PanelToolbar from '../components/panel_toolbar'
 import Body from '../components/body'
 
@@ -77,7 +78,187 @@ const Panel = React.createClass({
         left: '-700px',
         toggleElemHide: false,
         toggleToolbarElemHide: true,
-        bodyMode: "CHATS"
+        bodyMode: "CREATE_CHAT",
+
+        chats_GoToOptions: {
+          show: false,
+          rteChoicePage: true,
+          mode_change: "rte",
+          "chat": null
+        },
+        chats_PaginationOptions: {
+          text: "chats",
+          show: false,
+          mode_change: "rte",
+          currentPage: null,
+          firstPage: 1,
+          lastPage: null,
+          showEnablePagination: false,
+          showChoicePerPage: false,
+          perPageValue: 1,
+          perPageValueNull: false,
+          rtePerPage: true,
+          disableBack: false,
+          disableFirst: false,
+          disableLast: false,
+          disableForward: false
+        },
+        chats_ExtraToolbarOptions: {
+          show: true
+        },
+        chats_FilterOptions: {
+          show: false
+        },
+        chats_ListOptions: {
+          text: "chats",
+          start: 0,
+          last: null,
+          previousStart: 0,
+          previousFinal: 0,
+          restore: false,
+          data_download: false
+        },
+
+        users_ExtraToolbarOptions: {
+          show: true
+        },
+        users_FilterOptions: {
+          show: false
+        },
+        users_GoToOptions: {
+          text: "users",
+          show: false,
+          rteChoicePage: true,
+          mode_change: "rte",
+          "user": null
+        },
+        users_PaginationOptions: {
+          show: false,
+          mode_change: "rte",
+          currentPage: null,
+          firstPage: 1,
+          lastPage: null,
+          showEnablePagination: false,
+          showChoicePerPage: false,
+          perPageValue: 15,
+          perPageValueNull: false,
+          rtePerPage: true,
+          disableBack: false,
+          disableFirst: false,
+          disableLast: false,
+          disableForward: false
+        },
+        users_ListOptions: {
+          text: "users",
+          start: 0,
+          last: null,
+          previousStart: 0,
+          previousFinal: 0,
+          restore: false,
+          data_download: false
+        },
+
+        joinUser_ExtraToolbarOptions: {
+          show: false
+        },
+        joinUser_FilterOptions: {
+          show: false
+        },
+        joinUser_PaginationOptions: {
+          show: false
+        },
+        joinUser_GoToOptions: {
+          show: false,
+          rteChoicePage: true,
+          mode_change: "rte"
+        },
+        joinUser_ListOptions: {
+          readyForRequest: false
+        },
+
+        createChat_ExtraToolbarOptions: {
+          show: false
+        },
+        createChat_FilterOptions: {
+          show: false
+        },
+        createChat_PaginationOptions: {
+          show: false
+        },
+        createChat_GoToOptions: {
+          show: false,
+          rteChoicePage: true,
+          mode_change: "rte"
+        },
+
+        joinChat_ExtraToolbarOptions: {
+          show: false
+        },
+        joinChat_FilterOptions: {
+          show: false
+        },
+        joinChat_PaginationOptions: {
+          show: false
+        },
+        joinChat_GoToOptions: {
+          show: false,
+          rteChoicePage: true,
+          mode_change: "rte"
+        },
+
+        createBlog_ExtraToolbarOptions: {
+          show: false
+        },
+        createBlog_FilterOptions: {
+          show: false
+        },
+        createBlog_PaginationOptions: {
+          show: false
+        },
+        createBlog_GoToOptions: {
+          show: false,
+          rteChoicePage: true,
+          mode_change: "rte"
+        },
+
+        joinBlog_ExtraToolbarOptions: {
+          show: false
+        },
+        joinBlog_FilterOptions: {
+          show: false
+        },
+        joinBlog_PaginationOptions: {
+          show: false
+        },
+        joinBlog_GoToOptions: {
+          show: false,
+          rteChoicePage: true,
+          mode_change: "rte"
+        },
+
+        blogs_ExtraToolbarOptions: {
+          show: false
+        },
+        blogs_FilterOptions: {
+          show: false
+        },
+        blogs_PaginationOptions: {
+          show: false
+        },
+        blogs_GoToOptions: {
+          show: false,
+          rteChoicePage: true,
+          mode_change: "rte"
+        },
+        blogs_ListOptions: {
+          text: "blogs",
+          start: 0,
+          last: null,
+          previousStart: 0,
+          previousFinal: 0,
+          restore: false,
+          data_download: false
+        }
       }
     }
     if (this.props.location === 'right') {
@@ -88,7 +269,61 @@ const Panel = React.createClass({
         right: '-700px',
         toggleElemHide: false,
         toggleToolbarElemHide: true,
-        bodyMode: "USER_INFO_SHOW"
+        bodyMode: "USER_INFO_SHOW",
+
+        connections_ExtraToolbarOptions: {
+          show: false
+        },
+        connections_FilterOptions: {
+          show: false
+        },
+        connections_PaginationOptions: {
+          show: false
+        },
+        connections_GoToOptions: {
+          show: false,
+          rteChoicePage: true,
+          mode_change: "rte"
+        },
+        connections_ListOptions: {
+          text: "connections",
+          start: 0,
+          last: null,
+          previousStart: 0,
+          previousFinal: 0,
+          restore: false,
+          data_download: false
+        },
+
+        userInfoEdit_ExtraToolbarOptions: {
+          show: false
+        },
+        userInfoEdit_FilterOptions: {
+          show: false
+        },
+        userInfoEdit_PaginationOptions: {
+          show: false
+        },
+        userInfoEdit_GoToOptions: {
+          show: false,
+          rteChoicePage: true,
+          mode_change: "rte"
+        },
+
+        userInfoShow_ExtraToolbarOptions: {
+          show: false
+        },
+        userInfoShow_FilterOptions: {
+          show: false
+        },
+        userInfoShow_PaginationOptions: {
+          show: false
+        },
+        userInfoShow_GoToOptions: {
+          show: false,
+          rteChoicePage: true,
+          mode_change: "rte"
+        }
       }
     }
   },
@@ -143,6 +378,12 @@ const Panel = React.createClass({
           break;
         case 'switchPanelMode':
           this.switchPanelMode(element);
+          break;
+        case 'changeMode':
+          this.changeMode(element);
+          break;
+        case 'changeRTE':
+          this.changeRTE(element);
           break;
       }
     }
@@ -263,7 +504,49 @@ const Panel = React.createClass({
     }
   },
 
-  resizePanel: function(flag) {
+  changeMode(element){
+    if(!element || !element.dataset) return;
+    var chat_part = element.dataset.chat_part;
+    var newMode = element.dataset.mode_to;
+    switch (chat_part) {
+      case "filter":
+        switch (newMode){
+          case "CHATS_FILTER":
+            var bool_Value = this.state.chats_FilterOptions.show.toString() !== "true";
+            this.setState({chats_FilterOptions: {show: bool_Value}});
+            break;
+          case "USERS_FILTER":
+            var bool_Value = this.state.users_FilterOptions.show.toString() !== "true";
+            this.setState({users_FilterOptions: {show: bool_Value}});
+            break;
+        }
+        break;
+      case "pagination":
+
+        break;
+    }
+    },
+
+  changeRTE(element){
+      switch (this.state.bodyMode){
+        case "CHATS":
+          if(element.checked){
+            this.setState({chats_PaginationOptions: {mode_change: "rte", rtePerPage: true} });
+          } else {
+            this.setState({chats_PaginationOptions: {mode_change: "nrte", rtePerPage: false} });
+          }
+          break;
+        case "USERS":
+          if(element.checked){
+            this.setState({users_PaginationOptions: {mode_change: "rte", rtePerPage: true} });
+          } else {
+            this.setState({users_PaginationOptions: {mode_change: "nrte", rtePerPage: false} });
+          }
+          break;
+    }
+  },
+
+  resizePanel(flag) {
     if (this.state.openedState && this.outerContainer) {
       if (this.outerContainer.clientWidth + this.togglePanelElement_clientWidth > document.body.clientWidth) {
         this.inner_container.style.maxWidth = this.calcMaxWidth();
@@ -322,11 +605,8 @@ const Panel = React.createClass({
     };
 
     let location = this.props.location;
-
-
     let btnConfig = (location === 'left') ? this.props.leftBtnConfig : this.props.rightBtnConfig;
     let panel_toolbar_class = (location === 'left') ? 'w-100p flex-dir-col flex-item-auto c-200' : 'w-100p flex-dir-col c-200';
-
     var style = {[location] : this.state[location]} ;
     return (
       <section style={style} data-role={location + '_panel_outer_container'} className={location + '-panel hide p-fx panel animate c-100'}>
@@ -339,9 +619,10 @@ const Panel = React.createClass({
             </header>
             <div data-role={location + '_extra_toolbar_container'}
                  className="flex-sp-around flex-item-auto c-200">
-              <PanelExtraToolbar mode={this.state.bodyMode} events={onEvent} />
+              <PanelExtraToolbar mode={this.state.bodyMode} data={this.state} events={onEvent} />
             </div>
             <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
+              <PanelFilter mode={this.state.bodyMode} data={this.state} events={onEvent} />
             </div>
             <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
               <Body mode={this.state.bodyMode} data={this.state} events={onEvent} />
@@ -374,11 +655,6 @@ const Panel = React.createClass({
     }
     return null;
   }
-
-
 });
-
-
-
 
 export default Panel;

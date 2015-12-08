@@ -23,13 +23,13 @@ const Input = React.createClass({
     if (this.props.config.onkeypress) {
       params["onkeypress"] = this.props.config.onkeypress;
     }
-    //if (this.props.config.type === "checkbox" || this.props.config.type === "radio") {
-    //  if (this.props.config.data.key) {
-    //    if (this.props.data[this.props.config.data.key]) {
-    //      params["checked"] = 'true';
-    //    }
-    //  }
-    //}
+    if (this.props.config.type === "checkbox" || this.props.config.type === "radio") {
+      if (this.props.config.data.key) {
+        if (this.props.data[this.props.config.data.key]) {
+          params["checked"] = 'true';
+        }
+      }
+    }
     if (this.props.config.data && this.props.config.data.key === "page") {
       params["value"] = this.props.data[this.props.config.data.key];
     }
