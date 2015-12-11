@@ -42,11 +42,10 @@ const Input = React.createClass({
       }
     }
     if (this.props.config.type === "text") {
-      if (this.props.config.key) {
+      if (this.props.config.data && this.props.config.data.key && this.props.data) {
         params["value"] = this.props.data[this.props.config.data.key];
       }
     }
-
     return params;
   },
 

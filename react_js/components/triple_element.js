@@ -13,10 +13,11 @@ const TripleElement = React.createClass({
     switch (this.props.config.element) {
       case "button":
         if (this.props.config.link) {
-          return <LinkButton mode={this.props.mode} events={this.props.events} config={this.props.config}/>;
+          return <LinkButton mode={this.props.mode} events={this.props.events} config={this.props.config}
+                             data={this.props.data}/>;
         } else {
           return <Button mode={this.props.mode} events={this.props.events} config={this.props.config}
-                  hide={this.props.hide} />;
+                  hide={this.props.hide} data={this.props.data}/>;
         }
         break;
       case "label":
@@ -26,10 +27,10 @@ const TripleElement = React.createClass({
         return <Input events={this.props.events} config={this.props.config} data={this.props.data}/>;
         break;
       case "select":
-        return <Select events={this.props.events} config={this.props.config}/>;
+        return <Select events={this.props.events} config={this.props.config} data={this.props.data}/>;
         break;
       case "textarea":
-        return <Textarea events={this.props.events} config={this.props.config}/>;
+        return <Textarea events={this.props.events} config={this.props.config} data={this.props.data}/>;
         break;
       case "svg":
         return <Svg events={this.props.events} config={this.props.config} data={this.props.data} />;

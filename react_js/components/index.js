@@ -18,6 +18,10 @@ import Localization from '../js/localization.js'
 const Index = React.createClass({
   componentDidMount(){
     Localization.setMainComponent(this);
+    var language = localStorage.getItem('language');
+    if(language && Localization.lang !== language){
+      Localization.changeLanguage(language);
+    }
   },
 
   render(){

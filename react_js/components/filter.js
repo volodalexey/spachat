@@ -2,7 +2,7 @@ import React from 'react'
 import Triple_Element from '../components/triple_element'
 import Location_Wrapper from './location_wrapper'
 
-const PanelFilter = React.createClass({
+const Filter = React.createClass({
   getDefaultProps() {
     return {
       usersFilterConfig: [
@@ -280,6 +280,52 @@ const PanelFilter = React.createClass({
     return options;
   },
 
+  changeRTE(element, state){
+    switch (state.bodyMode){
+      case "CHATS":
+        if(element.checked){
+          state.chats_PaginationOptions.mode_change = "rte";
+          state.chats_PaginationOptions.rtePerPage = true;
+          return {chats_PaginationOptions: state.chats_PaginationOptions };
+        } else {
+          state.chats_PaginationOptions.mode_change = "nrte";
+          state.chats_PaginationOptions.rtePerPage = false;
+          return {chats_PaginationOptions: state.chats_PaginationOptions };
+        }
+        break;
+      case "USERS":
+        if(element.checked){
+          state.users_PaginationOptions.mode_change = "rte";
+          state.users_PaginationOptions.rtePerPage = true;
+          return {users_PaginationOptions: state.users_PaginationOptions };
+        } else {
+          state.users_PaginationOptions.mode_change = "nrte";
+          state.users_PaginationOptions.rtePerPage = false;
+          return {users_PaginationOptions: state.users_PaginationOptions };
+        }
+        break;
+    }
+  },
+
+  showPerPage(element, state){
+    switch (state.bodyMode){
+      case "CHATS":
+          state.chats_PaginationOptions.currentPage = null;
+        if(state.chats_PaginationOptions.showEnablePagination) {
+          //pagination.countQuantityPages
+        }
+          return {chats_PaginationOptions: state.chats_PaginationOptions };
+        break;
+      case "USERS":
+        state.users_PaginationOptions.currentPage = null;
+        if(state.users_PaginationOptions.showEnablePagination) {
+          //pagination.countQuantityPages
+        }
+          return {users_PaginationOptions: state.users_PaginationOptions };
+        break;
+    }
+  },
+
   render(){
     var options = this.defineOptions(this.props.mode);
     if(options && options.filterOptions.show) {
@@ -311,4 +357,4 @@ const PanelFilter = React.createClass({
   }
 });
 
-export default PanelFilter;
+export default Filter;

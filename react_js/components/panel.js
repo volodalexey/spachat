@@ -8,9 +8,11 @@ import Popup from '../components/popup'
 import Decription from '../components/description'
 import ChatResize from '../components/chat_resize'
 import PanelExtraToolbar from '../components/panel_extra_toolbar'
-import PanelFilter from '../components/panel_filter'
+import Filter from '../components/filter'
 import PanelToolbar from '../components/panel_toolbar'
 import Body from '../components/body'
+import Pagination from '../components/pagination'
+import GoTo from '../components/go_to'
 
 var z_index = 80;
 
@@ -35,7 +37,6 @@ const MODE = {
   GO_TO: "GO_TO",
   FILTER: 'FILTER'
 };
-
 
 const Panel = React.createClass({
   getDefaultProps() {
@@ -330,14 +331,14 @@ const Panel = React.createClass({
 
   componentDidMount(){
     document.addEventListener('load', this.onLoad, true);
-    document.addEventListener('resize', this.handleResize);
+    document.addEventListener('resize', this.handleResize, false);
 
-    if(this.props.location === "left"){
+    if (this.props.location === "left") {
       this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
       this.inner_container = document.querySelector('[data-role="left_panel_inner_container"]');
       this.outerContainer.style.right = '100vw';
     }
-    if(this.props.location === "right"){
+    if (this.props.location === "right") {
       this.outerContainer = document.querySelector('[data-role="right_panel_outer_container"]');
       this.inner_container = document.querySelector('[data-role="right_panel_inner_container"]');
       this.outerContainer.style.left = '100vw';
@@ -368,8 +369,8 @@ const Panel = React.createClass({
 
   onClick(event){
     var element = this.getDataParameter(event.currentTarget, 'action');
-    if(element) {
-      switch (element.dataset.action){
+    if (element) {
+      switch (element.dataset.action) {
         case 'togglePanel':
           this.togglePanel();
           break;
@@ -383,32 +384,45 @@ const Panel = React.createClass({
           this.changeMode(element);
           break;
         case 'changeRTE':
-          this.changeRTE(element);
+          var newState = Filter.prototype.changeRTE(element, this.state);
+          this.setState(newState);
+          break;
+        case 'showPerPage':
+          var newState = Filter.prototype.showPerPage(element, this.state);
+          this.setState(newState);
+          break;
+        case 'changeRTE_goTo':
+          var newState = GoTo.prototype.changeRTE(element, this.state);
+          this.setState(newState);
           break;
       }
     }
   },
 
   onLoad: function(event) {
-    if(!this.togglePanelElement) return;
-    if(this.props.location === "left" && event.target.dataset.onload){
+    if (!this.togglePanelElement) return;
+    if (this.props.location === "left" && event.target.dataset.onload) {
       this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
     }
-    if(this.props.location === "right" && event.target.dataset.onload){
+    if (this.props.location === "right" && event.target.dataset.onload) {
       this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
     }
     this.resizePanel();
   },
 
   onInput(){
-
+  },
+  onChange(event){
+    if (event.target.dataset.role === 'selectLanguage') {
+      this.onChangeLanguage(event);
+    }
   },
 
   onTransitionEnd(event){
-    if(event.target.dataset && event.target.dataset.role === 'detail_view_container'){
+    if (event.target.dataset && event.target.dataset.role === 'detail_view_container') {
       let chatIdValue = event.target.dataset.chat_id;
       var resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
-      if(resultClosing !== -1) {
+      if (resultClosing !== -1) {
         this.state.closingChatsInfoArray.splice(this.state.closingChatsInfoArray.indexOf(chatIdValue), 1);
         this.setState({
           closingChatsInfoArray: this.state.closingChatsInfoArray
@@ -423,10 +437,10 @@ const Panel = React.createClass({
   },
 
   openOrClosePanel(bigMode, forceClose) {
-    if(this.props.location === 'left' && this.outerContainer.style.right === '100vw'){
+    if (this.props.location === 'left' && this.outerContainer.style.right === '100vw') {
       this.outerContainer.style.right = '';
     }
-    if(this.props.location === 'right' && this.outerContainer.style.left === '100vw'){
+    if (this.props.location === 'right' && this.outerContainer.style.left === '100vw') {
       this.outerContainer.style.left = '';
     }
 
@@ -438,7 +452,7 @@ const Panel = React.createClass({
         openedState: true,
         [this.props.location]: '0px'
       });
-    } else{
+    } else {
       z_index--;
       this.setState({
         openedState: false,
@@ -466,10 +480,10 @@ const Panel = React.createClass({
     }
     this.previous_Filter_Options = false;
 
-      if (this.previous_BodyMode && this.previous_BodyMode !== this.state.bodyMode) {
-        //this.showSpinner(this.body_container);
-      }
-      this.previous_BodyMode = this.state.bodyMode;
+    if (this.previous_BodyMode && this.previous_BodyMode !== this.state.bodyMode) {
+      //this.showSpinner(this.body_container);
+    }
+    this.previous_BodyMode = this.state.bodyMode;
 
     if (this.state.bodyMode === MODE.USER_INFO_SHOW) {
       this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
@@ -485,7 +499,7 @@ const Panel = React.createClass({
     var detailView = element.querySelector('[data-role="detail_view_container"]');
     var pointer = element.querySelector('[data-role="pointer"]');
     var resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
-    if(resultClosing !== -1) return;
+    if (resultClosing !== -1) return;
     if (detailView.dataset.state) {
       this.state.openChatsInfoArray.splice(this.state.openChatsInfoArray.indexOf(chatIdValue), 1);
       this.state.closingChatsInfoArray.push(chatIdValue);
@@ -496,7 +510,7 @@ const Panel = React.createClass({
       return;
     }
 
-    if(element){
+    if (element) {
       this.state.openChatsInfoArray.push(chatIdValue);
       this.setState({
         openChatsInfoArray: this.state.openChatsInfoArray
@@ -505,12 +519,13 @@ const Panel = React.createClass({
   },
 
   changeMode(element){
-    if(!element || !element.dataset) return;
+    if (!element || !element.dataset) return;
     var chat_part = element.dataset.chat_part;
     var newMode = element.dataset.mode_to;
+    var newState;
     switch (chat_part) {
       case "filter":
-        switch (newMode){
+        switch (newMode) {
           case "CHATS_FILTER":
             var bool_Value = this.state.chats_FilterOptions.show.toString() !== "true";
             this.setState({chats_FilterOptions: {show: bool_Value}});
@@ -522,27 +537,30 @@ const Panel = React.createClass({
         }
         break;
       case "pagination":
+        switch (newMode) {
+          case "PAGINATION":
+            switch (this.state.bodyMode) {
+              case "CHATS":
+                this.state.chats_PaginationOptions.show = element.checked;
+                this.state.chats_PaginationOptions.showEnablePagination = element.checked;
+                this.setState({chats_PaginationOptions: this.state.chats_PaginationOptions});
+                if (!element.checked) {
+                  //ListOptions param = null or 0
+                }
+                break;
+              case "USERS":
+                this.state.users_PaginationOptions.show = element.checked;
+                this.state.users_PaginationOptions.showEnablePagination = element.checked;
+                this.setState({users_PaginationOptions: this.state.users_PaginationOptions});
+                if (!element.checked) {
+                  //ListOptions param = null or 0
+                }
+                break;
+            }
+            break;
 
+        }
         break;
-    }
-    },
-
-  changeRTE(element){
-      switch (this.state.bodyMode){
-        case "CHATS":
-          if(element.checked){
-            this.setState({chats_PaginationOptions: {mode_change: "rte", rtePerPage: true} });
-          } else {
-            this.setState({chats_PaginationOptions: {mode_change: "nrte", rtePerPage: false} });
-          }
-          break;
-        case "USERS":
-          if(element.checked){
-            this.setState({users_PaginationOptions: {mode_change: "rte", rtePerPage: true} });
-          } else {
-            this.setState({users_PaginationOptions: {mode_change: "nrte", rtePerPage: false} });
-          }
-          break;
     }
   },
 
@@ -551,13 +569,13 @@ const Panel = React.createClass({
       if (this.outerContainer.clientWidth + this.togglePanelElement_clientWidth > document.body.clientWidth) {
         this.inner_container.style.maxWidth = this.calcMaxWidth();
 
-        if (!this.state.toggleElemHide){
+        if (!this.state.toggleElemHide) {
           this.setState({
             toggleElemHide: true
           });
         }
         if (this.togglePanelElementToolbar) {
-          if(this.state.toggleToolbarElemHide){
+          if (this.state.toggleToolbarElemHide) {
             this.setState({
               toggleToolbarElemHide: false
             });
@@ -565,13 +583,13 @@ const Panel = React.createClass({
         }
       }
       else {
-        if (this.state.toggleElemHide){
+        if (this.state.toggleElemHide) {
           this.setState({
             toggleElemHide: false
           });
         }
         if (this.togglePanelElementToolbar) {
-          if(!this.state.toggleToolbarElemHide){
+          if (!this.state.toggleToolbarElemHide) {
             this.setState({
               toggleToolbarElemHide: true
             });
@@ -579,11 +597,25 @@ const Panel = React.createClass({
         }
       }
     } else {
-      if (this.state.toggleElemHide){
+      if (this.state.toggleElemHide) {
         this.setState({
           toggleElemHide: false
         });
       }
+    }
+  },
+
+  onChangeLanguage(event){
+    this.changeLanguage(event);
+  },
+
+  changeLanguage: function(event) {
+    var current_localization = Localization.lang;
+    Localization.changeLanguage(event.target.value);
+
+    var language = localStorage.getItem('language');
+    if (!language || language !== event.target.value) {
+      localStorage.setItem('language', event.target.value);
     }
   },
 
@@ -600,6 +632,7 @@ const Panel = React.createClass({
   render() {
     let onEvent = {
       onClick: this.onClick,
+      onChange: this.onChange,
       onInput: this.onInput,
       onTransitionEnd: this.onTransitionEnd
     };
@@ -607,30 +640,36 @@ const Panel = React.createClass({
     let location = this.props.location;
     let btnConfig = (location === 'left') ? this.props.leftBtnConfig : this.props.rightBtnConfig;
     let panel_toolbar_class = (location === 'left') ? 'w-100p flex-dir-col flex-item-auto c-200' : 'w-100p flex-dir-col c-200';
-    var style = {[location] : this.state[location]} ;
+    var style = {[location]: this.state[location]};
     return (
-      <section style={style} data-role={location + '_panel_outer_container'} className={location + '-panel hide p-fx panel animate c-100'}>
+      <section style={style} data-role={location + '_panel_outer_container'}
+               className={location + '-panel hide p-fx panel animate c-100'}>
         <div className="p-rel h-100p flex-dir-col">
           <Triple_Element events={onEvent} config={btnConfig} hide={this.state.toggleElemHide}/>
           <div data-role={location + '_panel_inner_container'}
                className="min-width-350 flex-item-1-auto clear flex-dir-col h-100p">
             <header id={location} data-role={location + '_panel_toolbar'} className={panel_toolbar_class}>
-            <PanelToolbar location={location} mode={this.state.bodyMode} events={onEvent} hide={this.state.toggleToolbarElemHide} />
+              <PanelToolbar location={location} mode={this.state.bodyMode} events={onEvent}
+                            hide={this.state.toggleToolbarElemHide}/>
             </header>
             <div data-role={location + '_extra_toolbar_container'}
                  className="flex-sp-around flex-item-auto c-200">
-              <PanelExtraToolbar mode={this.state.bodyMode} data={this.state} events={onEvent} />
+              <PanelExtraToolbar mode={this.state.bodyMode} data={this.state} events={onEvent}/>
             </div>
             <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
-              <PanelFilter mode={this.state.bodyMode} data={this.state} events={onEvent} />
+              <Filter mode={this.state.bodyMode} data={this.state} events={onEvent}/>
             </div>
             <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
-              <Body mode={this.state.bodyMode} data={this.state} events={onEvent} />
+              <Body mode={this.state.bodyMode} data={this.state} events={onEvent}/>
             </div>
             <footer className="flex-item-auto">
-              <div data-role={location + '_go_to_container'} className="c-200"></div>
+              <div data-role={location + '_go_to_container'} className="c-200">
+                <GoTo mode={this.state.bodyMode} data={this.state} events={onEvent}/>
+              </div>
               <div data-role={location + '_pagination_containe'}
-                   className="flex filter_container justContent c-200"></div>
+                   className="flex filter_container justContent c-200">
+                <Pagination mode={this.state.bodyMode} data={this.state} events={onEvent}/>
+              </div>
             </footer>
           </div>
         </div>
