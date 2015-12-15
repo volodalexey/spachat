@@ -7,11 +7,11 @@ class Localization {
   changeLanguage(lang) {
     this.lang = lang;
     this.mainComponent.forceUpdate();
-  }
+  };
 
   constructor(lang) {
     this.lang = lang;
-  }
+  };
 
   getLocText(id) {
     var text;
@@ -24,11 +24,11 @@ class Localization {
       }
     );
     return text;
-  }
+  };
 
   setMainComponent(mainComponent) {
     this.mainComponent = mainComponent;
-  }
+  };
 
 }
 

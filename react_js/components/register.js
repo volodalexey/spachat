@@ -10,6 +10,8 @@ import Decription from '../components/description'
 import Localization from '../js/localization.js'
 
 const Register = React.createClass({
+  mixins: [ History ],
+
   getDefaultProps() {
     return {
       mainContainer: {
@@ -148,7 +150,7 @@ const Register = React.createClass({
           "type": "submit",
           "text": 53,
           "location": "registerButton",
-          "link": "/chat",
+          //"link": "/chat",
           "data": {
             "description": 55,
             "action": "register",
@@ -160,8 +162,26 @@ const Register = React.createClass({
     }
   },
 
+  getInitialState(){
+    return {
+      popupOptions:{
+        messagePopupShow: false,
+        type: '',
+        options: {},
+        onDataActionClick: null
+      }
+    }
+  },
+
+  componentDidMount(){
+    this.registerForm = document.querySelector('[data-role="registerForm"]');
+  },
+
+  componentWillUnmount(){
+    this.registerForm = null;
+  },
+
   onClick(){
-    console.log('click register');
   },
 
   onChange: function(event) {
@@ -171,6 +191,54 @@ const Register = React.createClass({
         break;
     }
   },
+
+  onSubmit(event){
+    var self = this;
+    event.preventDefault();
+    var userName = this.registerForm.elements.userName.value;
+    var userPassword = this.registerForm.elements.userPassword.value;
+    var userPasswordConfirm = this.registerForm.elements.userPasswordConfirm.value;
+    if (userName && userPassword && userPasswordConfirm) {
+      if (userPassword === userPasswordConfirm) {
+        console.log('registerNewUser');
+        this.history.pushState(null, '/chat');
+      } else {
+        this.state.popupOptions.messagePopupShow = true;
+        this.state.popupOptions.type = 'error';
+        this.state.popupOptions.options = {message: 91};
+        this.state.popupOptions.onDataActionClick = (function(action) {
+          switch (action) {
+            case 'confirmCancel':
+              self.state.popupOptions.messagePopupShow = false;
+              self.state.popupOptions.type = '';
+              self.state.popupOptions.options = {};
+              self.state.popupOptions.onDataActionClick = null;
+              self.setState({popupOptions: self.state.popupOptions});
+              break;
+          }
+        });
+        this.setState({popupOptions: this.state.popupOptions});
+      }
+    } else {
+      this.state.popupOptions.messagePopupShow = true;
+      this.state.popupOptions.type = 'error';
+      this.state.popupOptions.options = {message: 88};
+      this.state.popupOptions.onDataActionClick = (function(action) {
+        switch (action) {
+          case 'confirmCancel':
+            self.state.popupOptions.messagePopupShow = false;
+            self.state.popupOptions.type = '';
+            self.state.popupOptions.options = {};
+            self.state.popupOptions.onDataActionClick = null;
+            self.setState({popupOptions: self.state.popupOptions});
+            break;
+        }
+      });
+      this.setState({popupOptions: this.state.popupOptions});
+    }
+  },
+
+
 
   render() {
     let onEvent = {
@@ -182,12 +250,12 @@ const Register = React.createClass({
       <div>
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
-            <form className="flex-inner-container form-small" data-role="registerForm">
+            <form className="flex-inner-container form-small" data-role="registerForm" onSubmit={this.onSubmit}>
               <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}/>
             </form>
           </div>
         </div>
-        <Popup />
+        <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
         <Decription />
       </div>
     )

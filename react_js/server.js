@@ -2,6 +2,7 @@ var express = require('express');
 var webpack = require('webpack');
 var webpackDevMiddleware = require('webpack-dev-middleware');
 var WebpackConfig = require('./webpack.config');
+var id_Generator = require('./server_js/id_generator');
 
 var app = express();
 app.use(webpackDevMiddleware(webpack(WebpackConfig), {
@@ -50,9 +51,15 @@ var returnIndexFile = function(req, res, next) {
     });
   });
 };
+app.get('/api/uuid', function(req, res) {
+  res.status(200).send({ uuid: id_Generator.generateId() });
+});
+
 app.use(redirectToStatic);
 app.use(express.static(__dirname));
 app.use(returnIndexFile);
+
+
 
 console.log("__dirname", __dirname);
 
