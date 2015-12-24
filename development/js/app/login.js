@@ -96,7 +96,7 @@ define('login', [
 
       bindContexts: function() {
         var _this = this;
-        _this.bindedOnSubmit = _this.onSubmit.bind(_this);
+        _this.bindedOnSubmit = _this.handleSubmit.bind(_this);
         _this.bindedRedirectToRegister = _this.redirectToRegister.bind(_this);
       },
 
@@ -113,7 +113,7 @@ define('login', [
         _this.addRemoveListener('remove', _this.redirectToRegisterElement, 'click', _this.bindedRedirectToRegister, false);
       },
 
-      onSubmit: function(event) {
+      handleSubmit: function(event) {
         var _this = this;
         event.preventDefault();
         var userName = _this.loginForm.elements.userName.value;

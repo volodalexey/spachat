@@ -1,8 +1,12 @@
 var globalUsersDatabaseDescription = require('json!../configs/indexeddb/global_users.json');
 
-class indexeddb {
+import AsyncCore from '../js/async_core.js'
+import EventBus from '../js/event_bus.js'
+
+class indexeddb extends AsyncCore {
 
   constructor() {
+    super();
     this.defaultVersion = 1;
     this.STATES = {
       READY: 1
@@ -10,22 +14,22 @@ class indexeddb {
     this.stateInfo = this.STATES.READY;
     this.openDatabases = {};
     this.addEventListeners();
-  };
+  }
 
   onSetUserId(user_id) {
     this.user_id = user_id;
-  };
+  }
 
   addEventListeners() {
-    var _this = this;
-    _this.removeEventListeners();
-    event_bus.on('setUserId', _this.onSetUserId, _this);
-  };
+    var self = this;
+    self.removeEventListeners();
+    EventBus.on('setUserId', self.onSetUserId, self);
+  }
 
   removeEventListeners() {
-    var _this = this;
-    event_bus.off('setUserId', _this.onSetUserId);
-  };
+    var self = this;
+    EventBus.off('setUserId', self.onSetUserId);
+  }
 
   isTableInTables(db_name, table_name) {
     var has = false;
@@ -33,7 +37,7 @@ class indexeddb {
       has = this.openDatabases[db_name].db.objectStoreNames.contains(table_name);
     }
     return has;
-  };
+  }
 
   onOpenSuccess(options, callback, event) {
     if (!this.openDatabases[options.db_name]) {
@@ -44,12 +48,12 @@ class indexeddb {
     }
     this.openDatabases[options.db_name].options = options;
     callback(null);
-  };
+  }
 
   onOpenError(options, callback, event) {
     event.currentTarget.error.options = options;
     callback(event.currentTarget.error);
-  };
+  }
 
   onOpenUpgrade(options, callback, event) {
     var db = event.target.result;
@@ -68,47 +72,47 @@ class indexeddb {
         });
       }
     });
-  };
+  }
 
   onOpenBlocked(options, callback, event) {
     event.currentTarget.error.options = options;
     callback(event.currentTarget.error);
-  };
+  }
 
   _proceedOpen(options, version, callback) {
-    var _this = this;
+    var self = this;
     var openRequest = indexedDB.open(options.db_name, version);
-    openRequest.onsuccess = _this.onOpenSuccess.bind(_this, options, callback);
-    openRequest.onerror = _this.onOpenError.bind(_this, options, callback);
-    openRequest.onupgradeneeded = _this.onOpenUpgrade.bind(_this, options, callback);
-    openRequest.onblocked = _this.onOpenBlocked.bind(_this, options, callback);
-  };
+    openRequest.onsuccess = self.onOpenSuccess.bind(self, options, callback);
+    openRequest.onerror = self.onOpenError.bind(self, options, callback);
+    openRequest.onupgradeneeded = self.onOpenUpgrade.bind(self, options, callback);
+    openRequest.onblocked = self.onOpenBlocked.bind(self, options, callback);
+  }
 
   open(options, force, callback) {
-    var _this = this;
+    var self = this;
 
-    if (_this.canNotProceed(callback)) {
+    if (self.canNotProceed(callback)) {
       return;
     }
 
-    if (options.db_name !== _this.globalUsersDatabaseDescription.db_name) {
-      _this.getGlobalUser(_this.user_id, function(err, globalUserInfo) {
+    if (options.db_name !== globalUsersDatabaseDescription.db_name) {
+      self.getGlobalUser(self.user_id, function(err, globalUserInfo) {
         if (err) {
           callback(err);
           return;
         }
         var version = globalUserInfo.db_versions[options.db_name] ?
-          globalUserInfo.db_versions[options.db_name] : _this.defaultVersion;
+          globalUserInfo.db_versions[options.db_name] : self.defaultVersion;
 
-        if (_this.openDatabases[options.db_name] &&
-          _this.openDatabases[options.db_name].db) {
+        if (self.openDatabases[options.db_name] &&
+          self.openDatabases[options.db_name].db) {
           if (force) {
-            version = ++_this.openDatabases[options.db_name].db.version;
-            _this.openDatabases[options.db_name].db.close();
-            _this.openDatabases[options.db_name] = null;
+            version = ++self.openDatabases[options.db_name].db.version;
+            self.openDatabases[options.db_name].db.close();
+            self.openDatabases[options.db_name] = null;
             // store new version in user credentials
-            _this.putGlobalUserDBVersion(
-              _this.user_id,
+            self.putGlobalUserDBVersion(
+              self.user_id,
               options.db_name,
               version,
               function(err) {
@@ -119,30 +123,30 @@ class indexeddb {
               }
             )
           } else {
-            _this.onOpenSuccess(options, callback);
+            self.onOpenSuccess(options, callback);
             return;
           }
         }
-        _this._proceedOpen(options, version, callback);
+        self._proceedOpen(options, version, callback);
       });
     } else {
-      _this._proceedOpen(options, _this.defaultVersion, callback);
+      self._proceedOpen(options, self.defaultVersion, callback);
     }
-  };
+  }
 
   addOrUpdateAll(options, table_name, addOrUpdateData, callback) {
-    var _this = this, cur_table_description;
+    var self = this, cur_table_description;
 
-    if (_this.canNotProceed(callback)) {
+    if (self.canNotProceed(callback)) {
       return;
     }
 
-    cur_table_description = _this.getCurrentTableDescription(options, table_name);
+    cur_table_description = self.getCurrentTableDescription(options, table_name);
 
     var executeAddOrUpdateAll = function() {
       var trans, store;
       try {
-        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readwrite");
+        trans = self.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readwrite");
         store = trans.objectStore(cur_table_description.table_name);
       } catch (error) {
         error.options = options;
@@ -151,7 +155,7 @@ class indexeddb {
         return;
       }
 
-      _this.async_eachSeries(addOrUpdateData, function(addOrPut, _callback) {
+      self.async_eachSeries(addOrUpdateData, function(addOrPut, _callback) {
         var addOrUpdateCursor;
         try {
           addOrUpdateCursor = store.openCursor(IDBKeyRange.only(addOrPut[cur_table_description.table_parameter.keyPath]));
@@ -194,13 +198,13 @@ class indexeddb {
           callback(null);
         }
       });
-    };
+    }
 
-    var _isTableInTables = _this.isTableInTables(options.db_name, cur_table_description.table_name);
-    if (_this.openDatabases[options.db_name] && _isTableInTables) {
+    var _isTableInTables = self.isTableInTables(options.db_name, cur_table_description.table_name);
+    if (self.openDatabases[options.db_name] && _isTableInTables) {
       executeAddOrUpdateAll();
     } else {
-      _this.open(
+      self.open(
         options,
         !_isTableInTables,
         function(err, upgraded) {
@@ -212,39 +216,39 @@ class indexeddb {
         }
       );
     }
-  };
+  }
 
   getAll(options, table_name, callback) {
-    var _this = this, cur_table_description;
+    var self = this, cur_table_description;
 
-    if (_this.canNotProceed(callback)) {
+    if (self.canNotProceed(callback)) {
       return;
     }
 
-    cur_table_description = _this.getCurrentTableDescription(options, table_name);
+    cur_table_description = self.getCurrentTableDescription(options, table_name);
 
-    var _isTableInTables = _this.isTableInTables(options.db_name, cur_table_description.table_name);
-    if (_this.openDatabases[options.db_name] && _isTableInTables) {
-      _this._executeGetAll(options, cur_table_description.table_name, callback);
+    var _isTableInTables = self.isTableInTables(options.db_name, cur_table_description.table_name);
+    if (self.openDatabases[options.db_name] && _isTableInTables) {
+      self._executeGetAll(options, cur_table_description.table_name, callback);
     } else {
-      _this.open(
+      self.open(
         options,
         !_isTableInTables,
         function(err, upgraded) {
           if (err) {
             callback(err, upgraded);
           } else {
-            _this._executeGetAll(options, cur_table_description.table_name, callback);
+            self._executeGetAll(options, cur_table_description.table_name, callback);
           }
         }
       );
     }
-  };
+  }
 
   _executeGetAll(options, table_name, callback) {
-    var _this = this, trans, store, openRequest, returnData = [];
+    var self = this, trans, store, openRequest, returnData = [];
     try {
-      trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readonly");
+      trans = self.openDatabases[options.db_name].db.transaction([table_name], "readonly");
       store = trans.objectStore(table_name);
       openRequest = store.openCursor();
     } catch (error) {
@@ -271,24 +275,24 @@ class indexeddb {
       err.cur_table_description = cur_table_description;
       callback(err);
     };
-  };
+  }
 
   /**
    * open indexedDB table and search through for requested key path
    */
   getByKeyPath(options, table_name, getValue, callback) {
-    var _this = this, cur_table_description;
+    var self = this, cur_table_description;
 
-    if (_this.canNotProceed(callback)) {
+    if (self.canNotProceed(callback)) {
       return;
     }
 
-    cur_table_description = _this.getCurrentTableDescription(options, table_name);
+    cur_table_description = self.getCurrentTableDescription(options, table_name);
 
     var executeGet = function() {
       var trans, store, result;
       try {
-        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readonly");
+        trans = self.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readonly");
         store = trans.objectStore(cur_table_description.table_name);
       } catch (error) {
         error.options = options;
@@ -318,13 +322,13 @@ class indexeddb {
         err.cur_table_description = cur_table_description;
         callback(err);
       };
-    };
+    }
 
-    var _isTableInTables = _this.isTableInTables(options.db_name, cur_table_description.table_name);
-    if (_this.openDatabases[options.db_name] && _isTableInTables) {
+    var _isTableInTables = self.isTableInTables(options.db_name, cur_table_description.table_name);
+    if (self.openDatabases[options.db_name] && _isTableInTables) {
       executeGet();
     } else {
-      _this.open(
+      self.open(
         options,
         !_isTableInTables,
         function(err, upgraded) {
@@ -336,21 +340,21 @@ class indexeddb {
         }
       );
     }
-  };
+  }
 
   getByKeysPath(options, table_name, getValues, nullWrapper, callback) {
-    var _this = this, cur_table_description;
+    var self = this, cur_table_description;
 
-    if (_this.canNotProceed(callback)) {
+    if (self.canNotProceed(callback)) {
       return;
     }
 
-    cur_table_description = _this.getCurrentTableDescription(options, table_name);
+    cur_table_description = self.getCurrentTableDescription(options, table_name);
 
     var executeGet = function() {
       var trans, store;
       try {
-        trans = _this.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readonly");
+        trans = self.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readonly");
         store = trans.objectStore(cur_table_description.table_name);
       } catch (error) {
         error.options = options;
@@ -388,13 +392,13 @@ class indexeddb {
           callback(err);
         };
       });
-    };
+    }
 
-    var _isTableInTables = _this.isTableInTables(options.db_name, cur_table_description.table_name);
-    if (_this.openDatabases[options.db_name] && _isTableInTables) {
+    var _isTableInTables = self.isTableInTables(options.db_name, cur_table_description.table_name);
+    if (self.openDatabases[options.db_name] && _isTableInTables) {
       executeGet();
     } else {
-      _this.open(
+      self.open(
         options,
         !_isTableInTables,
         function(err, upgraded) {
@@ -406,43 +410,43 @@ class indexeddb {
         }
       );
     }
-  };
+  }
 
   addAll(options, table_name, toAdd, callback) {
-    var _this = this, cur_table_description;
+    var self = this, cur_table_description;
 
-    if (_this.canNotProceed(callback)) {
+    if (self.canNotProceed(callback)) {
       return;
     }
 
-    cur_table_description = _this.getCurrentTableDescription(options, table_name);
+    cur_table_description = self.getCurrentTableDescription(options, table_name);
 
-    var _isTableInTables = _this.isTableInTables(options.db_name, cur_table_description.table_name);
-    if (_this.openDatabases[options.db_name] && _isTableInTables) {
-      _this._executeAddAll(options, cur_table_description.table_name, toAdd, callback);
+    var _isTableInTables = self.isTableInTables(options.db_name, cur_table_description.table_name);
+    if (self.openDatabases[options.db_name] && _isTableInTables) {
+      self._executeAddAll(options, cur_table_description.table_name, toAdd, callback);
     } else {
-      _this.open(
+      self.open(
         options,
         !_isTableInTables,
         function(err, upgraded) {
           if (err) {
             callback(err, upgraded);
           } else {
-            _this._executeAddAll(options, cur_table_description.table_name, toAdd, callback);
+            self._executeAddAll(options, cur_table_description.table_name, toAdd, callback);
           }
         }
       );
     }
-  };
+  }
 
   _executeAddAll(options, table_name, toAdd, callback) {
-    var _this = this, trans, store;
-    if (_this.canNotProceed(callback)) {
+    var self = this, trans, store;
+    if (self.canNotProceed(callback)) {
       return;
     }
 
     try {
-      trans = _this.openDatabases[options.db_name].db.transaction([table_name], "readwrite");
+      trans = self.openDatabases[options.db_name].db.transaction([table_name], "readwrite");
       store = trans.objectStore(table_name);
     } catch (error) {
       error.options = options;
@@ -451,8 +455,8 @@ class indexeddb {
       return;
     }
 
-    _this.async_eachSeries(toAdd, function(curAdd, _callback) {
-      if (_this.canNotProceed(callback)) {
+    self.async_eachSeries(toAdd, function(curAdd, _callback) {
+      if (self.canNotProceed(callback)) {
         return;
       }
       var putRequest = store.put(curAdd);
@@ -460,7 +464,7 @@ class indexeddb {
         _callback(e.currentTarget.error);
       };
       putRequest.onsuccess = function() {
-        if (_this.canNotProceed(callback)) {
+        if (self.canNotProceed(callback)) {
           return;
         }
         _callback();
@@ -471,13 +475,13 @@ class indexeddb {
         err.table_name = table_name;
         callback(err);
       } else {
-        if (_this.canNotProceed(callback)) {
+        if (self.canNotProceed(callback)) {
           return;
         }
         callback(null);
       }
     });
-  };
+  }
 
   getCurrentTableDescription(options, table_name) {
     var found_table_description;
@@ -490,20 +494,20 @@ class indexeddb {
       });
     }
     return found_table_description ? found_table_description : options.table_descriptions[0];
-  };
+  }
 
   canNotProceed(callback) {
-    var _this = this;
-    if (_this.stateInfo !== _this.STATES.READY) {
+    var self = this;
+    if (self.stateInfo !== self.STATES.READY) {
       callback(new Error('ErrorState'));
       return true;
     }
     return false;
-  };
+  }
 
   getGlobalUserCredentials(userName, userPassword, callback) {
-    var _this = this;
-    _this.getAll(_this.globalUsersDatabaseDescription, null, function(getAllErr, allUsers) {
+    var self = this;
+    self.getAll(globalUsersDatabaseDescription, null, function(getAllErr, allUsers) {
       if (getAllErr) {
         callback(getAllErr);
         return;
@@ -523,11 +527,11 @@ class indexeddb {
 
       callback(null, userCredentials);
     });
-  };
+  }
 
   addGlobalUser(user_id, userName, userPassword, callback) {
-    var _this = this;
-    _this.getGlobalUserCredentials(userName, null, function(getAllErr, userCredentials) {
+    var self = this;
+    self.getGlobalUserCredentials(userName, null, function(getAllErr, userCredentials) {
       if (getAllErr) {
         callback(getAllErr);
         return;
@@ -545,27 +549,27 @@ class indexeddb {
         db_versions: {}
       };
 
-      _this.saveGlobalUser(accountCredentials, callback);
+      self.saveGlobalUser(accountCredentials, callback);
     });
-  };
+  }
 
   putGlobalUserDBVersion(user_id, db_name, db_version, callback) {
-    var _this = this;
-    _this.getGlobalUser(user_id, function(err, globalUserInfo) {
+    var self = this;
+    self.getGlobalUser(user_id, function(err, globalUserInfo) {
       if (err) {
         callback(err);
         return;
       }
 
       globalUserInfo.db_versions[db_name] = db_version;
-      _this.saveGlobalUser(globalUserInfo, callback);
+      self.saveGlobalUser(globalUserInfo, callback);
     });
-  };
+  }
 
   getGlobalUser(user_id, callback) {
-    var _this = this;
-    _this.getByKeyPath(
-      _this.globalUsersDatabaseDescription,
+    var self = this;
+    self.getByKeyPath(
+      globalUsersDatabaseDescription,
       null,
       user_id,
       function(getError, globalUserInfo) {
@@ -577,12 +581,12 @@ class indexeddb {
         callback(null, globalUserInfo);
       }
     );
-  };
+  }
 
   saveGlobalUser(globalUserInfo, callback) {
-    var _this = this;
-    _this.addOrUpdateAll(
-      _this.globalUsersDatabaseDescription,
+    var self = this;
+    self.addOrUpdateAll(
+      globalUsersDatabaseDescription,
       null,
       [
         globalUserInfo
@@ -597,7 +601,6 @@ class indexeddb {
       }
     );
   };
-
 }
 
 export default new indexeddb();

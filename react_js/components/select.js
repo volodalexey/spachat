@@ -53,7 +53,7 @@ const Select = React.createClass({
     }, this);
     return (
       <div>
-        <select defaultValue={defaultValue}  {...this.render_att()} {...this.renderHandlers()}>
+        <select value={defaultValue}  {...this.render_att()} {...this.renderHandlers()}>
           {options}
         </select>
       </div>

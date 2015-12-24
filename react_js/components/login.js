@@ -10,6 +10,9 @@ import Popup from '../components/popup'
 import Decription from '../components/description'
 
 import Localization from '../js/localization.js'
+import users_bus from '../js/users_bus.js'
+import indexeddb from '../js/indexeddb.js'
+import websocket from '../js/websocket.js'
 
 const Login = React.createClass({
   //mixins: [ Lifecycle ],
@@ -165,10 +168,10 @@ const Login = React.createClass({
   //    return 'Leave page ?'
   //},
 
-  onClick(e){
+  handleClick(e){
   },
 
-  onChange(event) {
+  handleChange(event) {
     switch (event.target.dataset.action) {
       case "changeLanguage":
         Localization.changeLanguage(event.target.value);
@@ -176,19 +179,77 @@ const Login = React.createClass({
     }
   },
 
-  onSubmit(event){
+  handleSubmit(event){
     var self = this;
     event.preventDefault();
     var userName = this.loginForm.elements.userName.value;
     var userPassword = this.loginForm.elements.userPassword.value;
     if (userName && userPassword) {
-      console.log('userName:', userName, 'userPassword:',userPassword);
-      this.history.pushState(null, '/chat');
-      this.state.popupOptions.messagePopupShow = false;
-      this.state.popupOptions.type = '';
-      this.state.popupOptions.options = {};
-      this.state.popupOptions.onDataActionClick = null;
-      this.setState({popupOptions: this.state.popupOptions});
+      //self.toggleWaiter(true);
+      indexeddb.getGlobalUserCredentials(userName, userPassword, function(err, userCredentials) {
+        //self.toggleWaiter();
+        if (err) {
+          self.state.popupOptions.messagePopupShow = true;
+          self.state.popupOptions.type = 'error';
+          self.state.popupOptions.options = {message: err};
+          self.state.popupOptions.onDataActionClick = (function(action) {
+            switch (action) {
+              case 'confirmCancel':
+                self.state.popupOptions.messagePopupShow = false;
+                self.state.popupOptions.type = '';
+                self.state.popupOptions.options = {};
+                self.state.popupOptions.onDataActionClick = null;
+                self.setState({popupOptions: self.state.popupOptions});
+                break;
+            }
+          });
+          self.setState({popupOptions: self.state.popupOptions});
+          return;
+        }
+
+        if (userCredentials) {
+          if (userPassword === userCredentials.userPassword){
+            users_bus.setUserId(userCredentials.user_id);
+            //websocket.createAndListen();
+            users_bus.checkLoginState();
+            self.history.pushState(null, 'chat');
+          } else {
+            self.state.popupOptions.messagePopupShow = true;
+            self.state.popupOptions.type = 'error';
+            self.state.popupOptions.options = {message: 104};
+            self.state.popupOptions.onDataActionClick = (function(action) {
+              switch (action) {
+                case 'confirmCancel':
+                  self.state.popupOptions.messagePopupShow = false;
+                  self.state.popupOptions.type = '';
+                  self.state.popupOptions.options = {};
+                  self.state.popupOptions.onDataActionClick = null;
+                  self.setState({popupOptions: self.state.popupOptions});
+                  break;
+              }
+            });
+            self.setState({popupOptions: self.state.popupOptions});
+            return;
+          }
+        } else {
+          users_bus.setUserId(null);
+          self.state.popupOptions.messagePopupShow = true;
+          self.state.popupOptions.type = 'error';
+          self.state.popupOptions.options = {message: 87};
+          self.state.popupOptions.onDataActionClick = (function(action) {
+            switch (action) {
+              case 'confirmCancel':
+                self.state.popupOptions.messagePopupShow = false;
+                self.state.popupOptions.type = '';
+                self.state.popupOptions.options = {};
+                self.state.popupOptions.onDataActionClick = null;
+                self.setState({popupOptions: self.state.popupOptions});
+                break;
+            }
+          });
+          self.setState({popupOptions: self.state.popupOptions});
+        }
+      });
     } else {
       this.state.popupOptions.messagePopupShow = true;
       this.state.popupOptions.type = 'error';
@@ -210,14 +271,14 @@ const Login = React.createClass({
 
   render() {
     let onEvent = {
-      onClick: this.onClick,
-      onChange: this.onChange
+      onClick: this.handleClick,
+      onChange: this.handleChange
     };
     return (
       <div>
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
-            <form className="flex-inner-container form-small" data-role="loginForm" onSubmit={this.onSubmit}>
+            <form className="flex-inner-container form-small" data-role="loginForm" onSubmit={this.handleSubmit}>
               <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}/>
             </form>
           </div>

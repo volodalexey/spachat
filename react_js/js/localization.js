@@ -1,17 +1,16 @@
 var localization_config = require('json!../configs/localization_config.json');
-import Index from '../components/index'
 import React from 'react'
 
-class Localization {
+var Localization = function(lang) {
+  this.lang = lang;
+};
+
+Localization.prototype = {
 
   changeLanguage(lang) {
     this.lang = lang;
     this.mainComponent.forceUpdate();
-  };
-
-  constructor(lang) {
-    this.lang = lang;
-  };
+  },
 
   getLocText(id) {
     var text;
@@ -24,12 +23,11 @@ class Localization {
       }
     );
     return text;
-  };
+  },
 
   setMainComponent(mainComponent) {
     this.mainComponent = mainComponent;
-  };
-
-}
+  }
+};
 
 export default new Localization("en");
