@@ -1,6 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
 import Localization from '../js/localization.js'
+import overlay_core from '../js/overlay_core.js'
+import extend_core from '../js/extend_core.js'
 
 import Location_Wrapper from './location_wrapper'
 import Triple_Element from '../components/triple_element'
@@ -351,7 +353,6 @@ const Panel = React.createClass({
     this.outerContainer.style.zIndex = z_index;
 
     this.outerContainer.addEventListener('transitionend', this.onTransitionEnd);
-
   },
 
   componentWillUnmount: function() {
@@ -695,5 +696,6 @@ const Panel = React.createClass({
     return null;
   }
 });
+extend_core.prototype.inherit(Panel, overlay_core);
 
 export default Panel;

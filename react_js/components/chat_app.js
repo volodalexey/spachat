@@ -1,6 +1,13 @@
 import React from 'react'
 import { render } from 'react-dom'
+import { History } from 'react-router'
+
+
 import Localization from '../js/localization.js'
+import users_bus from '../js/users_bus.js'
+import overlay_core from '../js/overlay_core.js'
+import extend_core from '../js/extend_core.js'
+
 
 import Panel from '../components/panel'
 import Popup from '../components/popup'
@@ -9,6 +16,8 @@ import Description from '../components/description'
 import ChatResize from '../components/chat_resize'
 
 const ChatApp = React.createClass({
+  mixins: [ History ],
+
   getInitialState: function() {
     return {windowWidth: window.innerWidth};
   },
@@ -24,8 +33,23 @@ const ChatApp = React.createClass({
     this.setState({windowWidth: window.innerWidth});
   },
 
-  componentDidMount: function() {
-    //window.addEventListener('resize', this.handleResize);
+  componentDidMount(){
+
+  },
+
+  componentWillMount(){
+    var self = this;
+    users_bus.checkLoginState();
+    var userId = users_bus.getUserId();
+    if (!userId){
+      this.history.pushState(null, 'login');
+    } else {
+      users_bus.getMyInfo(null, function(error, _options, userInfo){
+        self.userInfo = userInfo;
+        console.log('userInfo', userInfo);
+        self.toggleWaiter();
+      });
+    }
   },
 
   componentWillUnmount: function() {
@@ -33,15 +57,17 @@ const ChatApp = React.createClass({
   },
 
   render() {
+    this.toggleWaiter(true);
+
     return (
       <div>
-        <Panel location={this.props.LEFT} />
+        <Panel location={this.props.LEFT} data={this.userInfo}/>
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
             <Chat />
           </div>
         </div>
-        <Panel location={this.props.RIGHT} />
+        <Panel location={this.props.RIGHT} data={this.userInfo}/>
         <Popup />
         <Description />
         <ChatResize />
@@ -49,5 +75,6 @@ const ChatApp = React.createClass({
     )
   }
 });
+extend_core.prototype.inherit(ChatApp, overlay_core);
 
 export default ChatApp;

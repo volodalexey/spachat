@@ -13,6 +13,8 @@ import Localization from '../js/localization.js'
 import users_bus from '../js/users_bus.js'
 import indexeddb from '../js/indexeddb.js'
 import websocket from '../js/websocket.js'
+import overlay_core from '../js/overlay_core.js'
+import extend_core from '../js/extend_core.js'
 
 const Login = React.createClass({
   //mixins: [ Lifecycle ],
@@ -158,6 +160,7 @@ const Login = React.createClass({
 
   componentDidMount(){
     this.loginForm = document.querySelector('[data-role="loginForm"]');
+    this.toggleWaiter();
   },
 
   componentWillUnmount(){
@@ -289,6 +292,7 @@ const Login = React.createClass({
     )
   }
 });
+extend_core.prototype.inherit(Login, overlay_core);
 
 export default Login;
 

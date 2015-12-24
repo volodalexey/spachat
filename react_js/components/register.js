@@ -15,6 +15,7 @@ import id_core from '../js/id_core.js'
 import users_bus from '../js/users_bus.js'
 import indexeddb from '../js/indexeddb.js'
 import Localization from '../js/localization.js'
+import overlay_core from '../js/overlay_core.js'
 
 const Register = React.createClass({
   mixins: [ History],
@@ -182,6 +183,7 @@ const Register = React.createClass({
 
   componentDidMount(){
     this.registerForm = document.querySelector('[data-role="registerForm"]');
+    this.toggleWaiter();
   },
 
   componentWillUnmount(){
@@ -207,14 +209,14 @@ const Register = React.createClass({
     var userPasswordConfirm = this.registerForm.elements.userPasswordConfirm.value;
     if (userName && userPassword && userPasswordConfirm) {
       if (userPassword === userPasswordConfirm) {
-        console.log('registerNewUser');
+        this.toggleWaiter(true);
         this.registerNewUser(
           {
             userName: userName,
             userPassword: userPassword
           },
           function(regErr, account) {
-            //this.toggleWaiter();
+            self.toggleWaiter();
             if (regErr) {
               self.state.popupOptions.messagePopupShow = true;
               self.state.popupOptions.type = 'error';
@@ -337,5 +339,6 @@ const Register = React.createClass({
 
 extend_core.prototype.inherit(Register, id_core);
 extend_core.prototype.inherit(Register, ajax_core);
+extend_core.prototype.inherit(Register, overlay_core);
 
 export default Register;

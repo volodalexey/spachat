@@ -7,13 +7,13 @@ const history = useBasename(createHistory)({
   basename: '/index.html'
 });
 
-import Less from '../less/total.less'
+//import Less from '../less/total.less'
 
 import Login from '../components/login'
 import Chat_App from '../components/chat_app'
 import Register from '../components/register'
-
 import Localization from '../js/localization.js'
+
 
 const Index = React.createClass({
   componentDidMount(){
@@ -22,6 +22,9 @@ const Index = React.createClass({
     if(language && Localization.lang !== language){
       Localization.changeLanguage(language);
     }
+  },
+
+  componentWillMount(){
   },
 
   render(){
