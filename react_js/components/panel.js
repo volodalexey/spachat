@@ -3,6 +3,7 @@ import { render } from 'react-dom'
 import Localization from '../js/localization.js'
 import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
+import users_bus from '../js/users_bus.js'
 
 import Location_Wrapper from './location_wrapper'
 import Triple_Element from '../components/triple_element'
@@ -82,6 +83,13 @@ const Panel = React.createClass({
         toggleElemHide: false,
         toggleToolbarElemHide: true,
         bodyMode: "CREATE_CHAT",
+
+        popupOptions:{
+          messagePopupShow: false,
+          type: '',
+          options: {},
+          onDataActionClick: null
+        },
 
         chats_GoToOptions: {
           show: false,
@@ -274,6 +282,13 @@ const Panel = React.createClass({
         toggleToolbarElemHide: true,
         bodyMode: "USER_INFO_SHOW",
 
+        popupOptions:{
+          messagePopupShow: false,
+          type: '',
+          options: {},
+          onDataActionClick: null
+        },
+
         connections_ExtraToolbarOptions: {
           show: false
         },
@@ -347,6 +362,7 @@ const Panel = React.createClass({
     }
     this.togglePanelElement = this.outerContainer.querySelector('[data-action="togglePanel"]');
     this.togglePanelElementToolbar = this.outerContainer.querySelector('[data-role="togglePanelToolbar"]');
+    this.panelBody = this.outerContainer.querySelector('[data-role="panel_body"]');
 
     this.outerContainer.classList.remove("hide");
     this.outerContainer.style.maxWidth = window.innerWidth + 'px';
@@ -362,10 +378,21 @@ const Panel = React.createClass({
     this.inner_container = null;
     this.togglePanelElement = null;
     this.togglePanelElementToolbar = null;
+    this.panelBody = null;
+    this.userName = null;
+    this.oldPassword = null;
+    this.newPassword = null;
+    this.confirmPassword = null;
   },
 
   componentDidUpdate(){
     this.resizePanel();
+    if (this.state.bodyMode === MODE.USER_INFO_EDIT){
+      this.userName = this.panelBody.querySelector('[data-main="user_name_input"]');
+      this.oldPassword = this.panelBody.querySelector('[data-role="passwordOld"]');
+      this.newPassword = this.panelBody.querySelector('[data-role="passwordNew"]');
+      this.confirmPassword = this.panelBody.querySelector('[data-role="passwordConfirm"]');
+    }
   },
 
   onClick(event){
@@ -395,6 +422,15 @@ const Panel = React.createClass({
         case 'changeRTE_goTo':
           var newState = GoTo.prototype.changeRTE(element, this.state);
           this.setState(newState);
+          break;
+        case 'changeUserInfo':
+          this.changeUserInfo();
+          break;
+        case 'cancelChangeUserInfo':
+          this.cancelChangeUserInfo();
+          break;
+        case 'saveChangeUserInfo':
+          this.saveChangeUserInfo(event, element);
           break;
       }
     }
@@ -565,6 +601,95 @@ const Panel = React.createClass({
     }
   },
 
+  changeUserInfo(){
+    this.setState({bodyMode: MODE.USER_INFO_EDIT});
+    this.previous_UserInfo_Mode = MODE.USER_INFO_EDIT;
+  },
+
+  cancelChangeUserInfo(){
+    this.setState({bodyMode: MODE.USER_INFO_SHOW});
+    this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
+    this.user = null;
+  },
+
+  saveChangeUserInfo(event, element){
+    var self = this;
+    if (this.userName.value && this.oldPassword.value && this.newPassword.value &&
+      this.confirmPassword.value) {
+      if(this.oldPassword.value === this.user.userPassword){
+        if(this.newPassword.value === this.confirmPassword.value){
+          this.updateUserInfo(function() {
+            self.setState({bodyMode: MODE.USER_INFO_SHOW});
+            self.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
+            self.user = null;
+          })
+        } else {
+          this.state.popupOptions.messagePopupShow = true;
+          this.state.popupOptions.type = 'error';
+          this.state.popupOptions.options = {message: 94};
+          this.state.popupOptions.onDataActionClick = (function(action) {
+            switch (action) {
+              case 'confirmCancel':
+                self.state.popupOptions.messagePopupShow = false;
+                self.state.popupOptions.type = '';
+                self.state.popupOptions.options = {};
+                self.state.popupOptions.onDataActionClick = null;
+                self.setState({popupOptions: self.state.popupOptions});
+                self.newPassword.value = '';
+                self.confirmPassword.value = '';
+                break;
+            }
+          });
+          self.setState({popupOptions: self.state.popupOptions});
+        }
+      } else {
+        this.state.popupOptions.messagePopupShow = true;
+        this.state.popupOptions.type = 'error';
+        this.state.popupOptions.options = {message: 95};
+        this.state.popupOptions.onDataActionClick = (function(action) {
+          switch (action) {
+            case 'confirmCancel':
+              self.state.popupOptions.messagePopupShow = false;
+              self.state.popupOptions.type = '';
+              self.state.popupOptions.options = {};
+              self.state.popupOptions.onDataActionClick = null;
+              self.setState({popupOptions: self.state.popupOptions});
+              self.oldPassword.value = '';
+              self.newPassword.value = '';
+              self.confirmPassword.value = '';
+              break;
+          }
+        });
+        self.setState({popupOptions: self.state.popupOptions});
+      }
+    } else {
+      this.state.popupOptions.messagePopupShow = true;
+      this.state.popupOptions.type = 'error';
+      this.state.popupOptions.options = {message: 88};
+      this.state.popupOptions.onDataActionClick = (function(action) {
+        switch (action) {
+          case 'confirmCancel':
+            self.state.popupOptions.messagePopupShow = false;
+            self.state.popupOptions.type = '';
+            self.state.popupOptions.options = {};
+            self.state.popupOptions.onDataActionClick = null;
+            self.setState({popupOptions: self.state.popupOptions});
+            break;
+        }
+      });
+      self.setState({popupOptions: self.state.popupOptions});
+    }
+  },
+
+  updateUserInfo(callback) {
+    var self = this;
+    users_bus.getMyInfo(null, function(err, options, userInfo) {
+      userInfo.userPassword = self.newPassword.value;
+      userInfo.userName = self.userName.value;
+      users_bus.saveMyInfo(userInfo, callback);
+    });
+  },
+
   resizePanel(flag) {
     if (this.state.openedState && this.outerContainer) {
       if (this.outerContainer.clientWidth + this.togglePanelElement_clientWidth > document.body.clientWidth) {
@@ -642,6 +767,7 @@ const Panel = React.createClass({
     let btnConfig = (location === 'left') ? this.props.leftBtnConfig : this.props.rightBtnConfig;
     let panel_toolbar_class = (location === 'left') ? 'w-100p flex-dir-col flex-item-auto c-200' : 'w-100p flex-dir-col c-200';
     var style = {[location]: this.state[location]};
+    this.user = this.props.userInfo;
     return (
       <section style={style} data-role={location + '_panel_outer_container'}
                className={location + '-panel hide p-fx panel animate c-100'}>
@@ -651,7 +777,8 @@ const Panel = React.createClass({
                className="min-width-350 flex-item-1-auto clear flex-dir-col h-100p">
             <header id={location} data-role={location + '_panel_toolbar'} className={panel_toolbar_class}>
               <PanelToolbar location={location} mode={this.state.bodyMode} events={onEvent}
-                            hide={this.state.toggleToolbarElemHide}/>
+                            hide={this.state.toggleToolbarElemHide}
+              />
             </header>
             <div data-role={location + '_extra_toolbar_container'}
                  className="flex-sp-around flex-item-auto c-200">
@@ -661,7 +788,8 @@ const Panel = React.createClass({
               <Filter mode={this.state.bodyMode} data={this.state} events={onEvent}/>
             </div>
             <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
-              <Body mode={this.state.bodyMode} data={this.state} events={onEvent}/>
+              <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
+              userInfo = {this.user}/>
             </div>
             <footer className="flex-item-auto">
               <div data-role={location + '_go_to_container'} className="c-200">

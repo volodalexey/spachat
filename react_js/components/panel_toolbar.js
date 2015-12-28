@@ -205,11 +205,15 @@ const PanelToolbar = React.createClass({
 
   render(){
     var configs = this.defineConfig(this.props.location);
+    let mode = this.props.mode;
     if (!configs) {
       return <div></div>
     }
+    if(mode === 'USER_INFO_EDIT') {
+      mode = 'USER_INFO_SHOW';
+    }
 
-    return <Location_Wrapper events={this.props.events} configs={configs} mode={this.props.mode} hide={this.props.hide}/>;
+    return <Location_Wrapper events={this.props.events} configs={configs} mode={mode} hide={this.props.hide}/>;
   }
 });
 

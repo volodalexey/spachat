@@ -1,6 +1,8 @@
 import React from 'react'
 import { Router, Route, Link, History, Redirect } from 'react-router'
 
+import users_bus from '../js/users_bus.js'
+
 import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
 import PanelChats from './panel_chats'
@@ -836,6 +838,30 @@ const Body = React.createClass({
         };
         return <PanelChats events={this.props.events} data={data} configs={configs}/>;
         break;
+
+      case MODE.USER_INFO_SHOW:
+        data = this.props.userInfo;
+        items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}/>);
+        return items;
+        break;
+
+      case MODE.USER_INFO_EDIT:
+        if(!this.props.userInfo){
+          users_bus.getMyInfo(options, function(error, options, userInfo) {
+            if (error) {
+              return (<div>error</div>);
+            }
+            items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={userInfo}
+                                         mode={MODE.USER_INFO_SHOW}/>);
+            return items;
+          });
+        } else {
+          items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={this.props.userInfo}
+                                       mode={MODE.USER_INFO_SHOW}/>);
+          return items;
+        }
+        break;
+
       default:
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs}/>);
         break;

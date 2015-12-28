@@ -757,7 +757,7 @@ define('panel', [
               popap_manager.renderPopap(
                 'error',
                 {message: 94},
-                function(action) {
+                function(action) {z
                   switch (action) {
                     case 'confirmCancel':
                       popap_manager.onClose();
