@@ -7,7 +7,7 @@ import Localization from '../js/localization.js'
 import users_bus from '../js/users_bus.js'
 import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
-
+import event_bus from '../js/event_bus.js'
 
 import Panel from '../components/panel'
 import Popup from '../components/popup'
@@ -21,7 +21,13 @@ const ChatApp = React.createClass({
   getInitialState: function() {
     return {
       windowWidth: window.innerWidth,
-      userInfo: {}
+      userInfo: {},
+      popupOptions: {
+        messagePopupShow: false,
+        type: '',
+        options: {},
+        onDataActionClick: null
+      }
     };
   },
 
@@ -37,7 +43,11 @@ const ChatApp = React.createClass({
   },
 
   componentDidMount(){
+    event_bus.on('changeStatePopup', this.handleChangePopup, this);
+  },
 
+  componentWillUnmount(){
+    event_bus.off('changeStatePopup', this.handleChangePopup, this);
   },
 
   componentWillMount(){
@@ -58,19 +68,27 @@ const ChatApp = React.createClass({
     //window.removeEventListener('resize', this.handleResize);
   },
 
+  handleChangePopup(options){
+    var newState, self= this;
+    newState = Popup.prototype.handleChangeState(this.state, options.show, options.type,
+      options.message, options.onDataActionClick.bind(this));
+    this.setState(newState);
+
+  },
+
   render() {
     //this.toggleWaiter(true);
 
     return (
       <div>
-        <Panel location={this.props.LEFT} userInfo={this.state.userInfo}/>
+        <Panel location={this.props.LEFT} userInfo={this.state.userInfo} />
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
             <Chat />
           </div>
         </div>
         <Panel location={this.props.RIGHT} userInfo={this.state.userInfo}/>
-        <Popup />
+        <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
         <Description />
         <ChatResize />
       </div>

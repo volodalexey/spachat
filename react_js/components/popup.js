@@ -173,13 +173,29 @@ const Popup = React.createClass({
     }
   },
 
-  onClick(event){
+  handleClick(event){
     if (this.onDataActionClick) {
       var element = this.getDataParameter(event.target, 'action');
       if (element) {
         this.onDataActionClick(element.dataset.action);
       }
     }
+  },
+
+  handleClose(state){
+    state.popupOptions.messagePopupShow = false;
+    state.popupOptions.type = '';
+    state.popupOptions.options = {};
+    state.popupOptions.onDataActionClick = null;
+    return {popupOptions: state.popupOptions};
+  },
+
+  handleChangeState(state, show, type, message, onDataActionClick){
+    state.popupOptions.messagePopupShow = show;
+    state.popupOptions.type = type;
+    state.popupOptions.options = {message: message};
+    state.popupOptions.onDataActionClick = onDataActionClick;
+    return {popupOptions: state.popupOptions};
   },
 
   defineParams(params){
@@ -220,7 +236,7 @@ const Popup = React.createClass({
       var className = this.defineClass();
       return (
         <div data-role="popup_outer_container" className={className} >
-          <div data-role="popup_inner_container" className="c-50 border-radius-05em min-width-350" onClick={this.onClick}>
+          <div data-role="popup_inner_container" className="c-50 border-radius-05em min-width-350" onClick={this.handleClick}>
             <div className={'text-line-center flex-just-center ' + this.props.options.type}>
               <Location_Wrapper configs={params.configs.header} data={params} />
             </div>

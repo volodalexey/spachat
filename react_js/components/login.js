@@ -1,7 +1,6 @@
 import React from 'react'
 import { Router, Route, Link, History, Redirect, Lifecycle } from 'react-router'
 
-
 import Button from './button'
 import Input from './input'
 import Label from './label'
@@ -18,7 +17,7 @@ import extend_core from '../js/extend_core.js'
 
 const Login = React.createClass({
   //mixins: [ Lifecycle ],
-  mixins: [ History ],
+  mixins: [History],
 
   getDefaultProps() {
     return {
@@ -149,7 +148,7 @@ const Login = React.createClass({
   getInitialState(){
     return {
       lang: Localization.lang,
-      popupOptions:{
+      popupOptions: {
         messagePopupShow: false,
         type: '',
         options: {},
@@ -183,92 +182,77 @@ const Login = React.createClass({
   },
 
   handleSubmit(event){
-    var self = this;
+    var self = this, newState;
     event.preventDefault();
     var userName = this.loginForm.elements.userName.value;
     var userPassword = this.loginForm.elements.userPassword.value;
     if (userName && userPassword) {
-      //self.toggleWaiter(true);
+      self.toggleWaiter(true);
       indexeddb.getGlobalUserCredentials(userName, userPassword, function(err, userCredentials) {
-        //self.toggleWaiter();
+        self.toggleWaiter();
         if (err) {
-          self.state.popupOptions.messagePopupShow = true;
-          self.state.popupOptions.type = 'error';
-          self.state.popupOptions.options = {message: err};
-          self.state.popupOptions.onDataActionClick = (function(action) {
-            switch (action) {
-              case 'confirmCancel':
-                self.state.popupOptions.messagePopupShow = false;
-                self.state.popupOptions.type = '';
-                self.state.popupOptions.options = {};
-                self.state.popupOptions.onDataActionClick = null;
-                self.setState({popupOptions: self.state.popupOptions});
-                break;
+          newState = Popup.prototype.handleChangeState(this.state, true, 'error', err,
+            function(action) {
+              switch (action) {
+                case 'confirmCancel':
+                  newState = Popup.prototype.handleClose(self.state);
+                  self.setState(newState);
+                  break;
+              }
             }
-          });
-          self.setState({popupOptions: self.state.popupOptions});
+          );
+          self.setState(newState);
           return;
         }
 
         if (userCredentials) {
-          if (userPassword === userCredentials.userPassword){
-            users_bus.setUserId(userCredentials.user_id);
-            //websocket.createAndListen();
-            users_bus.checkLoginState();
-            self.history.pushState(null, 'chat');
-          } else {
-            self.state.popupOptions.messagePopupShow = true;
-            self.state.popupOptions.type = 'error';
-            self.state.popupOptions.options = {message: 104};
-            self.state.popupOptions.onDataActionClick = (function(action) {
+          users_bus.setUserId(userCredentials.user_id);
+          users_bus.getMyInfo(null, function(err, options, userInfo) {
+            if (userPassword === userInfo.userPassword) {
+              users_bus.setUserId(userInfo.user_id);
+              //websocket.createAndListen();
+              users_bus.checkLoginState();
+              self.history.pushState(null, 'chat');
+            } else {
+              newState = Popup.prototype.handleChangeState(this.state, true, 'error', 104,
+                function(action) {
+                  switch (action) {
+                    case 'confirmCancel':
+                      newState = Popup.prototype.handleClose(self.state);
+                      self.setState(newState);
+                      break;
+                  }
+                }
+              );
+              self.setState(newState);
+              return;
+            }
+          });
+        } else {
+          users_bus.setUserId(null);
+          newState = Popup.prototype.handleChangeState(this.state, true, 'error', 87,
+            function(action) {
               switch (action) {
                 case 'confirmCancel':
-                  self.state.popupOptions.messagePopupShow = false;
-                  self.state.popupOptions.type = '';
-                  self.state.popupOptions.options = {};
-                  self.state.popupOptions.onDataActionClick = null;
-                  self.setState({popupOptions: self.state.popupOptions});
+                  newState = Popup.prototype.handleClose(self.state);
+                  self.setState(newState);
                   break;
               }
             });
-            self.setState({popupOptions: self.state.popupOptions});
-            return;
-          }
-        } else {
-          users_bus.setUserId(null);
-          self.state.popupOptions.messagePopupShow = true;
-          self.state.popupOptions.type = 'error';
-          self.state.popupOptions.options = {message: 87};
-          self.state.popupOptions.onDataActionClick = (function(action) {
-            switch (action) {
-              case 'confirmCancel':
-                self.state.popupOptions.messagePopupShow = false;
-                self.state.popupOptions.type = '';
-                self.state.popupOptions.options = {};
-                self.state.popupOptions.onDataActionClick = null;
-                self.setState({popupOptions: self.state.popupOptions});
-                break;
-            }
-          });
-          self.setState({popupOptions: self.state.popupOptions});
+          this.setState(newState);
         }
       });
     } else {
-      this.state.popupOptions.messagePopupShow = true;
-      this.state.popupOptions.type = 'error';
-      this.state.popupOptions.options = {message: 88};
-      this.state.popupOptions.onDataActionClick = (function(action) {
-            switch (action) {
-              case 'confirmCancel':
-                self.state.popupOptions.messagePopupShow = false;
-                self.state.popupOptions.type = '';
-                self.state.popupOptions.options = {};
-                self.state.popupOptions.onDataActionClick = null;
-                self.setState({popupOptions: self.state.popupOptions});
-                break;
-            }
-          });
-      this.setState({popupOptions: this.state.popupOptions});
+      newState = Popup.prototype.handleChangeState(this.state, true, 'error', 88,
+        function(action) {
+          switch (action) {
+            case 'confirmCancel':
+              newState = Popup.prototype.handleClose(self.state);
+              self.setState(newState);
+              break;
+          }
+        });
+      this.setState(newState);
     }
   },
 
