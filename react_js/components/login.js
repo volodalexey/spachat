@@ -177,6 +177,10 @@ const Login = React.createClass({
     switch (event.target.dataset.action) {
       case "changeLanguage":
         Localization.changeLanguage(event.target.value);
+        var language = localStorage.getItem('language');
+        if (!language || language !== event.target.value) {
+          localStorage.setItem('language', event.target.value);
+        }
         break;
     }
   },
@@ -214,7 +218,7 @@ const Login = React.createClass({
               users_bus.checkLoginState();
               self.history.pushState(null, 'chat');
             } else {
-              newState = Popup.prototype.handleChangeState(this.state, true, 'error', 104,
+              newState = Popup.prototype.handleChangeState(self.state, true, 'error', 104,
                 function(action) {
                   switch (action) {
                     case 'confirmCancel':

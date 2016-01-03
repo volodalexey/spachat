@@ -47,12 +47,14 @@ users_bus.prototype = {
   },
 
   setUserId: function(user_id) {
-    this.user_id = user_id;
-    this.userDatabaseDescription.db_name = user_id;
-    event_bus.trigger('setUserId', user_id);
-    if (user_id) {
+    if(user_id){
+      this.user_id = user_id;
+      this.userDatabaseDescription.db_name = user_id;
+      event_bus.trigger('setUserId', user_id);
       this.setCookie('user_id', user_id, {expires: 24 * 60 * 60});
     } else {
+      event_bus.trigger('setUserId', user_id);
+      this.user_id = user_id;
       this.deleteCookie('user_id');
     }
   },

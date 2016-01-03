@@ -197,6 +197,10 @@ const Register = React.createClass({
     switch (event.target.dataset.action) {
       case "changeLanguage":
         Localization.changeLanguage(event.target.value);
+        var language = localStorage.getItem('language');
+        if (!language || language !== event.target.value) {
+          localStorage.setItem('language', event.target.value);
+        }
         break;
     }
   },
@@ -218,7 +222,7 @@ const Register = React.createClass({
           function(regErr, account) {
             self.toggleWaiter();
             if (regErr) {
-              newState = Popup.prototype.handleChangeState(this.state, true, 'error', regErr,
+              newState = Popup.prototype.handleChangeState(self.state, true, 'error', regErr,
                 function(action) {
                   switch (action) {
                     case 'confirmCancel':
@@ -231,7 +235,7 @@ const Register = React.createClass({
               self.setState(newState);
               return;
             }
-            newState = Popup.prototype.handleChangeState(this.state, true, 'success', 96,
+            newState = Popup.prototype.handleChangeState(self.state, true, 'success', 96,
               function(action) {
                 switch (action) {
                   case 'confirmCancel':

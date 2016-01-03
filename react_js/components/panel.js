@@ -348,8 +348,10 @@ const Panel = React.createClass({
   },
 
   componentDidMount(){
-    document.addEventListener('load', this.onLoad, true);
+    document.addEventListener('load', this.handleLoad, true);
     document.addEventListener('resize', this.handleResize, false);
+    document.addEventListener('resize', this.handleResize, false);
+    event_bus.on('getPanelDescription', this.getPanelDescription, this);
 
     if (this.props.location === "left") {
       this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
@@ -369,12 +371,14 @@ const Panel = React.createClass({
     this.outerContainer.style.maxWidth = window.innerWidth + 'px';
     this.outerContainer.style.zIndex = z_index;
 
-    this.outerContainer.addEventListener('transitionend', this.onTransitionEnd);
+    this.outerContainer.addEventListener('transitionend', this.handleTransitionEnd);
   },
 
   componentWillUnmount: function() {
-    window.removeEventListener('load', this.onLoad);
+    window.removeEventListener('load', this.handleLoad);
     document.removeEventListener('resize', this.handleResize);
+    event_bus.off('getPanelDescription', this.getPanelDescription, this);
+
     this.outerContainer = null;
     this.inner_container = null;
     this.togglePanelElement = null;
@@ -396,7 +400,7 @@ const Panel = React.createClass({
     }
   },
 
-  onClick(event){
+  handleClick(event){
     var element = this.getDataParameter(event.currentTarget, 'action');
     if (element) {
       switch (element.dataset.action) {
@@ -431,13 +435,16 @@ const Panel = React.createClass({
           this.cancelChangeUserInfo();
           break;
         case 'saveChangeUserInfo':
-          this.saveChangeUserInfo(event, element);
+          this.saveChangeUserInfo();
+          break;
+        case 'logout':
+          users_bus.setUserId(null);
           break;
       }
     }
   },
 
-  onLoad: function(event) {
+  handleLoad: function(event) {
     if (!this.togglePanelElement) return;
     if (this.props.location === "left" && event.target.dataset.onload) {
       this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
@@ -450,13 +457,13 @@ const Panel = React.createClass({
 
   onInput(){
   },
-  onChange(event){
+  handleChange(event){
     if (event.target.dataset.role === 'selectLanguage') {
       this.onChangeLanguage(event);
     }
   },
 
-  onTransitionEnd(event){
+  handleTransitionEnd(event){
     if (event.target.dataset && event.target.dataset.role === 'detail_view_container') {
       let chatIdValue = event.target.dataset.chat_id;
       var resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
@@ -613,7 +620,7 @@ const Panel = React.createClass({
     this.user = null;
   },
 
-  saveChangeUserInfo(event, element){
+  saveChangeUserInfo(){
     var self = this, newState;
     if (this.userName.value && this.oldPassword.value && this.newPassword.value &&
       this.confirmPassword.value) {
@@ -698,6 +705,62 @@ const Panel = React.createClass({
     });
   },
 
+  //logout(userId){
+  //  var self = this;
+  //  this.toggleWaiter(true);
+  //  this.savePanelStates(this.getPanelDescription(), function(err) {
+  //    self.toggleWaiter();
+  //    //if (err) {
+  //    //  popap_manager.renderPopap(
+  //    //    'error',
+  //    //    {message: err},
+  //    //    function(action) {
+  //    //      switch (action) {
+  //    //        case 'confirmCancel':
+  //    //          popap_manager.onClose();
+  //    //          break;
+  //    //      }
+  //    //    }
+  //    //  );
+  //    //  return;
+  //    //}
+  //
+  //    //_this.disposePanels();
+  //    //event_bus.trigger("chatsDestroy");
+  //    //websocket.dispose();
+  //    //webrtc.destroy();
+  //    //users_bus.setUserId(null);
+  //    //self.history.pushState(null, 'login');
+  //    //_this.navigator.navigate();
+  //  });
+  //},
+
+  getPanelDescription: function(callback) {
+    if(callback){
+      callback(this.state, this.props.location);
+    }
+  },
+
+  //savePanelStates: function(panelDescription, callback) {
+  //  var self = this;
+  //  users_bus.getMyInfo(null, function(error, options, userInfo) {
+  //    if (error) {
+  //      callback(error);
+  //      return;
+  //    }
+  //
+  //    self.extend(userInfo, panelDescription);
+  //    users_bus.saveMyInfo(userInfo, function(err) {
+  //      if (err) {
+  //        callback(err);
+  //        return;
+  //      }
+  //
+  //      callback(null);
+  //    });
+  //  });
+  //},
+
   resizePanel(flag) {
     if (this.state.openedState && this.outerContainer) {
       if (this.outerContainer.clientWidth + this.togglePanelElement_clientWidth > document.body.clientWidth) {
@@ -765,10 +828,10 @@ const Panel = React.createClass({
 
   render() {
     let onEvent = {
-      onClick: this.onClick,
-      onChange: this.onChange,
+      onClick: this.handleClick,
+      onChange: this.handleChange,
       onInput: this.onInput,
-      onTransitionEnd: this.onTransitionEnd
+      onTransitionEnd: this.handleTransitionEnd
     };
 
     let location = this.props.location;
@@ -833,5 +896,6 @@ const Panel = React.createClass({
   }
 });
 extend_core.prototype.inherit(Panel, overlay_core);
+extend_core.prototype.inherit(Panel, extend_core);
 
 export default Panel;
