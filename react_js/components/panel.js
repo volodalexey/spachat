@@ -85,7 +85,7 @@ const Panel = React.createClass({
         toggleToolbarElemHide: true,
         bodyMode: "CREATE_CHAT",
 
-        popupOptions:{
+        popupOptions: {
           messagePopupShow: false,
           type: '',
           options: {},
@@ -283,7 +283,7 @@ const Panel = React.createClass({
         toggleToolbarElemHide: true,
         bodyMode: "USER_INFO_SHOW",
 
-        popupOptions:{
+        popupOptions: {
           messagePopupShow: false,
           type: '',
           options: {},
@@ -347,6 +347,17 @@ const Panel = React.createClass({
     }
   },
 
+  componentWillMount(){
+    this.setState(this.props.userInfo[this.props.location]);
+    if(this.props.location === "left"){
+      this.setState({'left': '-700px', 'openedState': false});
+      return;
+    }
+    if(this.props.location === "right"){
+      this.setState({'right': '-700px', 'openedState': false});
+    }
+  },
+
   componentDidMount(){
     document.addEventListener('load', this.handleLoad, true);
     document.addEventListener('resize', this.handleResize, false);
@@ -392,7 +403,7 @@ const Panel = React.createClass({
 
   componentDidUpdate(){
     this.resizePanel();
-    if (this.state.bodyMode === MODE.USER_INFO_EDIT){
+    if (this.state.bodyMode === MODE.USER_INFO_EDIT) {
       this.userName = this.panelBody.querySelector('[data-main="user_name_input"]');
       this.oldPassword = this.panelBody.querySelector('[data-role="passwordOld"]');
       this.newPassword = this.panelBody.querySelector('[data-role="passwordNew"]');
@@ -624,8 +635,8 @@ const Panel = React.createClass({
     var self = this, newState;
     if (this.userName.value && this.oldPassword.value && this.newPassword.value &&
       this.confirmPassword.value) {
-      if(this.oldPassword.value === this.user.userPassword){
-        if(this.newPassword.value === this.confirmPassword.value){
+      if (this.oldPassword.value === this.user.userPassword) {
+        if (this.newPassword.value === this.confirmPassword.value) {
           this.updateUserInfo(function() {
             event_bus.trigger('changeStatePopup', {
               show: true,
@@ -654,8 +665,8 @@ const Panel = React.createClass({
                 case 'confirmCancel':
                   newState = Popup.prototype.handleClose(this.state);
                   this.setState(newState);
-                        self.newPassword.value = '';
-                        self.confirmPassword.value = '';
+                  self.newPassword.value = '';
+                  self.confirmPassword.value = '';
                   break;
               }
             }
@@ -705,61 +716,11 @@ const Panel = React.createClass({
     });
   },
 
-  //logout(userId){
-  //  var self = this;
-  //  this.toggleWaiter(true);
-  //  this.savePanelStates(this.getPanelDescription(), function(err) {
-  //    self.toggleWaiter();
-  //    //if (err) {
-  //    //  popap_manager.renderPopap(
-  //    //    'error',
-  //    //    {message: err},
-  //    //    function(action) {
-  //    //      switch (action) {
-  //    //        case 'confirmCancel':
-  //    //          popap_manager.onClose();
-  //    //          break;
-  //    //      }
-  //    //    }
-  //    //  );
-  //    //  return;
-  //    //}
-  //
-  //    //_this.disposePanels();
-  //    //event_bus.trigger("chatsDestroy");
-  //    //websocket.dispose();
-  //    //webrtc.destroy();
-  //    //users_bus.setUserId(null);
-  //    //self.history.pushState(null, 'login');
-  //    //_this.navigator.navigate();
-  //  });
-  //},
-
   getPanelDescription: function(callback) {
-    if(callback){
+    if (callback) {
       callback(this.state, this.props.location);
     }
   },
-
-  //savePanelStates: function(panelDescription, callback) {
-  //  var self = this;
-  //  users_bus.getMyInfo(null, function(error, options, userInfo) {
-  //    if (error) {
-  //      callback(error);
-  //      return;
-  //    }
-  //
-  //    self.extend(userInfo, panelDescription);
-  //    users_bus.saveMyInfo(userInfo, function(err) {
-  //      if (err) {
-  //        callback(err);
-  //        return;
-  //      }
-  //
-  //      callback(null);
-  //    });
-  //  });
-  //},
 
   resizePanel(flag) {
     if (this.state.openedState && this.outerContainer) {
@@ -860,7 +821,7 @@ const Panel = React.createClass({
             </div>
             <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
               <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
-              userInfo = {this.user}/>
+                    userInfo={this.user}/>
             </div>
             <footer className="flex-item-auto">
               <div data-role={location + '_go_to_container'} className="c-200">

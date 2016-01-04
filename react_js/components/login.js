@@ -193,8 +193,8 @@ const Login = React.createClass({
     if (userName && userPassword) {
       self.toggleWaiter(true);
       indexeddb.getGlobalUserCredentials(userName, userPassword, function(err, userCredentials) {
-        self.toggleWaiter();
         if (err) {
+          self.toggleWaiter();
           newState = Popup.prototype.handleChangeState(this.state, true, 'error', err,
             function(action) {
               switch (action) {

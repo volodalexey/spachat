@@ -45,14 +45,12 @@ const ChatApp = React.createClass({
     event_bus.on('changeStatePopup', this.handleChangePopup, this);
     event_bus.on('logout', this.logout, this);
     event_bus.on('setUserId', this.logout, this);
-
   },
 
   componentWillUnmount(){
     event_bus.off('changeStatePopup', this.handleChangePopup, this);
     event_bus.off('logout', this.logout, this);
     event_bus.off('setUserId', this.logout, this);
-
   },
 
   componentWillMount(){
@@ -116,20 +114,28 @@ const ChatApp = React.createClass({
   },
 
   render() {
-    return (
-      <div>
-        <Panel location={this.props.LEFT} userInfo={this.state.userInfo}/>
-        <div data-role="main_container" className="w-100p h-100p p-abs">
-          <div className="flex-outer-container p-fx">
-            <Chat />
+    if(this.state.userInfo.hasOwnProperty('user_id')){
+      return (
+        <div>
+          <Panel location={this.props.LEFT} userInfo={this.state.userInfo}/>
+          <div data-role="main_container" className="w-100p h-100p p-abs">
+            <div className="flex-outer-container p-fx">
+              <Chat />
+            </div>
           </div>
+          <Panel location={this.props.RIGHT} userInfo={this.state.userInfo}/>
+          <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
+          <Description />
+          <ChatResize />
         </div>
-        <Panel location={this.props.RIGHT} userInfo={this.state.userInfo}/>
-        <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
-        <Description />
-        <ChatResize />
-      </div>
-    )
+      )
+    } else {
+      return (
+        <div>
+          <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
+        </div>
+      )
+    }
   }
 });
 extend_core.prototype.inherit(ChatApp, overlay_core);
