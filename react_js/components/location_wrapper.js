@@ -52,7 +52,7 @@ const Location_Wrapper = React.createClass({
         hide = false;
       }
       items.push(<TripleElement mode={this.props.mode} events={this.props.events} key={idx} config={element_config}
-                                hide={hide} data={this.props.data}/>);
+                                hide={hide} data={this.props.data} calcDisplay={this.props.calcDisplay}/>);
     });
     return items;
   },

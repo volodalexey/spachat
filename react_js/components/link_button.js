@@ -28,14 +28,6 @@ const LinkButton = React.createClass({
       var src = "components/icon/" + this.props.config.icon + ".svg";
     }
 
-    var display;
-    if (this.props.calcDisplay) {
-      display = this.props.calcDisplay(this.props.config);
-    }
-    if (display !== undefined && display !== true) {
-      params['style'] = "display: none;"
-    }
-
     if (this.props.config.type) {
       params['type'] = this.props.config.type;
     }

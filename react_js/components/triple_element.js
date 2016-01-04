@@ -17,7 +17,7 @@ const TripleElement = React.createClass({
                              data={this.props.data}/>;
         } else {
           return <Button mode={this.props.mode} events={this.props.events} config={this.props.config}
-                  hide={this.props.hide} data={this.props.data}/>;
+                  hide={this.props.hide} data={this.props.data} calcDisplay={this.props.calcDisplay}/>;
         }
         break;
       case "label":

@@ -31,7 +31,7 @@ const Button = React.createClass({
       display = this.props.calcDisplay(this.props.config);
     }
     if (display !== undefined && display !== true) {
-      params['style'] = "display: none;"
+      params['style'] = {display: 'none'};
     }
 
     if (this.props.config.type) {
@@ -99,7 +99,6 @@ const Button = React.createClass({
 
   render() {
     var self = this;
-
 
     return (
       <button className={this.renderClassName()} {...this.renderAtt()}
