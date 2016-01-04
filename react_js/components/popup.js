@@ -231,9 +231,9 @@ const Popup = React.createClass({
   },
 
   render(){
+    var className = this.defineClass();
     if (this.props.show && this.props.options) {
       var params = this.defineParams(this.props.options);
-      var className = this.defineClass();
       return (
         <div data-role="popup_outer_container" className={className} >
           <div data-role="popup_inner_container" className="c-50 border-radius-05em min-width-350" onClick={this.handleClick}>
@@ -245,7 +245,14 @@ const Popup = React.createClass({
         </div>
       )
     } else {
-      return <div></div>
+      return (
+        <div data-role="popup_outer_container" className={className} >
+          <div data-role="popup_inner_container" className="c-50 border-radius-05em min-width-350" onClick={this.handleClick}>
+            <div className={'text-line-center flex-just-center ' + this.props.options.type}>
+            </div>
+          </div>
+        </div>
+      )
     }
   },
 

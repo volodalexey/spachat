@@ -449,7 +449,7 @@ const Panel = React.createClass({
           this.saveChangeUserInfo();
           break;
         case 'logout':
-          users_bus.setUserId(null);
+          this.logout();
           break;
       }
     }
@@ -485,6 +485,28 @@ const Panel = React.createClass({
         });
       }
     }
+  },
+
+  logout(){
+    var newState, self = this;
+    event_bus.trigger('changeStatePopup', {
+      show: true,
+      type: 'confirm',
+      message: 106,
+      onDataActionClick: function(action) {
+        switch (action) {
+          case 'confirmOk':
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            users_bus.setUserId(null);
+            break;
+          case 'confirmCancel':
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            break;
+        }
+      }
+    });
   },
 
   togglePanel(forceClose){

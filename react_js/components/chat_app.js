@@ -67,9 +67,9 @@ const ChatApp = React.createClass({
     }
   },
 
-  componentWillUnmount: function() {
-    //window.removeEventListener('resize', this.handleResize);
-  },
+  //componentWillUnmount: function() {
+  //  //window.removeEventListener('resize', this.handleResize);
+  //},
 
   handleChangePopup(options){
     var newState, self = this;
