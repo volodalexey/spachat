@@ -44,11 +44,11 @@ const Label = React.createClass({
       text = '';
     }
 
-    if(this.props.config.description){
-      if (typeof this.props.config.description === 'number') {
-        text = Localization.getLocText(this.props.config.description);
+    if(this.props.data.description){
+      if (typeof this.props.data.description === 'number') {
+        text = Localization.getLocText(this.props.data.description);
       } else {
-        text = this.props.config.description;
+        text = this.props.data.description;
       }
     }
 

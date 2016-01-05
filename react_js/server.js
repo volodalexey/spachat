@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var webpackDevMiddleware = require('webpack-dev-middleware');
 var WebpackConfig = require('./webpack.config');
 var id_Generator = require('./server_js/id_generator');
-web_socket_connections_collection = require('./server_js/web_socket_connections_collection');
+var web_socket_connections_collection = require('./server_js/web_socket_connections_collection');
 var websocketPath = '/websocket';
 var app = express();
 var expressWs = require('express-ws')(app);
@@ -81,7 +81,7 @@ app.use(returnIndexFile);
 
 console.log("__dirname", __dirname);
 
-app.listen(9999, function (err) {
+app.listen(79999, function (err) {
     if (err) {
         console.log(err);
         return;

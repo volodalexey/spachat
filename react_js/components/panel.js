@@ -7,7 +7,6 @@ import dom_core from '../js/dom_core.js'
 import users_bus from '../js/users_bus.js'
 import event_bus from '../js/event_bus.js'
 
-import Location_Wrapper from './location_wrapper'
 import Triple_Element from '../components/triple_element'
 import Popup from '../components/popup'
 import Decription from '../components/description'
@@ -349,13 +348,15 @@ const Panel = React.createClass({
   },
 
   componentWillMount(){
-    this.setState(this.props.userInfo[this.props.location]);
-    if(this.props.location === "left"){
-      this.setState({'left': '-700px', 'openedState': false});
-      return;
-    }
-    if(this.props.location === "right"){
-      this.setState({'right': '-700px', 'openedState': false});
+    if(this.props.userInfo[this.props.location]){
+      this.setState(this.props.userInfo[this.props.location]);
+      if(this.props.location === "left"){
+        this.setState({'left': '-700px', 'openedState': false});
+        return;
+      }
+      if(this.props.location === "right"){
+        this.setState({'right': '-700px', 'openedState': false});
+      }
     }
   },
 

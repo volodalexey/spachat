@@ -57,6 +57,21 @@ const Location_Wrapper = React.createClass({
     return items;
   },
 
+  renderAttMainContainer(){
+    var params = {};
+    if (this.props.mainContainer.class) {
+      params["className"] = this.props.mainContainer.class;
+    }
+    if (this.props.mainContainer.data) {
+      for (var dataKey in this.props.mainContainer.data) {
+        if (this.props.mainContainer.data[dataKey] !== "") {
+          params['data-' + dataKey] = this.props.mainContainer.data[dataKey];
+        }
+      }
+    }
+    return params;
+  },
+
   render(){
     var rawConfig = this.prepareConfig();
     var elements = [];
@@ -69,8 +84,12 @@ const Location_Wrapper = React.createClass({
         elements.push(this.wrapper(wrapperConfig, wrapperItems));
       }
     }
-
-    return <div className={this.props.mainContainer ? this.props.mainContainer.class : ""}>{elements}</div>
+    if(this.props.mainContainer){
+      return <div {...this.renderAttMainContainer()}>{elements}</div>
+    } else {
+      return <div>{elements}</div>
+    }
+    //return <div className={this.props.mainContainer ? this.props.mainContainer.class : ""}>{elements}</div>
   }
 });
 
