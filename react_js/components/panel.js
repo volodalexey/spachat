@@ -1,8 +1,9 @@
 import React from 'react'
 import { render } from 'react-dom'
-import Localization from '../js/localization.js'
+import localization from '../js/localization.js'
 import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
+import dom_core from '../js/dom_core.js'
 import users_bus from '../js/users_bus.js'
 import event_bus from '../js/event_bus.js'
 
@@ -451,6 +452,12 @@ const Panel = React.createClass({
         case 'logout':
           this.logout();
           break;
+        case 'showChat':
+          event_bus.trigger('showChat', element);
+          break;
+        case 'addNewChatAuto':
+          event_bus.trigger('addNewChatAuto', event);
+          break;
       }
     }
   },
@@ -468,6 +475,7 @@ const Panel = React.createClass({
 
   onInput(){
   },
+
   handleChange(event){
     if (event.target.dataset.role === 'selectLanguage') {
       this.onChangeLanguage(event);
@@ -790,8 +798,8 @@ const Panel = React.createClass({
   },
 
   changeLanguage: function(event) {
-    var current_localization = Localization.lang;
-    Localization.changeLanguage(event.target.value);
+    var current_localization = localization.lang;
+    localization.changeLanguage(event.target.value);
 
     var language = localStorage.getItem('language');
     if (!language || language !== event.target.value) {
@@ -858,27 +866,10 @@ const Panel = React.createClass({
         </div>
       </section>
     )
-  },
-
-  getDataParameter(element, param, _n) {
-    if (!element) {
-      return null;
-    }
-    if (element.disabled && param !== "description") {
-      return null;
-    }
-    var n = !( _n === undefined || _n === null ) ? _n : 5;
-    if (n > 0) {
-      if (!element.dataset || !element.dataset[param]) {
-        return this.getDataParameter(element.parentNode, param, n - 1);
-      } else if (element.dataset[param]) {
-        return element;
-      }
-    }
-    return null;
   }
 });
 extend_core.prototype.inherit(Panel, overlay_core);
+extend_core.prototype.inherit(Panel, dom_core);
 extend_core.prototype.inherit(Panel, extend_core);
 
 export default Panel;

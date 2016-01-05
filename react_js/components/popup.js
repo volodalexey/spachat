@@ -1,6 +1,10 @@
 import React from 'react'
-import Location_Wrapper from './location_wrapper'
+
 import Localization from '../js/localization.js'
+import dom_core from '../js/dom_core.js'
+import extend_core from '../js/extend_core.js'
+
+import Location_Wrapper from './location_wrapper'
 
 const Popup = React.createClass({
   getDefaultProps(){
@@ -254,25 +258,9 @@ const Popup = React.createClass({
         </div>
       )
     }
-  },
-
-  getDataParameter(element, param, _n) {
-    if (!element) {
-      return null;
-    }
-    if (element.disabled && param !== "description") {
-      return null;
-    }
-    var n = !( _n === undefined || _n === null ) ? _n : 5;
-    if (n > 0) {
-      if (!element.dataset || !element.dataset[param]) {
-        return this.getDataParameter(element.parentNode, param, n - 1);
-      } else if (element.dataset[param]) {
-        return element;
-      }
-    }
-    return null;
   }
 });
+
+extend_core.prototype.inherit(Popup, dom_core);
 
 export default Popup;

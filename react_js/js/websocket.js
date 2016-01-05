@@ -1,22 +1,25 @@
 import extend_core from '../js/extend_core.js'
 import id_core from '../js/id_core.js'
+import event_bus from '../js/event_bus.js'
 
-var websocket = function() {
+import Popup from '../components/popup'
+
+var Websocket = function() {
   this.bindContexts();
   this.responseCallbacks = [];
   this.protocol = window.location.origin.indexOf('https') >= 0 ? 'wss://' : 'ws://';
 };
 
-websocket.prototype = {
+Websocket.prototype = {
 
   href: '/websocket',
 
   bindContexts: function() {
-    var sels = this;
-    sels.bindedOnOpen = sels.onOpen.bind(sels);
-    sels.bindedOnClose = sels.onClose.bind(sels);
-    sels.bindedOnMessage = sels.onMessage.bind(sels);
-    sels.bindedOnError = sels.onError.bind(sels);
+    var self = this;
+    self.bindedOnOpen = self.onOpen.bind(self);
+    self.bindedOnClose = self.onClose.bind(self);
+    self.bindedOnMessage = self.onMessage.bind(self);
+    self.bindedOnError = self.onError.bind(self);
   },
 
   createAndListen: function() {
@@ -64,20 +67,23 @@ websocket.prototype = {
   },
 
   onClose: function(event) {
+    var newState;
     if (event.wasClean) {
       console.warn('WebSocket connection closed');
     } else {
-      popap_manager.renderPopap(
-        'error',
-        {message: 103},
-        function(action) {
+      event_bus.trigger('changeStatePopup', {
+        show: true,
+        type: 'error',
+        message: 103,
+        onDataActionClick: function(action) {
           switch (action) {
             case 'confirmCancel':
-              popap_manager.onClose();
+              newState = Popup.prototype.handleClose(this.state);
+              this.setState(newState);
               break;
           }
         }
-      );
+      });
     }
     console.warn('Code: ' + event.code + ' reason: ' + event.reason);
   },
@@ -143,6 +149,6 @@ websocket.prototype = {
   }
 };
 //extend_core.prototype.inherit(websocket, throw_event_core);
-extend_core.prototype.inherit(websocket, id_core);
+extend_core.prototype.inherit(Websocket, id_core);
 
-export default new websocket();
+export default new Websocket();

@@ -834,7 +834,7 @@ const Body = React.createClass({
           ],
           "openChatsInfoArray": this.props.data.openChatsInfoArray,
           "closingChatsInfoArray": this.props.data.closingChatsInfoArray,
-          "openChats": {"0001-4422-3806-9811-2158-1d43-b4af-0777-0778-1e8d-b082-f7c6": true}
+          "openChats": {'0001-4422-5577-2727-6438-8a24-6f95-c0f9-4c75-a123-d894-4901': true}
         };
         return <PanelChats events={this.props.events} data={data} configs={configs}/>;
         break;

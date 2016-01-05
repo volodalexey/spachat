@@ -3,8 +3,9 @@ import cookie_core from '../js/cookie_core.js'
 
 import indexeddb from '../js/indexeddb.js'
 import event_bus from '../js/event_bus.js'
+import websocket from '../js/websocket.js'
 
-var users_bus = function() {
+var Users_bus = function() {
   this.user_id = null;
   // database for all user content
   // db_name - depends from user id
@@ -37,7 +38,7 @@ var users_bus = function() {
   }
 };
 
-users_bus.prototype = {
+Users_bus.prototype = {
 
   checkLoginState: function() {
     var user_id = this.getCookie('user_id');
@@ -49,6 +50,7 @@ users_bus.prototype = {
   setUserId: function(user_id) {
     if(user_id){
       this.user_id = user_id;
+      websocket.createAndListen();
       this.userDatabaseDescription.db_name = user_id;
       event_bus.trigger('setUserId', user_id);
       this.setCookie('user_id', user_id, {expires: 24 * 60 * 60});
@@ -56,6 +58,7 @@ users_bus.prototype = {
       event_bus.trigger('setUserId', user_id);
       this.user_id = user_id;
       this.deleteCookie('user_id');
+      websocket.dispose();
     }
   },
 
@@ -249,6 +252,6 @@ users_bus.prototype = {
   }
 };
 
-extend_core.prototype.inherit(users_bus, cookie_core);
+extend_core.prototype.inherit(Users_bus, cookie_core);
 
-export default new users_bus();
+export default new Users_bus();

@@ -1,7 +1,7 @@
-var event_core = function() {
+var Event_core = function() {
 };
 
-event_core.prototype = {
+Event_core.prototype = {
 
   __class_name: "event_core",
 
@@ -61,4 +61,4 @@ event_core.prototype = {
   }
 };
 
-export default event_core;
+export default Event_core;

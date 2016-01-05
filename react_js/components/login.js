@@ -11,7 +11,6 @@ import Decription from '../components/description'
 import Localization from '../js/localization.js'
 import users_bus from '../js/users_bus.js'
 import indexeddb from '../js/indexeddb.js'
-import websocket from '../js/websocket.js'
 import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
 
@@ -213,8 +212,7 @@ const Login = React.createClass({
           users_bus.setUserId(userCredentials.user_id);
           users_bus.getMyInfo(null, function(err, options, userInfo) {
             if (userPassword === userInfo.userPassword) {
-              users_bus.setUserId(userInfo.user_id);
-              //websocket.createAndListen();
+              //users_bus.setUserId(userInfo.user_id);
               users_bus.checkLoginState();
               self.history.pushState(null, 'chat');
             } else {

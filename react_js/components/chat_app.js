@@ -2,7 +2,6 @@ import React from 'react'
 import { render } from 'react-dom'
 import { History } from 'react-router'
 
-import Localization from '../js/localization.js'
 import users_bus from '../js/users_bus.js'
 import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
@@ -10,7 +9,7 @@ import event_bus from '../js/event_bus.js'
 
 import Panel from '../components/panel'
 import Popup from '../components/popup'
-import Chat from '../components/chat'
+import ChatsManager from '../components/chats_manager'
 import Description from '../components/description'
 import ChatResize from '../components/chat_resize'
 
@@ -67,10 +66,6 @@ const ChatApp = React.createClass({
     }
   },
 
-  //componentWillUnmount: function() {
-  //  //window.removeEventListener('resize', this.handleResize);
-  //},
-
   handleChangePopup(options){
     var newState, self = this;
     newState = Popup.prototype.handleChangeState(this.state, options.show, options.type,
@@ -119,8 +114,8 @@ const ChatApp = React.createClass({
         <div>
           <Panel location={this.props.LEFT} userInfo={this.state.userInfo}/>
           <div data-role="main_container" className="w-100p h-100p p-abs">
-            <div className="flex-outer-container p-fx">
-              <Chat />
+            <div className="flex-outer-container" data-role="chat_wrapper">
+              <ChatsManager />
             </div>
           </div>
           <Panel location={this.props.RIGHT} userInfo={this.state.userInfo}/>
