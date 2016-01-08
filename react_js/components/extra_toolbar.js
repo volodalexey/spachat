@@ -2,7 +2,7 @@ import React from 'react'
 
 import Triple_Element from '../components/triple_element'
 
-const PanelExtraToolbar = React.createClass({
+const ExtraToolbar = React.createClass({
   getDefaultProps() {
     return {
       usersExtraToolbarConfig: [
@@ -39,6 +39,60 @@ const PanelExtraToolbar = React.createClass({
           "name": "",
           "disabled": false
         }
+      ],
+      messagesExtraToolbarConfig: [
+        {
+          "element": "button",
+          "icon": "filter_messages_icon",
+          "text": 26,
+          "class": "button-inset-square",
+          "data": {
+            "throw": "true",
+            "action": "changeMode",
+            "role": "btn_Filter",
+            "toggle": true,
+            "chat_part": "filter",
+            "mode_to": "MESSAGES_FILTER"
+          },
+          "name": "",
+          "disabled": false
+        }
+      ],
+      contactListExtraToolbarConfig: [
+      {
+        "element": "button",
+        "icon": "filter_users_icon",
+        "text": 26,
+        "class": "button-inset-square",
+        "data": {
+          "throw": "true",
+          "action": "changeMode",
+          "role": "btn_Filter",
+          "toggle": true,
+          "chat_part": "filter",
+          "mode_to": "CONTACT_LIST_FILTER"
+        },
+        "name": "",
+        "disabled": false
+      }
+    ],
+      loggerExtraToolbarConfig: [
+        {
+          "element": "button",
+          "icon": "filter_log_messages_icon",
+          "text": 26,
+          "class": "button-inset-square",
+          "data": {
+            "throw": "true",
+            "action": "changeMode",
+            "role": "btn_Filter",
+            "toggle": true,
+            "chat_part": "filter",
+            "mode_to": "MESSAGES_FILTER"
+          },
+          "name": "",
+          "disabled": false
+        }
       ]
     }
   },
@@ -50,6 +104,15 @@ const PanelExtraToolbar = React.createClass({
         break;
       case 'USERS':
         return this.props.usersExtraToolbarConfig;
+        break;
+      case 'MESSAGES':
+        return this.props.messagesExtraToolbarConfig;
+        break;
+      case 'CONTACT_LIST':
+        return this.props.contactListExtraToolbarConfig;
+        break;
+      case 'LOGGER':
+        return this.props.loggerExtraToolbarConfig;
         break;
     }
   },
@@ -64,6 +127,15 @@ const PanelExtraToolbar = React.createClass({
         break;
       case 'USERS':
         return this.props.data.users_ExtraToolbarOptions;
+        break;
+      case 'MESSAGES':
+        return this.props.data.messages_ExtraToolbarOptions;
+        break;
+      case 'CONTACT_LIST':
+        return this.props.data.contactList_ExtraToolbarOptions;
+        break;
+      case 'LOGGER':
+        return this.props.data.logger_ExtraToolbarOptions;
         break;
     }
   },
@@ -90,4 +162,4 @@ const PanelExtraToolbar = React.createClass({
   }
 });
 
-export default PanelExtraToolbar;
+export default ExtraToolbar;

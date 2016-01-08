@@ -81,10 +81,10 @@ app.use(returnIndexFile);
 
 console.log("__dirname", __dirname);
 
-app.listen(79999, function (err) {
+app.listen(7777, function (err) {
     if (err) {
         console.log(err);
         return;
     }
-    console.log('Server listening on http://localhost:9999, Ctrl+C to stop;')
+    console.log('Server listening on http://localhost:7777, Ctrl+C to stop;')
 });

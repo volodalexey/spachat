@@ -91,7 +91,7 @@ const Button = React.createClass({
       className = this.props.config.class ? this.props.config.class : '';
     }
 
-    if(this.props.config.data.mode_to && this.props.config.data.mode_to === this.props.mode){
+    if(this.props.config.data && this.props.config.data.mode_to && this.props.config.data.mode_to === this.props.mode){
       className = className + ' activeTollbar';
     }
     return className;

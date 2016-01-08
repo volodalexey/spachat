@@ -11,7 +11,7 @@ import Triple_Element from '../components/triple_element'
 import Popup from '../components/popup'
 import Decription from '../components/description'
 import ChatResize from '../components/chat_resize'
-import PanelExtraToolbar from '../components/panel_extra_toolbar'
+import ExtraToolbar from '../components/extra_toolbar'
 import Filter from '../components/filter'
 import PanelToolbar from '../components/panel_toolbar'
 import Body from '../components/body'
@@ -430,15 +430,15 @@ const Panel = React.createClass({
           this.changeMode(element);
           break;
         case 'changeRTE':
-          var newState = Filter.prototype.changeRTE(element, this.state);
+          var newState = Filter.prototype.changeRTE(element, this.state, this.state.bodyMode);
           this.setState(newState);
           break;
         case 'showPerPage':
-          var newState = Filter.prototype.showPerPage(element, this.state);
+          var newState = Filter.prototype.showPerPage(element, this.state, this.state.bodyMode);
           this.setState(newState);
           break;
         case 'changeRTE_goTo':
-          var newState = GoTo.prototype.changeRTE(element, this.state);
+          var newState = GoTo.prototype.changeRTE(element, this.state, this.state.bodyMode);
           this.setState(newState);
           break;
         case 'changeUserInfo':
@@ -845,7 +845,7 @@ const Panel = React.createClass({
             </header>
             <div data-role={location + '_extra_toolbar_container'}
                  className="flex-sp-around flex-item-auto c-200">
-              <PanelExtraToolbar mode={this.state.bodyMode} data={this.state} events={onEvent}/>
+              <ExtraToolbar mode={this.state.bodyMode} data={this.state} events={onEvent}/>
             </div>
             <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
               <Filter mode={this.state.bodyMode} data={this.state} events={onEvent}/>

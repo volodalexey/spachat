@@ -154,12 +154,16 @@ const Header = React.createClass({
 
   defineOptions(){
     if (this.props.data.headerOptions.show) {
-      let options = {};
+      let options = {}, newState = this.props.data;
       switch (this.props.data.headerOptions.mode) {
         case this.MODE.TAB:
           this.previousMode = this.MODE.TAB;
-          this.bodyMode = this.MODE.TAB;
-          options.description = this.MODE_DESCRIPTION[this.bodyMode];
+          options.description = this.MODE_DESCRIPTION[this.MODE.TAB];
+          //this.bodyMode = this.MODE.TAB;
+          if(this.previousMode !== this.MODE.TAB){
+            newState.headerOptions.mode = this.MODE.TAB;
+            this.props.handleEvent.changeState({headerOptions: newState.headerOptions});
+          }
           break;
       }
       return options;
@@ -171,7 +175,7 @@ const Header = React.createClass({
     return (
       <header data-role="header_container" className="modal-header">
         <Location_Wrapper events={this.props.events} data={options} mainContainer={this.props.mainContainer}
-                          configs={this.props.configs}/>
+                          configs={this.props.configs} mode={this.props.data.bodyOptions.mode}/>
       </header>
     )
   }

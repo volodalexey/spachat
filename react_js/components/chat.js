@@ -1,7 +1,15 @@
 import React from 'react'
 import { Router, Route, Link, History, Redirect } from 'react-router'
 
+import extend_core from '../js/extend_core.js'
+import dom_core from '../js/dom_core.js'
+import switcher_core from '../js/switcher_core.js'
+
 import Header from '../components/header'
+import Filter from '../components/filter'
+import ExtraToolbar from '../components/extra_toolbar'
+import Body from '../components/body'
+import Editor from '../components/editor'
 
 const Chat = React.createClass({
   getInitialState(){
@@ -17,9 +25,10 @@ const Chat = React.createClass({
         show: false
       },
       bodyOptions: {
-        show: true
+        show: true,
         //,
         //mode: Body.prototype.MODE.MESSAGES
+        mode: "MESSAGES"
       },
       editorOptions: {
         show: true
@@ -27,7 +36,7 @@ const Chat = React.createClass({
         //mode: Editor.prototype.MODE.MAIN_PANEL
       },
       formatOptions: {
-        show: false,
+        show: true,
         offScroll: false,
         sendEnter: false,
         iSender: true
@@ -173,22 +182,125 @@ const Chat = React.createClass({
     }
   },
 
+  handleClick(event){
+    var element = this.getDataParameter(event.currentTarget, 'action');
+    if (element) {
+      switch (element.dataset.action) {
+        case 'changeMode':
+          this.changeMode(element);
+          break;
+      }
+    }
+  },
+
+  handleChange(event){},
+
+  changeMode: function(element) {
+    var _this = this;
+    _this.switchModes([
+      {
+        chat_part: element.dataset.chat_part,
+        newMode: element.dataset.mode_to,
+        target: element
+      }
+    ]);
+  },
+
+  switchModes: function(_array, options) {
+    var self = this;
+    _array.forEach(function(_obj) {
+        switch (_obj.chat_part) {
+          case 'body':
+            switch (_obj.newMode) {
+              case Body.prototype.MODE.SETTINGS:
+                self.state.bodyOptions.mode = Body.prototype.MODE.SETTINGS;
+                self.state.editorOptions.show = false;
+                //self.state.messages_ListOptions.final = null;
+                //self.state.logger_ListOptions.final = null;
+                self.setState({bodyOptions: self.state.bodyOptions, editorOptions: self.state.editorOptions});
+                break;
+              case 'CONTACT_LIST':
+              //case Body.prototype.MODE.CONTACT_LIST:
+                self.state.bodyOptions.mode = Body.prototype.MODE.CONTACT_LIST;
+                self.state.editorOptions.show = false;
+                self.setState({bodyOptions: self.state.bodyOptions, editorOptions: self.state.editorOptions});
+                break;
+              case Body.prototype.MODE.MESSAGES:
+                self.state.bodyOptions.mode = Body.prototype.MODE.MESSAGES;
+                self.state.editorOptions.show = true;
+                self.setState({bodyOptions: self.state.bodyOptions, editorOptions: self.state.editorOptions});
+                break;
+              case Body.prototype.MODE.LOGGER:
+                self.state.bodyOptions.mode = Body.prototype.MODE.LOGGER;
+                self.state.editorOptions.show = false;
+                //self.state.messages_ListOptions.final = null;
+                //self.state.logger_ListOptions.final = null;
+                self.setState({bodyOptions: self.state.bodyOptions, editorOptions: self.state.editorOptions});
+                break;
+            }
+            break;
+          case 'editor':
+            break;
+          case 'pagination':
+            break;
+          case 'filter':
+            switch (_obj.newMode) {
+              case Filter.prototype.MODE.MESSAGES_FILTER:
+              case Filter.prototype.MODE.CONTACT_LIST_FILTER:
+                if (_obj.target) {
+                  var bool_Value = _obj.target.dataset.toggle === "true";
+                  //self.optionsDefinition(self, self.bodyOptions.mode);
+                  _obj.target.dataset.toggle = !bool_Value;
+                  switch (self.state.bodyOptions.mode){
+                    case 'MESSAGES':
+                      self.state.messages_FilterOptions.show = bool_Value;
+                      self.setState({messages_FilterOptions: self.state.messages_FilterOptions});
+                      break;
+                    case 'CONTACT_LIST':
+                      self.state.contactList_FilterOptions.show = bool_Value;
+                      self.setState({contactList_FilterOptions: self.state.contactList_FilterOptions});
+                      break;
+                  }
+                }
+                break;
+            }
+            break;
+        }
+      }
+    );
+  },
+
+  changeState(newState){
+    this.setState(newState);
+  },
+
   render() {
+    let handleEvent = {
+      changeState: this.changeState
+    };
+    let onEvent = {
+      onClick: this.handleClick,
+      onChange: this.handleChange
+    };
     return (
       <section className="modal" data-chat_id="<%= _in.chat.chat_id %>">
         <div className="chat-splitter-item hidden" data-role="splitter_item" data-splitteritem="left">
         </div>
         <div className="chat-splitter-item right hidden" data-role="splitter_item" data-splitteritem="right">
         </div>
-        <Header data={this.state}/>
+        <Header data={this.state} handleEvent={handleEvent} events={onEvent}/>
         <div data-role="extra_toolbar_container" className="flex-sp-around flex-shrink-0 p-t c-200">
-          extra_toolbar_container
+          <ExtraToolbar mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
         </div>
-        <div data-role="filter_container" className="flex wrap background-pink flex-shrink-0 c-200">filter_container
+        <div data-role="filter_container" className="flex wrap background-pink flex-shrink-0 c-200">
+          <Filter mode={this.state.bodyOptions.mode} data={this.state} handleEvent={handleEvent} events={onEvent}/>
         </div>
-        <div data-role="body_container" className="modal-body" param-content="message"></div>
+        <div data-role="body_container" className="modal-body" param-content="message">
+          <Body mode={this.state.bodyOptions.mode} data={this.state} options={this.props.data} events={onEvent}
+                userInfo={null}/>
+        </div>
         <footer className="flex-item-auto">
-          <div data-role="editor_container" className="c-200"></div>
+          <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
           <div data-role="go_to_container" className="c-100"></div>
           <div data-role="pagination_container" className="flex filter_container justContent c-200"></div>
         </footer>
@@ -196,5 +308,8 @@ const Chat = React.createClass({
     )
   }
 });
+
+extend_core.prototype.inherit(Chat, dom_core);
+extend_core.prototype.inherit(Chat, switcher_core);
 
 export default Chat;

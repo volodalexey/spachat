@@ -44,7 +44,7 @@ const Label = React.createClass({
       text = '';
     }
 
-    if(this.props.data.description){
+    if(this.props.data && this.props.data.description){
       if (typeof this.props.data.description === 'number') {
         text = Localization.getLocText(this.props.data.description);
       } else {

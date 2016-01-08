@@ -1,5 +1,4 @@
 import React from 'react'
-import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import event_bus from '../js/event_bus.js'
 import users_bus from '../js/users_bus.js'
@@ -207,11 +206,7 @@ const ChatsManager = React.createClass({
   },
 
   render() {
-    return (
-      <div>
-        <Chat />
-      </div>
-    )
+    return (<Chat />)
   }
 });
 

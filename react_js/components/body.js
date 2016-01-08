@@ -7,29 +7,34 @@ import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
 import PanelChats from './panel_chats'
 
-const MODE = {
-  CREATE_CHAT: 'CREATE_CHAT',
-  JOIN_CHAT: 'JOIN_CHAT',
-  CHATS: 'CHATS',
-  USERS: 'USERS',
-  JOIN_USER: 'JOIN_USER',
-
-  USER_INFO_EDIT: 'USER_INFO_EDIT',
-  USER_INFO_SHOW: 'USER_INFO_SHOW',
-  DETAIL_VIEW: 'DETAIL_VIEW',
-
-  CONNECTIONS: 'CONNECTIONS',
-
-  CREATE_BLOG: 'CREATE_BLOG',
-  JOIN_BLOG: 'JOIN_BLOG',
-  BLOGS: 'BLOGS',
-
-  PAGINATION: "PAGINATION",
-  GO_TO: "GO_TO",
-  FILTER: 'FILTER'
-};
-
 const Body = React.createClass({
+  MODE: {
+    SETTINGS: 'SETTINGS',
+    MESSAGES: 'MESSAGES',
+    CONTACT_LIST: 'CONTACT_LIST',
+    LOGGER: 'LOGGER',
+
+    CREATE_CHAT: 'CREATE_CHAT',
+    JOIN_CHAT: 'JOIN_CHAT',
+    CHATS: 'CHATS',
+    USERS: 'USERS',
+    JOIN_USER: 'JOIN_USER',
+
+    USER_INFO_EDIT: 'USER_INFO_EDIT',
+    USER_INFO_SHOW: 'USER_INFO_SHOW',
+    DETAIL_VIEW: 'DETAIL_VIEW',
+
+    CONNECTIONS: 'CONNECTIONS',
+
+    CREATE_BLOG: 'CREATE_BLOG',
+    JOIN_BLOG: 'JOIN_BLOG',
+    BLOGS: 'BLOGS',
+
+    PAGINATION: "PAGINATION",
+    GO_TO: "GO_TO",
+    FILTER: 'FILTER'
+  },
+
   getDefaultProps() {
     return {
       user_info_edit_config: [
@@ -768,38 +773,38 @@ const Body = React.createClass({
 
   defineConfigs(mode){
     switch (mode) {
-      case MODE.CHATS:
+      case this.MODE.CHATS:
         return {
           chats_info_config: this.props.chats_info_config,
           detail_view_config: this.props.detail_view_config
         };
         break;
-      case MODE.CREATE_CHAT:
+      case this.MODE.CREATE_CHAT:
         return this.props.create_chat_config;
         break;
-      case MODE.JOIN_CHAT:
+      case this.MODE.JOIN_CHAT:
         return this.props.join_chat_config;
         break;
-      case MODE.DETAIL_VIEW:
+      case this.MODE.DETAIL_VIEW:
         return this.props.detail_view_config;
         break;
-      case MODE.USERS:
-      case MODE.JOIN_USER:
+      case this.MODE.USERS:
+      case this.MODE.JOIN_USER:
         return this.props.users_info_config;
         break;
-      case MODE.CREATE_BLOG:
-      case MODE.JOIN_BLOG:
-      case MODE.BLOGS:
+      case this.MODE.CREATE_BLOG:
+      case this.MODE.JOIN_BLOG:
+      case this.MODE.BLOGS:
         return null;
         break;
 
-      case MODE.USER_INFO_SHOW:
+      case this.MODE.USER_INFO_SHOW:
         return this.props.user_info_show_config;
         break;
-      case MODE.USER_INFO_EDIT:
+      case this.MODE.USER_INFO_EDIT:
         return this.props.user_info_edit_config;
         break;
-      case MODE.CONNECTIONS:
+      case this.MODE.CONNECTIONS:
         return this.props.connections_config;
         break;
 
@@ -812,7 +817,7 @@ const Body = React.createClass({
   defineComponents(mode, configs){
     var items = [], data;
     switch (mode) {
-      case MODE.USERS:
+      case this.MODE.USERS:
         data = [{
           userName: "Bacy",
           user_id: "fghnjmd-f-beb-erg84g5t4g4"
@@ -823,14 +828,18 @@ const Body = React.createClass({
           }];
         return <PanelUsers data={data}/>;
         break;
-      case MODE.CHATS:
+      case this.MODE.CHATS:
         data = {
           "chat_ids": [
-            {chat_id: "0001-4422-3806-9811-2158-1d43-b4af-0777-0778-1e8d-b082-f7c6",
+            {
+              chat_id: "0001-4422-3806-9811-2158-1d43-b4af-0777-0778-1e8d-b082-f7c6",
               user_ids: ["0001-4419-1911-2840-a1c9-3faa-7286-a086-1cb4-f8f6-9736-8ae0 ",
-                "0001-4419-1911-2840-a1c9-3faa-7286-a086-1cb4-f8f6-9736-8ae0 "]},
-            {chat_id: "0001-4422-5577-2727-6438-8a24-6f95-c0f9-4c75-a123-d894-4901",
-              user_ids: ["00jhngfvdc-fg-bfg-b-fg--bf-g-fg8n7fh6nf76g7nf7g7e0"]}
+                "0001-4419-1911-2840-a1c9-3faa-7286-a086-1cb4-f8f6-9736-8ae0 "]
+            },
+            {
+              chat_id: "0001-4422-5577-2727-6438-8a24-6f95-c0f9-4c75-a123-d894-4901",
+              user_ids: ["00jhngfvdc-fg-bfg-b-fg--bf-g-fg8n7fh6nf76g7nf7g7e0"]
+            }
           ],
           "openChatsInfoArray": this.props.data.openChatsInfoArray,
           "closingChatsInfoArray": this.props.data.closingChatsInfoArray,
@@ -839,25 +848,25 @@ const Body = React.createClass({
         return <PanelChats events={this.props.events} data={data} configs={configs}/>;
         break;
 
-      case MODE.USER_INFO_SHOW:
+      case this.MODE.USER_INFO_SHOW:
         data = this.props.userInfo;
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}/>);
         return items;
         break;
 
-      case MODE.USER_INFO_EDIT:
-        if(!this.props.userInfo){
+      case this.MODE.USER_INFO_EDIT:
+        if (!this.props.userInfo) {
           users_bus.getMyInfo(options, function(error, options, userInfo) {
             if (error) {
               return (<div>error</div>);
             }
             items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={userInfo}
-                                         mode={MODE.USER_INFO_SHOW}/>);
+                                         mode={this.MODE.USER_INFO_SHOW}/>);
             return items;
           });
         } else {
           items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={this.props.userInfo}
-                                       mode={MODE.USER_INFO_SHOW}/>);
+                                       mode={this.MODE.USER_INFO_SHOW}/>);
           return items;
         }
         break;
