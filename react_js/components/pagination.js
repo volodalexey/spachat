@@ -1,8 +1,17 @@
 import React from 'react'
+
+import extend_core from '../js/extend_core.js'
+import switcher_core from '../js/switcher_core.js'
+
 import Triple_Element from '../components/triple_element'
 import Location_Wrapper from './location_wrapper'
 
 const Pagination = React.createClass({
+  MODE: {
+    "PAGINATION": 'PAGINATION',
+    "GO_TO": 'GO_TO'
+  },
+
   getDefaultProps() {
     return {
       configs: [
@@ -104,23 +113,10 @@ const Pagination = React.createClass({
     }
   },
 
-  defineConfig(mode){
-    switch (mode){
-      case 'CHATS':
-        return this.props.chatsFilterConfig;
-        break;
-      case 'USERS':
-        return this.props.usersFilterConfig;
-        break;
-    }
-  },
-
   defineOptions(mode){
     this.options = {};
     switch (mode){
-      case 'CREATE_CHAT':
-        this.options['paginationOptions'] = this.props.data.createChat_PaginationOptions;
-        break;
+
       case 'CHATS':
         this.options['paginationOptions'] = this.props.data.chats_PaginationOptions;
         break;
@@ -131,33 +127,22 @@ const Pagination = React.createClass({
         this.options = null;
         break;
     }
-    //return this.options;
-  },
-
-  componentDidUpdate(){
-    //if(this.options && this.options.paginationOptions.show) {
-    //this.countQuantityPages();
-    //}
   },
 
   countQuantityPages(){
-    //this.options.paginationOptions.currentPage = '1';
-    //this.options.paginationOptions.lastPage = '3';
   },
 
   render(){
-    this.defineOptions(this.props.mode);
-    if(this.options && this.options.paginationOptions.show) {
-      //this.countQuantityPages();
-
+    var currentOptions = this.optionsDefinition(this.props.data, this.props.mode);
+    if(currentOptions.paginationOptions && currentOptions.paginationOptions.show) {
       let data={
-        firstPage: this.options.paginationOptions.firstPage,
-        currentPage: this.options.paginationOptions.currentPage,
-        lastPage: this.options.paginationOptions.lastPage,
-        disableBack: this.options.paginationOptions.disableBack,
-        disableFirst: this.options.paginationOptions.disableFirst,
-        disableLast: this.options.paginationOptions.disableLast,
-        disableForward: this.options.paginationOptions.disableForward
+        firstPage: currentOptions.paginationOptions.firstPage,
+        currentPage: currentOptions.paginationOptions.currentPage,
+        lastPage: currentOptions.paginationOptions.lastPage,
+        disableBack: currentOptions.paginationOptions.disableBack,
+        disableFirst: currentOptions.paginationOptions.disableFirst,
+        disableLast: currentOptions.paginationOptions.disableLast,
+        disableForward: currentOptions.paginationOptions.disableForward
       };
       return <div>
         {
@@ -170,5 +155,7 @@ const Pagination = React.createClass({
 
   }
 });
+
+extend_core.prototype.inherit(Pagination, switcher_core);
 
 export default Pagination;

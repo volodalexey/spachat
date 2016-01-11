@@ -99,7 +99,7 @@ const Panel = React.createClass({
           "chat": null
         },
         chats_PaginationOptions: {
-          text: "chats",
+          text: "chats_PaginationOptions",
           show: false,
           mode_change: "rte",
           currentPage: null,
@@ -145,6 +145,7 @@ const Panel = React.createClass({
           "user": null
         },
         users_PaginationOptions: {
+          text: "users_PaginationOptions",
           show: false,
           mode_change: "rte",
           currentPage: null,
@@ -480,6 +481,15 @@ const Panel = React.createClass({
   handleChange(event){
     if (event.target.dataset.role === 'selectLanguage') {
       this.onChangeLanguage(event);
+    }
+    var element = this.getDataParameter(event.currentTarget, 'action');
+    if (element){
+      switch (element.dataset.action) {
+        case 'changePerPage':
+          var newState = Filter.prototype.changePerPage(element, this.state, this.state.bodyMode);
+          this.setState(newState);
+          break;
+      }
     }
   },
 

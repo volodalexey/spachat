@@ -2,8 +2,8 @@ import React from 'react'
 import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import extend_core from '../js/extend_core.js'
-import dom_core from '../js/dom_core.js'
 import switcher_core from '../js/switcher_core.js'
+import dom_core from '../js/dom_core.js'
 import event_bus from '../js/event_bus.js'
 
 import Header from '../components/header'
@@ -11,6 +11,7 @@ import Filter from '../components/filter'
 import ExtraToolbar from '../components/extra_toolbar'
 import Body from '../components/body'
 import Editor from '../components/editor'
+import Pagination from '../components/pagination'
 
 const Chat = React.createClass({
   getInitialState(){
@@ -27,14 +28,11 @@ const Chat = React.createClass({
       },
       bodyOptions: {
         show: true,
-        //,
-        //mode: Body.prototype.MODE.MESSAGES
-        mode: "MESSAGES"
+        mode: Body.prototype.MODE.MESSAGES
       },
       editorOptions: {
-        show: true
-        //,
-        //mode: Editor.prototype.MODE.MAIN_PANEL
+        show: true,
+        mode: Editor.prototype.MODE.MAIN_PANEL
       },
       formatOptions: {
         show: false,
@@ -43,13 +41,13 @@ const Chat = React.createClass({
         iSender: true
       },
       messages_GoToOptions: {
-        text: "mes",
+        text: "messages_GoToOptions",
         show: false,
         rteChoicePage: true,
         mode_change: "rte"
       },
       messages_PaginationOptions: {
-        text: "mes",
+        text: "messages_PaginationOptions",
         show: false,
         mode_change: "rte",
         currentPage: null,
@@ -66,6 +64,7 @@ const Chat = React.createClass({
         disableForward: false
       },
       messages_FilterOptions: {
+        text: "messages_FilterOptions",
         show: false
       },
       messages_ExtraToolbarOptions: {
@@ -88,7 +87,7 @@ const Chat = React.createClass({
         mode_change: "rte"
       },
       logger_PaginationOptions: {
-        text: "log",
+        text: "logger_PaginationOptions",
         show: false,
         mode_change: "rte",
         currentPage: null,
@@ -121,13 +120,14 @@ const Chat = React.createClass({
       },
 
       contactList_FilterOptions: {
+        text: "contactList_FilterOptions",
         show: false
       },
       contactList_ExtraToolbarOptions: {
         show: true
       },
       contactList_PaginationOptions: {
-        text: "contact",
+        text: "contactList_PaginationOptions",
         show: false,
         mode_change: "rte",
         currentPage: null,
@@ -198,15 +198,28 @@ const Chat = React.createClass({
         case 'changeMode':
           this.changeMode(element);
           break;
+        case 'changeRTE':
+          var newState = Filter.prototype.changeRTE(element, this.state, this.state.bodyOptions.mode);
+          this.setState(newState);
+          break;
       }
     }
   },
 
-  handleChange(event){},
+  handleChange(event){
+    var element = this.getDataParameter(event.currentTarget, 'action');
+    if (element) {
+      switch (element.dataset.action) {
+        case 'changePerPage':
+          var newState = Filter.prototype.changePerPage(element, this.state, this.state.bodyOptions.mode);
+          this.setState(newState);
+          break;
+      }
+    }
+  },
 
   changeMode: function(element) {
-    var _this = this;
-    _this.switchModes([
+    this.switchModes([
       {
         chat_part: element.dataset.chat_part,
         newMode: element.dataset.mode_to,
@@ -215,8 +228,8 @@ const Chat = React.createClass({
     ]);
   },
 
-  switchModes: function(_array, options) {
-    var self = this;
+  switchModes: function(_array) {
+    var self = this, currentOptions;
     _array.forEach(function(_obj) {
         switch (_obj.chat_part) {
           case 'body':
@@ -224,12 +237,9 @@ const Chat = React.createClass({
               case Body.prototype.MODE.SETTINGS:
                 self.state.bodyOptions.mode = Body.prototype.MODE.SETTINGS;
                 self.state.editorOptions.show = false;
-                //self.state.messages_ListOptions.final = null;
-                //self.state.logger_ListOptions.final = null;
                 self.setState({bodyOptions: self.state.bodyOptions, editorOptions: self.state.editorOptions});
                 break;
               case 'CONTACT_LIST':
-              //case Body.prototype.MODE.CONTACT_LIST:
                 self.state.bodyOptions.mode = Body.prototype.MODE.CONTACT_LIST;
                 self.state.editorOptions.show = false;
                 self.setState({bodyOptions: self.state.bodyOptions, editorOptions: self.state.editorOptions});
@@ -242,8 +252,6 @@ const Chat = React.createClass({
               case Body.prototype.MODE.LOGGER:
                 self.state.bodyOptions.mode = Body.prototype.MODE.LOGGER;
                 self.state.editorOptions.show = false;
-                //self.state.messages_ListOptions.final = null;
-                //self.state.logger_ListOptions.final = null;
                 self.setState({bodyOptions: self.state.bodyOptions, editorOptions: self.state.editorOptions});
                 break;
             }
@@ -255,36 +263,32 @@ const Chat = React.createClass({
                 self.setState({editorOptions: self.state.editorOptions});
                 break;
               case Editor.prototype.MODE.FORMAT_PANEL:
-                if (_obj.target) {
-                  var bool_Value = _obj.target.dataset.toggle === "true";
-                  _obj.target.dataset.toggle = !bool_Value;
-                  self.state.formatOptions.show = bool_Value;
-                  self.setState({formatOptions: self.state.formatOptions});
-                }
+                self.state.formatOptions.show = !self.state.formatOptions.show;
+                self.setState({formatOptions: self.state.formatOptions});
                 break;
             }
             break;
           case 'pagination':
-            break;
+            switch (_obj.newMode) {
+              case Pagination.prototype.MODE.PAGINATION:
+                if (_obj.target) {
+                  currentOptions = self.optionsDefinition(self.state, self.state.bodyOptions.mode);
+                  currentOptions.paginationOptions.show = _obj.target.checked;
+                  currentOptions.paginationOptions.showEnablePagination = _obj.target.checked;
+                  self.setState({[currentOptions.paginationOptions.text]: currentOptions.paginationOptions});
+                }
+                  break;
+              case Pagination.prototype.MODE.GO_TO:
+                break;
+            }
+              break;
           case 'filter':
             switch (_obj.newMode) {
               case Filter.prototype.MODE.MESSAGES_FILTER:
               case Filter.prototype.MODE.CONTACT_LIST_FILTER:
-                if (_obj.target) {
-                  var bool_Value = _obj.target.dataset.toggle === "true";
-                  //self.optionsDefinition(self, self.bodyOptions.mode);
-                  _obj.target.dataset.toggle = !bool_Value;
-                  switch (self.state.bodyOptions.mode){
-                    case 'MESSAGES':
-                      self.state.messages_FilterOptions.show = bool_Value;
-                      self.setState({messages_FilterOptions: self.state.messages_FilterOptions});
-                      break;
-                    case 'CONTACT_LIST':
-                      self.state.contactList_FilterOptions.show = bool_Value;
-                      self.setState({contactList_FilterOptions: self.state.contactList_FilterOptions});
-                      break;
-                  }
-                }
+                currentOptions = self.optionsDefinition(self.state, self.state.bodyOptions.mode);
+                currentOptions.filterOptions.show = !currentOptions.filterOptions.show;
+                self.setState({[currentOptions.filterOptions.text]: currentOptions.filterOptions});
                 break;
             }
             break;
@@ -318,14 +322,16 @@ const Chat = React.createClass({
         <div data-role="filter_container" className="flex wrap background-pink flex-shrink-0 c-200">
           <Filter mode={this.state.bodyOptions.mode} data={this.state} handleEvent={handleEvent} events={onEvent}/>
         </div>
-        <div data-role="body_container" className="modal-body" param-content="message">
+        <div data-role="body_container" className="modal-body" data-param_content="message">
           <Body mode={this.state.bodyOptions.mode} data={this.state} options={this.props.data} events={onEvent}
                 userInfo={null}/>
         </div>
         <footer className="flex-item-auto">
           <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>
           <div data-role="go_to_container" className="c-100"></div>
-          <div data-role="pagination_container" className="flex filter_container justContent c-200"></div>
+          <div data-role="pagination_container" className="flex filter_container justContent c-200">
+            <Pagination mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
+          </div>
         </footer>
       </section>
     )

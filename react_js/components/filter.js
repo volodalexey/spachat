@@ -1,4 +1,8 @@
 import React from 'react'
+
+import switcher_core from '../js/switcher_core'
+import extend_core from '../js/extend_core'
+
 import Triple_Element from '../components/triple_element'
 import Location_Wrapper from './location_wrapper'
 
@@ -413,7 +417,7 @@ const Filter = React.createClass({
   },
 
   defineConfig(mode){
-    switch (mode){
+    switch (mode) {
       case 'CHATS':
         return this.props.chatsFilterConfig;
         break;
@@ -430,8 +434,8 @@ const Filter = React.createClass({
   },
 
   prepareConfig(config, mode){
-    config = config.filter( function(obj){
-      if(!obj.redraw_mode){
+    config = config.filter(function(obj) {
+      if (!obj.redraw_mode) {
         return obj;
       } else {
         return obj.redraw_mode === mode;
@@ -442,7 +446,7 @@ const Filter = React.createClass({
 
   defineOptions(mode){
     var options = {};
-    switch (mode){
+    switch (mode) {
       case 'CREATE_CHAT':
         options['filterOptions'] = this.props.data.createChat_FilterOptions;
         options['paginationOptions'] = this.props.data.createChat_PaginationOptions;
@@ -475,56 +479,55 @@ const Filter = React.createClass({
   },
 
   changeRTE(element, state, mode){
-    switch (mode){
-      case "CHATS":
-        if(element.checked){
-          state.chats_PaginationOptions.mode_change = "rte";
-          state.chats_PaginationOptions.rtePerPage = true;
-          return {chats_PaginationOptions: state.chats_PaginationOptions };
-        } else {
-          state.chats_PaginationOptions.mode_change = "nrte";
-          state.chats_PaginationOptions.rtePerPage = false;
-          return {chats_PaginationOptions: state.chats_PaginationOptions };
-        }
-        break;
-      case "USERS":
-        if(element.checked){
-          state.users_PaginationOptions.mode_change = "rte";
-          state.users_PaginationOptions.rtePerPage = true;
-          return {users_PaginationOptions: state.users_PaginationOptions };
-        } else {
-          state.users_PaginationOptions.mode_change = "nrte";
-          state.users_PaginationOptions.rtePerPage = false;
-          return {users_PaginationOptions: state.users_PaginationOptions };
-        }
-        break;
+    var currentOptions = this.optionsDefinition(state, mode);
+    if (element.checked) {
+      currentOptions.paginationOptions.mode_change = "rte";
+      currentOptions.paginationOptions.rtePerPage = true;
+    } else {
+      currentOptions.paginationOptions.mode_change = "nrte";
+      currentOptions.paginationOptions.rtePerPage = false;
     }
+    return {[currentOptions.text]: currentOptions.paginationOptions};
+  },
+
+  changePerPage(element, state, mode){
+    var self = this, value = parseInt(element.value);
+    var currentOptions = this.optionsDefinition(state, mode);
+    if (element.value === "" || element.value === "0") {
+      currentOptions.paginationOptions.perPageValueNull = true;
+      currentOptions.paginationOptions.currentPage = null;
+      return;
+    } else {
+      currentOptions.paginationOptions.perPageValue = value;
+      currentOptions.paginationOptions.perPageValueNull = false;
+    }
+    return {[currentOptions.paginationOptions.text]: currentOptions.paginationOptions};
   },
 
   showPerPage(element, state, mode){
-    switch (mode){
+    switch (mode) {
       case "CHATS":
-          state.chats_PaginationOptions.currentPage = null;
-        if(state.chats_PaginationOptions.showEnablePagination) {
+        state.chats_PaginationOptions.currentPage = null;
+        if (state.chats_PaginationOptions.showEnablePagination) {
           //pagination.countQuantityPages
         }
-          return {chats_PaginationOptions: state.chats_PaginationOptions };
+        return {chats_PaginationOptions: state.chats_PaginationOptions};
         break;
       case "USERS":
         state.users_PaginationOptions.currentPage = null;
-        if(state.users_PaginationOptions.showEnablePagination) {
+        if (state.users_PaginationOptions.showEnablePagination) {
           //pagination.countQuantityPages
         }
-          return {users_PaginationOptions: state.users_PaginationOptions };
+        return {users_PaginationOptions: state.users_PaginationOptions};
         break;
     }
   },
 
   render(){
     var options = this.defineOptions(this.props.mode);
-    if(options && options.filterOptions.show) {
+    if (options && options.filterOptions.show) {
       var configs = this.defineConfig(this.props.mode);
-      if(!configs){
+      if (!configs) {
         return <div></div>
       }
 
@@ -533,7 +536,7 @@ const Filter = React.createClass({
         "element": "div",
         "class": "flex-item flex-wrap"
       };
-      let data={
+      let data = {
         "perPageValue": options.paginationOptions.perPageValue,
         "showEnablePagination": options.paginationOptions.showEnablePagination,
         "rtePerPage": options.paginationOptions.rtePerPage,
@@ -550,5 +553,7 @@ const Filter = React.createClass({
 
   }
 });
+
+extend_core.prototype.inherit(Filter, switcher_core);
 
 export default Filter;
