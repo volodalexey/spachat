@@ -4,6 +4,7 @@ import { Router, Route, Link, History, Redirect } from 'react-router'
 import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
 import switcher_core from '../js/switcher_core.js'
+import event_bus from '../js/event_bus.js'
 
 import Header from '../components/header'
 import Filter from '../components/filter'
@@ -36,7 +37,7 @@ const Chat = React.createClass({
         //mode: Editor.prototype.MODE.MAIN_PANEL
       },
       formatOptions: {
-        show: true,
+        show: false,
         offScroll: false,
         sendEnter: false,
         iSender: true
@@ -182,6 +183,14 @@ const Chat = React.createClass({
     }
   },
 
+  componentDidMount(){
+    event_bus.on('changeMode', this.changeMode, this);
+  },
+
+  componentWillUnmount: function() {
+    event_bus.off('changeMode', this.changeMode, this);
+  },
+
   handleClick(event){
     var element = this.getDataParameter(event.currentTarget, 'action');
     if (element) {
@@ -240,6 +249,20 @@ const Chat = React.createClass({
             }
             break;
           case 'editor':
+            switch (_obj.newMode) {
+              case Editor.prototype.MODE.MAIN_PANEL:
+                self.state.editorOptions.show = true;
+                self.setState({editorOptions: self.state.editorOptions});
+                break;
+              case Editor.prototype.MODE.FORMAT_PANEL:
+                if (_obj.target) {
+                  var bool_Value = _obj.target.dataset.toggle === "true";
+                  _obj.target.dataset.toggle = !bool_Value;
+                  self.state.formatOptions.show = bool_Value;
+                  self.setState({formatOptions: self.state.formatOptions});
+                }
+                break;
+            }
             break;
           case 'pagination':
             break;
@@ -300,7 +323,7 @@ const Chat = React.createClass({
                 userInfo={null}/>
         </div>
         <footer className="flex-item-auto">
-          <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
+          <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>
           <div data-role="go_to_container" className="c-100"></div>
           <div data-role="pagination_container" className="flex filter_container justContent c-200"></div>
         </footer>
