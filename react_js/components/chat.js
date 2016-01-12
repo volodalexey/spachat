@@ -206,6 +206,15 @@ const Chat = React.createClass({
           var newState = Filter.prototype.changeRTE(element, this.state, this.state.bodyOptions.mode);
           this.setState(newState);
           break;
+        case 'closeChat':
+          this.props.onEvent.toCloseChat(this.state.chatDescription, "close");
+          break;
+        case 'saveStatesChat':
+          this.props.onEvent.toCloseChat(this.state.chatDescription, "save");
+          break;
+        case 'saveAndCloseChat':
+          this.props.onEvent.toCloseChat(this.state.chatDescription, "save_close");
+          break;
       }
     }
   },

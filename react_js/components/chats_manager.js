@@ -104,7 +104,7 @@ const ChatsManager = React.createClass({
         }
 
         if (chatDescription) {
-          self.handleChat(chatDescription, false);
+          self.handleChat(chatDescription);
         } else {
           console.error(new Error('Chat with such id not found in the database!'));
           self.unHideUIButton(chatId);
@@ -128,9 +128,10 @@ const ChatsManager = React.createClass({
     return openedChat;
   },
 
-  handleChat(chatDescription, newChat){
-  this.state.chatsArray.push(chatDescription);
+  handleChat(chatDescription){
+    this.state.chatsArray.push(chatDescription);
     this.setState({chatsArray: this.state.chatsArray});
+    event_bus.trigger("changeOpenChats");
   },
 
   createNewChat(){
@@ -142,21 +143,21 @@ const ChatsManager = React.createClass({
       }
       let chatDescription = {};
       chatDescription.chat_id = res.uuid;
-        self.addNewChatToIndexedDB(chatDescription, function(err, chat) {
+      self.addNewChatToIndexedDB(chatDescription, function(err, chat) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        users_bus.putChatIdAndSave(chatDescription.chat_id, function(err, userInfo) {
           if (err) {
             console.error(err);
             return;
           }
-          users_bus.putChatIdAndSave(chatDescription.chat_id, function(err, userInfo) {
-            if (err) {
-              console.error(err);
-              return;
-            }
 
-            event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
-            self.handleChat(chatDescription, true);
-          });
-        })
+          event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
+          self.handleChat(chatDescription);
+        });
+      })
     });
   },
 
@@ -164,13 +165,67 @@ const ChatsManager = React.createClass({
     chats_bus.putChatToIndexedDB(chat_description, callback);
   },
 
+  toCloseChat(chatToDestroy, saveStates){
+    switch (saveStates) {
+      case 'close':
+        this.closeChat(chatToDestroy);
+        break;
+      case 'save':
+        this.saveStatesChat(chatToDestroy);
+        break;
+      case 'save_close':
+        this.saveAndCloseChat(chatToDestroy);
+        break;
+    }
+  },
+
+  closeChat(chatToDestroy){
+    var newState, self = this;
+    event_bus.trigger('changeStatePopup', {
+      show: true,
+      type: 'confirm',
+      message: 83,
+      onDataActionClick: function(action) {
+        switch (action) {
+          case 'confirmCancel':
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            break;
+          case 'confirmOk':
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            self.destroyChat(chatToDestroy);
+            break;
+        }
+      }
+    });
+  },
+
+  destroyChat(chatToDestroy){
+    this.state.chatsArray.splice(this.state.chatsArray.indexOf(chatToDestroy), 1);
+    this.setState({"chatsArray": this.state.chatsArray});
+    event_bus.trigger('chatDestroyed', chatToDestroy.chat_id);
+    event_bus.trigger("changeOpenChats");
+  },
+
+  saveStatesChat(chatToDestroy){
+
+  },
+
+  saveAndCloseChat(chatToDestroy){
+
+  },
+
   render() {
-    if(!this.state.chatsArray.length){
+    let onEvent = {
+      toCloseChat: this.toCloseChat
+    };
+    if (!this.state.chatsArray.length) {
       return <div className="flex-outer-container" data-role="chat_wrapper"></div>
     } else {
       let items = [];
-      this.state.chatsArray.forEach(function(_chat){
-        items.push(<Chat data={_chat} key={_chat.chat_id}/>);
+      this.state.chatsArray.forEach(function(_chat) {
+        items.push(<Chat data={_chat} key={_chat.chat_id} onEvent={onEvent}/>);
       });
       return <div className="flex-outer-container" data-role="chat_wrapper">{items}</div>;
     }

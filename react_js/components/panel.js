@@ -373,6 +373,8 @@ const Panel = React.createClass({
     document.addEventListener('resize', this.handleResize, false);
     event_bus.on('getPanelDescription', this.getPanelDescription);
     event_bus.on('AddedNewChat', this.toggleListOptions);
+    event_bus.on('chatDestroyed', this.onChatDestroyed);
+    event_bus.on('changeOpenChats', this.getInfoForChats);
 
     if (this.props.location === "left") {
       this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
@@ -400,6 +402,8 @@ const Panel = React.createClass({
     document.removeEventListener('resize', this.handleResize);
     event_bus.off('getPanelDescription', this.getPanelDescription);
     event_bus.off('AddedNewChat', this.toggleListOptions);
+    event_bus.off('chatDestroyed', this.getInfoForChats);
+    event_bus.off('changeOpenChats', this.getInfoForChats);
 
     this.outerContainer = null;
     this.inner_container = null;
@@ -785,8 +789,14 @@ const Panel = React.createClass({
 
   getPanelDescription: function(callback) {
     if (callback) {
+      this.setState({"chat_ids": [], "openChats": []});
       callback(this.state, this.props.location);
     }
+  },
+
+  onChatDestroyed(chatId){
+    //this.state.openChats.splice(this.state.openChats.indexOf(chatId), 1);
+    this.setState({openChats: this.state.openChats});
   },
 
   resizePanel(flag) {
