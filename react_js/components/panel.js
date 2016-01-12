@@ -6,6 +6,7 @@ import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
 import users_bus from '../js/users_bus.js'
 import event_bus from '../js/event_bus.js'
+import chats_bus from '../js/chats_bus.js'
 
 import Triple_Element from '../components/triple_element'
 import Popup from '../components/popup'
@@ -79,6 +80,8 @@ const Panel = React.createClass({
       return {
         openChatsInfoArray: [],
         closingChatsInfoArray: [],
+        chat_ids: [],
+        openChats: [],
         openedState: false,
         left: '-700px',
         toggleElemHide: false,
@@ -122,13 +125,14 @@ const Panel = React.createClass({
           show: false
         },
         chats_ListOptions: {
-          text: "chats",
+          text: "chats_ListOptions",
           start: 0,
           last: null,
           previousStart: 0,
           previousFinal: 0,
           restore: false,
-          data_download: false
+          data_download: false,
+          final: null
         },
 
         users_ExtraToolbarOptions: {
@@ -278,6 +282,8 @@ const Panel = React.createClass({
       return {
         openChatsInfoArray: [],
         closingChatsInfoArray: [],
+        chat_ids: [],
+        openChats: [],
         openedState: false,
         right: '-700px',
         toggleElemHide: false,
@@ -365,7 +371,8 @@ const Panel = React.createClass({
     document.addEventListener('load', this.handleLoad, true);
     document.addEventListener('resize', this.handleResize, false);
     document.addEventListener('resize', this.handleResize, false);
-    event_bus.on('getPanelDescription', this.getPanelDescription, this);
+    event_bus.on('getPanelDescription', this.getPanelDescription);
+    event_bus.on('AddedNewChat', this.toggleListOptions);
 
     if (this.props.location === "left") {
       this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
@@ -391,7 +398,8 @@ const Panel = React.createClass({
   componentWillUnmount: function() {
     window.removeEventListener('load', this.handleLoad);
     document.removeEventListener('resize', this.handleResize);
-    event_bus.off('getPanelDescription', this.getPanelDescription, this);
+    event_bus.off('getPanelDescription', this.getPanelDescription);
+    event_bus.off('AddedNewChat', this.toggleListOptions);
 
     this.outerContainer = null;
     this.inner_container = null;
@@ -549,6 +557,9 @@ const Panel = React.createClass({
         openedState: true,
         [this.props.location]: '0px'
       });
+      if(this.state.bodyMode === MODE.CHATS){
+        this.getInfoForChats();
+      }
     } else {
       z_index--;
       this.setState({
@@ -570,21 +581,36 @@ const Panel = React.createClass({
   },
 
   switchPanelMode: function(element) {
+    var self = this;
     if (element.dataset.mode_to === MODE.USER_INFO_SHOW && this.previous_UserInfo_Mode) {
       this.setState({bodyMode: this.previous_UserInfo_Mode});
     } else {
       this.setState({bodyMode: element.dataset.mode_to});
     }
     this.previous_Filter_Options = false;
-
-    if (this.previous_BodyMode && this.previous_BodyMode !== this.state.bodyMode) {
-      //this.showSpinner(this.body_container);
-    }
     this.previous_BodyMode = this.state.bodyMode;
 
     if (this.state.bodyMode === MODE.USER_INFO_SHOW) {
       this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
     }
+    if(element.dataset.mode_to === MODE.CHATS){
+      this.getInfoForChats();
+    }
+  },
+
+  getInfoForChats(){
+    var self = this;
+    users_bus.getMyInfo(null, function(error, options, userInfo) {
+      chats_bus.getAllChats(error, function(error, chatsArray) {
+        if (error) {
+          console.error(error);
+          return;
+        }
+        event_bus.trigger("getOpenChats", function(openChats){
+          self.setState({"chat_ids": chatsArray, "openChats": openChats});
+        });
+      });
+    });
   },
 
   calcMaxWidth: function() {
@@ -815,6 +841,13 @@ const Panel = React.createClass({
     var language = localStorage.getItem('language');
     if (!language || language !== event.target.value) {
       localStorage.setItem('language', event.target.value);
+    }
+  },
+
+  toggleListOptions(chatsLength){
+    if(this.props.location === "left"){
+      this.state.chats_ListOptions.final = chatsLength;
+      this.setState({chats_ListOptions: this.state.chats_ListOptions});
     }
   },
 

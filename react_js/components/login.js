@@ -133,7 +133,6 @@ const Login = React.createClass({
           "type": "submit",
           "text": 51,
           "location": "loginButton",
-          //"link": "/chat",
           "data": {
             "action": "submit",
             "role": "loginButton"

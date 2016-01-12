@@ -109,14 +109,12 @@ const ChatApp = React.createClass({
   },
 
   render() {
-    if(this.state.userInfo.hasOwnProperty('user_id')){
+    if(this.state.userInfo && this.state.userInfo.hasOwnProperty('user_id')){
       return (
         <div>
           <Panel location={this.props.LEFT} userInfo={this.state.userInfo}/>
           <div data-role="main_container" className="w-100p h-100p p-abs">
-            <div className="flex-outer-container" data-role="chat_wrapper">
-              <ChatsManager />
-            </div>
+            <ChatsManager />
           </div>
           <Panel location={this.props.RIGHT} userInfo={this.state.userInfo}/>
           <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>

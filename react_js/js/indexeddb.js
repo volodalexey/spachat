@@ -107,7 +107,7 @@ class indexeddb extends AsyncCore {
         if (self.openDatabases[options.db_name] &&
           self.openDatabases[options.db_name].db) {
           if (force) {
-            version = ++self.openDatabases[options.db_name].db.version;
+            version = self.openDatabases[options.db_name].db.version + 1;
             self.openDatabases[options.db_name].db.close();
             self.openDatabases[options.db_name] = null;
             // store new version in user credentials

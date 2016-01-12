@@ -8,6 +8,7 @@ import indexeddb from '../js/indexeddb.js'
 import websocket from '../js/websocket.js'
 import chats_bus from '../js/chats_bus.js'
 import disable_display_core from '../js/disable_display_core.js'
+import ajax_core from '../js/ajax_core.js'
 
 import Chat from '../components/chat'
 import Popup from '../components/popup'
@@ -17,18 +18,21 @@ const ChatsManager = React.createClass({
     return {
       minChatsWidth: 350,
       minMove: 5,
-      chatsArray: [],
-      openedChatsArray: [],
       UIElements: {},
       withPanels: true
     }
   },
 
+  getInitialState(){
+    return {
+      chatsArray: []
+    }
+  },
+
   componentDidMount(){
     event_bus.on('showChat', this.showChat, this);
-    event_bus.on('addNewChatAuto', this.addNewChatAuto, this);
-    event_bus.on('notifyChat', this.onChatMessageRouter, this);
-
+    event_bus.on('addNewChatAuto', this.createNewChat, this);
+    event_bus.on('getOpenChats', this.getOpenChats, this);
 
     this.mainConteiner = document.querySelector('[data-role="main_container"]');
     this.chatResizeContainer = document.querySelector('[data-role="chat_resize_container"]');
@@ -37,8 +41,8 @@ const ChatsManager = React.createClass({
 
   componentWillUnmount(){
     event_bus.off('showChat', this.showChat);
-    event_bus.off('addNewChatAuto', this.addNewChatAuto);
-    event_bus.off('notifyChat', this.onChatMessageRouter);
+    event_bus.off('addNewChatAuto', this.createNewChat);
+    event_bus.off('getOpenChats', this.getOpenChats);
 
     this.mainConteiner = null;
     this.chatResizeContainer = null;
@@ -47,7 +51,7 @@ const ChatsManager = React.createClass({
 
   getOpenChats: function(callback) {
     var openChats = {};
-    this.props.chatsArray.forEach(function(chat) {
+    this.state.chatsArray.forEach(function(chat) {
       openChats[chat.chat_id] = true;
     });
     callback(openChats);
@@ -69,7 +73,7 @@ const ChatsManager = React.createClass({
     }
 
     var chatId = parentElement.dataset.chat_id;
-    if(this.isChatOpened(chatId)){
+    if (this.isChatOpened(chatId)) {
       event_bus.trigger('changeStatePopup', {
         show: true,
         type: 'error',
@@ -88,7 +92,6 @@ const ChatsManager = React.createClass({
 
     this.hideUIButton(chatId, controlButtons);
 
-
     indexeddb.getByKeyPath(
       chats_bus.collectionDescription,
       null,
@@ -96,33 +99,27 @@ const ChatsManager = React.createClass({
       function(getError, chatDescription) {
         if (getError) {
           console.error(getError);
-          self.unHideUIButton(chat_id);
+          self.unHideUIButton(chatId);
           return;
         }
 
         if (chatDescription) {
-          //websocket.sendMessage({
-          //  type: "chat_join",
-          //  from_user_id: users_bus.getUserId(),
-          //  chat_description: {
-          //    chat_id: chatDescription.chat_id
-          //  },
-          //  restore_chat_state: restore_options
-          //});
+          self.handleChat(chatDescription, false);
         } else {
           console.error(new Error('Chat with such id not found in the database!'));
           self.unHideUIButton(chatId);
         }
       }
     );
-
-
   },
 
-  isChatOpened: function(chat_id) {
+  /**
+   * chat whether requested chat by its id is opened or not
+   */
+  isChatOpened: function(chatId) {
     var openedChat;
-    this.props.chatsArray.every(function(_chat) {
-      if (_chat.chat_id === chat_id) {
+    this.state.chatsArray.every(function(_chat) {
+      if (_chat.chat_id === chatId) {
         openedChat = _chat;
       }
       return !openedChat;
@@ -131,86 +128,57 @@ const ChatsManager = React.createClass({
     return openedChat;
   },
 
-  /**
-   * handle message from web-socket (if it is connected with chats some how)
-   */
-  onChatMessageRouter: function(messageData) {
-    var self = this;
-
-    switch (messageData.type) {
-      case 'chat_created':
-        self.chatCreateApproved(messageData);
-        break;
-      case 'chat_joined':
-        self.chatJoinApproved(messageData);
-        break;
-      case 'notifyChat':
-        Chat.prototype.chatsArray.forEach(function(_chat) {
-          if (messageData.chat_description.chat_id === _chat.chat_id) {
-            _chat.trigger(messageData.chat_type, messageData);
-          }
-        });
-        break;
-    }
+  handleChat(chatDescription, newChat){
+  this.state.chatsArray.push(chatDescription);
+    this.setState({chatsArray: this.state.chatsArray});
   },
 
-  /**
-   * sends future chat description to the server to check if such chat is already exists on the server
-   * @param event - click event
-   */
-  addNewChatAuto: function(event) {
-    if (!this.mainConteiner || !websocket) {
-      return;
-    }
-
-    websocket.sendMessage({
-      type: "chat_create",
-      from_user_id: users_bus.getUserId()
-    });
-    //
-
-  },
-
-  /**
-   * received confirmation from server or from webrtc connection
-   * save into indexedDB
-   */
-  chatCreateApproved: function(event) {
+  createNewChat(){
     var self = this;
-    if (event.from_ws_device_id) {
-      event_bus.set_ws_device_id(event.from_ws_device_id);
-    }
-
-    self.addNewChatToIndexedDB(event.chat_description, function(err, chat) {
+    this.get_JSON_res('/api/uuid', function(err, res) {
       if (err) {
-        console.error(err);
+        callback(err);
         return;
       }
-
-      users_bus.putChatIdAndSave(chat.chat_id, function(err, userInfo) {
-        if (err) {
-          console.error(err);
-          return;
-        }
-
-        event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
-        websocket.sendMessage({
-          type: "chat_join",
-          from_user_id: users_bus.getUserId(),
-          chat_description: {
-            chat_id: chat.chat_id
+      let chatDescription = {};
+      chatDescription.chat_id = res.uuid;
+        self.addNewChatToIndexedDB(chatDescription, function(err, chat) {
+          if (err) {
+            console.error(err);
+            return;
           }
-        });
-      });
+          users_bus.putChatIdAndSave(chatDescription.chat_id, function(err, userInfo) {
+            if (err) {
+              console.error(err);
+              return;
+            }
+
+            event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
+            self.handleChat(chatDescription, true);
+          });
+        })
     });
+  },
+
+  addNewChatToIndexedDB(chat_description, callback) {
+    chats_bus.putChatToIndexedDB(chat_description, callback);
   },
 
   render() {
-    return (<Chat />)
+    if(!this.state.chatsArray.length){
+      return <div className="flex-outer-container" data-role="chat_wrapper"></div>
+    } else {
+      let items = [];
+      this.state.chatsArray.forEach(function(_chat){
+        items.push(<Chat data={_chat} key={_chat.chat_id}/>);
+      });
+      return <div className="flex-outer-container" data-role="chat_wrapper">{items}</div>;
+    }
   }
 });
 
 extend_core.prototype.inherit(ChatsManager, dom_core);
+extend_core.prototype.inherit(ChatsManager, ajax_core);
 extend_core.prototype.inherit(ChatsManager, disable_display_core);
 
 export default ChatsManager;

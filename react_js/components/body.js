@@ -2,6 +2,7 @@ import React from 'react'
 import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import users_bus from '../js/users_bus.js'
+import chats_bus from '../js/chats_bus.js'
 
 import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
@@ -815,7 +816,7 @@ const Body = React.createClass({
   },
 
   defineComponents(mode, configs){
-    var items = [], data;
+    var items = [], data, self = this;
     switch (mode) {
       case this.MODE.USERS:
         data = [{
@@ -830,47 +831,23 @@ const Body = React.createClass({
         break;
       case this.MODE.CHATS:
         data = {
-          "chat_ids": [
-            {
-              chat_id: "0001-4422-3806-9811-2158-1d43-b4af-0777-0778-1e8d-b082-f7c6",
-              user_ids: ["0001-4419-1911-2840-a1c9-3faa-7286-a086-1cb4-f8f6-9736-8ae0 ",
-                "0001-4419-1911-2840-a1c9-3faa-7286-a086-1cb4-f8f6-9736-8ae0 "]
-            },
-            {
-              chat_id: "0001-4422-5577-2727-6438-8a24-6f95-c0f9-4c75-a123-d894-4901",
-              user_ids: ["00jhngfvdc-fg-bfg-b-fg--bf-g-fg8n7fh6nf76g7nf7g7e0"]
-            }
-          ],
-          "openChatsInfoArray": this.props.data.openChatsInfoArray,
-          "closingChatsInfoArray": this.props.data.closingChatsInfoArray,
-          "openChats": {'0001-4422-5577-2727-6438-8a24-6f95-c0f9-4c75-a123-d894-4901': true}
+          "chat_ids": this.props.data.chat_ids,
+          "openChatsInfoArray": self.props.data.openChatsInfoArray,
+          "closingChatsInfoArray": self.props.data.closingChatsInfoArray,
+          "openChats": this.props.data.openChats
         };
-        return <PanelChats events={this.props.events} data={data} configs={configs}/>;
+        return <PanelChats events={self.props.events} data={data} configs={configs}/>;
         break;
-
       case this.MODE.USER_INFO_SHOW:
         data = this.props.userInfo;
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}/>);
         return items;
         break;
-
       case this.MODE.USER_INFO_EDIT:
-        if (!this.props.userInfo) {
-          users_bus.getMyInfo(options, function(error, options, userInfo) {
-            if (error) {
-              return (<div>error</div>);
-            }
-            items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={userInfo}
-                                         mode={this.MODE.USER_INFO_SHOW}/>);
-            return items;
-          });
-        } else {
-          items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={this.props.userInfo}
-                                       mode={this.MODE.USER_INFO_SHOW}/>);
-          return items;
-        }
+        items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={this.props.userInfo}
+                                     mode={this.MODE.USER_INFO_SHOW}/>);
+        return items;
         break;
-
       default:
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs}/>);
         break;

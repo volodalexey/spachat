@@ -57,6 +57,22 @@ Chats_bus.prototype = {
     }
   },
 
+  getAllChats(getError, _callback){
+    indexeddb.getAll(
+      this.collectionDescription,
+      "chats",
+      function(_err, allChats){
+        if(_err){
+          console.error(_err);
+          return;
+        }
+        if(_callback){
+          _callback(getError, allChats);
+        }
+      }
+    );
+  },
+
   getChatContacts: function(chat_id, callback) {
     var _this = this;
     _this.findChatDescriptionById(chat_id, function(error, chat_description) {

@@ -162,16 +162,16 @@ Users_bus.prototype = {
   },
 
   putItemIntoArray: function(arrayName, item, callback) {
-    var _this = this;
-    _this.getMyInfo({}, function(error, _options, userInfo) {
+    var self = this;
+    self.getMyInfo({}, function(error, _options, userInfo) {
       if (error) {
         callback && callback(error);
         return;
       }
 
-      if (!_this.hasInArray(userInfo[arrayName], item)) {
+      if (!self.hasInArray(userInfo[arrayName], item)) {
         userInfo[arrayName].push(item);
-        _this.saveMyInfo(userInfo, function(err) {
+        self.saveMyInfo(userInfo, function(err) {
           callback && callback(err, userInfo);
         });
       } else {
@@ -216,7 +216,7 @@ Users_bus.prototype = {
   },
 
   storeNewUser: function(user_id, userName, userPassword, callback) {
-    var _this = this;
+    var self = this;
     indexeddb.addGlobalUser(user_id, userName, userPassword, function(err) {
       if (err) {
         callback(err);
@@ -232,15 +232,15 @@ Users_bus.prototype = {
         chat_ids: []
       };
 
-      _this.setUserId(user_id); // temp to store user
+      self.setUserId(user_id); // temp to store user
       indexeddb.addOrUpdateAll(
-        _this.userDatabaseDescription,
+        self.userDatabaseDescription,
         'information',
         [
           userInfo
         ],
         function(err) {
-          _this.setUserId(null); // roll back temp
+          self.setUserId(null); // roll back temp
           if (err) {
             callback(err);
             return;

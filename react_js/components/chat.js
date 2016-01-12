@@ -183,6 +183,10 @@ const Chat = React.createClass({
     }
   },
 
+  componentWillMount(){
+    this.setState({chatDescription: this.props.data});
+  },
+
   componentDidMount(){
     event_bus.on('changeMode', this.changeMode, this);
   },
