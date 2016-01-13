@@ -14,6 +14,8 @@ import Editor from '../components/editor'
 import Pagination from '../components/pagination'
 
 const Chat = React.createClass({
+  chatsArray: [],
+
   getInitialState(){
     return {
       padding: {
@@ -184,16 +186,11 @@ const Chat = React.createClass({
   },
 
   componentWillMount(){
-    //this.setState({chatDescription: this.props.data});
-    //this.setState({chat_id: this.props.data.chat_id});
-    this.setState(this.props.data);
+    this.setState(this.props.data.chatDescription);
   },
 
   componentDidMount(){
     event_bus.on('changeMode', this.changeMode, this);
-    //if(!this.state.chat_id){
-    //  this.setState({chat_id: this.props.data.chat_id});
-    //}
   },
 
   componentWillUnmount: function() {

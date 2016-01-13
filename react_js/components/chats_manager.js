@@ -51,7 +51,7 @@ const ChatsManager = React.createClass({
 
   getOpenChats: function(callback) {
     var openChats = {};
-    this.state.chatsArray.forEach(function(chat) {
+    Chat.prototype.chatsArray.forEach(function(chat) {
       openChats[chat.chat_id] = true;
     });
     callback(openChats);
@@ -118,7 +118,7 @@ const ChatsManager = React.createClass({
    */
   isChatOpened: function(chatId) {
     var openedChat;
-    this.state.chatsArray.every(function(_chat) {
+    Chat.prototype.chatsArray.every(function(_chat) {
       if (_chat.chat_id === chatId) {
         openedChat = _chat;
       }
@@ -129,9 +129,12 @@ const ChatsManager = React.createClass({
   },
 
   handleChat(chatDescription){
-    this.state.chatsArray.push(chatDescription);
-    this.setState({chatsArray: this.state.chatsArray});
+    let chat = {};
+    chat.chatDescription = chatDescription;
+    chat.chat_id = chatDescription.chat_id;
+    Chat.prototype.chatsArray.push(chat);
     event_bus.trigger("changeOpenChats", "CHATS");
+    this.forceUpdate()
   },
 
   createNewChat(){
@@ -202,10 +205,23 @@ const ChatsManager = React.createClass({
   },
 
   destroyChat(description){
-    this.state.chatsArray.splice(this.state.chatsArray.indexOf(description.chat_id), 1);
-    this.setState({"chatsArray": this.state.chatsArray});
+    let position = this.getDestroyChatPosition(description.chat_id);
+    Chat.prototype.chatsArray.splice(position, 1);
     event_bus.trigger('chatDestroyed', description.chat_id);
     event_bus.trigger("changeOpenChats");
+    this.forceUpdate();
+  },
+
+  getDestroyChatPosition(chat_id){
+    var destroyChatPosition;
+    Chat.prototype.chatsArray.every(function(_chat, index) {
+      if(_chat.chat_id === chat_id){
+        destroyChatPosition = index;
+      }
+      return !destroyChatPosition;
+    });
+
+    return destroyChatPosition;
   },
 
   saveStatesChat(description){
@@ -271,11 +287,11 @@ const ChatsManager = React.createClass({
     let onEvent = {
       toCloseChat: this.toCloseChat
     };
-    if (!this.state.chatsArray.length) {
+    if (!Chat.prototype.chatsArray.length) {
       return <div className="flex-outer-container" data-role="chat_wrapper"></div>
     } else {
       let items = [];
-      this.state.chatsArray.forEach(function(_chat) {
+      Chat.prototype.chatsArray.forEach(function(_chat) {
         items.push(<Chat data={_chat} key={_chat.chat_id} onEvent={onEvent}/>);
       });
       return <div className="flex-outer-container" data-role="chat_wrapper">{items}</div>;
