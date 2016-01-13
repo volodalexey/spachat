@@ -829,6 +829,11 @@ const Body = React.createClass({
           }];
         return <PanelUsers data={data}/>;
         break;
+      case this.MODE.JOIN_USER:
+        data = {"readyForFriendRequest": this.props.data.joinUser_ListOptions.readyForRequest};
+        items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}/>);
+        return items;
+        break;
       case this.MODE.CHATS:
         data = {
           "chat_ids": this.props.data.chat_ids,

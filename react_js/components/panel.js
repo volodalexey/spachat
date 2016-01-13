@@ -374,7 +374,7 @@ const Panel = React.createClass({
     event_bus.on('getPanelDescription', this.getPanelDescription);
     event_bus.on('AddedNewChat', this.toggleListOptions);
     event_bus.on('chatDestroyed', this.onChatDestroyed);
-    event_bus.on('changeOpenChats', this.getInfoForChats);
+    event_bus.on('changeOpenChats', this.getInfoForBody);
 
     if (this.props.location === "left") {
       this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
@@ -402,8 +402,8 @@ const Panel = React.createClass({
     document.removeEventListener('resize', this.handleResize);
     event_bus.off('getPanelDescription', this.getPanelDescription);
     event_bus.off('AddedNewChat', this.toggleListOptions);
-    event_bus.off('chatDestroyed', this.getInfoForChats);
-    event_bus.off('changeOpenChats', this.getInfoForChats);
+    event_bus.off('chatDestroyed', this.getInfoForBody);
+    event_bus.off('changeOpenChats', this.getInfoForBody);
 
     this.outerContainer = null;
     this.inner_container = null;
@@ -423,6 +423,9 @@ const Panel = React.createClass({
       this.oldPassword = this.panelBody.querySelector('[data-role="passwordOld"]');
       this.newPassword = this.panelBody.querySelector('[data-role="passwordNew"]');
       this.confirmPassword = this.panelBody.querySelector('[data-role="passwordConfirm"]');
+    }
+    if(!this.state.userInfo){
+      this.setState({userInfo: this.props.userInfo});
     }
   },
 
@@ -491,8 +494,14 @@ const Panel = React.createClass({
   },
 
   handleChange(event){
-    if (event.target.dataset.role === 'selectLanguage') {
-      this.onChangeLanguage(event);
+    switch (event.target.dataset.role) {
+      case 'selectLanguage':
+        this.onChangeLanguage(event);
+        break;
+      case 'userName':
+        this.state.userInfo.userName = event.target.value;
+        this.setState({userName: this.state.userInfo});
+        break;
     }
     var element = this.getDataParameter(event.currentTarget, 'action');
     if (element){
@@ -561,9 +570,7 @@ const Panel = React.createClass({
         openedState: true,
         [this.props.location]: '0px'
       });
-      if(this.state.bodyMode === MODE.CHATS){
-        this.getInfoForChats();
-      }
+        this.getInfoForBody(this.state.bodyMode);
     } else {
       z_index--;
       this.setState({
@@ -597,24 +604,31 @@ const Panel = React.createClass({
     if (this.state.bodyMode === MODE.USER_INFO_SHOW) {
       this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
     }
-    if(element.dataset.mode_to === MODE.CHATS){
-      this.getInfoForChats();
-    }
+      this.getInfoForBody(element.dataset.mode_to);
   },
 
-  getInfoForChats(){
+  getInfoForBody(mode){
     var self = this;
-    users_bus.getMyInfo(null, function(error, options, userInfo) {
-      chats_bus.getAllChats(error, function(error, chatsArray) {
+    if(mode === MODE.USERS) {
+      users_bus.getMyInfo(null, function(error, options, userInfo) {
+        self.setState({userInfo: userInfo});
+      });
+    }
+    if((mode === MODE.CHATS)){
+      chats_bus.getAllChats(null, function(error, chatsArray) {
         if (error) {
           console.error(error);
           return;
         }
         event_bus.trigger("getOpenChats", function(openChats){
-          self.setState({"chat_ids": chatsArray, "openChats": openChats});
+          self.setState({chat_ids: chatsArray, "openChats": openChats});
         });
       });
-    });
+    }
+  },
+
+  setUserInfo(userInfo){
+    this.setState({userInfo: userInfo});
   },
 
   calcMaxWidth: function() {
@@ -699,14 +713,14 @@ const Panel = React.createClass({
   cancelChangeUserInfo(){
     this.setState({bodyMode: MODE.USER_INFO_SHOW});
     this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
-    this.user = null;
+    //this.user = null;
   },
 
   saveChangeUserInfo(){
     var self = this, newState;
     if (this.userName.value && this.oldPassword.value && this.newPassword.value &&
       this.confirmPassword.value) {
-      if (this.oldPassword.value === this.user.userPassword) {
+      if (this.oldPassword.value === this.state.userInfo.userPassword) {
         if (this.newPassword.value === this.confirmPassword.value) {
           this.updateUserInfo(function() {
             event_bus.trigger('changeStatePopup', {
@@ -795,7 +809,10 @@ const Panel = React.createClass({
   },
 
   onChatDestroyed(chatId){
-    //this.state.openChats.splice(this.state.openChats.indexOf(chatId), 1);
+    if(this.state.openChats){
+      //this.state.openChats.splice(this.state.openChats.indexOf(openChats), 1);
+      delete this.state.openChats[chatId];
+    }
     this.setState({openChats: this.state.openChats});
   },
 
@@ -883,7 +900,6 @@ const Panel = React.createClass({
     let btnConfig = (location === 'left') ? this.props.leftBtnConfig : this.props.rightBtnConfig;
     let panel_toolbar_class = (location === 'left') ? 'w-100p flex-dir-col flex-item-auto c-200' : 'w-100p flex-dir-col c-200';
     var style = {[location]: this.state[location]};
-    this.user = this.props.userInfo;
     return (
       <section style={style} data-role={location + '_panel_outer_container'}
                className={location + '-panel hide p-fx panel animate c-100'}>
@@ -905,7 +921,7 @@ const Panel = React.createClass({
             </div>
             <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
               <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
-                    userInfo={this.user}/>
+                    userInfo={this.state.userInfo? this.state.userInfo : this.props.userInfo}/>
             </div>
             <footer className="flex-item-auto">
               <div data-role={location + '_go_to_container'} className="c-200">

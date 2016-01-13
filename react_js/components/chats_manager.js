@@ -131,7 +131,7 @@ const ChatsManager = React.createClass({
   handleChat(chatDescription){
     this.state.chatsArray.push(chatDescription);
     this.setState({chatsArray: this.state.chatsArray});
-    event_bus.trigger("changeOpenChats");
+    event_bus.trigger("changeOpenChats", "CHATS");
   },
 
   createNewChat(){
@@ -165,21 +165,21 @@ const ChatsManager = React.createClass({
     chats_bus.putChatToIndexedDB(chat_description, callback);
   },
 
-  toCloseChat(chatToDestroy, saveStates){
+  toCloseChat(saveStates, description){
     switch (saveStates) {
       case 'close':
-        this.closeChat(chatToDestroy);
+        this.closeChat(description);
         break;
       case 'save':
-        this.saveStatesChat(chatToDestroy);
+        this.saveStatesChat(description);
         break;
       case 'save_close':
-        this.saveAndCloseChat(chatToDestroy);
+        this.saveAndCloseChat(description);
         break;
     }
   },
 
-  closeChat(chatToDestroy){
+  closeChat(description){
     var newState, self = this;
     event_bus.trigger('changeStatePopup', {
       show: true,
@@ -192,28 +192,79 @@ const ChatsManager = React.createClass({
             this.setState(newState);
             break;
           case 'confirmOk':
+            self.destroyChat(description);
             newState = Popup.prototype.handleClose(this.state);
             this.setState(newState);
-            self.destroyChat(chatToDestroy);
             break;
         }
       }
     });
   },
 
-  destroyChat(chatToDestroy){
-    this.state.chatsArray.splice(this.state.chatsArray.indexOf(chatToDestroy), 1);
+  destroyChat(description){
+    this.state.chatsArray.splice(this.state.chatsArray.indexOf(description.chat_id), 1);
     this.setState({"chatsArray": this.state.chatsArray});
-    event_bus.trigger('chatDestroyed', chatToDestroy.chat_id);
+    event_bus.trigger('chatDestroyed', description.chat_id);
     event_bus.trigger("changeOpenChats");
   },
 
-  saveStatesChat(chatToDestroy){
-
+  saveStatesChat(description){
+    var newState, self = this;
+    event_bus.trigger('changeStatePopup', {
+      show: true,
+      type: 'confirm',
+      message: 81,
+      onDataActionClick: function(action) {
+        switch (action) {
+          case 'confirmCancel':
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            break;
+          case 'confirmOk':
+            self.saveStatesChats(description, function(err) {
+              if (err) {
+                console.error(err);
+                return;
+              }
+            });
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            break;
+        }
+      }
+    });
   },
 
-  saveAndCloseChat(chatToDestroy){
+  saveStatesChats: function(chat_description, callback) {
+    chats_bus.putChatToIndexedDB(chat_description, callback);
+  },
 
+  saveAndCloseChat(description){
+    var newState, self = this;
+    event_bus.trigger('changeStatePopup', {
+      show: true,
+      type: 'confirm',
+      message: 82,
+      onDataActionClick: function(action) {
+        switch (action) {
+          case 'confirmCancel':
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            break;
+          case 'confirmOk':
+            self.saveStatesChats(description, function(err) {
+              if (err) {
+                console.error(err);
+                return;
+              }
+              self.destroyChat(description);
+            });
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            break;
+        }
+      }
+    });
   },
 
   render() {

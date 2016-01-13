@@ -184,11 +184,16 @@ const Chat = React.createClass({
   },
 
   componentWillMount(){
-    this.setState({chatDescription: this.props.data});
+    //this.setState({chatDescription: this.props.data});
+    //this.setState({chat_id: this.props.data.chat_id});
+    this.setState(this.props.data);
   },
 
   componentDidMount(){
     event_bus.on('changeMode', this.changeMode, this);
+    //if(!this.state.chat_id){
+    //  this.setState({chat_id: this.props.data.chat_id});
+    //}
   },
 
   componentWillUnmount: function() {
@@ -207,13 +212,13 @@ const Chat = React.createClass({
           this.setState(newState);
           break;
         case 'closeChat':
-          this.props.onEvent.toCloseChat(this.state.chatDescription, "close");
+          this.props.onEvent.toCloseChat("close", this.state);
           break;
         case 'saveStatesChat':
-          this.props.onEvent.toCloseChat(this.state.chatDescription, "save");
+          this.props.onEvent.toCloseChat("save", this.state);
           break;
         case 'saveAndCloseChat':
-          this.props.onEvent.toCloseChat(this.state.chatDescription, "save_close");
+          this.props.onEvent.toCloseChat("save_close", this.state);
           break;
       }
     }
@@ -323,7 +328,7 @@ const Chat = React.createClass({
       onChange: this.handleChange
     };
     return (
-      <section className="modal" data-chat_id="<%= _in.chat.chat_id %>">
+      <section className="modal" data-chat_id={this.props.data.chat_id}>
         <div className="chat-splitter-item hidden" data-role="splitter_item" data-splitteritem="left">
         </div>
         <div className="chat-splitter-item right hidden" data-role="splitter_item" data-splitteritem="right">
