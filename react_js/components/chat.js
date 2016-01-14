@@ -186,15 +186,30 @@ const Chat = React.createClass({
   },
 
   componentWillMount(){
-    this.setState(this.props.data.chatDescription);
+    if(!this.props.data.restoreOption){
+      this.setState({chat_id: this.props.data.chat_id});
+    } else {
+      this.setState(this.props.data.chatDescription);
+    }
   },
 
   componentDidMount(){
     event_bus.on('changeMode', this.changeMode, this);
+    event_bus.on('getChatDescription', this.getChatDescription, this);
+
   },
 
   componentWillUnmount: function() {
     event_bus.off('changeMode', this.changeMode, this);
+    event_bus.off('getChatDescription', this.getChatDescription, this);
+  },
+
+  getChatDescription(chatId, _callback){
+    if(this.state.chat_id === chatId){
+      if(_callback){
+        _callback(this.state);
+      }
+    }
   },
 
   handleClick(event){
@@ -208,14 +223,8 @@ const Chat = React.createClass({
           var newState = Filter.prototype.changeRTE(element, this.state, this.state.bodyOptions.mode);
           this.setState(newState);
           break;
-        case 'closeChat':
-          this.props.onEvent.toCloseChat("close", this.state);
-          break;
-        case 'saveStatesChat':
-          this.props.onEvent.toCloseChat("save", this.state);
-          break;
-        case 'saveAndCloseChat':
-          this.props.onEvent.toCloseChat("save_close", this.state);
+        case 'closeChat': case 'saveStatesChat': case 'saveAndCloseChat':
+          event_bus.trigger('toCloseChat', element.dataset.action, this.state.chat_id, this.state);
           break;
       }
     }

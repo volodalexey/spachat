@@ -430,7 +430,7 @@ const Panel = React.createClass({
   },
 
   handleClick(event){
-    var element = this.getDataParameter(event.currentTarget, 'action');
+    var element = this.getDataParameter(event.currentTarget, 'action'), newState;
     if (element) {
       switch (element.dataset.action) {
         case 'togglePanel':
@@ -446,15 +446,15 @@ const Panel = React.createClass({
           this.changeMode(element);
           break;
         case 'changeRTE':
-          var newState = Filter.prototype.changeRTE(element, this.state, this.state.bodyMode);
+          newState = Filter.prototype.changeRTE(element, this.state, this.state.bodyMode);
           this.setState(newState);
           break;
         case 'showPerPage':
-          var newState = Filter.prototype.showPerPage(element, this.state, this.state.bodyMode);
+          newState = Filter.prototype.showPerPage(element, this.state, this.state.bodyMode);
           this.setState(newState);
           break;
         case 'changeRTE_goTo':
-          var newState = GoTo.prototype.changeRTE(element, this.state, this.state.bodyMode);
+          newState = GoTo.prototype.changeRTE(element, this.state, this.state.bodyMode);
           this.setState(newState);
           break;
         case 'changeUserInfo':
@@ -474,6 +474,9 @@ const Panel = React.createClass({
           break;
         case 'addNewChatAuto':
           event_bus.trigger('addNewChatAuto', event);
+          break;
+        case 'closeChat':
+            this.closeChat(element);
           break;
       }
     }
@@ -524,6 +527,15 @@ const Panel = React.createClass({
           closingChatsInfoArray: this.state.closingChatsInfoArray
         });
       }
+    }
+  },
+
+  closeChat(element){
+    let saveStates;
+    if (this.props.location === "left") {
+      let parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
+      let chatId = parentElement.dataset.chat_id;
+      event_bus.trigger('toCloseChat', element.dataset.role, chatId);
     }
   },
 
@@ -713,7 +725,6 @@ const Panel = React.createClass({
   cancelChangeUserInfo(){
     this.setState({bodyMode: MODE.USER_INFO_SHOW});
     this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
-    //this.user = null;
   },
 
   saveChangeUserInfo(){
@@ -810,7 +821,6 @@ const Panel = React.createClass({
 
   onChatDestroyed(chatId){
     if(this.state.openChats){
-      //this.state.openChats.splice(this.state.openChats.indexOf(openChats), 1);
       delete this.state.openChats[chatId];
     }
     this.setState({openChats: this.state.openChats});
