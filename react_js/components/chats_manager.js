@@ -33,6 +33,7 @@ const ChatsManager = React.createClass({
     event_bus.on('addNewChatAuto', this.createNewChat, this);
     event_bus.on('getOpenChats', this.getOpenChats, this);
     event_bus.on('toCloseChat', this.toCloseChat, this);
+    event_bus.on('chatsDestroy', this.destroyChats);
 
     this.mainConteiner = document.querySelector('[data-role="main_container"]');
     this.chatResizeContainer = document.querySelector('[data-role="chat_resize_container"]');
@@ -44,6 +45,7 @@ const ChatsManager = React.createClass({
     event_bus.off('addNewChatAuto', this.createNewChat);
     event_bus.off('getOpenChats', this.getOpenChats);
     event_bus.off('toCloseChat', this.toCloseChat);
+    event_bus.off('chatsDestroy', this.destroyChats);
 
     this.mainConteiner = null;
     this.chatResizeContainer = null;
@@ -210,6 +212,10 @@ const ChatsManager = React.createClass({
     event_bus.trigger('chatDestroyed', description.chat_id);
     event_bus.trigger("changeOpenChats");
     this.forceUpdate();
+  },
+
+  destroyChats: function() {
+    Chat.prototype.chatsArray = [];
   },
 
   getDestroyChatPosition(chat_id){

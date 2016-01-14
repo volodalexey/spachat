@@ -28,7 +28,21 @@ Switcher_core.prototype = {
         break;
     }
     return currentOptions;
+  },
+
+  tableDefinition: function(mode) {
+    let table_name;
+    switch (mode) {
+      case "MESSAGES":
+        table_name = ['messages'];
+        break;
+      case "LOGGER":
+        table_name = ['log_messages'];
+        break;
+    }
+    return table_name;
   }
+
 };
 
 export default Switcher_core;

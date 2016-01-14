@@ -5,6 +5,7 @@ import extend_core from '../js/extend_core.js'
 import switcher_core from '../js/switcher_core.js'
 import dom_core from '../js/dom_core.js'
 import event_bus from '../js/event_bus.js'
+import users_bus from '../js/users_bus.js'
 
 import Header from '../components/header'
 import Filter from '../components/filter'
@@ -15,6 +16,12 @@ import Pagination from '../components/pagination'
 
 const Chat = React.createClass({
   chatsArray: [],
+
+  getDefaultProps(){
+    return {
+
+    }
+  },
 
   getInitialState(){
     return {

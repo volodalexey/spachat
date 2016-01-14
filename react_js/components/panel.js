@@ -551,6 +551,7 @@ const Panel = React.createClass({
             newState = Popup.prototype.handleClose(this.state);
             this.setState(newState);
             users_bus.setUserId(null);
+            event_bus.trigger("chatsDestroy");
             break;
           case 'confirmCancel':
             newState = Popup.prototype.handleClose(this.state);
