@@ -7,6 +7,7 @@ import chats_bus from '../js/chats_bus.js'
 import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
 import PanelChats from './panel_chats'
+import Messages from './messages'
 
 const Body = React.createClass({
   MODE: {
@@ -809,6 +810,11 @@ const Body = React.createClass({
         return this.props.connections_config;
         break;
 
+      case this.MODE.MESSAGES:
+      case this.MODE.LOGGER:
+        return {};
+        break;
+
       default:
         return null;
         break;
@@ -853,6 +859,11 @@ const Body = React.createClass({
                                      mode={this.MODE.USER_INFO_SHOW}/>);
         return items;
         break;
+
+      case this.MODE.MESSAGES:
+        return <Messages data={this.props.data} handleEvent={this.props.handleEvent}/>;
+        break;
+
       default:
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs}/>);
         break;

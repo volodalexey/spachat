@@ -19,7 +19,6 @@ const Chat = React.createClass({
 
   getDefaultProps(){
     return {
-
     }
   },
 
@@ -203,7 +202,6 @@ const Chat = React.createClass({
   componentDidMount(){
     event_bus.on('changeMode', this.changeMode, this);
     event_bus.on('getChatDescription', this.getChatDescription, this);
-
   },
 
   componentWillUnmount: function() {
@@ -340,6 +338,7 @@ const Chat = React.createClass({
       onClick: this.handleClick,
       onChange: this.handleChange
     };
+
     return (
       <section className="modal" data-chat_id={this.props.data.chat_id}>
         <div className="chat-splitter-item hidden" data-role="splitter_item" data-splitteritem="left">
@@ -355,7 +354,7 @@ const Chat = React.createClass({
         </div>
         <div data-role="body_container" className="modal-body" data-param_content="message">
           <Body mode={this.state.bodyOptions.mode} data={this.state} options={this.props.data} events={onEvent}
-                userInfo={null}/>
+                userInfo={null} handleEvent={handleEvent}/>
         </div>
         <footer className="flex-item-auto">
           <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>

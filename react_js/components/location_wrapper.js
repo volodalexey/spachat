@@ -89,7 +89,6 @@ const Location_Wrapper = React.createClass({
     } else {
       return <div>{elements}</div>
     }
-    //return <div className={this.props.mainContainer ? this.props.mainContainer.class : ""}>{elements}</div>
   }
 });
 

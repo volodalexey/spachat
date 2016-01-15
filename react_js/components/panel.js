@@ -473,10 +473,12 @@ const Panel = React.createClass({
           event_bus.trigger('showChat', element);
           break;
         case 'addNewChatAuto':
+          if(this.props.location !== "left") return;
           event_bus.trigger('addNewChatAuto', event);
           break;
         case 'closeChat':
-            this.closeChat(element);
+          if(this.props.location !== "left") return;
+          this.closeChat(element);
           break;
       }
     }

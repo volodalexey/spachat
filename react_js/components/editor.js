@@ -104,20 +104,32 @@ const Editor = React.createClass({
     this.setState({message: message});
   },
 
-  handleChange(){},
+  handleChange(){
+  },
 
   getMessage(){
     return {__html: this.state.message};
   },
 
   sendMessage(){
+    var self = this, newState = this.props.data;
     if (!this.messageInnerContainer) {
       return;
     }
 
     var pattern = /[^\s{0,}$|^$]/; // empty message or \n only
     if (pattern.test(this.state.message)) {
-      messages.prototype.addMessage(this.props.data.bodyOptions.mode, this.state.message, this.props.data.chat_id);
+      messages.prototype.addMessage(this.props.data.bodyOptions.mode, this.state.message, this.props.data.chat_id,
+        function(err, messages) {
+          if (err) {
+            console.error(err);
+            return;
+          }
+
+          self.setState({message: ''});
+          newState.messages_PaginationOptions.currentPage = null;
+          self.props.handleEvent.changeState({messages_PaginationOptions: newState.messages_PaginationOptions});
+        });
     }
   },
 
