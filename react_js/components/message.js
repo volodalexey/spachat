@@ -1,4 +1,7 @@
 import React from 'react'
+
+import event_bus from '../js/event_bus.js'
+
 import html_message from '../js/html_message.js'
 import messages from '../js/messages.js'
 
@@ -10,15 +13,13 @@ const Messages = React.createClass({
     }
   },
 
-  componentDidMount(){
-    //this.getMessages();
-  },
-
   getMessages(){
     var self = this;
     messages.prototype.getAllMessages(this.props.data.chat_id, this.props.data.bodyOptions.mode, function(messages) {
-      self.setState({messages: messages});
-      //var mes = messages;
+      if(messages.length !== self.state.messages.length){
+        self.setState({messages: messages});
+        console.log(messages);
+      }
     });
   },
 
@@ -72,15 +73,9 @@ const Messages = React.createClass({
   },
 
   render(){
-    //if(!this.props.data.messages_ListOptions.currentPage){
-    //  this.getMessages();
-    //}
-    /*{this.renderItems()}*/
-    return <div></div>
+    this.getMessages();
+    return <div>{this.renderItems(this.state.messages)}</div>
   }
 });
-
-
-
 
 export default Messages;

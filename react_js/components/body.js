@@ -7,7 +7,7 @@ import chats_bus from '../js/chats_bus.js'
 import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
 import PanelChats from './panel_chats'
-import Messages from './messages'
+import Messages from './message'
 
 const Body = React.createClass({
   MODE: {

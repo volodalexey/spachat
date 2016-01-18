@@ -8,6 +8,7 @@ import indexeddb from '../js/indexeddb.js'
 import websocket from '../js/websocket.js'
 import chats_bus from '../js/chats_bus.js'
 import ajax_core from '../js/ajax_core.js'
+import messages from '../js/messages.js'
 
 import Chat from '../components/chat'
 import Popup from '../components/popup'
@@ -103,7 +104,7 @@ const ChatsManager = React.createClass({
         }
 
         if (chatDescription) {
-          self.handleChat(chatDescription, restoreOption);
+          self.handleChat(chatDescription, restoreOption, false);
         } else {
           console.error(new Error('Chat with such id not found in the database!'));
         }
@@ -126,14 +127,23 @@ const ChatsManager = React.createClass({
     return openedChat;
   },
 
-  handleChat(chatDescription, restoreOption){
+  handleChat(chatDescription, restoreOption, newChat){
+    var self = this;
     let chat = {};
     chat.chat_id = chatDescription.chat_id;
     chat.chatDescription = chatDescription;
     chat.restoreOption = restoreOption;
     Chat.prototype.chatsArray.push(chat);
-    event_bus.trigger("changeOpenChats", "CHATS");
-    this.forceUpdate()
+    let descr = messages.prototype.setCollectionDescription(chatDescription.chat_id);
+    indexeddb.open(descr, newChat, function(err) {
+      if(err){
+        console.error(err);
+        return;
+      }
+
+      event_bus.trigger("changeOpenChats", "CHATS");
+      self.forceUpdate();
+    });
   },
 
   createNewChat(){
@@ -157,7 +167,7 @@ const ChatsManager = React.createClass({
           }
 
           event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
-          self.handleChat(chatDescription);
+          self.handleChat(chatDescription, null, true);
         });
       })
     });
