@@ -18,7 +18,6 @@ const Messages = React.createClass({
     messages.prototype.getAllMessages(this.props.data.chat_id, this.props.data.bodyOptions.mode, function(messages) {
       if(messages.length !== self.state.messages.length){
         self.setState({messages: messages});
-        console.log(messages);
       }
     });
   },
@@ -40,7 +39,7 @@ const Messages = React.createClass({
       return (
         <div className="flex-sp-start margin-t-b" key={message.messageId}>
           <div className="message myMessage flex-item-1-auto flex-dir-col flex-sp-between">
-            <div className="message-container">{message.innerHTML}</div>
+            <div className="message-container" dangerouslySetInnerHTML={{__html: message.innerHTML}}></div>
             <div className="date-format">
               {timeCreated}
             </div>
@@ -63,7 +62,7 @@ const Messages = React.createClass({
             <div className="user-info c-50">{message.createdByUserId}</div>
           </div>
           <div className="message flex-item-1-auto flex-dir-col flex-sp-between">
-            <div className="message-container">{message.innerHTML}</div>
+            <div className="message-container" dangerouslySetInnerHTML={{__html: message.innerHTML}}></div>
             <div className="date-format">{timeCreated}</div>
             <div className="date-format">{timeReceived}</div>
           </div>

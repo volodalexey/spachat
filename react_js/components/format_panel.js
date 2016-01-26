@@ -116,7 +116,7 @@ const FormatPanel = React.createClass({
     }
   },
 
-  render(){
+    render(){
     if (this.props.data.formatOptions.show) {
       return (
         <Location_Wrapper events={this.props.events} mainContainer={this.props.mainContainer}

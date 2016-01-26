@@ -8,6 +8,7 @@ import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
 import PanelChats from './panel_chats'
 import Messages from './message'
+import Settings from './setting'
 
 const Body = React.createClass({
   MODE: {
@@ -769,6 +770,187 @@ const Body = React.createClass({
             "name": ""
           }
         }
+      ],
+      settings_config:[
+        {
+          "role": "locationWrapper",
+          "classList": "w-100p p-t-b flex-sp-between",
+          "location": "chat_id_container"
+        },
+        {
+          "element": "label",
+          "icon": "",
+          "text": 5,
+          "class": "",
+          "location": "chat_id_container"
+        },
+        {
+          "element": "input",
+          "type": "text",
+          "location": "chat_id_container",
+          "data": {
+            "key": "chat_id"
+          },
+          "disabled": true
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "w-100p p-t-b flex-sp-between",
+          "location": "logger_massage"
+        },
+        {
+          "element": "button",
+          "text": 34,
+          "location": "logger_massage",
+          "data": {
+            "throw": "true",
+            "action": "changeMode",
+            "chat_part": "body",
+            "mode_to": "LOGGER"
+          },
+          "disable": true
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+          "location": "chat_users_apply"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "text": 79,
+          "class": "check-box-size",
+          "location": "chat_users_apply",
+          "data": {
+            "action": "toggleChatUsersFriendship"
+          }
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+          "location": "send_enter"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "text": 35,
+          "class": "check-box-size",
+          "location": "send_enter",
+          "data": {
+            "key": "sendEnter",
+            "role": "btnEdit",
+            "action": "changeSendEnter",
+            "name": ""
+          }
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+          "location": "size_container"
+        },
+        {
+          "element": "label",
+          "text": 74,
+          "class": "",
+          "location": "size_container",
+          "data": {
+            "role": ""
+          }
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+          "location": "size"
+        },
+        {
+          "element": "input",
+          "type": "radio",
+          "text": 70,
+          "class": "check-box-size",
+          "location": "size",
+          "name": "size",
+          "data": {
+            "key": "size_350",
+            "value": 350,
+            "role": "sizeChatButton",
+            "action": "changeChatSize"
+          }
+        },
+        {
+          "element": "input",
+          "type": "radio",
+          "text": 71,
+          "class": "check-box-size",
+          "location": "size",
+          "name": "size",
+          "data": {
+            "key": "size_700",
+            "value": 700,
+            "role": "sizeChatButton",
+            "action": "changeChatSize"
+          }
+        },
+        {
+          "element": "input",
+          "type": "radio",
+          "text": 72,
+          "class": "check-box-size",
+          "location": "size",
+          "name": "size",
+          "data": {
+            "key": "size_1050",
+            "value": 1050,
+            "role": "sizeChatButton",
+            "action": "changeChatSize"
+          }
+        },
+        {
+          "element": "input",
+          "type": "radio",
+          "text": 73,
+          "class": "check-box-size",
+          "location": "size",
+          "name": "size",
+          "data": {
+            "key": "size_custom",
+            "role": "sizeChatButton",
+            "action": "changeChatSize"
+          }
+        },
+        {
+          "element": "button",
+          "icon": "",
+          "text": 75,
+          "location": "size",
+          "data": {
+            "action": "saveAsCustomWidth",
+            "role": "saveAsCustomWidth"
+          },
+          "class": "hide",
+          "name": "saveAsCustomWidth"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "class": "check-box-size hide",
+          "location": "size",
+          "name": "size",
+          "data": {
+            "key": "adjust_width",
+            "role": "adjust_width",
+            "action": "changeAdjustWidth"
+          }
+        },
+        {
+          "element": "label",
+          "text": 76,
+          "location": "size",
+          "class": "hide",
+          "sort": 2,
+          "data": {
+            "role": "adjust_width_label"
+          }
+        }
       ]
     }
   },
@@ -812,6 +994,7 @@ const Body = React.createClass({
 
       case this.MODE.MESSAGES:
       case this.MODE.LOGGER:
+      case this.MODE.SETTINGS:
         return {};
         break;
 
@@ -863,7 +1046,9 @@ const Body = React.createClass({
       case this.MODE.MESSAGES:
         return <Messages data={this.props.data} handleEvent={this.props.handleEvent}/>;
         break;
-
+      case this.MODE.SETTINGS:
+        return <Settings data={this.props.data} handleEvent={this.props.handleEvent}/>;
+        break;
       default:
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs}/>);
         break;

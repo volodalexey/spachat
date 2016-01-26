@@ -64,17 +64,21 @@ const Editor = React.createClass({
   },
 
   getInitialState(){
-    return {
-      message: ''
-    }
+    return {}
+  },
+
+  componentWillMount(){
+    this.__keyInnerHtml = Date.now();
   },
 
   componentDidMount(){
     this.editorContainer = ReactDOM.findDOMNode(this);
-    this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_container"]');
+    this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
+    this.messageInnerContainer.addEventListener('keypress', this.sendEnter);
   },
 
   componentWillUnmount(){
+    this.messageInnerContainer.removeEventListener('keypress', this.sendEnter);
     this.messageInnerContainer = null;
   },
 
@@ -98,17 +102,27 @@ const Editor = React.createClass({
     }
   },
 
-  handleInput(event){
-    let message = event.currentTarget.innerHTML;
-    let pattern = /[^\s{0,}$|^$]/; // empty message or \n only
-    this.setState({message: message});
+  componentDidUpdate(){
+    this.editorContainer = ReactDOM.findDOMNode(this);
+    if (this.editorContainer) {
+      this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
+    }
+  },
+
+  workflowInnerHtml(save){
+    this.__keyInnerHtml = Date.now();
+    save ? this.__innerHtml = this.messageInnerContainer.innerHTML : this.__innerHtml = "";
   },
 
   handleChange(){
   },
 
-  getMessage(){
-    return {__html: this.state.message};
+  sendEnter: function(event) {
+    if (event.keyCode === 13) {
+      if (this.props.data.formatOptions.sendEnter) {
+        this.sendMessage();
+      }
+    }
   },
 
   sendMessage(){
@@ -118,15 +132,16 @@ const Editor = React.createClass({
     }
 
     var pattern = /[^\s{0,}$|^$]/; // empty message or \n only
-    if (pattern.test(this.state.message)) {
-      messages.prototype.addMessage(this.props.data.bodyOptions.mode, this.state.message, this.props.data.chat_id,
-        function(err, messages) {
+    let message = this.messageInnerContainer.innerHTML;
+    if (pattern.test(message)) {
+      messages.prototype.addMessage(this.props.data.bodyOptions.mode, message, this.props.data.chat_id,
+        function(err) {
           if (err) {
             console.error(err);
             return;
           }
 
-          self.setState({message: ''});
+          self.workflowInnerHtml();
           newState.messages_PaginationOptions.currentPage = null;
           self.props.handleEvent.changeState({messages_PaginationOptions: newState.messages_PaginationOptions});
         });
@@ -170,7 +185,7 @@ const Editor = React.createClass({
           <div className="flex">
             <div data-role="message_container" className="modal-controls message_container">
               <div data-role="message_inner_container" className={classMesContainer} contentEditable="true"
-                   onInput={this.handleInput} dangerouslySetInnerHTML={{__html: this.state.message}}>
+                   dangerouslySetInnerHTML={{__html: this.__innerHtml}} key={this.__keyInnerHtml}>
               </div>
             </div>
             <div className="flex-wrap width-40px align-c" data-role="controls_container">
@@ -182,7 +197,8 @@ const Editor = React.createClass({
         </div>
       )
     } else {
-      return <div data-role="editor_container" className="c-200"></div>
+      this.workflowInnerHtml(true);
+      return null;
     }
   }
 });

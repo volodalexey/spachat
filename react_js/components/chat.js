@@ -192,9 +192,11 @@ const Chat = React.createClass({
   },
 
   componentWillMount(){
+    let index = this.chatsArray.indexOf(this.props.data);
     if(!this.props.data.restoreOption){
-      this.setState({chat_id: this.props.data.chat_id});
+      this.setState({chat_id: this.props.data.chat_id, index: index});
     } else {
+      this.props.data.chatDescription.index = index;
       this.setState(this.props.data.chatDescription);
     }
   },
