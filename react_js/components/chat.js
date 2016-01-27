@@ -180,16 +180,25 @@ const Chat = React.createClass({
         show: false
       },
       settings_ListOptions: {
-        size_350: true,
-        size_700: false,
-        size_1050: false,
-        size_custom: false,
-        adjust_width: false,
+        //size_350: true,
+        //size_700: false,
+        //size_1050: false,
+        //size_custom: false,
+        //adjust_width: false,
+        size: [
+          {size_350: true},
+          {size_700: false},
+          {size_1050: false},
+          {size_custom: false},
+          {adjust_width: false}
+        ],
         size_custom_value: '350px',
         size_current: '350px'
       }
     }
   },
+
+
 
   componentWillMount(){
     let index = this.chatsArray.indexOf(this.props.data);
@@ -342,7 +351,8 @@ const Chat = React.createClass({
     };
 
     return (
-      <section className="modal" data-chat_id={this.props.data.chat_id}>
+      <section className="modal" data-chat_id={this.props.data.chat_id}
+               style={{width: this.state.settings_ListOptions.size_current}}>
         <div className="chat-splitter-item hidden" data-role="splitter_item" data-splitteritem="left">
         </div>
         <div className="chat-splitter-item right hidden" data-role="splitter_item" data-splitteritem="right">

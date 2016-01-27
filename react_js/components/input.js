@@ -14,6 +14,15 @@ const Input = React.createClass({
         }
       }
     }
+
+    var display;
+    if (this.props.calcDisplay) {
+      display = this.props.calcDisplay(this.props.config);
+    }
+    if (display !== undefined && display !== true) {
+      params['style'] = {display: 'none'};
+    }
+
     if (this.props.id) {
       params['id'] = this.props.config.id;
     }

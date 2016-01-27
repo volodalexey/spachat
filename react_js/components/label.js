@@ -13,6 +13,15 @@ const Label = React.createClass({
     if (this.props.config.for) {
       params["for"] = this.props.config.for;
     }
+
+    var display;
+    if (this.props.calcDisplay) {
+      display = this.props.calcDisplay(this.props.config);
+    }
+    if (display !== undefined && display !== true) {
+      params['style'] = {display: 'none'};
+    }
+
     if (this.props.config.data) {
       for (var configDataKey in this.props.config.data) {
         if (this.props.config.data[configDataKey] !== "") {

@@ -74,11 +74,9 @@ const Editor = React.createClass({
   componentDidMount(){
     this.editorContainer = ReactDOM.findDOMNode(this);
     this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
-    this.messageInnerContainer.addEventListener('keypress', this.sendEnter);
   },
 
   componentWillUnmount(){
-    this.messageInnerContainer.removeEventListener('keypress', this.sendEnter);
     this.messageInnerContainer = null;
   },
 
@@ -106,6 +104,7 @@ const Editor = React.createClass({
     this.editorContainer = ReactDOM.findDOMNode(this);
     if (this.editorContainer) {
       this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
+      this.messageInnerContainer.addEventListener('keypress', this.sendEnter);
     }
   },
 
@@ -198,6 +197,7 @@ const Editor = React.createClass({
       )
     } else {
       this.workflowInnerHtml(true);
+      this.messageInnerContainer.removeEventListener('keypress', this.sendEnter);
       return null;
     }
   }
