@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import extend_core from '../js/extend_core.js'
@@ -18,8 +19,7 @@ const Chat = React.createClass({
   chatsArray: [],
 
   getDefaultProps(){
-    return {
-    }
+    return {}
   },
 
   getInitialState(){
@@ -180,29 +180,17 @@ const Chat = React.createClass({
         show: false
       },
       settings_ListOptions: {
-        //size_350: true,
-        //size_700: false,
-        //size_1050: false,
-        //size_custom: false,
-        //adjust_width: false,
-        size: [
-          {size_350: true},
-          {size_700: false},
-          {size_1050: false},
-          {size_custom: false},
-          {adjust_width: false}
-        ],
+        current_data_key: null,
         size_custom_value: '350px',
-        size_current: '350px'
+        size_current: '350px',
+        adjust_width: false
       }
     }
   },
 
-
-
   componentWillMount(){
     let index = this.chatsArray.indexOf(this.props.data);
-    if(!this.props.data.restoreOption){
+    if (!this.props.data.restoreOption) {
       this.setState({chat_id: this.props.data.chat_id, index: index});
     } else {
       this.props.data.chatDescription.index = index;
@@ -211,18 +199,62 @@ const Chat = React.createClass({
   },
 
   componentDidMount(){
+    this.chat = ReactDOM.findDOMNode(this);
+    this.splitter_left = this.chat.querySelector('[data-splitteritem="left"]');
+    this.splitter_right = this.chat.querySelector('[data-splitteritem="right"]');
+
     event_bus.on('changeMode', this.changeMode, this);
     event_bus.on('getChatDescription', this.getChatDescription, this);
+
+    this.splitter_left.addEventListener('mousedown', this.startResize);
+    this.splitter_left.addEventListener('touchstart', this.startResize);
+    this.splitter_left.addEventListener('touchmove', this.startResize);
+    this.splitter_left.addEventListener('touchend', this.startResize);
+
+    this.splitter_right.addEventListener('mousedown', this.startResize);
+    this.splitter_right.addEventListener('touchstart', this.startResize);
+    this.splitter_right.addEventListener('touchmove', this.startResize);
+    this.splitter_right.addEventListener('touchend', this.startResize);
   },
 
   componentWillUnmount: function() {
     event_bus.off('changeMode', this.changeMode, this);
     event_bus.off('getChatDescription', this.getChatDescription, this);
+
+    this.splitter_left.removeEventListener('mousedown', this.startResize);
+    this.splitter_left.removeEventListener('touchstart', this.startResize);
+    this.splitter_left.removeEventListener('touchmove', this.startResize);
+    this.splitter_left.removeEventListener('touchend', this.startResize);
+
+    this.splitter_right.removeEventListener('mousedown', this.startResize);
+    this.splitter_right.removeEventListener('touchstart', this.startResize);
+    this.splitter_right.removeEventListener('touchmove', this.startResize);
+    this.splitter_right.removeEventListener('touchend', this.startResize);
+
+    this.chat = null;
+    this.splitter_left = null;
+    this.splitter_right = null;
+  },
+
+  startResize: function(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    console.log(event.type);
+    switch (event.type) {
+      case 'mousedown':
+      case 'touchstart':
+        event_bus.trigger('transformToResizeState', event, this);
+        break;
+      case 'touchmove':
+      case 'touchend':
+        event_bus.trigger('redirectResize', event, this);
+        break;
+    }
   },
 
   getChatDescription(chatId, _callback){
-    if(this.state.chat_id === chatId){
-      if(_callback){
+    if (this.state.chat_id === chatId) {
+      if (_callback) {
         _callback(this.state);
       }
     }
@@ -239,7 +271,9 @@ const Chat = React.createClass({
           var newState = Filter.prototype.changeRTE(element, this.state, this.state.bodyOptions.mode);
           this.setState(newState);
           break;
-        case 'closeChat': case 'saveStatesChat': case 'saveAndCloseChat':
+        case 'closeChat':
+        case 'saveStatesChat':
+        case 'saveAndCloseChat':
           event_bus.trigger('toCloseChat', element.dataset.action, this.state.chat_id, this.state);
           break;
       }
@@ -317,11 +351,11 @@ const Chat = React.createClass({
                   currentOptions.paginationOptions.showEnablePagination = _obj.target.checked;
                   self.setState({[currentOptions.paginationOptions.text]: currentOptions.paginationOptions});
                 }
-                  break;
+                break;
               case Pagination.prototype.MODE.GO_TO:
                 break;
             }
-              break;
+            break;
           case 'filter':
             switch (_obj.newMode) {
               case Filter.prototype.MODE.MESSAGES_FILTER:
@@ -337,11 +371,19 @@ const Chat = React.createClass({
     );
   },
 
+  defineSplitterClass(className){
+    if(!this.state.settings_ListOptions.adjust_width ||
+      this.state.settings_ListOptions.current_data_key !== "custom_size"){
+      className = className + 'hidden';
+    }
+    return className;
+  },
+
   changeState(newState){
     this.setState(newState);
   },
 
-  render() {
+  render(){
     let handleEvent = {
       changeState: this.changeState
     };
@@ -353,9 +395,11 @@ const Chat = React.createClass({
     return (
       <section className="modal" data-chat_id={this.props.data.chat_id}
                style={{width: this.state.settings_ListOptions.size_current}}>
-        <div className="chat-splitter-item hidden" data-role="splitter_item" data-splitteritem="left">
+        <div className={this.defineSplitterClass('chat-splitter-item ')} data-role="splitter_item"
+             data-splitteritem="left">
         </div>
-        <div className="chat-splitter-item right hidden" data-role="splitter_item" data-splitteritem="right">
+        <div className={this.defineSplitterClass('chat-splitter-item right ')} data-role="splitter_item"
+             data-splitteritem="right">
         </div>
         <Header data={this.state} handleEvent={handleEvent} events={onEvent}/>
         <div data-role="extra_toolbar_container" className="flex-sp-around flex-shrink-0 p-t c-200">

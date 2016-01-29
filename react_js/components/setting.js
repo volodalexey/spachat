@@ -39,8 +39,9 @@ const Settings = React.createClass({
           "class": "check-box-size",
           "location": "size",
           "name": "size",
+          "default_size": true,
           "data": {
-            "key": "size_350",
+            "key": "small_size",
             "value": 350,
             "role": "sizeChatButton",
             "action": "changeChatSize"
@@ -54,7 +55,7 @@ const Settings = React.createClass({
           "location": "size",
           "name": "size",
           "data": {
-            "key": "size_700",
+            "key": "medium_size",
             "value": 700,
             "role": "sizeChatButton",
             "action": "changeChatSize"
@@ -68,7 +69,7 @@ const Settings = React.createClass({
           "location": "size",
           "name": "size",
           "data": {
-            "key": "size_1050",
+            "key": "large_size",
             "value": 1050,
             "role": "sizeChatButton",
             "action": "changeChatSize"
@@ -82,7 +83,7 @@ const Settings = React.createClass({
           "location": "size",
           "name": "size",
           "data": {
-            "key": "size_custom",
+            "key": "custom_size",
             "role": "sizeChatButton",
             "action": "changeChatSize"
           }
@@ -139,6 +140,7 @@ const Settings = React.createClass({
           "element": "input",
           "type": "text",
           "location": "chat_id_container",
+          "class": "flex-item-1-auto",
           "data": {
             "key": "chat_id"
           },
@@ -202,6 +204,13 @@ const Settings = React.createClass({
     return {}
   },
 
+  componentWillMount(){
+    this.props.data.settings_ListOptions.current_data_key = this.defineDefaultSizeConfig(
+      this.props.size_config,
+      this.props.data.settings_ListOptions.current_data_key).data.key;
+    this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
+  },
+
   handleClick(event){
     var element = this.getDataParameter(event.currentTarget, 'action');
     if (element) {
@@ -211,6 +220,12 @@ const Settings = React.createClass({
           break;
         case 'changeChatSize':
           this.changeChatSize(element);
+          break;
+        case 'saveAsCustomWidth':
+          this.saveAsCustomWidth();
+          break;
+        case 'changeAdjustWidth':
+          this.changeAdjustWidth(element);
           break;
       }
     }
@@ -226,76 +241,114 @@ const Settings = React.createClass({
   },
 
   changeChatSize(element){
-    let self = this;
-    if (element.dataset.value){
+    if (element.dataset.value) {
       this.props.data.settings_ListOptions.size_current = element.dataset.value + 'px';
     }
     if (element.dataset.key) {
-
-      if (this.props.data.settings_ListOptions[element.dataset.key] === element.dataset.key) {
-        this.props.data.settings_ListOptions[element.dataset.key] = true;
+      let current_size_config = this.defineDefaultSizeConfig(this.props.size_config, element.dataset.key);
+      this.props.data.settings_ListOptions.current_data_key = current_size_config.data.key;
+      if (current_size_config.data.key === 'custom_size') {
+        this.props.data.settings_ListOptions.size_current = this.props.data.settings_ListOptions.size_custom_value;
       }
-      this.props.data.settings_ListOptions.size.forEach(function(size_obj) {
-        let keys = Object.keys(size_obj), key = keys[0];
-        if (key === element.dataset.key){
-          size_obj[key] = true;
-          if (key === 'size_custom'){
-            self.props.data.settings_ListOptions.size_current = self.props.data.settings_ListOptions.size_custom_value;
-          }
-        } else {
-          size_obj[key] = false;
+      this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
+    }
+  },
+
+  saveAsCustomWidth(){
+    this.props.data.settings_ListOptions.size_custom_value = this.props.data.settings_ListOptions.size_current;
+    this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
+  },
+
+  changeAdjustWidth(element){
+    if (element.checked){
+      this.props.data.settings_ListOptions.adjust_width = true;
+    } else {
+      this.props.data.settings_ListOptions.adjust_width = false;
+    }
+    //this.props.data.settings_ListOptions.size_custom_value = this.props.data.settings_ListOptions.size_current;
+    this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
+    this.showSplitterItems();
+  },
+
+  showSplitterItems(){
+
+  },
+
+  defineDefaultSizeConfig(all_size_configs, current_data_key){
+    let current_size_config = null;
+    if (current_data_key) {
+      all_size_configs.every(function(size_config) {
+        if (size_config.data && size_config.data.key === current_data_key) {
+          current_size_config = size_config;
         }
+        return !current_size_config;
       });
     }
-      this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
+    if (current_size_config === null) {
+      all_size_configs.every(function(size_config) {
+        if (size_config.default_size) {
+          current_size_config = size_config;
+        }
+        return !current_size_config;
+      });
+    }
+    return current_size_config;
+  },
+
+  getSizeData(all_size_configs, current_data_key){
+    let returnObj = {},
+      current_size_config = this.defineDefaultSizeConfig(all_size_configs, current_data_key);
+    all_size_configs.forEach(function(size_config) {
+      if (!size_config.data) return;
+      let key = size_config.data.key;
+      if (key === "adjust_width") return;
+      returnObj[key] = size_config === current_size_config;
+    });
+    return returnObj;
+  },
+
+  calcDisplay(_config){
+    if (!_config.data) return true;
+    if (this.props.data.settings_ListOptions.current_data_key === "custom_size") {
+      if (_config.data.role === 'adjust_width' || _config.data.role === 'adjust_width_label') {
+        return true;
+      }
+      if (_config.data.role === 'saveAsCustomWidth') {
+        return false;
+      }
+    } else {
+      if (_config.data.role === 'adjust_width' || _config.data.role === 'adjust_width_label') {
+        return false;
+      }
+      if (_config.data.role === 'saveAsCustomWidth') {
+        return true;
+      }
+    }
   },
 
   renderItems(configs){
-    let items = [], self = this;
+    let items = [];
     let data = {
       "chat_id": this.props.data.chat_id,
       "sendEnter": this.props.data.formatOptions.sendEnter,
-      "size_custom": this.props.data.settings_ListOptions.size_custom,
-      "index": this.props.data.index
+      "index": this.props.data.index,
+      "adjust_width": this.props.data.settings_ListOptions.adjust_width
     };
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange
     };
-    this.props.data.settings_ListOptions.size.forEach(function(size_obj) {
-      Object.assign(data, size_obj);
-    });
-    //data = {
-    //  "size_350": this.props.data.settings_ListOptions.size['size_350'],
-    //  "size_700": this.props.data.settings_ListOptions.size['size_700'],
-    //  "size_1050": this.props.data.settings_ListOptions.size['size_1050'],
-    //  "adjust_width": this.props.data.settings_ListOptions.size['adjust_width']
-    //};
-    let calcDisplay = function(_config){
-      if (!_config.data) return true;
-      if (self.props.data.settings_ListOptions.size_custom){
-        if (_config.data.role === 'adjust_width' || _config.data.role === 'adjust_width_label'){
-          return false;
-        }
-        if (_config.data.role === 'saveAsCustomWidth'){
-          return true;
-        }
-      } else {
-        if (_config.data.role === 'adjust_width' || _config.data.role === 'adjust_width_label'){
-          return true;
-        }
-        if (_config.data.role === 'saveAsCustomWidth'){
-          return false;
-        }
-      }
-    };
+    Object.assign(
+      data,
+      this.getSizeData(this.props.size_config, this.props.data.settings_ListOptions.current_data_key)
+    );
+
     items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}
-                                      events={onEvent} calcDisplay = {calcDisplay}/>);
+                                 events={onEvent} calcDisplay={this.calcDisplay}/>);
     return items;
   },
 
   render(){
-
     return <div >
       {this.renderItems(this.props.setting_config)}
       <div className="textbox">

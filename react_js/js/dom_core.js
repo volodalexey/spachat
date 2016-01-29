@@ -40,7 +40,17 @@ Dom_core.prototype = {
       }
     }
     return null;
+  },
+
+  getOffset: function(element) {
+    var offsetLeft = 0, offsetTop = 0;
+    do {
+      offsetLeft += element.offsetLeft;
+      offsetTop += element.offsetTop;
+    } while (element = element.offsetParent);
+    return {offsetLeft: offsetLeft, offsetTop: offsetTop};
   }
+
 };
 
 export default Dom_core;

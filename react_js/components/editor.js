@@ -73,7 +73,9 @@ const Editor = React.createClass({
 
   componentDidMount(){
     this.editorContainer = ReactDOM.findDOMNode(this);
-    this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
+    if(this.editorContainer){
+      this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
+    }
   },
 
   componentWillUnmount(){
@@ -105,12 +107,14 @@ const Editor = React.createClass({
     if (this.editorContainer) {
       this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
       this.messageInnerContainer.addEventListener('keypress', this.sendEnter);
+      /*this.messageInnerContainer.removeEventListener('keypress', this.sendEnter);*/
+
     }
   },
 
   workflowInnerHtml(save){
     this.__keyInnerHtml = Date.now();
-    save ? this.__innerHtml = this.messageInnerContainer.innerHTML : this.__innerHtml = "";
+    (save && this.messageInnerContainer) ? this.__innerHtml = this.messageInnerContainer.innerHTML : this.__innerHtml = "";
   },
 
   handleChange(){
@@ -197,7 +201,6 @@ const Editor = React.createClass({
       )
     } else {
       this.workflowInnerHtml(true);
-      this.messageInnerContainer.removeEventListener('keypress', this.sendEnter);
       return null;
     }
   }
