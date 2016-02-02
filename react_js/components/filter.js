@@ -496,10 +496,19 @@ const Filter = React.createClass({
     if (element.value === "" || element.value === "0") {
       currentOptions.paginationOptions.perPageValueNull = true;
       currentOptions.paginationOptions.currentPage = null;
-      return;
+      return {[currentOptions.paginationOptions.text]: currentOptions.paginationOptions};
     } else {
-      currentOptions.paginationOptions.perPageValue = value;
+      //currentOptions.paginationOptions.perPageValue = value;
       currentOptions.paginationOptions.perPageValueNull = false;
+    }
+    if (!currentOptions.paginationOptions.rtePerPage) {
+      currentOptions.paginationOptions.currentPage = null;
+      currentOptions.paginationOptions.perPageValue = value;
+      return {[currentOptions.paginationOptions.text]: currentOptions.paginationOptions};
+    }
+    if (value) {
+      currentOptions.paginationOptions.perPageValue = value;
+      currentOptions.paginationOptions.currentPage = null;
     }
     return {[currentOptions.paginationOptions.text]: currentOptions.paginationOptions};
   },

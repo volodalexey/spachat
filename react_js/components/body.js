@@ -3,6 +3,8 @@ import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import users_bus from '../js/users_bus.js'
 import chats_bus from '../js/chats_bus.js'
+import switcher_core from '../js/switcher_core.js'
+import extend_core from '../js/extend_core.js'
 
 import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
@@ -1024,8 +1026,9 @@ const Body = React.createClass({
         return items;
         break;
       case this.MODE.CHATS:
+        let chat_ids = this.limitationQuantityRecords(this.props.data.chat_ids);
         data = {
-          "chat_ids": this.props.data.chat_ids,
+          "chat_ids": chat_ids,
           "openChatsInfoArray": self.props.data.openChatsInfoArray,
           "closingChatsInfoArray": self.props.data.closingChatsInfoArray,
           "openChats": this.props.data.openChats
@@ -1056,6 +1059,20 @@ const Body = React.createClass({
     return items;
   },
 
+  limitationQuantityRecords(data){
+    if (data && data.length) {
+      var currentOptions = this.optionsDefinition(this.props.data, this.props.mode);
+      if (currentOptions.listOptions.final > data.length || !currentOptions.listOptions.final) {
+        currentOptions.listOptions.final = data.length;
+      }
+
+
+      data = data.slice(currentOptions.listOptions.start, currentOptions.listOptions.final);
+    }
+
+    return data;
+  },
+
   render(){
     let configs = this.defineConfigs(this.props.mode);
     if (!configs) {
@@ -1069,5 +1086,6 @@ const Body = React.createClass({
     }
   }
 });
+extend_core.prototype.inherit(Body, switcher_core);
 
 export default Body;

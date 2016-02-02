@@ -79,7 +79,7 @@ const Chat = React.createClass({
         show: true
       },
       messages_ListOptions: {
-        text: "mes",
+        text: "messages_ListOptions",
         start: 0,
         last: null,
         previousStart: 0,
@@ -90,6 +90,7 @@ const Chat = React.createClass({
       },
 
       logger_GoToOptions: {
+        text: '"logger_GoToOptions',
         show: false,
         rteChoicePage: true,
         mode_change: "rte"
@@ -118,7 +119,7 @@ const Chat = React.createClass({
         show: true
       },
       logger_ListOptions: {
-        text: "log",
+        text: "logger_ListOptions",
         start: 0,
         last: null,
         previousStart: 0,
@@ -152,13 +153,13 @@ const Chat = React.createClass({
         disableForward: false
       },
       contactList_GoToOptions: {
-        text: "contact",
+        text: "contactList_GoToOptions",
         show: false,
         rteChoicePage: true,
         mode_change: "rte"
       },
       contactList_ListOptions: {
-        text: "contact",
+        text: "contactList_ListOptions",
         start: 0,
         last: null,
         previousStart: 0,
@@ -180,6 +181,7 @@ const Chat = React.createClass({
         show: false
       },
       settings_ListOptions: {
+        text: "settings_ListOptions",
         current_data_key: null,
         size_custom_value: '350px',
         size_current: '350px',
@@ -239,7 +241,6 @@ const Chat = React.createClass({
   startResize: function(event) {
     event.stopPropagation();
     event.preventDefault();
-    console.log(event.type);
     switch (event.type) {
       case 'mousedown':
       case 'touchstart':

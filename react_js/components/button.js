@@ -20,8 +20,8 @@ const Button = React.createClass({
       params["disabled"] = 'true';
     }
 
-    if (this.props.config.data && this.props.config.data.key_disable && this.props.data[this.props.config.data.key_disable]) {
-      params['disabled'] = this.props.data[this.props.config.data.key_disabled];
+    if (this.props.data && this.props.config.data && this.props.data[this.props.config.data.key_disable]) {
+      params['disabled'] = this.props.data[this.props.config.data.key_disable];
       var flag = true;
       var src = "components/icon/" + this.props.config.icon + ".svg";
     }

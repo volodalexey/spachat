@@ -1,12 +1,14 @@
 import React from 'react'
 import { render } from 'react-dom'
+
 import localization from '../js/localization.js'
 import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
-import users_bus from '../js/users_bus.js'
 import event_bus from '../js/event_bus.js'
 import chats_bus from '../js/chats_bus.js'
+import users_bus from '../js/users_bus.js'
+import switcher_core from '../js/switcher_core.js'
 
 import Triple_Element from '../components/triple_element'
 import Popup from '../components/popup'
@@ -122,6 +124,7 @@ const Panel = React.createClass({
           show: true
         },
         chats_FilterOptions: {
+          text: "chats_FilterOptions",
           show: false
         },
         chats_ListOptions: {
@@ -139,6 +142,7 @@ const Panel = React.createClass({
           show: true
         },
         users_FilterOptions: {
+          text: "users_FilterOptions",
           show: false
         },
         users_GoToOptions: {
@@ -166,7 +170,7 @@ const Panel = React.createClass({
           disableForward: false
         },
         users_ListOptions: {
-          text: "users",
+          text: "users_ListOptions",
           start: 0,
           last: null,
           previousStart: 0,
@@ -190,6 +194,7 @@ const Panel = React.createClass({
           mode_change: "rte"
         },
         joinUser_ListOptions: {
+          text: "joinUser_ListOptions",
           readyForRequest: false
         },
 
@@ -268,7 +273,7 @@ const Panel = React.createClass({
           mode_change: "rte"
         },
         blogs_ListOptions: {
-          text: "blogs",
+          text: "blogs_ListOptions",
           start: 0,
           last: null,
           previousStart: 0,
@@ -312,7 +317,7 @@ const Panel = React.createClass({
           mode_change: "rte"
         },
         connections_ListOptions: {
-          text: "connections",
+          text: "connections_ListOptions",
           start: 0,
           last: null,
           previousStart: 0,
@@ -355,13 +360,13 @@ const Panel = React.createClass({
   },
 
   componentWillMount(){
-    if(this.props.userInfo[this.props.location]){
+    if (this.props.userInfo[this.props.location]) {
       this.setState(this.props.userInfo[this.props.location]);
-      if(this.props.location === "left"){
+      if (this.props.location === "left") {
         this.setState({'left': '-700px', 'openedState': false});
         return;
       }
-      if(this.props.location === "right"){
+      if (this.props.location === "right") {
         this.setState({'right': '-700px', 'openedState': false});
       }
     }
@@ -424,7 +429,7 @@ const Panel = React.createClass({
       this.newPassword = this.panelBody.querySelector('[data-role="passwordNew"]');
       this.confirmPassword = this.panelBody.querySelector('[data-role="passwordConfirm"]');
     }
-    if(!this.state.userInfo){
+    if (!this.state.userInfo) {
       this.setState({userInfo: this.props.userInfo});
     }
   },
@@ -473,11 +478,11 @@ const Panel = React.createClass({
           event_bus.trigger('showChat', element);
           break;
         case 'addNewChatAuto':
-          if(this.props.location !== "left") return;
+          if (this.props.location !== "left") return;
           event_bus.trigger('addNewChatAuto', event);
           break;
         case 'closeChat':
-          if(this.props.location !== "left") return;
+          if (this.props.location !== "left") return;
           this.closeChat(element);
           break;
       }
@@ -509,7 +514,7 @@ const Panel = React.createClass({
         break;
     }
     var element = this.getDataParameter(event.currentTarget, 'action');
-    if (element){
+    if (element) {
       switch (element.dataset.action) {
         case 'changePerPage':
           var newState = Filter.prototype.changePerPage(element, this.state, this.state.bodyMode);
@@ -533,7 +538,6 @@ const Panel = React.createClass({
   },
 
   closeChat(element){
-    let saveStates;
     if (this.props.location === "left") {
       let parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
       let chatId = parentElement.dataset.chat_id;
@@ -542,7 +546,7 @@ const Panel = React.createClass({
   },
 
   logout(){
-    var newState, self = this;
+    var newState;
     event_bus.trigger('changeStatePopup', {
       show: true,
       type: 'confirm',
@@ -585,7 +589,7 @@ const Panel = React.createClass({
         openedState: true,
         [this.props.location]: '0px'
       });
-        this.getInfoForBody(this.state.bodyMode);
+      this.getInfoForBody(this.state.bodyMode);
     } else {
       z_index--;
       this.setState({
@@ -607,7 +611,6 @@ const Panel = React.createClass({
   },
 
   switchPanelMode: function(element) {
-    var self = this;
     if (element.dataset.mode_to === MODE.USER_INFO_SHOW && this.previous_UserInfo_Mode) {
       this.setState({bodyMode: this.previous_UserInfo_Mode});
     } else {
@@ -619,23 +622,23 @@ const Panel = React.createClass({
     if (this.state.bodyMode === MODE.USER_INFO_SHOW) {
       this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
     }
-      this.getInfoForBody(element.dataset.mode_to);
+    this.getInfoForBody(element.dataset.mode_to);
   },
 
   getInfoForBody(mode){
     var self = this;
-    if(mode === MODE.USERS) {
+    if (mode === MODE.USERS) {
       users_bus.getMyInfo(null, function(error, options, userInfo) {
         self.setState({userInfo: userInfo});
       });
     }
-    if((mode === MODE.CHATS)){
+    if ((mode === MODE.CHATS)) {
       chats_bus.getAllChats(null, function(error, chatsArray) {
         if (error) {
           console.error(error);
           return;
         }
-        event_bus.trigger("getOpenChats", function(openChats){
+        event_bus.trigger("getOpenChats", function(openChats) {
           self.setState({chat_ids: chatsArray, "openChats": openChats});
         });
       });
@@ -676,19 +679,17 @@ const Panel = React.createClass({
 
   changeMode(element){
     if (!element || !element.dataset) return;
-    var chat_part = element.dataset.chat_part;
-    var newMode = element.dataset.mode_to;
-    var newState;
+    let chat_part = element.dataset.chat_part,
+      newMode = element.dataset.mode_to,
+      currentOptions;
     switch (chat_part) {
       case "filter":
         switch (newMode) {
           case "CHATS_FILTER":
-            var bool_Value = this.state.chats_FilterOptions.show.toString() !== "true";
-            this.setState({chats_FilterOptions: {show: bool_Value}});
-            break;
           case "USERS_FILTER":
-            var bool_Value = this.state.users_FilterOptions.show.toString() !== "true";
-            this.setState({users_FilterOptions: {show: bool_Value}});
+            currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
+            currentOptions.filterOptions.show = currentOptions.filterOptions.show.toString() !== "true";
+            this.setState({[currentOptions.filterOptions.text]: currentOptions.filterOptions});
             break;
         }
         break;
@@ -697,24 +698,21 @@ const Panel = React.createClass({
           case "PAGINATION":
             switch (this.state.bodyMode) {
               case "CHATS":
-                this.state.chats_PaginationOptions.show = element.checked;
-                this.state.chats_PaginationOptions.showEnablePagination = element.checked;
-                this.setState({chats_PaginationOptions: this.state.chats_PaginationOptions});
-                if (!element.checked) {
-                  //ListOptions param = null or 0
-                }
-                break;
               case "USERS":
-                this.state.users_PaginationOptions.show = element.checked;
-                this.state.users_PaginationOptions.showEnablePagination = element.checked;
-                this.setState({users_PaginationOptions: this.state.users_PaginationOptions});
+                currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
+                currentOptions.paginationOptions.show = element.checked;
+                currentOptions.paginationOptions.showEnablePagination = element.checked;
                 if (!element.checked) {
                   //ListOptions param = null or 0
+                  currentOptions.paginationOptions.previousStart = 0;
+                  currentOptions.paginationOptions.previousFinal = null;
+                  currentOptions.paginationOptions.start = 0;
+                  currentOptions.paginationOptions.final = null;
                 }
+                this.setState({[currentOptions.paginationOptions.text]: currentOptions.paginationOptions});
                 break;
             }
             break;
-
         }
         break;
     }
@@ -823,13 +821,13 @@ const Panel = React.createClass({
   },
 
   onChatDestroyed(chatId){
-    if(this.state.openChats){
+    if (this.state.openChats) {
       delete this.state.openChats[chatId];
     }
     this.setState({openChats: this.state.openChats});
   },
 
-  resizePanel(flag) {
+  resizePanel() {
     if (this.state.openedState && this.outerContainer) {
       if (this.outerContainer.clientWidth + this.togglePanelElement_clientWidth > document.body.clientWidth) {
         this.inner_container.style.maxWidth = this.calcMaxWidth();
@@ -875,17 +873,16 @@ const Panel = React.createClass({
   },
 
   changeLanguage: function(event) {
-    var current_localization = localization.lang;
     localization.changeLanguage(event.target.value);
 
-    var language = localStorage.getItem('language');
+    let language = localStorage.getItem('language');
     if (!language || language !== event.target.value) {
       localStorage.setItem('language', event.target.value);
     }
   },
 
   toggleListOptions(chatsLength){
-    if(this.props.location === "left"){
+    if (this.props.location === "left") {
       this.state.chats_ListOptions.final = chatsLength;
       this.setState({chats_ListOptions: this.state.chats_ListOptions});
     }
@@ -954,5 +951,6 @@ const Panel = React.createClass({
 extend_core.prototype.inherit(Panel, overlay_core);
 extend_core.prototype.inherit(Panel, dom_core);
 extend_core.prototype.inherit(Panel, extend_core);
+extend_core.prototype.inherit(Panel, switcher_core);
 
 export default Panel;
