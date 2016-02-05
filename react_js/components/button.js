@@ -38,7 +38,7 @@ const Button = React.createClass({
       params['type'] = this.props.config.type;
     }
     if (this.props.config.data && this.props.config.data.key) {
-      params['data-value'] = this.props.config.data[this.props.config.data.key]
+      params['data-value'] = this.props.data[this.props.config.data.key]
     }
 
     return params;

@@ -1026,7 +1026,10 @@ const Body = React.createClass({
         return items;
         break;
       case this.MODE.CHATS:
-        let chat_ids = this.limitationQuantityRecords(this.props.data.chat_ids);
+        let chat_ids = this.props.data.chat_ids;
+        if(this.props.data.chats_PaginationOptions.show){
+          chat_ids = this.limitationQuantityRecords(chat_ids);
+        }
         data = {
           "chat_ids": chat_ids,
           "openChatsInfoArray": self.props.data.openChatsInfoArray,
@@ -1065,7 +1068,6 @@ const Body = React.createClass({
       if (currentOptions.listOptions.final > data.length || !currentOptions.listOptions.final) {
         currentOptions.listOptions.final = data.length;
       }
-
 
       data = data.slice(currentOptions.listOptions.start, currentOptions.listOptions.final);
     }

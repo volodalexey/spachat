@@ -187,15 +187,16 @@ const Filter = React.createClass({
         {
           "element": "input",
           "type": "text",
-          "class": "inputWidth",
+          "class": "inputWidth ooo",
           "data": {
             "role": "perPageValue",
             "action": "changePerPage",
             "key": "perPageValue"
           },
           "id": "show_per_page",
-          "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+          "onKeyPress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
           "location": "per_page",
+
           "redraw_mode": "rte"
         },
 
@@ -242,7 +243,7 @@ const Filter = React.createClass({
             "key": "perPageValue"
           },
           "id": "show_per_page",
-          "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+          "onKeyPress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
           "location": "per_page",
           "redraw_mode": "nrte"
         }
@@ -356,7 +357,7 @@ const Filter = React.createClass({
             "key": "perPageValue"
           },
           "name": "",
-          "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+          "onKeyPress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
           "location": "per_page",
           "sort": 3,
           "redraw_mode": "rte"
@@ -407,7 +408,7 @@ const Filter = React.createClass({
             "action": "changePerPage",
             "key": "perPageValue"
           },
-          "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+          "onKeyPress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
           "location": "per_page",
           "sort": 3,
           "redraw_mode": "nrte"
@@ -479,57 +480,39 @@ const Filter = React.createClass({
   },
 
   changeRTE(element, state, mode){
-    var currentOptions = this.optionsDefinition(state, mode);
+    var currentOptions = this.optionsDefinition(state, mode),
+      po = currentOptions.paginationOptions;
     if (element.checked) {
-      currentOptions.paginationOptions.mode_change = "rte";
-      currentOptions.paginationOptions.rtePerPage = true;
+      po.mode_change = "rte";
+      po.rtePerPage = true;
     } else {
-      currentOptions.paginationOptions.mode_change = "nrte";
-      currentOptions.paginationOptions.rtePerPage = false;
+      po.mode_change = "nrte";
+      po.rtePerPage = false;
     }
-    return {[currentOptions.text]: currentOptions.paginationOptions};
+    return {[po.text]: po};
   },
 
   changePerPage(element, state, mode){
-    var self = this, value = parseInt(element.value);
-    var currentOptions = this.optionsDefinition(state, mode);
-    if (element.value === "" || element.value === "0") {
-      currentOptions.paginationOptions.perPageValueNull = true;
-      currentOptions.paginationOptions.currentPage = null;
-      return {[currentOptions.paginationOptions.text]: currentOptions.paginationOptions};
-    } else {
-      //currentOptions.paginationOptions.perPageValue = value;
-      currentOptions.paginationOptions.perPageValueNull = false;
+    let value = parseInt(element.value, 10),
+      currentOptions = this.optionsDefinition(state, mode),
+      po = currentOptions.paginationOptions;
+    po.perPageValueShow = element.value;
+    if (!(value === 0 || Number.isNaN(value))) {
+      po.perPageValue = value;
+      if (po.rtePerPage) {
+        po.currentPage = null;
+      }
     }
-    if (!currentOptions.paginationOptions.rtePerPage) {
-      currentOptions.paginationOptions.currentPage = null;
-      currentOptions.paginationOptions.perPageValue = value;
-      return {[currentOptions.paginationOptions.text]: currentOptions.paginationOptions};
-    }
-    if (value) {
-      currentOptions.paginationOptions.perPageValue = value;
-      currentOptions.paginationOptions.currentPage = null;
-    }
-    return {[currentOptions.paginationOptions.text]: currentOptions.paginationOptions};
+
+    return {[po.text]: po};
   },
 
   showPerPage(element, state, mode){
-    switch (mode) {
-      case "CHATS":
-        state.chats_PaginationOptions.currentPage = null;
-        if (state.chats_PaginationOptions.showEnablePagination) {
-          //pagination.countQuantityPages
-        }
-        return {chats_PaginationOptions: state.chats_PaginationOptions};
-        break;
-      case "USERS":
-        state.users_PaginationOptions.currentPage = null;
-        if (state.users_PaginationOptions.showEnablePagination) {
-          //pagination.countQuantityPages
-        }
-        return {users_PaginationOptions: state.users_PaginationOptions};
-        break;
-    }
+    let currentOptions = this.optionsDefinition(state, mode),
+      po = currentOptions.paginationOptions;
+    po.currentPage = null;
+
+    return {[po.text]: po};
   },
 
   render(){
@@ -546,7 +529,7 @@ const Filter = React.createClass({
         "class": "flex-item flex-wrap"
       };
       let data = {
-        "perPageValue": options.paginationOptions.perPageValue,
+        "perPageValue": options.paginationOptions.perPageValueShow,
         "showEnablePagination": options.paginationOptions.showEnablePagination,
         "rtePerPage": options.paginationOptions.rtePerPage,
         "mode_change": options.paginationOptions.mode_change

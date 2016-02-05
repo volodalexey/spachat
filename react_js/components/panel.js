@@ -113,6 +113,7 @@ const Panel = React.createClass({
           showEnablePagination: false,
           showChoicePerPage: false,
           perPageValue: 1,
+          perPageValueShow: 1,
           perPageValueNull: false,
           rtePerPage: true,
           disableBack: false,
@@ -162,6 +163,7 @@ const Panel = React.createClass({
           showEnablePagination: false,
           showChoicePerPage: false,
           perPageValue: 15,
+          perPageValueShow: 15,
           perPageValueNull: false,
           rtePerPage: true,
           disableBack: false,
@@ -434,12 +436,16 @@ const Panel = React.createClass({
     }
   },
 
+  componentWillReceiveProps(){
+
+  },
+
   handleClick(event){
     var element = this.getDataParameter(event.currentTarget, 'action'), newState;
     if (element) {
       switch (element.dataset.action) {
         case 'togglePanel':
-          this.togglePanel();
+          this.togglePanel(false);
           break;
         case 'show_more_info':
           this.showMoreInfo(element);
@@ -457,6 +463,12 @@ const Panel = React.createClass({
         case 'showPerPage':
           newState = Filter.prototype.showPerPage(element, this.state, this.state.bodyMode);
           this.setState(newState);
+          let currentOptions = this.optionsDefinition(this.state, this.state.bodyMode), self = this;
+          if (currentOptions.paginationOptions.showEnablePagination) {
+            Pagination.prototype.countPagination(this.state, function(_newState) {
+              self.setState(_newState);
+            });
+          }
           break;
         case 'changeRTE_goTo':
           newState = GoTo.prototype.changeRTE(element, this.state, this.state.bodyMode);
@@ -513,12 +525,18 @@ const Panel = React.createClass({
         this.setState({userName: this.state.userInfo});
         break;
     }
-    var element = this.getDataParameter(event.currentTarget, 'action');
+    let element = this.getDataParameter(event.currentTarget, 'action'), self = this;
     if (element) {
       switch (element.dataset.action) {
         case 'changePerPage':
-          var newState = Filter.prototype.changePerPage(element, this.state, this.state.bodyMode);
+          let newState = Filter.prototype.changePerPage(element, this.state, this.state.bodyMode),
+            currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
           this.setState(newState);
+          if (currentOptions.paginationOptions.rtePerPage) {
+            Pagination.prototype.countPagination(this.state, function(_newState) {
+              self.setState(_newState);
+            });
+          }
           break;
       }
     }
@@ -639,7 +657,10 @@ const Panel = React.createClass({
           return;
         }
         event_bus.trigger("getOpenChats", function(openChats) {
-          self.setState({chat_ids: chatsArray, "openChats": openChats});
+          let currentOptions = self.optionsDefinition(self.state, self.state.bodyMode);
+          Pagination.prototype.handleCountPagination(chatsArray, currentOptions, function(_newState) {
+            self.setState({_newState, "chat_ids": chatsArray, "openChats": openChats});
+          });
         });
       });
     }
@@ -703,7 +724,6 @@ const Panel = React.createClass({
                 currentOptions.paginationOptions.show = element.checked;
                 currentOptions.paginationOptions.showEnablePagination = element.checked;
                 if (!element.checked) {
-                  //ListOptions param = null or 0
                   currentOptions.paginationOptions.previousStart = 0;
                   currentOptions.paginationOptions.previousFinal = null;
                   currentOptions.paginationOptions.start = 0;
@@ -888,6 +908,10 @@ const Panel = React.createClass({
     }
   },
 
+  changeState(newState){
+    this.setState(newState);
+  },
+
   renderHandlers(events){
     var handlers = {};
     if (events) {
@@ -899,6 +923,9 @@ const Panel = React.createClass({
   },
 
   render() {
+    let handleEvent = {
+      changeState: this.changeState
+    };
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange,
@@ -939,7 +966,8 @@ const Panel = React.createClass({
               </div>
               <div data-role={location + '_pagination_containe'}
                    className="flex filter_container justContent c-200">
-                <Pagination mode={this.state.bodyMode} data={this.state} events={onEvent}/>
+                <Pagination mode={this.state.bodyMode} data={this.state} events={onEvent}
+                            handleEvent={handleEvent}/>
               </div>
             </footer>
           </div>

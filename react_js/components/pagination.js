@@ -6,6 +6,8 @@ import indexeddb from '../js/indexeddb.js'
 import chats_bus from '../js/chats_bus.js'
 import users_bus from '../js/users_bus.js'
 import messages from '../js/messages.js'
+import event_bus from '../js/event_bus.js'
+import dom_core from '../js/dom_core.js'
 
 import Triple_Element from '../components/triple_element'
 import Location_Wrapper from './location_wrapper'
@@ -127,9 +129,15 @@ const Pagination = React.createClass({
     }
   },
 
+  componentDidMount(){
+  },
+
+  componentWillUnmount(){
+  },
+
   defineOptions(mode){
     this.options = {};
-    switch (mode){
+    switch (mode) {
       case 'CHATS':
         this.options['paginationOptions'] = this.props.data.chats_PaginationOptions;
         break;
@@ -142,11 +150,49 @@ const Pagination = React.createClass({
     }
   },
 
-  countQuantityPages(currentOptions, callback){
+  handleClick(event){
+    var element = this.getDataParameter(event.currentTarget, 'action'), newState;
+    if (element) {
+      switch (element.dataset.action) {
+        case 'switchPage':
+          this.switchPage(element);
+          break;
+      }
+    }
+  },
+
+  countPagination(state, callback){
+    let currentOptions = this.optionsDefinition(state, state.bodyMode);
+    this.countQuantityPages(currentOptions, state.bodyMode, function(_currentOptions) {
+      let po = _currentOptions.paginationOptions;
+      if (po.currentPage === po.firstPage) {
+        po.disableBack = true;
+        po.disableFirst = true;
+      } else {
+        po.disableBack = false;
+        po.disableFirst = false;
+      }
+      if (po.currentPage === po.lastPage) {
+        po.disableForward = true;
+        po.disableLast = true;
+      } else {
+        po.disableForward = false;
+        po.disableLast = false;
+      }
+      if (callback) {
+        callback({
+          [po.text]: po,
+          [_currentOptions.listOptions.text]: _currentOptions.listOptions
+        });
+      }
+    });
+  },
+
+  countQuantityPages(currentOptions, mode, callback){
     let self = this;
-    if (currentOptions.listOptions.data_download){
+    if (currentOptions.listOptions.data_download) {
     } else {
-      switch (this.props.data.bodyMode) {
+      switch (mode) {
         case "CHATS":
           users_bus.getMyInfo(null, function(error, options, userInfo) {
             if (!userInfo) return;
@@ -176,7 +222,10 @@ const Pagination = React.createClass({
   },
 
   handleCountPagination(data, currentOptions, callback){
-    let self = this, quantityPages, quantityData;
+    let self = this, quantityPages, quantityData,
+      po = currentOptions.paginationOptions,
+      lo = currentOptions.listOptions;
+    if (!po || !lo) return;
     if (data) {
       quantityData = data.length;
     } else {
@@ -187,61 +236,58 @@ const Pagination = React.createClass({
     } else {
       quantityPages = 1;
     }
-    if (currentOptions.paginationOptions.currentPage === null) {
-      currentOptions.listOptions.start = quantityPages * currentOptions.paginationOptions.perPageValue -
-        currentOptions.paginationOptions.perPageValue;
-      currentOptions.listOptions.final = quantityPages * currentOptions.paginationOptions.perPageValue;
-      currentOptions.paginationOptions.currentPage = quantityPages;
+    if (po.currentPage === null) {
+      lo.start = quantityPages * po.perPageValue - po.perPageValue;
+      lo.final = quantityPages * po.perPageValue;
+      po.currentPage = quantityPages;
     } else {
-      currentOptions.listOptions.start = (currentOptions.paginationOptions.currentPage - 1) *
-        currentOptions.paginationOptions.perPageValue;
-      currentOptions.listOptions.final = (currentOptions.paginationOptions.currentPage - 1) *
-        currentOptions.paginationOptions.perPageValue + currentOptions.paginationOptions.perPageValue;
+      lo.start = (po.currentPage - 1) * po.perPageValue;
+      lo.final = (po.currentPage - 1) * po.perPageValue + po.perPageValue;
     }
-    currentOptions.paginationOptions.lastPage = quantityPages;
+    po.lastPage = quantityPages;
     if (callback) {
       callback(currentOptions);
     }
   },
 
-  componentWillReceiveProps(){
-    let currentOptions = this.optionsDefinition(this.props.data, this.props.mode), self = this;
-    if(currentOptions.paginationOptions && currentOptions.paginationOptions.show) {
-      this.countQuantityPages(currentOptions, function(_currentOptions){
-        if (currentOptions.paginationOptions.currentPage === currentOptions.paginationOptions.firstPage) {
-          currentOptions.paginationOptions.disableBack = true;
-          currentOptions.paginationOptions.disableFirst = true;
-        } else {
-          currentOptions.paginationOptions.disableBack = false;
-          currentOptions.paginationOptions.disableFirst = false;
-        }
-        if (currentOptions.paginationOptions.currentPage === currentOptions.paginationOptions.lastPage) {
-          currentOptions.paginationOptions.disableForward = true;
-          currentOptions.paginationOptions.disableLast = true;
-        } else {
-          currentOptions.paginationOptions.disableForward = false;
-          currentOptions.paginationOptions.disableLast = false;
-        }
-        self.setState({currentOptions: _currentOptions});
-      });
+  switchPage(element){
+    let self = this,
+      currentOptions = this.optionsDefinition(this.props.data, this.props.mode),
+      po = currentOptions.paginationOptions,
+      elementRole = element.dataset.role;
+    if (elementRole === "first" || elementRole === "last") {
+      po.currentPage = parseInt(element.dataset.value);
     }
+    if (elementRole === "back") {
+      po.currentPage = parseInt(po.currentPage) - 1;
+    }
+    if (elementRole === "forward") {
+      po.currentPage = parseInt(po.currentPage) + 1;
+    }
+    this.countPagination(this.props.data, function(_newState) {
+      self.props.handleEvent.changeState(_newState);
+    });
   },
 
   render(){
-    var currentOptions = this.optionsDefinition(this.props.data, this.props.mode);
-    if(currentOptions.paginationOptions && currentOptions.paginationOptions.show) {
-      let data={
-        firstPage: currentOptions.paginationOptions.firstPage,
-        currentPage: currentOptions.paginationOptions.currentPage,
-        lastPage: currentOptions.paginationOptions.lastPage,
-        disableBack: currentOptions.paginationOptions.disableBack,
-        disableFirst: currentOptions.paginationOptions.disableFirst,
-        disableLast: currentOptions.paginationOptions.disableLast,
-        disableForward: currentOptions.paginationOptions.disableForward
+    let onEvent = {
+        onClick: this.handleClick
+      },
+      currentOptions = this.optionsDefinition(this.props.data, this.props.mode),
+      po = currentOptions.paginationOptions;
+    if (po && po.show) {
+      let data = {
+        firstPage: po.firstPage,
+        currentPage: po.currentPage,
+        lastPage: po.lastPage,
+        disableBack: po.disableBack,
+        disableFirst: po.disableFirst,
+        disableLast: po.disableLast,
+        disableForward: po.disableForward
       };
       return <div>
         {
-          <Location_Wrapper events={this.props.events} data={data} configs={this.props.configs}
+          <Location_Wrapper events={onEvent} data={data} configs={this.props.configs}
                             mainContainer={this.props.mainContainer}/>
         }
       </div>
@@ -253,5 +299,6 @@ const Pagination = React.createClass({
 });
 
 extend_core.prototype.inherit(Pagination, switcher_core);
+extend_core.prototype.inherit(Pagination, dom_core);
 
 export default Pagination;
