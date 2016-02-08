@@ -4,6 +4,13 @@ import event_bus from '../js/event_bus.js'
 
 import html_message from '../js/html_message.js'
 import messages from '../js/messages.js'
+import extend_core from '../js/extend_core.js'
+import switcher_core from '../js/switcher_core.js'
+
+import Pagination from '../components/pagination'
+import Body from '../components/body'
+
+
 
 const Messages = React.createClass({
 
@@ -14,10 +21,16 @@ const Messages = React.createClass({
   },
 
   getMessages(){
-    var self = this;
+    let self = this;
     messages.prototype.getAllMessages(this.props.data.chat_id, this.props.data.bodyOptions.mode, function(messages) {
-      if(messages.length !== self.state.messages.length){
-        self.setState({messages: messages});
+      let currentOptions = self.optionsDefinition(self.props.data, self.props.data.bodyOptions.mode);
+      if (currentOptions.paginationOptions.showEnablePagination) {
+        messages = Body.prototype.limitationQuantityRecords(messages, self.props.data, self.props.data.bodyOptions.mode);
+          self.setState({messages: messages});
+      } else {
+        if(messages.length !== self.state.messages.length){
+          self.setState({messages: messages});
+        }
       }
     });
   },
@@ -76,5 +89,7 @@ const Messages = React.createClass({
     return <div>{this.renderItems(this.state.messages)}</div>
   }
 });
+extend_core.prototype.inherit(Messages, switcher_core);
+
 
 export default Messages;

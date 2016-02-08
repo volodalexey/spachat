@@ -1028,7 +1028,7 @@ const Body = React.createClass({
       case this.MODE.CHATS:
         let chat_ids = this.props.data.chat_ids;
         if(this.props.data.chats_PaginationOptions.show){
-          chat_ids = this.limitationQuantityRecords(chat_ids);
+          chat_ids = this.limitationQuantityRecords(chat_ids, this.props.data, this.props.mode);
         }
         data = {
           "chat_ids": chat_ids,
@@ -1062,9 +1062,9 @@ const Body = React.createClass({
     return items;
   },
 
-  limitationQuantityRecords(data){
+  limitationQuantityRecords(data, state, mode){
     if (data && data.length) {
-      var currentOptions = this.optionsDefinition(this.props.data, this.props.mode);
+      var currentOptions = this.optionsDefinition(state, mode);
       if (currentOptions.listOptions.final > data.length || !currentOptions.listOptions.final) {
         currentOptions.listOptions.final = data.length;
       }

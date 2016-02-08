@@ -265,15 +265,26 @@ const Chat = React.createClass({
   },
 
   handleClick(event){
-    var element = this.getDataParameter(event.currentTarget, 'action');
+    let element = this.getDataParameter(event.currentTarget, 'action'), self = this, newState;
     if (element) {
       switch (element.dataset.action) {
         case 'changeMode':
           this.changeMode(element);
           break;
         case 'changeRTE':
-          var newState = Filter.prototype.changeRTE(element, this.state, this.state.bodyOptions.mode);
+          newState = Filter.prototype.changeRTE(element, this.state, this.state.bodyOptions.mode);
           this.setState(newState);
+          break;
+        case 'showPerPage':
+          newState = Filter.prototype.showPerPage(element, this.state, this.state.bodyOptions.mode);
+          this.setState(newState);
+          let currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
+          if (currentOptions.paginationOptions.showEnablePagination) {
+            Pagination.prototype.countPagination(this.state, this.state.bodyOptions.mode,
+              {"chat_id": this.state.chat_id}, function(_newState) {
+              self.setState(_newState);
+            });
+          }
           break;
         case 'closeChat':
         case 'saveStatesChat':
@@ -285,12 +296,19 @@ const Chat = React.createClass({
   },
 
   handleChange(event){
-    var element = this.getDataParameter(event.currentTarget, 'action');
+    let element = this.getDataParameter(event.currentTarget, 'action'), self = this;
     if (element) {
       switch (element.dataset.action) {
         case 'changePerPage':
-          var newState = Filter.prototype.changePerPage(element, this.state, this.state.bodyOptions.mode);
+          let newState = Filter.prototype.changePerPage(element, this.state, this.state.bodyOptions.mode),
+            currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
           this.setState(newState);
+          if (currentOptions.paginationOptions.rtePerPage) {
+            Pagination.prototype.countPagination(this.state, this.state.bodyOptions.mode,
+              {"chat_id": this.state.chat_id}, function(_newState) {
+              self.setState(_newState);
+            });
+          }
           break;
       }
     }
@@ -354,6 +372,15 @@ const Chat = React.createClass({
                   currentOptions.paginationOptions.show = _obj.target.checked;
                   currentOptions.paginationOptions.showEnablePagination = _obj.target.checked;
                   self.setState({[currentOptions.paginationOptions.text]: currentOptions.paginationOptions});
+
+                  if (currentOptions.paginationOptions.showEnablePagination) {
+                    Pagination.prototype.countPagination(self.state, self.state.bodyOptions.mode,
+                      {chat_id: self.state.chat_id}, function(_newState) {
+                        self.setState(_newState);
+                      });
+                  } else {
+                    //self.setState({[currentOptions.paginationOptions.text]: currentOptions.paginationOptions});
+                  }
                 }
                 break;
               case Pagination.prototype.MODE.GO_TO:
@@ -420,7 +447,8 @@ const Chat = React.createClass({
           <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>
           <div data-role="go_to_container" className="c-100"></div>
           <div data-role="pagination_container" className="flex filter_container justContent c-200">
-            <Pagination mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
+            <Pagination mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}
+                        handleEvent={handleEvent}/>
           </div>
         </footer>
       </section>

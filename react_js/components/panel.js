@@ -465,7 +465,7 @@ const Panel = React.createClass({
           this.setState(newState);
           let currentOptions = this.optionsDefinition(this.state, this.state.bodyMode), self = this;
           if (currentOptions.paginationOptions.showEnablePagination) {
-            Pagination.prototype.countPagination(this.state, function(_newState) {
+            Pagination.prototype.countPagination(this.state, this.state.bodyMode, null, function(_newState) {
               self.setState(_newState);
             });
           }
@@ -533,7 +533,7 @@ const Panel = React.createClass({
             currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
           this.setState(newState);
           if (currentOptions.paginationOptions.rtePerPage) {
-            Pagination.prototype.countPagination(this.state, function(_newState) {
+            Pagination.prototype.countPagination(this.state, this.state.bodyMode, null, function(_newState) {
               self.setState(_newState);
             });
           }
@@ -644,10 +644,21 @@ const Panel = React.createClass({
   },
 
   getInfoForBody(mode){
-    var self = this;
+    let self = this, currentOptions;
     if (mode === MODE.USERS) {
       users_bus.getMyInfo(null, function(error, options, userInfo) {
-        self.setState({userInfo: userInfo});
+        users_bus.getContactsInfo(error, userInfo.user_ids, function(_error, contactsInfo) {
+          if (_error){
+            console.error(_error);
+            return;
+          }
+          currentOptions = self.optionsDefinition(self.state, self.state.bodyMode);
+          Pagination.prototype.handleCountPagination(contactsInfo, currentOptions, function(_newState) {
+            self.setState({_newState, "userInfo": userInfo});
+          });
+          //self.setState({userInfo: userInfo});
+        });
+
       });
     }
     if ((mode === MODE.CHATS)) {
@@ -657,7 +668,7 @@ const Panel = React.createClass({
           return;
         }
         event_bus.trigger("getOpenChats", function(openChats) {
-          let currentOptions = self.optionsDefinition(self.state, self.state.bodyMode);
+          currentOptions = self.optionsDefinition(self.state, self.state.bodyMode);
           Pagination.prototype.handleCountPagination(chatsArray, currentOptions, function(_newState) {
             self.setState({_newState, "chat_ids": chatsArray, "openChats": openChats});
           });

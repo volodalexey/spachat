@@ -161,9 +161,9 @@ const Pagination = React.createClass({
     }
   },
 
-  countPagination(state, callback){
-    let currentOptions = this.optionsDefinition(state, state.bodyMode);
-    this.countQuantityPages(currentOptions, state.bodyMode, function(_currentOptions) {
+  countPagination(state, mode, options, callback){
+    let currentOptions = this.optionsDefinition(state, mode);
+    this.countQuantityPages(currentOptions, mode, options, function(_currentOptions) {
       let po = _currentOptions.paginationOptions;
       if (po.currentPage === po.firstPage) {
         po.disableBack = true;
@@ -188,9 +188,12 @@ const Pagination = React.createClass({
     });
   },
 
-  countQuantityPages(currentOptions, mode, callback){
+  countQuantityPages(currentOptions, mode, options, callback){
     let self = this;
     if (currentOptions.listOptions.data_download) {
+        messages.prototype.getAllMessages(options.chat_id, mode, function(messages) {
+          self.handleCountPagination(messages, currentOptions, callback);
+        })
     } else {
       switch (mode) {
         case "CHATS":
@@ -215,6 +218,15 @@ const Pagination = React.createClass({
               }
               self.handleCountPagination(contactsInfo, currentOptions, callback);
             });
+          });
+          break;
+        case "CONTACT_LIST":
+          chats_bus.getChatContacts(options.chat_id, function(error, contactsInfo) {
+            if (error) {
+              console.error(error);
+              return;
+            }
+            self.handleCountPagination(contactsInfo, currentOptions, callback);
           });
           break;
       }
@@ -264,7 +276,8 @@ const Pagination = React.createClass({
     if (elementRole === "forward") {
       po.currentPage = parseInt(po.currentPage) + 1;
     }
-    this.countPagination(this.props.data, function(_newState) {
+    this.countPagination(this.props.data, this.props.mode,
+      {"chat_id": this.props.data.chat_id}, function(_newState) {
       self.props.handleEvent.changeState(_newState);
     });
   },

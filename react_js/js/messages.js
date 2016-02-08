@@ -50,10 +50,10 @@ Messages.prototype = {
   },
 
   getAllMessages(chatId, mode, callback) {
-    let descr = this.setCollectionDescription(chatId);
+    let description = this.setCollectionDescription(chatId);
     let table = this.tableDefinition(mode);
     indexeddb.getAll(
-      descr,
+      description,
       table,
       function(getAllErr, messages) {
         if (getAllErr) {

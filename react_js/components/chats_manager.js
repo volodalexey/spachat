@@ -155,6 +155,8 @@ const ChatsManager = React.createClass({
       }
       let chatDescription = {};
       chatDescription.chat_id = res.uuid;
+      chatDescription.user_ids = [];
+      chatDescription.user_ids.push(users_bus.getUserId());
       self.addNewChatToIndexedDB(chatDescription, function(err, chat) {
         if (err) {
           console.error(err);
