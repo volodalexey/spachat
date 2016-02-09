@@ -1,12 +1,9 @@
 import React from 'react'
 import { Router, Route, Link, History, Redirect, Lifecycle } from 'react-router'
 
-import Button from './button'
-import Input from './input'
-import Label from './label'
 import Location_Wrapper from './location_wrapper'
 import Popup from '../components/popup'
-import Decription from '../components/description'
+import Description from '../components/description'
 
 import Localization from '../js/localization.js'
 import users_bus from '../js/users_bus.js'
@@ -15,10 +12,9 @@ import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
 
 const Login = React.createClass({
-  //mixins: [ Lifecycle ],
   mixins: [History],
 
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       mainContainer: {
         "element": "div",
@@ -143,7 +139,7 @@ const Login = React.createClass({
     }
   },
 
-  getInitialState(){
+  getInitialState: function() {
     return {
       lang: Localization.lang,
       popupOptions: {
@@ -155,23 +151,19 @@ const Login = React.createClass({
     }
   },
 
-  componentDidMount(){
+  componentDidMount: function() {
     this.loginForm = document.querySelector('[data-role="loginForm"]');
     this.toggleWaiter();
   },
 
-  componentWillUnmount(){
+  componentWillUnmount: function() {
     this.loginForm = null;
   },
 
-  //  routerWillLeave() {
-  //    return 'Leave page ?'
-  //},
-
-  handleClick(e){
+  handleClick: function(event) {
   },
 
-  handleChange(event) {
+  handleChange: function(event) {
     switch (event.target.dataset.action) {
       case "changeLanguage":
         Localization.changeLanguage(event.target.value);
@@ -183,17 +175,17 @@ const Login = React.createClass({
     }
   },
 
-  handleSubmit(event){
-    var self = this, newState;
+  handleSubmit: function(event) {
     event.preventDefault();
-    var userName = this.loginForm.elements.userName.value;
-    var userPassword = this.loginForm.elements.userPassword.value;
+    let self = this, newState,
+      userName = this.loginForm.elements.userName.value,
+      userPassword = this.loginForm.elements.userPassword.value;
     if (userName && userPassword) {
       self.toggleWaiter(true);
       indexeddb.getGlobalUserCredentials(userName, userPassword, function(err, userCredentials) {
         if (err) {
           self.toggleWaiter();
-          newState = Popup.prototype.handleChangeState(this.state, true, 'error', err,
+          newState = Popup.prototype.handleChangeState(self.state, true, 'error', err,
             function(action) {
               switch (action) {
                 case 'confirmCancel':
@@ -211,10 +203,10 @@ const Login = React.createClass({
           users_bus.setUserId(userCredentials.user_id);
           users_bus.getMyInfo(null, function(err, options, userInfo) {
             if (userPassword === userInfo.userPassword) {
-              //users_bus.setUserId(userInfo.user_id);
               users_bus.checkLoginState();
               self.history.pushState(null, 'chat');
             } else {
+              self.toggleWaiter();
               newState = Popup.prototype.handleChangeState(self.state, true, 'error', 104,
                 function(action) {
                   switch (action) {
@@ -226,12 +218,12 @@ const Login = React.createClass({
                 }
               );
               self.setState(newState);
-              return;
             }
           });
         } else {
+          self.toggleWaiter();
           users_bus.setUserId(null);
-          newState = Popup.prototype.handleChangeState(this.state, true, 'error', 87,
+          newState = Popup.prototype.handleChangeState(self.state, true, 'error', 87,
             function(action) {
               switch (action) {
                 case 'confirmCancel':
@@ -240,7 +232,7 @@ const Login = React.createClass({
                   break;
               }
             });
-          this.setState(newState);
+          self.setState(newState);
         }
       });
     } else {
@@ -257,7 +249,7 @@ const Login = React.createClass({
     }
   },
 
-  render() {
+  render: function() {
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange
@@ -272,7 +264,7 @@ const Login = React.createClass({
           </div>
         </div>
         <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
-        <Decription />
+        <Description />
       </div>
     )
   }
@@ -280,4 +272,3 @@ const Login = React.createClass({
 extend_core.prototype.inherit(Login, overlay_core);
 
 export default Login;
-

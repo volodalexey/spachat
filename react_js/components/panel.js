@@ -46,7 +46,7 @@ const MODE = {
 };
 
 const Panel = React.createClass({
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       mainContainer: {
         "element": "div",
@@ -77,7 +77,7 @@ const Panel = React.createClass({
     }
   },
 
-  getInitialState(){
+  getInitialState: function(){
     if (this.props.location === 'left') {
       return {
         openChatsInfoArray: [],
@@ -361,7 +361,7 @@ const Panel = React.createClass({
     }
   },
 
-  componentWillMount(){
+  componentWillMount: function(){
     if (this.props.userInfo[this.props.location]) {
       this.setState(this.props.userInfo[this.props.location]);
       if (this.props.location === "left") {
@@ -374,7 +374,7 @@ const Panel = React.createClass({
     }
   },
 
-  componentDidMount(){
+  componentDidMount: function(){
     document.addEventListener('load', this.handleLoad, true);
     document.addEventListener('resize', this.handleResize, false);
     document.addEventListener('resize', this.handleResize, false);
@@ -423,7 +423,7 @@ const Panel = React.createClass({
     this.confirmPassword = null;
   },
 
-  componentDidUpdate(){
+  componentDidUpdate: function(){
     this.resizePanel();
     if (this.state.bodyMode === MODE.USER_INFO_EDIT) {
       this.userName = this.panelBody.querySelector('[data-main="user_name_input"]');
@@ -436,11 +436,7 @@ const Panel = React.createClass({
     }
   },
 
-  componentWillReceiveProps(){
-
-  },
-
-  handleClick(event){
+  handleClick: function(event){
     var element = this.getDataParameter(event.currentTarget, 'action'), newState;
     if (element) {
       switch (element.dataset.action) {
@@ -512,10 +508,10 @@ const Panel = React.createClass({
     this.resizePanel();
   },
 
-  onInput(){
+  onInput: function(){
   },
 
-  handleChange(event){
+  handleChange: function(event){
     switch (event.target.dataset.role) {
       case 'selectLanguage':
         this.onChangeLanguage(event);
@@ -542,7 +538,7 @@ const Panel = React.createClass({
     }
   },
 
-  handleTransitionEnd(event){
+  handleTransitionEnd: function(event){
     if (event.target.dataset && event.target.dataset.role === 'detail_view_container') {
       let chatIdValue = event.target.dataset.chat_id;
       var resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
@@ -555,7 +551,7 @@ const Panel = React.createClass({
     }
   },
 
-  closeChat(element){
+  closeChat: function(element){
     if (this.props.location === "left") {
       let parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
       let chatId = parentElement.dataset.chat_id;
@@ -563,7 +559,7 @@ const Panel = React.createClass({
     }
   },
 
-  logout(){
+  logout: function(){
     var newState;
     event_bus.trigger('changeStatePopup', {
       show: true,
@@ -586,12 +582,12 @@ const Panel = React.createClass({
     });
   },
 
-  togglePanel(forceClose){
+  togglePanel: function(forceClose){
     this.openOrClosePanel(this.outerContainer.clientWidth + this.togglePanelElement.clientWidth >
       document.body.clientWidth, forceClose);
   },
 
-  openOrClosePanel(bigMode, forceClose) {
+  openOrClosePanel: function(bigMode, forceClose) {
     if (this.props.location === 'left' && this.outerContainer.style.right === '100vw') {
       this.outerContainer.style.right = '';
     }
@@ -643,7 +639,7 @@ const Panel = React.createClass({
     this.getInfoForBody(element.dataset.mode_to);
   },
 
-  getInfoForBody(mode){
+  getInfoForBody: function(mode){
     let self = this, currentOptions;
     if (mode === MODE.USERS) {
       users_bus.getMyInfo(null, function(error, options, userInfo) {
@@ -677,7 +673,7 @@ const Panel = React.createClass({
     }
   },
 
-  setUserInfo(userInfo){
+  setUserInfo: function(userInfo){
     this.setState({userInfo: userInfo});
   },
 
@@ -685,7 +681,7 @@ const Panel = React.createClass({
     return document.body.offsetWidth + 'px';
   },
 
-  showMoreInfo(element){
+  showMoreInfo: function(element){
     var chatIdValue = element.dataset.chat_id;
     var detailView = element.querySelector('[data-role="detail_view_container"]');
     var pointer = element.querySelector('[data-role="pointer"]');
@@ -709,7 +705,7 @@ const Panel = React.createClass({
     }
   },
 
-  changeMode(element){
+  changeMode: function(element){
     if (!element || !element.dataset) return;
     let chat_part = element.dataset.chat_part,
       newMode = element.dataset.mode_to,
@@ -749,17 +745,17 @@ const Panel = React.createClass({
     }
   },
 
-  changeUserInfo(){
+  changeUserInfo: function(){
     this.setState({bodyMode: MODE.USER_INFO_EDIT});
     this.previous_UserInfo_Mode = MODE.USER_INFO_EDIT;
   },
 
-  cancelChangeUserInfo(){
+  cancelChangeUserInfo: function(){
     this.setState({bodyMode: MODE.USER_INFO_SHOW});
     this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
   },
 
-  saveChangeUserInfo(){
+  saveChangeUserInfo: function(){
     var self = this, newState;
     if (this.userName.value && this.oldPassword.value && this.newPassword.value &&
       this.confirmPassword.value) {
@@ -835,7 +831,7 @@ const Panel = React.createClass({
     }
   },
 
-  updateUserInfo(callback) {
+  updateUserInfo: function(callback) {
     var self = this;
     users_bus.getMyInfo(null, function(err, options, userInfo) {
       userInfo.userPassword = self.newPassword.value;
@@ -851,14 +847,14 @@ const Panel = React.createClass({
     }
   },
 
-  onChatDestroyed(chatId){
+  onChatDestroyed: function(chatId){
     if (this.state.openChats) {
       delete this.state.openChats[chatId];
     }
     this.setState({openChats: this.state.openChats});
   },
 
-  resizePanel() {
+  resizePanel: function() {
     if (this.state.openedState && this.outerContainer) {
       if (this.outerContainer.clientWidth + this.togglePanelElement_clientWidth > document.body.clientWidth) {
         this.inner_container.style.maxWidth = this.calcMaxWidth();
@@ -899,7 +895,7 @@ const Panel = React.createClass({
     }
   },
 
-  onChangeLanguage(event){
+  onChangeLanguage: function(event){
     this.changeLanguage(event);
   },
 
@@ -912,18 +908,18 @@ const Panel = React.createClass({
     }
   },
 
-  toggleListOptions(chatsLength){
+  toggleListOptions: function(chatsLength){
     if (this.props.location === "left") {
       this.state.chats_ListOptions.final = chatsLength;
       this.setState({chats_ListOptions: this.state.chats_ListOptions});
     }
   },
 
-  changeState(newState){
+  changeState: function(newState){
     this.setState(newState);
   },
 
-  renderHandlers(events){
+  renderHandlers: function(events){
     var handlers = {};
     if (events) {
       for (var dataKey in events) {
@@ -933,7 +929,7 @@ const Panel = React.createClass({
     return handlers;
   },
 
-  render() {
+  render: function() {
     let handleEvent = {
       changeState: this.changeState
     };

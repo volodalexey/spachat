@@ -1,9 +1,6 @@
 import React from 'react'
 import { Router, Route, Link, History, Redirect } from 'react-router'
 
-import Button from './button'
-import Input from './input'
-import Label from './label'
 import Location_Wrapper from './location_wrapper'
 import Popup from '../components/popup'
 import Decription from '../components/description'
@@ -20,7 +17,7 @@ import overlay_core from '../js/overlay_core.js'
 const Register = React.createClass({
   mixins: [History],
 
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       mainContainer: {
         "element": "div",
@@ -170,7 +167,7 @@ const Register = React.createClass({
     }
   },
 
-  getInitialState(){
+  getInitialState: function(){
     return {
       popupOptions: {
         messagePopupShow: false,
@@ -181,16 +178,16 @@ const Register = React.createClass({
     }
   },
 
-  componentDidMount(){
+  componentDidMount: function(){
     this.registerForm = document.querySelector('[data-role="registerForm"]');
     this.toggleWaiter();
   },
 
-  componentWillUnmount(){
+  componentWillUnmount: function(){
     this.registerForm = null;
   },
 
-  handleClick(){
+  handleClick: function(){
   },
 
   handleChange: function(event) {
@@ -205,12 +202,12 @@ const Register = React.createClass({
     }
   },
 
-  handleSubmit(event){
-    var self = this, newState;
+  handleSubmit: function(event){
     event.preventDefault();
-    var userName = this.registerForm.elements.userName.value;
-    var userPassword = this.registerForm.elements.userPassword.value;
-    var userPasswordConfirm = this.registerForm.elements.userPasswordConfirm.value;
+    let self = this, newState,
+      userName = this.registerForm.elements.userName.value,
+      userPassword = this.registerForm.elements.userPassword.value,
+      userPasswordConfirm = this.registerForm.elements.userPasswordConfirm.value;
     if (userName && userPassword && userPasswordConfirm) {
       if (userPassword === userPasswordConfirm) {
         this.toggleWaiter(true);
@@ -219,7 +216,7 @@ const Register = React.createClass({
             userName: userName,
             userPassword: userPassword
           },
-          function(regErr, account) {
+          function(regErr) {
             self.toggleWaiter();
             if (regErr) {
               newState = Popup.prototype.handleChangeState(self.state, true, 'error', regErr,
@@ -278,7 +275,6 @@ const Register = React.createClass({
   },
 
   registerNewUser: function(options, callback) {
-    var _this = this;
     this.get_JSON_res('/api/uuid', function(err, res) {
       if (err) {
         callback(err);
@@ -302,7 +298,7 @@ const Register = React.createClass({
     });
   },
 
-  render() {
+  render: function() {
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange

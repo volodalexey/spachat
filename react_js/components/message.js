@@ -26,7 +26,7 @@ const Messages = React.createClass({
       let currentOptions = self.optionsDefinition(self.props.data, self.props.data.bodyOptions.mode);
       if (currentOptions.paginationOptions.showEnablePagination) {
         messages = Body.prototype.limitationQuantityRecords(messages, self.props.data, self.props.data.bodyOptions.mode);
-          self.setState({messages: messages});
+          //self.setState({messages: messages});
       } else {
         if(messages.length !== self.state.messages.length){
           self.setState({messages: messages});
