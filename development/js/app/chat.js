@@ -735,6 +735,8 @@ define('chat', [
         var _this = this;
         event.stopPropagation();
         event.preventDefault();
+        console.log(event.type);
+
         switch (event.type) {
           case 'mousedown':
           case 'touchstart':

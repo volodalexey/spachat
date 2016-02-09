@@ -20,7 +20,7 @@ define('indexeddb', [
       this.STATES = {
         READY: 1
       };
-      this.state = this.STATES.READY;
+      this.stateInfo = this.STATES.READY;
       this.openDatabases = {};
       this.addEventListeners();
     };
@@ -511,7 +511,7 @@ define('indexeddb', [
 
       canNotProceed: function(callback) {
         var _this = this;
-        if (_this.state !== _this.STATES.READY) {
+        if (_this.stateInfo !== _this.STATES.READY) {
           callback(new Error('ErrorState'));
           return true;
         }

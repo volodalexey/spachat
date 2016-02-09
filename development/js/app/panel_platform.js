@@ -102,7 +102,7 @@ define('panel_platform', [
           _this.panelsDescriptions = [
             {
               type: _this.PANEL_TYPES.LEFT,
-              outer_container: _this.left_panel_outer_container,
+              outerContainer: _this.left_panel_outer_container,
               inner_container: _this.left_panel_inner_container,
               body_mode: panel.prototype.MODE.CREATE_CHAT,
               filter_container: _this.left_filter_container,
@@ -114,7 +114,7 @@ define('panel_platform', [
             },
             {
               type: _this.PANEL_TYPES.RIGHT,
-              outer_container: _this.right_panel_outer_container,
+              outerContainer: _this.right_panel_outer_container,
               inner_container: _this.right_panel_inner_container,
               body_mode: panel.prototype.MODE.USER_INFO_SHOW,
               filter_container: _this.right_filter_container,

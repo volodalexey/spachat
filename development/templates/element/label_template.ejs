@@ -13,7 +13,9 @@
 <% if (_in.config.data && _in.config.data.key) { %>
 data-<%= _in.config.data.key %> = "<%= _in.data[_in.config.data.key] %>"
 <% } %>
-        ><%if (_in.config.text) {%>
+        >
+
+    <%if (_in.config.text) {%>
     <%= typeof _in.config.text === "number" ? window.getLocText(_in.config.text) : _in.config.text %>
     <%} else {%>
     <%= ''%>
