@@ -3,7 +3,7 @@ import React from 'react'
 import Triple_Element from '../components/triple_element'
 
 const ExtraToolbar = React.createClass({
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       usersExtraToolbarConfig: [
         {
@@ -59,23 +59,23 @@ const ExtraToolbar = React.createClass({
         }
       ],
       contactListExtraToolbarConfig: [
-      {
-        "element": "button",
-        "icon": "filter_users_icon",
-        "text": 26,
-        "class": "button-inset-square",
-        "data": {
-          "throw": "true",
-          "action": "changeMode",
-          "role": "btn_Filter",
-          "toggle": true,
-          "chat_part": "filter",
-          "mode_to": "CONTACT_LIST_FILTER"
-        },
-        "name": "",
-        "disabled": false
-      }
-    ],
+        {
+          "element": "button",
+          "icon": "filter_users_icon",
+          "text": 26,
+          "class": "button-inset-square",
+          "data": {
+            "throw": "true",
+            "action": "changeMode",
+            "role": "btn_Filter",
+            "toggle": true,
+            "chat_part": "filter",
+            "mode_to": "CONTACT_LIST_FILTER"
+          },
+          "name": "",
+          "disabled": false
+        }
+      ],
       loggerExtraToolbarConfig: [
         {
           "element": "button",
@@ -97,8 +97,8 @@ const ExtraToolbar = React.createClass({
     }
   },
 
-  defineConfig(mode){
-    switch (mode){
+  defineConfig: function(mode) {
+    switch (mode) {
       case 'CHATS':
         return this.props.chatsExtraToolbarConfig;
         break;
@@ -117,8 +117,8 @@ const ExtraToolbar = React.createClass({
     }
   },
 
-  defineOptions(mode){
-    switch (mode){
+  defineOptions: function(mode) {
+    switch (mode) {
       case 'CREATE_CHAT':
         return this.props.data.createChat_ExtraToolbarOptions;
         break;
@@ -140,18 +140,18 @@ const ExtraToolbar = React.createClass({
     }
   },
 
-  render(){
-    var options = this.defineOptions(this.props.mode);
-    if(options && options.show) {
+  render: function() {
+    let options = this.defineOptions(this.props.mode);
+    if (options && options.show) {
       var configs = this.defineConfig(this.props.mode);
-      if(!configs){
+      if (!configs) {
         return <div></div>
       }
 
       return <div>
         {
           configs.map(function(config, i) {
-            return <Triple_Element key={i} events={this.props.events} config={config} />
+            return <Triple_Element key={i} events={this.props.events} config={config}/>
           }, this)
         }
       </div>

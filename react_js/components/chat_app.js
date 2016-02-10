@@ -1,5 +1,4 @@
 import React from 'react'
-import { render } from 'react-dom'
 import { History } from 'react-router'
 
 import users_bus from '../js/users_bus.js'
@@ -29,33 +28,33 @@ const ChatApp = React.createClass({
     };
   },
 
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       LEFT: 'left',
       RIGHT: 'right'
     }
   },
 
-  handleResize: function(e) {
+  handleResize: function() {
     this.setState({windowWidth: window.innerWidth});
   },
 
-  componentDidMount(){
+  componentDidMount: function() {
     event_bus.on('changeStatePopup', this.handleChangePopup, this);
     event_bus.on('logout', this.logout, this);
     event_bus.on('setUserId', this.logout, this);
   },
 
-  componentWillUnmount(){
+  componentWillUnmount: function() {
     event_bus.off('changeStatePopup', this.handleChangePopup, this);
     event_bus.off('logout', this.logout, this);
     event_bus.off('setUserId', this.logout, this);
   },
 
-  componentWillMount(){
-    var self = this;
+  componentWillMount: function() {
     users_bus.checkLoginState();
-    var userId = users_bus.getUserId();
+    let self = this,
+      userId = users_bus.getUserId();
     if (!userId) {
       this.history.pushState(null, 'login');
     } else {
@@ -66,22 +65,22 @@ const ChatApp = React.createClass({
     }
   },
 
-  handleChangePopup(options){
-    var newState, self = this;
+  handleChangePopup: function(options) {
+    let newState;
     newState = Popup.prototype.handleChangeState(this.state, options.show, options.type,
       options.message, options.onDataActionClick.bind(this));
     this.setState(newState);
   },
 
   logout(user_id){
-    var self = this;
+    let self = this;
     if (!user_id) {
-      var panelDescription = {};
+      let panelDescription = {};
       this.toggleWaiter(true);
-      event_bus.trigger('getPanelDescription', function(description, location){
+      event_bus.trigger('getPanelDescription', function(description, location) {
         panelDescription[location] = description;
       });
-      this.savePanelStates(panelDescription, function(err) {
+      this.savePanelStates(panelDescription, function() {
         self.toggleWaiter();
         self.history.pushState(null, 'login');
       })
@@ -89,7 +88,7 @@ const ChatApp = React.createClass({
   },
 
   savePanelStates: function(panelDescription, callback) {
-    var self = this;
+    let self = this;
     users_bus.getMyInfo(null, function(error, options, userInfo) {
       if (error) {
         callback(error);
@@ -103,13 +102,13 @@ const ChatApp = React.createClass({
           return;
         }
 
-        callback(null);
+        callback();
       });
     });
   },
 
-  render() {
-    if(this.state.userInfo && this.state.userInfo.hasOwnProperty('user_id')){
+  render: function() {
+    if (this.state.userInfo && this.state.userInfo.hasOwnProperty('user_id')) {
       return (
         <div>
           <Panel location={this.props.LEFT} userInfo={this.state.userInfo}/>

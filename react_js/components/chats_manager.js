@@ -5,7 +5,6 @@ import users_bus from '../js/users_bus.js'
 import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
 import indexeddb from '../js/indexeddb.js'
-import websocket from '../js/websocket.js'
 import chats_bus from '../js/chats_bus.js'
 import ajax_core from '../js/ajax_core.js'
 import messages from '../js/messages.js'
@@ -14,7 +13,7 @@ import Chat from '../components/chat'
 import Popup from '../components/popup'
 
 const ChatsManager = React.createClass({
-  getDefaultProps(){
+  getDefaultProps: function() {
     return {
       minChatsWidth: 350,
       minMove: 5,
@@ -23,13 +22,13 @@ const ChatsManager = React.createClass({
     }
   },
 
-  getInitialState(){
+  getInitialState: function() {
     return {
       chatsArray: []
     }
   },
 
-  componentDidMount(){
+  componentDidMount: function() {
     event_bus.on('showChat', this.showChat, this);
     event_bus.on('addNewChatAuto', this.createNewChat, this);
     event_bus.on('getOpenChats', this.getOpenChats, this);
@@ -37,11 +36,9 @@ const ChatsManager = React.createClass({
     event_bus.on('chatsDestroy', this.destroyChats);
 
     this.mainConteiner = document.querySelector('[data-role="main_container"]');
-    this.chatResizeContainer = document.querySelector('[data-role="chat_resize_container"]');
-    this.lineResize = this.chatResizeContainer.querySelector('[data-role="resize_line"]');
   },
 
-  componentWillUnmount(){
+  componentWillUnmount: function() {
     event_bus.off('showChat', this.showChat);
     event_bus.off('addNewChatAuto', this.createNewChat);
     event_bus.off('getOpenChats', this.getOpenChats);
@@ -49,22 +46,20 @@ const ChatsManager = React.createClass({
     event_bus.off('chatsDestroy', this.destroyChats);
 
     this.mainConteiner = null;
-    this.chatResizeContainer = null;
-    this.lineResize = null;
   },
 
   getOpenChats: function(callback) {
-    var openChats = {};
+    let openChats = {};
     Chat.prototype.chatsArray.forEach(function(chat) {
       openChats[chat.chat_id] = true;
     });
     callback(openChats);
   },
 
-  showChat(element){
-    var self = this, newState;
-    var parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
-    var restoreOption = element.dataset.restore_chat_state;
+  showChat: function(element) {
+    let self = this, newState,
+      parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper'),
+      restoreOption = element.dataset.restore_chat_state;
     if (!parentElement) {
       console.error(new Error('Parent element not found!'));
       return;
@@ -75,7 +70,7 @@ const ChatsManager = React.createClass({
       return;
     }
 
-    var chatId = parentElement.dataset.chat_id;
+    let chatId = parentElement.dataset.chat_id;
     if (this.isChatOpened(chatId)) {
       event_bus.trigger('changeStatePopup', {
         show: true,
@@ -116,7 +111,7 @@ const ChatsManager = React.createClass({
    * chat whether requested chat by its id is opened or not
    */
   isChatOpened: function(chatId) {
-    var openedChat;
+    let openedChat;
     Chat.prototype.chatsArray.every(function(_chat) {
       if (_chat.chat_id === chatId) {
         openedChat = _chat;
@@ -127,16 +122,15 @@ const ChatsManager = React.createClass({
     return openedChat;
   },
 
-  handleChat(chatDescription, restoreOption, newChat){
-    var self = this;
-    let chat = {};
+  handleChat: function(chatDescription, restoreOption, newChat) {
+    let self = this, chat = {};
     chat.chat_id = chatDescription.chat_id;
     chat.chatDescription = chatDescription;
     chat.restoreOption = restoreOption;
     Chat.prototype.chatsArray.push(chat);
-    let descr = messages.prototype.setCollectionDescription(chatDescription.chat_id);
-    indexeddb.open(descr, newChat, function(err) {
-      if(err){
+    let description = messages.prototype.setCollectionDescription(chatDescription.chat_id);
+    indexeddb.open(description, newChat, function(err) {
+      if (err) {
         console.error(err);
         return;
       }
@@ -146,8 +140,8 @@ const ChatsManager = React.createClass({
     });
   },
 
-  createNewChat(){
-    var self = this;
+  createNewChat: function() {
+    let self = this;
     this.get_JSON_res('/api/uuid', function(err, res) {
       if (err) {
         callback(err);
@@ -157,7 +151,7 @@ const ChatsManager = React.createClass({
       chatDescription.chat_id = res.uuid;
       chatDescription.user_ids = [];
       chatDescription.user_ids.push(users_bus.getUserId());
-      self.addNewChatToIndexedDB(chatDescription, function(err, chat) {
+      self.addNewChatToIndexedDB(chatDescription, function(err) {
         if (err) {
           console.error(err);
           return;
@@ -175,12 +169,12 @@ const ChatsManager = React.createClass({
     });
   },
 
-  addNewChatToIndexedDB(chat_description, callback) {
+  addNewChatToIndexedDB: function(chat_description, callback) {
     chats_bus.putChatToIndexedDB(chat_description, callback);
   },
 
-  toCloseChat(saveStates, chatId, chatDescription){
-    var self = this;
+  toCloseChat: function(saveStates, chatId) {
+    let self = this;
     event_bus.trigger('getChatDescription', chatId, function(description) {
       switch (saveStates) {
         case 'closeChat':
@@ -196,8 +190,8 @@ const ChatsManager = React.createClass({
     });
   },
 
-  closeChat(description){
-    var newState, self = this;
+  closeChat: function(description) {
+    let newState, self = this;
     event_bus.trigger('changeStatePopup', {
       show: true,
       type: 'confirm',
@@ -218,7 +212,7 @@ const ChatsManager = React.createClass({
     });
   },
 
-  destroyChat(description){
+  destroyChat: function(description) {
     let position = this.getDestroyChatPosition(description.chat_id);
     Chat.prototype.chatsArray.splice(position, 1);
     event_bus.trigger('chatDestroyed', description.chat_id);
@@ -230,8 +224,8 @@ const ChatsManager = React.createClass({
     Chat.prototype.chatsArray = [];
   },
 
-  getDestroyChatPosition(chat_id){
-    var destroyChatPosition;
+  getDestroyChatPosition: function(chat_id) {
+    let destroyChatPosition;
     Chat.prototype.chatsArray.every(function(_chat, index) {
       if (_chat.chat_id === chat_id) {
         destroyChatPosition = index;
@@ -242,8 +236,8 @@ const ChatsManager = React.createClass({
     return destroyChatPosition;
   },
 
-  saveStatesChat(description){
-    var newState, self = this;
+  saveStatesChat: function(description) {
+    let newState, self = this;
     event_bus.trigger('changeStatePopup', {
       show: true,
       type: 'confirm',
@@ -255,10 +249,9 @@ const ChatsManager = React.createClass({
             this.setState(newState);
             break;
           case 'confirmOk':
-            self.saveStatesChats(description, function(err) {
+            self.addNewChatToIndexedDB(description, function(err) {
               if (err) {
                 console.error(err);
-                return;
               }
             });
             newState = Popup.prototype.handleClose(this.state);
@@ -269,12 +262,8 @@ const ChatsManager = React.createClass({
     });
   },
 
-  saveStatesChats: function(chat_description, callback) {
-    chats_bus.putChatToIndexedDB(chat_description, callback);
-  },
-
-  saveAndCloseChat(description){
-    var newState, self = this;
+  saveAndCloseChat: function(description) {
+    let newState, self = this;
     event_bus.trigger('changeStatePopup', {
       show: true,
       type: 'confirm',
@@ -286,7 +275,7 @@ const ChatsManager = React.createClass({
             this.setState(newState);
             break;
           case 'confirmOk':
-            self.saveStatesChats(description, function(err) {
+            self.addNewChatToIndexedDB(description, function(err) {
               if (err) {
                 console.error(err);
                 return;
@@ -301,7 +290,7 @@ const ChatsManager = React.createClass({
     });
   },
 
-  render() {
+  render: function() {
     if (!Chat.prototype.chatsArray.length) {
       return <div className="flex-outer-container" data-role="chat_wrapper"></div>
     } else {

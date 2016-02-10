@@ -40,7 +40,7 @@ const Body = React.createClass({
     FILTER: 'FILTER'
   },
 
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       user_info_edit_config: [
         {
@@ -529,7 +529,7 @@ const Body = React.createClass({
             "mode": "JOIN_CHAT"
           },
           "disable": false
-        },
+        }
       ],
       detail_view_config: [
         {
@@ -957,7 +957,7 @@ const Body = React.createClass({
     }
   },
 
-  defineConfigs(mode){
+  defineConfigs: function(mode){
     switch (mode) {
       case this.MODE.CHATS:
         return {
@@ -1006,8 +1006,8 @@ const Body = React.createClass({
     }
   },
 
-  defineComponents(mode, configs){
-    var items = [], data, self = this;
+  defineComponents: function(mode, configs){
+    let items = [], data, self = this;
     switch (mode) {
       case this.MODE.USERS:
         data = [{
@@ -1062,9 +1062,9 @@ const Body = React.createClass({
     return items;
   },
 
-  limitationQuantityRecords(data, state, mode){
+  limitationQuantityRecords: function(data, state, mode){
     if (data && data.length) {
-      var currentOptions = this.optionsDefinition(state, mode);
+      let currentOptions = this.optionsDefinition(state, mode);
       if (currentOptions.listOptions.final > data.length || !currentOptions.listOptions.final) {
         currentOptions.listOptions.final = data.length;
       }
@@ -1075,7 +1075,7 @@ const Body = React.createClass({
     return data;
   },
 
-  render(){
+  render: function(){
     let configs = this.defineConfigs(this.props.mode);
     if (!configs) {
       return <div></div>

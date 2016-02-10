@@ -1,9 +1,10 @@
 import React from 'react'
+
 import Localization from '../js/localization.js'
 
 const Select = React.createClass({
   displayName: 'Select',
-  render_att() {
+  render_att: function() {
     var params = {};
     if (this.props.config.class) {
       params["className"] = this.props.config.class;
@@ -33,7 +34,7 @@ const Select = React.createClass({
     }
   },
 
-  renderHandlers(){
+  renderHandlers: function() {
     var handlers = {};
     if (this.props.events) {
       for (var dataKey in this.props.events) {
@@ -43,7 +44,7 @@ const Select = React.createClass({
     return handlers;
   },
 
-  render() {
+  render: function() {
     var defaultValue;
     var options = this.props.config.select_options.map(function(option, i) {
       if (Localization.lang === option.value) {

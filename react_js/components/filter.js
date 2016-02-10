@@ -3,7 +3,6 @@ import React from 'react'
 import switcher_core from '../js/switcher_core'
 import extend_core from '../js/extend_core'
 
-import Triple_Element from '../components/triple_element'
 import Location_Wrapper from './location_wrapper'
 
 const Filter = React.createClass({
@@ -17,7 +16,7 @@ const Filter = React.createClass({
     CONNECTIONS_FILTER: 'CONNECTIONS_FILTER'
   },
 
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       usersFilterConfig: [
         {
@@ -417,7 +416,7 @@ const Filter = React.createClass({
     }
   },
 
-  defineConfig(mode){
+  defineConfig: function(mode) {
     switch (mode) {
       case 'CHATS':
         return this.props.chatsFilterConfig;
@@ -434,7 +433,7 @@ const Filter = React.createClass({
     }
   },
 
-  prepareConfig(config, mode){
+  prepareConfig: function(config, mode) {
     config = config.filter(function(obj) {
       if (!obj.redraw_mode) {
         return obj;
@@ -445,8 +444,8 @@ const Filter = React.createClass({
     return config;
   },
 
-  defineOptions(mode){
-    var options = {};
+  defineOptions: function(mode) {
+    let options = {};
     switch (mode) {
       case 'CREATE_CHAT':
         options['filterOptions'] = this.props.data.createChat_FilterOptions;
@@ -479,8 +478,8 @@ const Filter = React.createClass({
     return options;
   },
 
-  changeRTE(element, state, mode){
-    var currentOptions = this.optionsDefinition(state, mode),
+  changeRTE: function(element, state, mode) {
+    let currentOptions = this.optionsDefinition(state, mode),
       po = currentOptions.paginationOptions;
     if (element.checked) {
       po.mode_change = "rte";
@@ -492,7 +491,7 @@ const Filter = React.createClass({
     return {[po.text]: po};
   },
 
-  changePerPage(element, state, mode){
+  changePerPage: function(element, state, mode) {
     let value = parseInt(element.value, 10),
       currentOptions = this.optionsDefinition(state, mode),
       po = currentOptions.paginationOptions;
@@ -507,7 +506,7 @@ const Filter = React.createClass({
     return {[po.text]: po};
   },
 
-  showPerPage(element, state, mode){
+  showPerPage: function(element, state, mode) {
     let currentOptions = this.optionsDefinition(state, mode),
       po = currentOptions.paginationOptions;
     po.currentPage = null;
@@ -515,7 +514,7 @@ const Filter = React.createClass({
     return {[po.text]: po};
   },
 
-  render(){
+  render: function() {
     var options = this.defineOptions(this.props.mode);
     if (options && options.filterOptions.show) {
       var configs = this.defineConfig(this.props.mode);

@@ -7,7 +7,7 @@ import extend_core from '../js/extend_core.js'
 import Location_Wrapper from './location_wrapper'
 
 const Popup = React.createClass({
-  getDefaultProps(){
+  getDefaultProps: function() {
     return {
       confirmConfig: {
         header: [
@@ -177,7 +177,7 @@ const Popup = React.createClass({
     }
   },
 
-  handleClick(event){
+  handleClick: function(event) {
     if (this.onDataActionClick) {
       var element = this.getDataParameter(event.target, 'action');
       if (element) {
@@ -186,7 +186,7 @@ const Popup = React.createClass({
     }
   },
 
-  handleClose(state){
+  handleClose: function(state) {
     state.popupOptions.messagePopupShow = false;
     state.popupOptions.type = '';
     state.popupOptions.options = {};
@@ -194,7 +194,7 @@ const Popup = React.createClass({
     return {popupOptions: state.popupOptions};
   },
 
-  handleChangeState(state, show, type, message, onDataActionClick){
+  handleChangeState: function(state, show, type, message, onDataActionClick) {
     state.popupOptions.messagePopupShow = show;
     state.popupOptions.type = type;
     state.popupOptions.options = {message: message};
@@ -202,8 +202,8 @@ const Popup = React.createClass({
     return {popupOptions: state.popupOptions};
   },
 
-  defineParams(params){
-    var config;
+  defineParams: function(params) {
+    let config;
     this.onDataActionClick = params.onDataActionClick;
     switch (params.type) {
       case 'confirm':
@@ -224,8 +224,8 @@ const Popup = React.createClass({
     }
   },
 
-  defineClass(){
-    var className;
+  defineClass: function() {
+    let className;
     if (this.props.show) {
       className = "flex-outer-container p-fx popup in"
     } else {
@@ -234,24 +234,26 @@ const Popup = React.createClass({
     return className;
   },
 
-  render(){
+  render: function() {
     var className = this.defineClass();
     if (this.props.show && this.props.options) {
       var params = this.defineParams(this.props.options);
       return (
-        <div data-role="popup_outer_container" className={className} >
-          <div data-role="popup_inner_container" className="c-50 border-radius-05em min-width-350" onClick={this.handleClick}>
+        <div data-role="popup_outer_container" className={className}>
+          <div data-role="popup_inner_container" className="c-50 border-radius-05em min-width-350"
+               onClick={this.handleClick}>
             <div className={'text-line-center flex-just-center ' + this.props.options.type}>
-              <Location_Wrapper configs={params.configs.header} data={params} />
+              <Location_Wrapper configs={params.configs.header} data={params}/>
             </div>
-            <Location_Wrapper configs={params.configs.content} data={params} />
+            <Location_Wrapper configs={params.configs.content} data={params}/>
           </div>
         </div>
       )
     } else {
       return (
-        <div data-role="popup_outer_container" className={className} >
-          <div data-role="popup_inner_container" className="c-50 border-radius-05em min-width-350" onClick={this.handleClick}>
+        <div data-role="popup_outer_container" className={className}>
+          <div data-role="popup_inner_container" className="c-50 border-radius-05em min-width-350"
+               onClick={this.handleClick}>
             <div className={'text-line-center flex-just-center ' + this.props.options.type}>
             </div>
           </div>

@@ -15,7 +15,7 @@ const Editor = React.createClass({
     "FORMAT_PANEL": 'FORMAT_PANEL'
   },
 
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       mainContainer: {
         "element": "div",
@@ -63,27 +63,23 @@ const Editor = React.createClass({
     }
   },
 
-  getInitialState(){
-    return {}
-  },
-
-  componentWillMount(){
+  componentWillMount: function() {
     this.__keyInnerHtml = Date.now();
   },
 
-  componentDidMount(){
+  componentDidMount: function() {
     this.editorContainer = ReactDOM.findDOMNode(this);
-    if(this.editorContainer){
+    if (this.editorContainer) {
       this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
     }
   },
 
-  componentWillUnmount(){
+  componentWillUnmount: function() {
     this.messageInnerContainer = null;
   },
 
-  handleClick(event){
-    var element = this.getDataParameter(event.currentTarget, 'action');
+  handleClick: function(event) {
+    let element = this.getDataParameter(event.currentTarget, 'action');
     if (element) {
       switch (element.dataset.action) {
         case 'addEdit':
@@ -102,17 +98,15 @@ const Editor = React.createClass({
     }
   },
 
-  componentDidUpdate(){
+  componentDidUpdate: function() {
     this.editorContainer = ReactDOM.findDOMNode(this);
     if (this.editorContainer) {
       this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
       this.messageInnerContainer.addEventListener('keypress', this.sendEnter);
-      /*this.messageInnerContainer.removeEventListener('keypress', this.sendEnter);*/
-
     }
   },
 
-  workflowInnerHtml(save){
+  workflowInnerHtml: function(save) {
     this.__keyInnerHtml = Date.now();
     (save && this.messageInnerContainer) ? this.__innerHtml = this.messageInnerContainer.innerHTML : this.__innerHtml = "";
   },
@@ -128,14 +122,14 @@ const Editor = React.createClass({
     }
   },
 
-  sendMessage(){
-    var self = this, newState = this.props.data;
+  sendMessage: function() {
+    let self = this, newState = this.props.data;
     if (!this.messageInnerContainer) {
       return;
     }
 
-    var pattern = /[^\s{0,}$|^$]/; // empty message or \n only
-    let message = this.messageInnerContainer.innerHTML;
+    let pattern = /[^\s{0,}$|^$]/, // empty message or \n only
+      message = this.messageInnerContainer.innerHTML;
     if (pattern.test(message)) {
       messages.prototype.addMessage(this.props.data.bodyOptions.mode, message, this.props.data.chat_id,
         function(err) {
@@ -151,19 +145,19 @@ const Editor = React.createClass({
     }
   },
 
-  addEdit(element){
-    var self = this;
-    var command = element.dataset.name;
-    var param = element.dataset.param;
+  addEdit: function(element) {
+    let self = this,
+      command = element.dataset.name,
+      param = element.dataset.param;
     self.messageInnerContainer.focus();
     if (param) {
-      document.execCommand(command, null, "red");
+      document.execCommand(command, false, "red");
     } else {
-      document.execCommand(command, null, null);
+      document.execCommand(command, false, null);
     }
   },
 
-  changeEdit() {
+  changeEdit: function() {
     let newState = this.props.data;
     if (this.messageInnerContainer.classList.contains("onScroll")) {
       this.messageInnerContainer.classList.remove("onScroll");
@@ -176,7 +170,7 @@ const Editor = React.createClass({
     }
   },
 
-  render(){
+  render: function() {
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange

@@ -2,8 +2,8 @@ import React from 'react'
 import Localization from '../js/localization.js'
 
 const Textarea = React.createClass({
-  render_att() {
-    var params = {};
+  render_att: function() {
+    let params = {};
     if (this.props.config.data) {
       for (var configDataKey in this.props.config.data) {
         if (this.props.config.data[configDataKey] !== "") {
@@ -20,7 +20,7 @@ const Textarea = React.createClass({
     return params;
   },
 
-  render() {
+  render: function() {
     return (
       <textarea className={this.props.config.class ? this.props.config.class : ''} {...this.render_att()}>
         {this.props.config.text}

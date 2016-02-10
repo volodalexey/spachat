@@ -18,7 +18,7 @@ const Pagination = React.createClass({
     "GO_TO": 'GO_TO'
   },
 
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       mainContainer: {
         "element": "div",
@@ -123,19 +123,13 @@ const Pagination = React.createClass({
     }
   },
 
-  getInitialState(){
+  getInitialState: function() {
     return {
       currentOptions: {}
     }
   },
 
-  componentDidMount(){
-  },
-
-  componentWillUnmount(){
-  },
-
-  defineOptions(mode){
+  defineOptions: function(mode) {
     this.options = {};
     switch (mode) {
       case 'CHATS':
@@ -150,8 +144,8 @@ const Pagination = React.createClass({
     }
   },
 
-  handleClick(event){
-    var element = this.getDataParameter(event.currentTarget, 'action'), newState;
+  handleClick: function(event) {
+    let element = this.getDataParameter(event.currentTarget, 'action');
     if (element) {
       switch (element.dataset.action) {
         case 'switchPage':
@@ -161,7 +155,7 @@ const Pagination = React.createClass({
     }
   },
 
-  countPagination(state, mode, options, callback){
+  countPagination: function(state, mode, options, callback) {
     let currentOptions = this.optionsDefinition(state, mode);
     this.countQuantityPages(currentOptions, mode, options, function(_currentOptions) {
       let po = _currentOptions.paginationOptions;
@@ -188,12 +182,12 @@ const Pagination = React.createClass({
     });
   },
 
-  countQuantityPages(currentOptions, mode, options, callback){
+  countQuantityPages: function(currentOptions, mode, options, callback) {
     let self = this;
     if (currentOptions.listOptions.data_download) {
-        messages.prototype.getAllMessages(options.chat_id, mode, function(messages) {
-          self.handleCountPagination(messages, currentOptions, callback);
-        })
+      messages.prototype.getAllMessages(options.chat_id, mode, function(messages) {
+        self.handleCountPagination(messages, currentOptions, callback);
+      })
     } else {
       switch (mode) {
         case "CHATS":
@@ -233,8 +227,8 @@ const Pagination = React.createClass({
     }
   },
 
-  handleCountPagination(data, currentOptions, callback){
-    let self = this, quantityPages, quantityData,
+  handleCountPagination: function(data, currentOptions, callback) {
+    let quantityPages, quantityData,
       po = currentOptions.paginationOptions,
       lo = currentOptions.listOptions;
     if (!po || !lo) return;
@@ -262,7 +256,7 @@ const Pagination = React.createClass({
     }
   },
 
-  switchPage(element){
+  switchPage: function(element) {
     let self = this,
       currentOptions = this.optionsDefinition(this.props.data, this.props.mode),
       po = currentOptions.paginationOptions,
@@ -278,11 +272,11 @@ const Pagination = React.createClass({
     }
     this.countPagination(this.props.data, this.props.mode,
       {"chat_id": this.props.data.chat_id}, function(_newState) {
-      self.props.handleEvent.changeState(_newState);
-    });
+        self.props.handleEvent.changeState(_newState);
+      });
   },
 
-  render(){
+  render: function() {
     let onEvent = {
         onClick: this.handleClick
       },

@@ -3,10 +3,9 @@ import React from 'react'
 import TripleElement from './triple_element'
 
 const Location_Wrapper = React.createClass({
-  prepareConfig(){
-    var rawConfig = this.props.configs;
-    if(!rawConfig) return rawConfig;
-    var byDataLocation = {};
+  prepareConfig: function() {
+    let rawConfig = this.props.configs, byDataLocation = {};
+    if (!rawConfig) return rawConfig;
     rawConfig.forEach(function(_config) {
       if (!_config.location) {
         return;
@@ -26,8 +25,8 @@ const Location_Wrapper = React.createClass({
     return rawConfig;
   },
 
-  render_att(config) {
-    var params = {};
+  render_att: function(config) {
+    let params = {};
     if (config.classList) {
       params['className'] = config.classList;
     }
@@ -37,16 +36,16 @@ const Location_Wrapper = React.createClass({
     return params;
   },
 
-  wrapper(wrapperConfig, wrapperItems){
+  wrapper: function(wrapperConfig, wrapperItems) {
     return (<div key={wrapperConfig.location} {...this.render_att(wrapperConfig)}>
       {this.wrapperItems(wrapperItems)}
     </div>)
   },
 
-  wrapperItems(wrapperItems){
-    var items = [], hide, self = this;
+  wrapperItems: function(wrapperItems) {
+    let items = [], hide, self = this;
     wrapperItems.map((element_config, idx) => {
-      if(element_config.data && element_config.data.action === "togglePanel" && self.props.hide) {
+      if (element_config.data && element_config.data.action === "togglePanel" && self.props.hide) {
         hide = true;
       } else {
         hide = false;
@@ -57,7 +56,7 @@ const Location_Wrapper = React.createClass({
     return items;
   },
 
-  renderAttMainContainer(){
+  renderAttMainContainer: function() {
     var params = {};
     if (this.props.mainContainer.class) {
       params["className"] = this.props.mainContainer.class;
@@ -72,10 +71,9 @@ const Location_Wrapper = React.createClass({
     return params;
   },
 
-  render(){
-    var rawConfig = this.prepareConfig();
-    var elements = [];
-    if(Object.keys(rawConfig.byDataLocation).length === 0){
+  render: function() {
+    let rawConfig = this.prepareConfig(), elements = [];
+    if (Object.keys(rawConfig.byDataLocation).length === 0) {
       elements.push(this.wrapperItems(rawConfig));
     } else {
       for (let key in rawConfig.byDataLocation) {
@@ -84,7 +82,7 @@ const Location_Wrapper = React.createClass({
         elements.push(this.wrapper(wrapperConfig, wrapperItems));
       }
     }
-    if(this.props.mainContainer){
+    if (this.props.mainContainer) {
       return <div {...this.renderAttMainContainer()}>{elements}</div>
     } else {
       return <div>{elements}</div>

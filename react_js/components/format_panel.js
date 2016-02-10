@@ -1,11 +1,9 @@
 import React from 'react'
 
-import users_bus from '../js/users_bus.js'
-
 import Location_Wrapper from './location_wrapper'
 
 const FormatPanel = React.createClass({
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       mainContainer: {
         "element": "div",
@@ -116,7 +114,7 @@ const FormatPanel = React.createClass({
     }
   },
 
-    render(){
+    render: function(){
     if (this.props.data.formatOptions.show) {
       return (
         <Location_Wrapper events={this.props.events} mainContainer={this.props.mainContainer}

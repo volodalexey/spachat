@@ -2,10 +2,8 @@ import React from 'react'
 
 import Location_Wrapper from './location_wrapper'
 
-import Triple_Element from '../components/triple_element'
-
 const PanelToolbar = React.createClass({
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       panelLeftToolbarConfig: [
         {
@@ -192,7 +190,7 @@ const PanelToolbar = React.createClass({
     }
   },
 
-  defineConfig(location){
+  defineConfig: function(location) {
     switch (location) {
       case 'left':
         return this.props.panelLeftToolbarConfig;
@@ -203,13 +201,12 @@ const PanelToolbar = React.createClass({
     }
   },
 
-  render(){
-    var configs = this.defineConfig(this.props.location);
-    let mode = this.props.mode;
+  render: function() {
+    let configs = this.defineConfig(this.props.location), mode = this.props.mode;
     if (!configs) {
       return <div></div>
     }
-    if(mode === 'USER_INFO_EDIT') {
+    if (mode === 'USER_INFO_EDIT') {
       mode = 'USER_INFO_SHOW';
     }
 

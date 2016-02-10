@@ -6,7 +6,7 @@ import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
 
 const ChatResize = React.createClass({
-  getDefaultProps(){
+  getDefaultProps: function() {
     return {
       min_chats_width: 350,
       min_move: 5
@@ -26,7 +26,7 @@ const ChatResize = React.createClass({
       chatResize: null
     };
   },
-  componentDidMount(){
+  componentDidMount: function() {
     this.chat_resize_container = ReactDOM.findDOMNode(this);
     this.line_resize = this.chat_resize_container.querySelector('[data-role="resize_line"]');
     event_bus.on('transformToResizeState', this.transformToResizeState, this);
@@ -37,7 +37,7 @@ const ChatResize = React.createClass({
     this.chat_resize_container.addEventListener('touchmove', this.handleResize);
   },
 
-  componentWillUnmount(){
+  componentWillUnmount: function() {
     event_bus.off('transformToResizeState', this.transformToResizeState);
     event_bus.off('redirectResize', this.handleResize);
     this.chat_resize_container.removeEventListener('mouseup', this.handleResize);
@@ -46,7 +46,7 @@ const ChatResize = React.createClass({
     this.chat_resize_container.removeEventListener('touchmove', this.handleResize);
   },
 
-  transformToResizeState(event, _chat){
+  transformToResizeState: function(event, _chat) {
     let left_line_resize;
     if (event.type === 'touchstart' && event.changedTouches) {
       left_line_resize = event.changedTouches[0].clientX + 'px';
@@ -66,7 +66,7 @@ const ChatResize = React.createClass({
     });
   },
 
-  handleResize(event){
+  handleResize: function(event) {
     switch (event.type) {
       case 'mousemove':
       case 'touchmove':
@@ -150,15 +150,15 @@ const ChatResize = React.createClass({
     }
   },
 
-  defineClass(className){
-    if(this.state.visible_resize_container){
+  defineClass: function(className) {
+    if (this.state.visible_resize_container) {
       className = className + " draggable";
     }
 
     return className;
   },
 
-  render(){
+  render: function() {
     return (
       <div data-role="chat_resize_container"
            className={this.defineClass("clear chat-resize-container ")}>

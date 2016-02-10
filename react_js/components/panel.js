@@ -437,7 +437,7 @@ const Panel = React.createClass({
   },
 
   handleClick: function(event){
-    var element = this.getDataParameter(event.currentTarget, 'action'), newState;
+    let element = this.getDataParameter(event.currentTarget, 'action'), newState;
     if (element) {
       switch (element.dataset.action) {
         case 'togglePanel':
@@ -560,7 +560,7 @@ const Panel = React.createClass({
   },
 
   logout: function(){
-    var newState;
+    let newState;
     event_bus.trigger('changeStatePopup', {
       show: true,
       type: 'confirm',
@@ -682,10 +682,10 @@ const Panel = React.createClass({
   },
 
   showMoreInfo: function(element){
-    var chatIdValue = element.dataset.chat_id;
-    var detailView = element.querySelector('[data-role="detail_view_container"]');
-    var pointer = element.querySelector('[data-role="pointer"]');
-    var resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
+    let chatIdValue = element.dataset.chat_id,
+      detailView = element.querySelector('[data-role="detail_view_container"]'),
+      pointer = element.querySelector('[data-role="pointer"]'),
+      resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
     if (resultClosing !== -1) return;
     if (detailView.dataset.state) {
       this.state.openChatsInfoArray.splice(this.state.openChatsInfoArray.indexOf(chatIdValue), 1);
@@ -756,7 +756,7 @@ const Panel = React.createClass({
   },
 
   saveChangeUserInfo: function(){
-    var self = this, newState;
+    let self = this, newState;
     if (this.userName.value && this.oldPassword.value && this.newPassword.value &&
       this.confirmPassword.value) {
       if (this.oldPassword.value === this.state.userInfo.userPassword) {
@@ -832,7 +832,7 @@ const Panel = React.createClass({
   },
 
   updateUserInfo: function(callback) {
-    var self = this;
+    let self = this;
     users_bus.getMyInfo(null, function(err, options, userInfo) {
       userInfo.userPassword = self.newPassword.value;
       userInfo.userName = self.userName.value;
@@ -901,7 +901,6 @@ const Panel = React.createClass({
 
   changeLanguage: function(event) {
     localization.changeLanguage(event.target.value);
-
     let language = localStorage.getItem('language');
     if (!language || language !== event.target.value) {
       localStorage.setItem('language', event.target.value);
@@ -920,7 +919,7 @@ const Panel = React.createClass({
   },
 
   renderHandlers: function(events){
-    var handlers = {};
+    let handlers = {};
     if (events) {
       for (var dataKey in events) {
         handlers[dataKey] = events[dataKey];
@@ -983,6 +982,7 @@ const Panel = React.createClass({
     )
   }
 });
+
 extend_core.prototype.inherit(Panel, overlay_core);
 extend_core.prototype.inherit(Panel, dom_core);
 extend_core.prototype.inherit(Panel, extend_core);

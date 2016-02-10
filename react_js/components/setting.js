@@ -7,7 +7,7 @@ import dom_core from '../js/dom_core.js'
 import Location_Wrapper from './location_wrapper'
 
 const Settings = React.createClass({
-  getDefaultProps(){
+  getDefaultProps: function() {
     return {
       size_container_config: [
 
@@ -200,19 +200,15 @@ const Settings = React.createClass({
     }
   },
 
-  getInitialState(){
-    return {}
-  },
-
-  componentWillMount(){
+  componentWillMount: function() {
     this.props.data.settings_ListOptions.current_data_key = this.defineDefaultSizeConfig(
       this.props.size_config,
       this.props.data.settings_ListOptions.current_data_key).data.key;
     this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
   },
 
-  handleClick(event){
-    var element = this.getDataParameter(event.currentTarget, 'action');
+  handleClick: function(event) {
+    let element = this.getDataParameter(event.currentTarget, 'action');
     if (element) {
       switch (element.dataset.action) {
         case 'changeSendEnter':
@@ -231,7 +227,7 @@ const Settings = React.createClass({
     }
   },
 
-  handleChange(){
+  handleChange: function() {
   },
 
   changeSendEnter: function(element) {
@@ -240,7 +236,7 @@ const Settings = React.createClass({
     this.props.handleEvent.changeState({formatOptions: this.props.data.formatOptions});
   },
 
-  changeChatSize(element){
+  changeChatSize: function(element) {
     if (element.dataset.value) {
       this.props.data.settings_ListOptions.size_current = element.dataset.value + 'px';
     }
@@ -254,27 +250,22 @@ const Settings = React.createClass({
     }
   },
 
-  saveAsCustomWidth(){
+  saveAsCustomWidth: function() {
     this.props.data.settings_ListOptions.size_custom_value = this.props.data.settings_ListOptions.size_current;
     this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
   },
 
-  changeAdjustWidth(element){
-    if (element.checked){
+  changeAdjustWidth: function(element) {
+    if (element.checked) {
       this.props.data.settings_ListOptions.adjust_width = true;
     } else {
       this.props.data.settings_ListOptions.adjust_width = false;
     }
-    //this.props.data.settings_ListOptions.size_custom_value = this.props.data.settings_ListOptions.size_current;
     this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
     this.showSplitterItems();
   },
 
-  showSplitterItems(){
-
-  },
-
-  defineDefaultSizeConfig(all_size_configs, current_data_key){
+  defineDefaultSizeConfig: function(all_size_configs, current_data_key) {
     let current_size_config = null;
     if (current_data_key) {
       all_size_configs.every(function(size_config) {
@@ -295,7 +286,7 @@ const Settings = React.createClass({
     return current_size_config;
   },
 
-  getSizeData(all_size_configs, current_data_key){
+  getSizeData: function(all_size_configs, current_data_key) {
     let returnObj = {},
       current_size_config = this.defineDefaultSizeConfig(all_size_configs, current_data_key);
     all_size_configs.forEach(function(size_config) {
@@ -307,7 +298,7 @@ const Settings = React.createClass({
     return returnObj;
   },
 
-  calcDisplay(_config){
+  calcDisplay: function(_config) {
     if (!_config.data) return true;
     if (this.props.data.settings_ListOptions.current_data_key === "custom_size") {
       if (_config.data.role === 'adjust_width' || _config.data.role === 'adjust_width_label') {
@@ -326,14 +317,14 @@ const Settings = React.createClass({
     }
   },
 
-  renderItems(configs){
-    let items = [];
-    let data = {
-      "chat_id": this.props.data.chat_id,
-      "sendEnter": this.props.data.formatOptions.sendEnter,
-      "index": this.props.data.index,
-      "adjust_width": this.props.data.settings_ListOptions.adjust_width
-    };
+  renderItems: function(configs) {
+    let items = [],
+      data = {
+        "chat_id": this.props.data.chat_id,
+        "sendEnter": this.props.data.formatOptions.sendEnter,
+        "index": this.props.data.index,
+        "adjust_width": this.props.data.settings_ListOptions.adjust_width
+      };
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange
@@ -348,7 +339,7 @@ const Settings = React.createClass({
     return items;
   },
 
-  render(){
+  render: function() {
     return <div >
       {this.renderItems(this.props.setting_config)}
       <div className="textbox">

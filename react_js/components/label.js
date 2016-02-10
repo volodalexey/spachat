@@ -1,9 +1,10 @@
 import React from 'react'
+
 import Localization from '../js/localization.js'
 
 const Label = React.createClass({
-  renderAtt() {
-    var params = {};
+  renderAtt: function() {
+    let params = {};
     if (this.props.config.class) {
       params["className"] = this.props.config.class;
     }
@@ -14,7 +15,7 @@ const Label = React.createClass({
       params["for"] = this.props.config.for;
     }
 
-    var display;
+    let display;
     if (this.props.calcDisplay) {
       display = this.props.calcDisplay(this.props.config);
     }
@@ -35,7 +36,7 @@ const Label = React.createClass({
     return params;
   },
 
-  renderHandlers(){
+  renderHandlers: function() {
     var handlers = {};
     if (this.props.events) {
       for (var dataKey in this.props.events) {
@@ -45,7 +46,7 @@ const Label = React.createClass({
     return handlers;
   },
 
-  renderContent(){
+  renderContent: function() {
     let text;
     if (this.props.config.text) {
       text = typeof this.props.config.text === "number" ? Localization.getLocText(this.props.config.text) : this.props.config.text
@@ -53,7 +54,7 @@ const Label = React.createClass({
       text = '';
     }
 
-    if(this.props.data && this.props.data.description){
+    if (this.props.data && this.props.data.description) {
       if (typeof this.props.data.description === 'number') {
         text = Localization.getLocText(this.props.data.description);
       } else {
@@ -67,7 +68,7 @@ const Label = React.createClass({
     return text;
   },
 
-  render() {
+  render: function() {
     return (
       <label {...this.renderAtt()} {...this.renderHandlers()}>
         {this.renderContent() }

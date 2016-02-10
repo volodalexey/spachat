@@ -9,7 +9,7 @@ import Textarea from './textarea'
 import Svg from './svg'
 
 const TripleElement = React.createClass({
-  definingElement(){
+  definingElement: function() {
     switch (this.props.config.element) {
       case "button":
         if (this.props.config.link) {
@@ -17,7 +17,7 @@ const TripleElement = React.createClass({
                              data={this.props.data}/>;
         } else {
           return <Button mode={this.props.mode} events={this.props.events} config={this.props.config}
-                  hide={this.props.hide} data={this.props.data} calcDisplay={this.props.calcDisplay}/>;
+                         hide={this.props.hide} data={this.props.data} calcDisplay={this.props.calcDisplay}/>;
         }
         break;
       case "label":
@@ -35,15 +35,15 @@ const TripleElement = React.createClass({
         return <Textarea events={this.props.events} config={this.props.config} data={this.props.data}/>;
         break;
       case "svg":
-        return <Svg events={this.props.events} config={this.props.config} data={this.props.data} />;
+        return <Svg events={this.props.events} config={this.props.config} data={this.props.data}/>;
         break;
       default:
-        return <div/>
-      break;
+        return <div></div>;
+        break;
     }
   },
 
-  render(){
+  render: function() {
     return this.definingElement();
   }
 });

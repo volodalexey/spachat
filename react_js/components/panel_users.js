@@ -1,10 +1,8 @@
 import React from 'react'
-import { Router, Route, Link, History, Redirect } from 'react-router'
-
 
 const PanelUsers = React.createClass({
-  renderItems(){
-    var items =[];
+  renderItems: function(){
+    let items =[];
     this.props.data.forEach(function(user){
       items.push(
         <div className="flex-sp-start margin-t-b" key={user.user_id}>
@@ -19,7 +17,7 @@ const PanelUsers = React.createClass({
     return items;
   },
 
-  render() {
+  render: function() {
     if (this.props.data && this.props.data.length){
       return <div>{this.renderItems()}</div>
     } else  {

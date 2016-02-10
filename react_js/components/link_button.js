@@ -1,12 +1,11 @@
 import React from 'react'
-import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import Localization from '../js/localization.js'
 
 const LinkButton = React.createClass({
   displayName: 'LinkButton',
-  renderAtt() {
-    var params = {};
+  renderAtt: function() {
+    let params = {};
     if (this.props.config.data) {
       for (var dataKey in this.props.config.data) {
         if (this.props.config.data[dataKey] !== "" && dataKey !== "description") {
@@ -38,8 +37,8 @@ const LinkButton = React.createClass({
     return params
   },
 
-  renderHandlers(){
-    var handlers = {};
+  renderHandlers: function() {
+    let handlers = {};
     if (this.props.events) {
       for (var dataKey in this.props.events) {
         handlers[dataKey] = this.props.events[dataKey];
@@ -48,8 +47,8 @@ const LinkButton = React.createClass({
     return handlers;
   },
 
-  renderContent(){
-    var content = [];
+  renderContent: function() {
+    let content = [];
     if (this.props.config.icon) {
       if (this.flag) {
         content.push(
@@ -63,7 +62,7 @@ const LinkButton = React.createClass({
       }
     }
     if (this.props.config.text) {
-      content.push(typeof this.props.config.text === "number" ? Localization.getLocText(this.props.config.text) : this.props.config.text) ;
+      content.push(typeof this.props.config.text === "number" ? Localization.getLocText(this.props.config.text) : this.props.config.text);
     } else {
       content.push("");
     }
@@ -71,15 +70,17 @@ const LinkButton = React.createClass({
       content.push(this.props.data[this.props.config.data.key]);
     }
     if (this.props.config.data && this.props.config.data.description) {
-      content.push(<img key={"description"} src="components/icon/description_icon.svg" className="description_icon-position"/>);
+      content.push(<img key={"description"} src="components/icon/description_icon.svg"
+                        className="description_icon-position"/>);
     }
     return content;
   },
 
-  render() {
+  render: function() {
     return (
       <Link to={this.props.config.link}>
-        <button className={this.props.config.class ? this.props.config.class : ''} {...this.renderAtt()} {...this.renderHandlers()}>
+        <button
+          className={this.props.config.class ? this.props.config.class : ''} {...this.renderAtt()} {...this.renderHandlers()}>
           {this.renderContent()}
         </button>
       </Link>

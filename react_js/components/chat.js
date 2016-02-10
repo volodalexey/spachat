@@ -6,7 +6,6 @@ import extend_core from '../js/extend_core.js'
 import switcher_core from '../js/switcher_core.js'
 import dom_core from '../js/dom_core.js'
 import event_bus from '../js/event_bus.js'
-import users_bus from '../js/users_bus.js'
 
 import Header from '../components/header'
 import Filter from '../components/filter'
@@ -18,11 +17,7 @@ import Pagination from '../components/pagination'
 const Chat = React.createClass({
   chatsArray: [],
 
-  getDefaultProps(){
-    return {}
-  },
-
-  getInitialState(){
+  getInitialState: function(){
     return {
       padding: {
         bottom: 5
@@ -193,7 +188,7 @@ const Chat = React.createClass({
     }
   },
 
-  componentWillMount(){
+  componentWillMount: function(){
     let index = this.chatsArray.indexOf(this.props.data);
     if (!this.props.data.restoreOption) {
       this.setState({chat_id: this.props.data.chat_id, index: index});
@@ -203,7 +198,7 @@ const Chat = React.createClass({
     }
   },
 
-  componentDidMount(){
+  componentDidMount: function(){
     this.chat = ReactDOM.findDOMNode(this);
     this.splitter_left = this.chat.querySelector('[data-splitteritem="left"]');
     this.splitter_right = this.chat.querySelector('[data-splitteritem="right"]');
@@ -256,7 +251,7 @@ const Chat = React.createClass({
     }
   },
 
-  getChatDescription(chatId, _callback){
+  getChatDescription: function(chatId, _callback){
     if (this.state.chat_id === chatId) {
       if (_callback) {
         _callback(this.state);
@@ -264,7 +259,7 @@ const Chat = React.createClass({
     }
   },
 
-  handleClick(event){
+  handleClick: function(event){
     let element = this.getDataParameter(event.currentTarget, 'action'), self = this, newState;
     if (element) {
       switch (element.dataset.action) {
@@ -289,13 +284,13 @@ const Chat = React.createClass({
         case 'closeChat':
         case 'saveStatesChat':
         case 'saveAndCloseChat':
-          event_bus.trigger('toCloseChat', element.dataset.action, this.state.chat_id, this.state);
+          event_bus.trigger('toCloseChat', element.dataset.action);
           break;
       }
     }
   },
 
-  handleChange(event){
+  handleChange: function(event){
     let element = this.getDataParameter(event.currentTarget, 'action'), self = this;
     if (element) {
       switch (element.dataset.action) {
@@ -325,7 +320,7 @@ const Chat = React.createClass({
   },
 
   switchModes: function(_array) {
-    var self = this, currentOptions;
+    let self = this, currentOptions;
     _array.forEach(function(_obj) {
         switch (_obj.chat_part) {
           case 'body':
@@ -372,14 +367,12 @@ const Chat = React.createClass({
                   currentOptions.paginationOptions.show = _obj.target.checked;
                   currentOptions.paginationOptions.showEnablePagination = _obj.target.checked;
                   self.setState({[currentOptions.paginationOptions.text]: currentOptions.paginationOptions});
-
                   if (currentOptions.paginationOptions.showEnablePagination) {
                     Pagination.prototype.countPagination(self.state, self.state.bodyOptions.mode,
                       {chat_id: self.state.chat_id}, function(_newState) {
                         self.setState(_newState);
                       });
                   } else {
-                    //self.setState({[currentOptions.paginationOptions.text]: currentOptions.paginationOptions});
                   }
                 }
                 break;
@@ -402,7 +395,7 @@ const Chat = React.createClass({
     );
   },
 
-  defineSplitterClass(className){
+  defineSplitterClass: function(className){
     if(!this.state.settings_ListOptions.adjust_width ||
       this.state.settings_ListOptions.current_data_key !== "custom_size"){
       className = className + 'hidden';
@@ -410,11 +403,11 @@ const Chat = React.createClass({
     return className;
   },
 
-  changeState(newState){
+  changeState: function(newState){
     this.setState(newState);
   },
 
-  render(){
+  render: function(){
     let handleEvent = {
       changeState: this.changeState
     };

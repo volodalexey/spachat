@@ -1,9 +1,10 @@
 import React from 'react'
+
 import Localization from '../js/localization.js'
 
 const Input = React.createClass({
-  renderAtt() {
-    var params = {};
+  renderAtt: function() {
+    let params = {};
     if (this.props.config.class) {
       params["className"] = this.props.config.class;
     }
@@ -15,7 +16,7 @@ const Input = React.createClass({
       }
     }
 
-    var display;
+    let display;
     if (this.props.calcDisplay) {
       display = this.props.calcDisplay(this.props.config);
     }
@@ -58,7 +59,7 @@ const Input = React.createClass({
     return params;
   },
 
-  renderContent(){
+  renderContent: function() {
     var content;
     if (typeof this.props.config.text === "number") {
       content = Localization.getLocText(this.props.config.text);
@@ -68,12 +69,12 @@ const Input = React.createClass({
     return {__html: content};
   },
 
-  routerWillLeave() {
+  routerWillLeave: function() {
     if (this.stateInfo.value)
       return 'You have unsaved information, are you sure you want to leave this page?';
   },
 
-  renderHandlers(){
+  renderHandlers: function() {
     var handlers = {};
     if (this.props.events) {
       for (var dataKey in this.props.events) {
@@ -83,7 +84,7 @@ const Input = React.createClass({
     return handlers;
   },
 
-  render() {
+  render: function() {
     if (this.props.config.text) {
       return (
         <div className="flex-item flex-wrap flex-align-c flex-item-auto">

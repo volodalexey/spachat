@@ -1,103 +1,103 @@
 import React from 'react'
-import Triple_Element from '../components/triple_element'
+
 import Location_Wrapper from './location_wrapper'
 
 const GoTo = React.createClass({
-  getDefaultProps() {
+  getDefaultProps: function() {
     return {
       configs: [
-          {
-            "role": "locationWrapper",
-            "classList": "flex-align-c",
-            "location": "choice_page"
+        {
+          "role": "locationWrapper",
+          "classList": "flex-align-c",
+          "location": "choice_page"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "class": "check-box-size",
+          "location": "choice_page",
+          "data": {
+            "role": "rte_choice_per_page",
+            "action": "changeRTE_goTo",
+            "key": "rteChoicePage"
           },
-          {
-            "element": "input",
-            "type": "checkbox",
-            "class": "check-box-size",
-            "location": "choice_page",
-            "data": {
-              "role": "rte_choice_per_page",
-              "action": "changeRTE_goTo",
-              "key": "rteChoicePage"
-            },
-            "sort": 3,
-            "redraw_mode": "nrte"
+          "sort": 3,
+          "redraw_mode": "nrte"
+        },
+        {
+          "element": "button",
+          "text": 11,
+          "class": "w-50px button-inset-white",
+          "location": "choice_page",
+          "data": {
+            "role": "go_to_page",
+            "action": "switchPage"
           },
-          {
-            "element": "button",
-            "text": 11,
-            "class": "w-50px button-inset-white",
-            "location": "choice_page",
-            "data": {
-              "role": "go_to_page",
-              "action": "switchPage"
-            },
-            "htmlFor": "per_page",
-            "sort": 1,
-            "redraw_mode": "nrte"
+          "htmlFor": "per_page",
+          "sort": 1,
+          "redraw_mode": "nrte"
+        },
+        {
+          "element": "input",
+          "type": "number",
+          "class": "w-50px",
+          "location": "choice_page",
+          "data": {
+            "role": "choice_per_page",
+            "action": "changePage",
+            "key": "page"
           },
-          {
-            "element": "input",
-            "type": "number",
-            "class": "w-50px",
-            "location": "choice_page",
-            "data": {
-              "role": "choice_per_page",
-              "action": "changePage",
-              "key": "page"
-            },
-            "name": "",
-            "id": "per_page",
-            "sort": 2,
-            "redraw_mode": "nrte"
-          },
+          "name": "",
+          "id": "per_page",
+          "sort": 2,
+          "redraw_mode": "nrte"
+        },
 
-          {
-            "element": "input",
-            "type": "checkbox",
-            "class": "check-box-size",
-            "location": "choice_page",
-            "data": {
-              "role": "rte_choice_per_page",
-              "action": "changeRTE_goTo",
-              "key": "rteChoicePage"
-            },
-            "sort": 3,
-            "redraw_mode": "rte"
+        {
+          "element": "input",
+          "type": "checkbox",
+          "class": "check-box-size",
+          "location": "choice_page",
+          "data": {
+            "role": "rte_choice_per_page",
+            "action": "changeRTE_goTo",
+            "key": "rteChoicePage"
           },
-          {
-            "element": "label",
-            "text": 11,
-            "location": "choice_page",
-            "data": {
-              "role": "go_to_page"
-            },
-            "name": "",
-            "htmlFor": "per_page",
-            "sort": 1,
-            "redraw_mode": "rte"
+          "sort": 3,
+          "redraw_mode": "rte"
+        },
+        {
+          "element": "label",
+          "text": 11,
+          "location": "choice_page",
+          "data": {
+            "role": "go_to_page"
           },
-          {
-            "element": "input",
-            "type": "number",
-            "location": "choice_page",
-            "data": {
-              "role": "choice_per_page",
-              "action": "changePage",
-              "key": "page"
-            },
-            "id": "per_page",
-            "sort": 2,
-            "redraw_mode": "rte"
-          }
+          "name": "",
+          "htmlFor": "per_page",
+          "sort": 1,
+          "redraw_mode": "rte"
+        },
+        {
+          "element": "input",
+          "type": "number",
+          "location": "choice_page",
+          "data": {
+            "role": "choice_per_page",
+            "action": "changePage",
+            "key": "page"
+          },
+          "id": "per_page",
+          "sort": 2,
+          "redraw_mode": "rte"
+        }
       ]
     }
   },
 
-  prepareConfig(config, mode){
-    config = config.filter( function(obj){
-      if(!obj.redraw_mode){
+  prepareConfig: function(config, mode) {
+    config = config.filter(function(obj) {
+      if (!obj.redraw_mode) {
         return obj;
       } else {
         return obj.redraw_mode === mode;
@@ -106,9 +106,9 @@ const GoTo = React.createClass({
     return config;
   },
 
-  defineOptions(mode){
-    var options = {};
-    switch (mode){
+  defineOptions: function(mode) {
+    let options = {};
+    switch (mode) {
       case 'CREATE_CHAT':
         options['goToOptions'] = this.props.data.createChat_GoToOptions;
         break;
@@ -125,7 +125,7 @@ const GoTo = React.createClass({
     return options;
   },
 
-  changeRTE(element, state){
+  changeRTE: function(element, state) {
     switch (state.bodyMode) {
       case "CHATS":
         if (element.checked) {
@@ -152,12 +152,12 @@ const GoTo = React.createClass({
     }
   },
 
-  render(){
-    var options = this.defineOptions(this.props.mode);
-    if(options && options.goToOptions.show) {
-    var configs = this.prepareConfig(this.props.configs, options.goToOptions.mode_change);
+  render: function() {
+    let options = this.defineOptions(this.props.mode);
+    if (options && options.goToOptions.show) {
+      var configs = this.prepareConfig(this.props.configs, options.goToOptions.mode_change);
 
-      let data={
+      let data = {
         mode_change: options.goToOptions.mode_change,
         rteChoicePage: options.goToOptions.rteChoicePage,
         page: options.goToOptions.page

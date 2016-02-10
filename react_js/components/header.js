@@ -13,7 +13,7 @@ const Header = React.createClass({
     TAB: 59
   },
 
-  getDefaultProps(){
+  getDefaultProps: function(){
     return {
       mainContainer: {
         "element": "div",
@@ -152,14 +152,13 @@ const Header = React.createClass({
     }
   },
 
-  defineOptions(){
+  defineOptions: function(){
     if (this.props.data.headerOptions.show) {
       let options = {}, newState = this.props.data;
       switch (this.props.data.headerOptions.mode) {
         case this.MODE.TAB:
           this.previousMode = this.MODE.TAB;
           options.description = this.MODE_DESCRIPTION[this.MODE.TAB];
-          //this.bodyMode = this.MODE.TAB;
           if(this.previousMode !== this.MODE.TAB){
             newState.headerOptions.mode = this.MODE.TAB;
             this.props.handleEvent.changeState({headerOptions: newState.headerOptions});
@@ -170,7 +169,7 @@ const Header = React.createClass({
     }
   },
 
-  render() {
+  render: function() {
     let options = this.defineOptions();
     return (
       <header data-role="header_container" className="modal-header">

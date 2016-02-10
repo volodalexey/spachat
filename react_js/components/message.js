@@ -1,7 +1,6 @@
 import React from 'react'
 
 import event_bus from '../js/event_bus.js'
-
 import html_message from '../js/html_message.js'
 import messages from '../js/messages.js'
 import extend_core from '../js/extend_core.js'
@@ -10,17 +9,15 @@ import switcher_core from '../js/switcher_core.js'
 import Pagination from '../components/pagination'
 import Body from '../components/body'
 
-
-
 const Messages = React.createClass({
 
-  getInitialState(){
+  getInitialState: function(){
     return {
       messages: []
     }
   },
 
-  getMessages(){
+  getMessages: function(){
     let self = this;
     messages.prototype.getAllMessages(this.props.data.chat_id, this.props.data.bodyOptions.mode, function(messages) {
       let currentOptions = self.optionsDefinition(self.props.data, self.props.data.bodyOptions.mode);
@@ -35,7 +32,7 @@ const Messages = React.createClass({
     });
   },
 
-  renderItems(){
+  renderItems: function(){
     var self = this, items = [];
     this.state.messages.forEach(function(_message) {
       items.push(self.renderItem(_message));
@@ -43,7 +40,7 @@ const Messages = React.createClass({
     return items;
   },
 
-  renderItem(message){
+  renderItem: function(message){
     if (message.createdDatetime) {
       var timeCreated = new Date(message.createdDatetime);
       timeCreated = timeCreated.toISOString()
@@ -84,12 +81,12 @@ const Messages = React.createClass({
     }
   },
 
-  render(){
+  render: function(){
     this.getMessages();
     return <div>{this.renderItems(this.state.messages)}</div>
   }
 });
-extend_core.prototype.inherit(Messages, switcher_core);
 
+extend_core.prototype.inherit(Messages, switcher_core);
 
 export default Messages;
