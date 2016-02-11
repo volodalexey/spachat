@@ -491,9 +491,8 @@ const Filter = React.createClass({
     return {[po.text]: po};
   },
 
-  changePerPage: function(element, state, mode) {
+  changePerPage: function(element, currentOptions) {
     let value = parseInt(element.value, 10),
-      currentOptions = this.optionsDefinition(state, mode),
       po = currentOptions.paginationOptions;
     po.perPageValueShow = element.value;
     if (!(value === 0 || Number.isNaN(value))) {
@@ -503,7 +502,7 @@ const Filter = React.createClass({
       }
     }
 
-    return {[po.text]: po};
+    return currentOptions;
   },
 
   showPerPage: function(element, state, mode) {

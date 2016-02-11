@@ -151,6 +151,11 @@ const Pagination = React.createClass({
         case 'switchPage':
           this.switchPage(element);
           break;
+        case 'changeMode':
+          let currentOptions = this.optionsDefinition(this.props.data, this.props.data.bodyMode);
+          currentOptions.goToOptions.show = !currentOptions.goToOptions.show;
+          this.props.handleEvent.changeState({[currentOptions.goToOptions.text]: currentOptions.goToOptions});
+          break;
       }
     }
   },

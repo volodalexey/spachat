@@ -1,5 +1,8 @@
 import React from 'react'
 
+import extend_core from '../js/extend_core.js'
+import switcher_core from '../js/switcher_core.js'
+
 import Location_Wrapper from './location_wrapper'
 
 const GoTo = React.createClass({
@@ -106,7 +109,7 @@ const GoTo = React.createClass({
     return config;
   },
 
-  defineOptions: function(mode) {
+/*  defineOptions: function(mode) {
     let options = {};
     switch (mode) {
       case 'CREATE_CHAT':
@@ -123,7 +126,7 @@ const GoTo = React.createClass({
         break;
     }
     return options;
-  },
+  },*/
 
   changeRTE: function(element, state) {
     switch (state.bodyMode) {
@@ -153,14 +156,14 @@ const GoTo = React.createClass({
   },
 
   render: function() {
-    let options = this.defineOptions(this.props.mode);
-    if (options && options.goToOptions.show) {
-      var configs = this.prepareConfig(this.props.configs, options.goToOptions.mode_change);
-
-      let data = {
-        mode_change: options.goToOptions.mode_change,
-        rteChoicePage: options.goToOptions.rteChoicePage,
-        page: options.goToOptions.page
+    let currentOptions = this.optionsDefinition(this.props.data, this.props.mode),
+      gto = currentOptions.goToOptions;
+    if (gto && gto.show) {
+      let configs = this.prepareConfig(this.props.configs, gto.mode_change),
+        data = {
+        mode_change: gto.mode_change,
+        rteChoicePage: gto.rteChoicePage,
+        page: gto.page
       };
       return <div>
         {
@@ -173,5 +176,7 @@ const GoTo = React.createClass({
 
   }
 });
+
+extend_core.prototype.inherit(GoTo, switcher_core);
 
 export default GoTo;

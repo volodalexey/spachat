@@ -98,6 +98,7 @@ const Panel = React.createClass({
         },
 
         chats_GoToOptions: {
+          text: "chats_GoToOptions",
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
@@ -147,7 +148,7 @@ const Panel = React.createClass({
           show: false
         },
         users_GoToOptions: {
-          text: "users",
+          text: "users_GoToOptions",
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
@@ -191,6 +192,7 @@ const Panel = React.createClass({
           show: false
         },
         joinUser_GoToOptions: {
+          text: "joinUser_GoToOptions",
           show: false,
           rteChoicePage: true,
           mode_change: "rte"
@@ -210,6 +212,7 @@ const Panel = React.createClass({
           show: false
         },
         createChat_GoToOptions: {
+          text: "createChat_GoToOptions",
           show: false,
           rteChoicePage: true,
           mode_change: "rte"
@@ -225,6 +228,7 @@ const Panel = React.createClass({
           show: false
         },
         joinChat_GoToOptions: {
+          text: "joinChat_GoToOptions",
           show: false,
           rteChoicePage: true,
           mode_change: "rte"
@@ -240,6 +244,7 @@ const Panel = React.createClass({
           show: false
         },
         createBlog_GoToOptions: {
+          text: "createBlog_GoToOptions",
           show: false,
           rteChoicePage: true,
           mode_change: "rte"
@@ -255,6 +260,7 @@ const Panel = React.createClass({
           show: false
         },
         joinBlog_GoToOptions: {
+          text: "joinBlog_GoToOptions",
           show: false,
           rteChoicePage: true,
           mode_change: "rte"
@@ -270,6 +276,7 @@ const Panel = React.createClass({
           show: false
         },
         blogs_GoToOptions: {
+          tetx: "blogs_GoToOptions",
           show: false,
           rteChoicePage: true,
           mode_change: "rte"
@@ -467,7 +474,7 @@ const Panel = React.createClass({
           }
           break;
         case 'changeRTE_goTo':
-          newState = GoTo.prototype.changeRTE(element, this.state, this.state.bodyMode);
+          newState = GoTo.prototype.changeRTE(element, this.state);
           this.setState(newState);
           break;
         case 'changeUserInfo':
@@ -512,6 +519,7 @@ const Panel = React.createClass({
   },
 
   handleChange: function(event){
+    let currentOptions, self = this;
     switch (event.target.dataset.role) {
       case 'selectLanguage':
         this.onChangeLanguage(event);
@@ -521,18 +529,22 @@ const Panel = React.createClass({
         this.setState({userName: this.state.userInfo});
         break;
     }
-    let element = this.getDataParameter(event.currentTarget, 'action'), self = this;
+    let element = this.getDataParameter(event.currentTarget, 'action');
     if (element) {
       switch (element.dataset.action) {
         case 'changePerPage':
-          let newState = Filter.prototype.changePerPage(element, this.state, this.state.bodyMode),
-            currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
-          this.setState(newState);
-          if (currentOptions.paginationOptions.rtePerPage) {
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
+          currentOptions = Filter.prototype.changePerPage(element, currentOptions);
+          if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
             Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
               self.setState(_newState);
             });
+          } else {
+            self.setState({currentOptions});
           }
+          break;
+        case 'changePage':
+
           break;
       }
     }
@@ -707,15 +719,17 @@ const Panel = React.createClass({
     if (!element || !element.dataset) return;
     let chat_part = element.dataset.chat_part,
       newMode = element.dataset.mode_to,
-      currentOptions;
+      currentOptions, po, fo,
+      self = this;
     switch (chat_part) {
       case "filter":
         switch (newMode) {
           case "CHATS_FILTER":
           case "USERS_FILTER":
             currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
-            currentOptions.filterOptions.show = currentOptions.filterOptions.show.toString() !== "true";
-            this.setState({[currentOptions.filterOptions.text]: currentOptions.filterOptions});
+            fo = currentOptions.filterOptions;
+            fo.show = fo.show.toString() !== "true";
+            this.setState({[fo.text]: fo});
             break;
         }
         break;
@@ -726,17 +740,25 @@ const Panel = React.createClass({
               case "CHATS":
               case "USERS":
                 currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
-                currentOptions.paginationOptions.show = element.checked;
-                currentOptions.paginationOptions.showEnablePagination = element.checked;
-                if (!element.checked) {
-                  currentOptions.paginationOptions.previousStart = 0;
-                  currentOptions.paginationOptions.previousFinal = null;
-                  currentOptions.paginationOptions.start = 0;
-                  currentOptions.paginationOptions.final = null;
+                po = currentOptions.paginationOptions;
+                po.show = element.checked;
+                po.showEnablePagination = element.checked;
+                if (!po.showEnablePagination) {
+                  po.start = 0;
+                  po.final = null;
+                } else {
+                  Pagination.prototype.countPagination(currentOptions, null, self.state.bodyMode,
+                    {chat_id: self.state.chat_id}, function(_newState) {
+                      self.setState(_newState);
+                    });
                 }
-                this.setState({[currentOptions.paginationOptions.text]: currentOptions.paginationOptions});
+                this.setState({[po.text]: po});
                 break;
             }
+            break;
+          case "GO_TO":
+            //currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
+            //currentOptions.goToOptions.show = element.checked;
             break;
         }
         break;

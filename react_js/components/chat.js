@@ -177,6 +177,7 @@ const Chat = React.createClass({
         show: false
       },
       settings_GoToOptions: {
+        text: "settings_GoToOptions",
         show: false
       },
       settings_ListOptions: {
@@ -299,18 +300,19 @@ const Chat = React.createClass({
   },
 
   handleChange: function(event) {
-    let element = this.getDataParameter(event.currentTarget, 'action'), self = this;
+    let element = this.getDataParameter(event.currentTarget, 'action'), self = this, currentOptions;
     if (element) {
       switch (element.dataset.action) {
         case 'changePerPage':
-          let newState = Filter.prototype.changePerPage(element, this.state, this.state.bodyOptions.mode),
-            currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
-          this.setState(newState);
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
+          currentOptions = Filter.prototype.changePerPage(element, currentOptions);
           if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
             Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
               {"chat_id": this.state.chat_id}, function(_newState) {
                 self.setState(_newState);
               });
+          } else  {
+            this.setState(currentOptions);
           }
           break;
       }
@@ -381,7 +383,6 @@ const Chat = React.createClass({
                       {chat_id: self.state.chat_id}, function(_newState) {
                         self.setState(_newState);
                       });
-                  } else {
                   }
                 }
                 break;
