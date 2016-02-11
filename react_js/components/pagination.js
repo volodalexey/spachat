@@ -155,8 +155,10 @@ const Pagination = React.createClass({
     }
   },
 
-  countPagination: function(state, mode, options, callback) {
-    let currentOptions = this.optionsDefinition(state, mode);
+  countPagination: function(currentOptions, state, mode, options, callback) {
+    if(!currentOptions){
+      currentOptions = this.optionsDefinition(state, mode);
+    }
     this.countQuantityPages(currentOptions, mode, options, function(_currentOptions) {
       let po = _currentOptions.paginationOptions;
       if (po.currentPage === po.firstPage) {
@@ -187,7 +189,7 @@ const Pagination = React.createClass({
     if (currentOptions.listOptions.data_download) {
       messages.prototype.getAllMessages(options.chat_id, mode, function(messages) {
         self.handleCountPagination(messages, currentOptions, callback);
-      })
+      });
     } else {
       switch (mode) {
         case "CHATS":
@@ -270,7 +272,7 @@ const Pagination = React.createClass({
     if (elementRole === "forward") {
       po.currentPage = parseInt(po.currentPage) + 1;
     }
-    this.countPagination(this.props.data, this.props.mode,
+    this.countPagination(currentOptions, null, this.props.mode,
       {"chat_id": this.props.data.chat_id}, function(_newState) {
         self.props.handleEvent.changeState(_newState);
       });

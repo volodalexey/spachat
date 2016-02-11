@@ -6,6 +6,7 @@ import extend_core from '../js/extend_core.js'
 import switcher_core from '../js/switcher_core.js'
 import dom_core from '../js/dom_core.js'
 import event_bus from '../js/event_bus.js'
+import messages from '../js/messages.js'
 
 import Header from '../components/header'
 import Filter from '../components/filter'
@@ -17,7 +18,7 @@ import Pagination from '../components/pagination'
 const Chat = React.createClass({
   chatsArray: [],
 
-  getInitialState: function(){
+  getInitialState: function() {
     return {
       padding: {
         bottom: 5
@@ -188,17 +189,24 @@ const Chat = React.createClass({
     }
   },
 
-  componentWillMount: function(){
-    let index = this.chatsArray.indexOf(this.props.data);
-    if (!this.props.data.restoreOption) {
-      this.setState({chat_id: this.props.data.chat_id, index: index});
+  componentWillMount: function() {
+    let index = this.chatsArray.indexOf(this.props.data), self = this, data = this.props.data;
+    if (!data.restoreOption) {
+      this.setState({chat_id: data.chat_id, index: index});
     } else {
-      this.props.data.chatDescription.index = index;
-      this.setState(this.props.data.chatDescription);
+      data.chatDescription.index = index;
+      this.setState(data.chatDescription);
+      let currentOptions = this.optionsDefinition(data.chatDescription, data.chatDescription.bodyOptions.mode);
+      if (currentOptions.paginationOptions.showEnablePagination) {
+        Pagination.prototype.countPagination(currentOptions, null, data.chatDescription.bodyOptions.mode,
+          {"chat_id": data.chatDescription.chat_id}, function(_newState) {
+            self.setState(_newState);
+          });
+      }
     }
   },
 
-  componentDidMount: function(){
+  componentDidMount: function() {
     this.chat = ReactDOM.findDOMNode(this);
     this.splitter_left = this.chat.querySelector('[data-splitteritem="left"]');
     this.splitter_right = this.chat.querySelector('[data-splitteritem="right"]');
@@ -251,7 +259,7 @@ const Chat = React.createClass({
     }
   },
 
-  getChatDescription: function(chatId, _callback){
+  getChatDescription: function(chatId, _callback) {
     if (this.state.chat_id === chatId) {
       if (_callback) {
         _callback(this.state);
@@ -259,7 +267,7 @@ const Chat = React.createClass({
     }
   },
 
-  handleClick: function(event){
+  handleClick: function(event) {
     let element = this.getDataParameter(event.currentTarget, 'action'), self = this, newState;
     if (element) {
       switch (element.dataset.action) {
@@ -275,22 +283,22 @@ const Chat = React.createClass({
           this.setState(newState);
           let currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
           if (currentOptions.paginationOptions.showEnablePagination) {
-            Pagination.prototype.countPagination(this.state, this.state.bodyOptions.mode,
+            Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
               {"chat_id": this.state.chat_id}, function(_newState) {
-              self.setState(_newState);
-            });
+                self.setState(_newState);
+              });
           }
           break;
         case 'closeChat':
         case 'saveStatesChat':
         case 'saveAndCloseChat':
-          event_bus.trigger('toCloseChat', element.dataset.action);
+          event_bus.trigger('toCloseChat', element.dataset.action, this.state.chat_id);
           break;
       }
     }
   },
 
-  handleChange: function(event){
+  handleChange: function(event) {
     let element = this.getDataParameter(event.currentTarget, 'action'), self = this;
     if (element) {
       switch (element.dataset.action) {
@@ -298,11 +306,11 @@ const Chat = React.createClass({
           let newState = Filter.prototype.changePerPage(element, this.state, this.state.bodyOptions.mode),
             currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
           this.setState(newState);
-          if (currentOptions.paginationOptions.rtePerPage) {
-            Pagination.prototype.countPagination(this.state, this.state.bodyOptions.mode,
+          if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
+            Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
               {"chat_id": this.state.chat_id}, function(_newState) {
-              self.setState(_newState);
-            });
+                self.setState(_newState);
+              });
           }
           break;
       }
@@ -320,7 +328,7 @@ const Chat = React.createClass({
   },
 
   switchModes: function(_array) {
-    let self = this, currentOptions;
+    let self = this, currentOptions, po;
     _array.forEach(function(_obj) {
         switch (_obj.chat_part) {
           case 'body':
@@ -364,11 +372,12 @@ const Chat = React.createClass({
               case Pagination.prototype.MODE.PAGINATION:
                 if (_obj.target) {
                   currentOptions = self.optionsDefinition(self.state, self.state.bodyOptions.mode);
-                  currentOptions.paginationOptions.show = _obj.target.checked;
-                  currentOptions.paginationOptions.showEnablePagination = _obj.target.checked;
-                  self.setState({[currentOptions.paginationOptions.text]: currentOptions.paginationOptions});
-                  if (currentOptions.paginationOptions.showEnablePagination) {
-                    Pagination.prototype.countPagination(self.state, self.state.bodyOptions.mode,
+                  po = currentOptions.paginationOptions;
+                  po.show = _obj.target.checked;
+                  po.showEnablePagination = _obj.target.checked;
+                  self.setState({[po.text]: po});
+                  if (po.showEnablePagination) {
+                    Pagination.prototype.countPagination(currentOptions, null, self.state.bodyOptions.mode,
                       {chat_id: self.state.chat_id}, function(_newState) {
                         self.setState(_newState);
                       });
@@ -395,19 +404,19 @@ const Chat = React.createClass({
     );
   },
 
-  defineSplitterClass: function(className){
-    if(!this.state.settings_ListOptions.adjust_width ||
-      this.state.settings_ListOptions.current_data_key !== "custom_size"){
+  defineSplitterClass: function(className) {
+    if (!this.state.settings_ListOptions.adjust_width ||
+      this.state.settings_ListOptions.current_data_key !== "custom_size") {
       className = className + 'hidden';
     }
     return className;
   },
 
-  changeState: function(newState){
+  changeState: function(newState) {
     this.setState(newState);
   },
 
-  render: function(){
+  render: function() {
     let handleEvent = {
       changeState: this.changeState
     };

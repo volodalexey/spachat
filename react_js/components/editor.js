@@ -8,6 +8,7 @@ import messages from '../js/messages.js'
 
 import Location_Wrapper from './location_wrapper'
 import FormatPanel from './format_panel'
+import Pagination from './pagination'
 
 const Editor = React.createClass({
   MODE: {
@@ -139,8 +140,15 @@ const Editor = React.createClass({
           }
 
           self.workflowInnerHtml();
-          newState.messages_PaginationOptions.currentPage = null;
-          self.props.handleEvent.changeState({messages_PaginationOptions: newState.messages_PaginationOptions});
+          if (newState.messages_PaginationOptions.showEnablePagination) {
+            newState.messages_PaginationOptions.currentPage = null;
+            Pagination.prototype.countPagination(null, newState, newState.bodyOptions.mode,
+              {"chat_id": newState.chat_id}, function(_newState) {
+                self.props.handleEvent.changeState(_newState);
+              });
+          } else {
+            self.props.handleEvent.changeState({messages_PaginationOptions: newState.messages_PaginationOptions});
+          }
         });
     }
   },

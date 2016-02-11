@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link} from 'react-router'
 
 import Localization from '../js/localization.js'
 

@@ -1,38 +1,42 @@
 import React from 'react'
 
-import event_bus from '../js/event_bus.js'
 import html_message from '../js/html_message.js'
 import messages from '../js/messages.js'
 import extend_core from '../js/extend_core.js'
 import switcher_core from '../js/switcher_core.js'
 
-import Pagination from '../components/pagination'
 import Body from '../components/body'
 
 const Messages = React.createClass({
 
-  getInitialState: function(){
+  getInitialState: function() {
     return {
-      messages: []
+      messages: [],
+      previousStart: 0,
+      previousFinal: 0
     }
   },
 
-  getMessages: function(){
+  getMessages: function() {
     let self = this;
     messages.prototype.getAllMessages(this.props.data.chat_id, this.props.data.bodyOptions.mode, function(messages) {
-      let currentOptions = self.optionsDefinition(self.props.data, self.props.data.bodyOptions.mode);
-      if (currentOptions.paginationOptions.showEnablePagination) {
+      let currentOptions = self.optionsDefinition(self.props.data, self.props.data.bodyOptions.mode),
+        po = currentOptions.paginationOptions,
+        lo = currentOptions.listOptions;
+      if (po.showEnablePagination) {
         messages = Body.prototype.limitationQuantityRecords(messages, self.props.data, self.props.data.bodyOptions.mode);
-          //self.setState({messages: messages});
+        if (lo.start !== self.state.previousStart || lo.final !== self.state.previousFinal) {
+          self.setState({messages: messages, previousStart: lo.start, previousFinal: lo.final});
+        }
       } else {
-        if(messages.length !== self.state.messages.length){
-          self.setState({messages: messages});
+        if (messages.length !== self.state.messages.length) {
+          self.setState({messages: messages, previousStart: 0, previousFinal: 0});
         }
       }
     });
   },
 
-  renderItems: function(){
+  renderItems: function() {
     var self = this, items = [];
     this.state.messages.forEach(function(_message) {
       items.push(self.renderItem(_message));
@@ -40,7 +44,7 @@ const Messages = React.createClass({
     return items;
   },
 
-  renderItem: function(message){
+  renderItem: function(message) {
     if (message.createdDatetime) {
       var timeCreated = new Date(message.createdDatetime);
       timeCreated = timeCreated.toISOString()
@@ -81,7 +85,7 @@ const Messages = React.createClass({
     }
   },
 
-  render: function(){
+  render: function() {
     this.getMessages();
     return <div>{this.renderItems(this.state.messages)}</div>
   }

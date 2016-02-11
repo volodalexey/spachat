@@ -1050,7 +1050,7 @@ const Body = React.createClass({
         break;
 
       case this.MODE.MESSAGES:
-        return <Messages data={this.props.data} handleEvent={this.props.handleEvent}/>;
+          return <Messages data={this.props.data} handleEvent={this.props.handleEvent}/>;
         break;
       case this.MODE.SETTINGS:
         return <Settings data={this.props.data} handleEvent={this.props.handleEvent}/>;
@@ -1068,10 +1068,8 @@ const Body = React.createClass({
       if (currentOptions.listOptions.final > data.length || !currentOptions.listOptions.final) {
         currentOptions.listOptions.final = data.length;
       }
-
       data = data.slice(currentOptions.listOptions.start, currentOptions.listOptions.final);
     }
-
     return data;
   },
 

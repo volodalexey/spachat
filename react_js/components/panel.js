@@ -461,7 +461,7 @@ const Panel = React.createClass({
           this.setState(newState);
           let currentOptions = this.optionsDefinition(this.state, this.state.bodyMode), self = this;
           if (currentOptions.paginationOptions.showEnablePagination) {
-            Pagination.prototype.countPagination(this.state, this.state.bodyMode, null, function(_newState) {
+            Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
               self.setState(_newState);
             });
           }
@@ -529,7 +529,7 @@ const Panel = React.createClass({
             currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
           this.setState(newState);
           if (currentOptions.paginationOptions.rtePerPage) {
-            Pagination.prototype.countPagination(this.state, this.state.bodyMode, null, function(_newState) {
+            Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
               self.setState(_newState);
             });
           }
@@ -652,9 +652,7 @@ const Panel = React.createClass({
           Pagination.prototype.handleCountPagination(contactsInfo, currentOptions, function(_newState) {
             self.setState({_newState, "userInfo": userInfo});
           });
-          //self.setState({userInfo: userInfo});
         });
-
       });
     }
     if ((mode === MODE.CHATS)) {
@@ -665,9 +663,9 @@ const Panel = React.createClass({
         }
         event_bus.trigger("getOpenChats", function(openChats) {
           currentOptions = self.optionsDefinition(self.state, self.state.bodyMode);
-          Pagination.prototype.handleCountPagination(chatsArray, currentOptions, function(_newState) {
-            self.setState({_newState, "chat_ids": chatsArray, "openChats": openChats});
-          });
+            Pagination.prototype.handleCountPagination(chatsArray, currentOptions, function(_newState) {
+              self.setState({_newState, "chat_ids": chatsArray, "openChats": openChats});
+            });
         });
       });
     }

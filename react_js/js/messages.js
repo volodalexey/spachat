@@ -11,11 +11,6 @@ var Messages = function() {
 };
 
 Messages.prototype = {
-    //render(options, _module) {
-    //var _this = this;
-    //_this._module = _module;
-    //_this.fillListMessage(options);
-  //},
 
   setCollectionDescription(chatId){
     return {
@@ -60,7 +55,7 @@ Messages.prototype = {
           console.error(getAllErr);
           return;
         }
-        if(callback){
+        if (callback) {
           callback(messages);
         }
       }
