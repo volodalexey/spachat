@@ -48,7 +48,9 @@ const Chat = React.createClass({
         text: "messages_GoToOptions",
         show: false,
         rteChoicePage: true,
-        mode_change: "rte"
+        mode_change: "rte",
+        page: 0,
+        pageShow: 1
       },
       messages_PaginationOptions: {
         text: "messages_PaginationOptions",
@@ -90,7 +92,9 @@ const Chat = React.createClass({
         text: '"logger_GoToOptions',
         show: false,
         rteChoicePage: true,
-        mode_change: "rte"
+        mode_change: "rte",
+        page: 0,
+        pageShow: 1
       },
       logger_PaginationOptions: {
         text: "logger_PaginationOptions",
@@ -155,7 +159,9 @@ const Chat = React.createClass({
         text: "contactList_GoToOptions",
         show: false,
         rteChoicePage: true,
-        mode_change: "rte"
+        mode_change: "rte",
+        page: 0,
+        pageShow: 1
       },
       contactList_ListOptions: {
         text: "contactList_ListOptions",
@@ -269,20 +275,29 @@ const Chat = React.createClass({
   },
 
   handleClick: function(event) {
-    let element = this.getDataParameter(event.currentTarget, 'action'), self = this, newState;
+    let element = this.getDataParameter(event.currentTarget, 'action'), self = this,
+      currentOptions;
     if (element) {
       switch (element.dataset.action) {
         case 'changeMode':
           this.changeMode(element);
           break;
         case 'changeRTE':
-          newState = Filter.prototype.changeRTE(element, this.state, this.state.bodyOptions.mode);
-          this.setState(newState);
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
+          currentOptions = Filter.prototype.changeRTE(element, currentOptions);
+          if(currentOptions.paginationOptions.rtePerPage){
+            Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
+              self.setState(_newState);
+            });
+          } else {
+            this.setState(currentOptions);
+          }
           break;
         case 'showPerPage':
-          newState = Filter.prototype.showPerPage(element, this.state, this.state.bodyOptions.mode);
-          this.setState(newState);
-          let currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
+          currentOptions.paginationOptions.currentPage = null;
+          //newState = Filter.prototype.showPerPage(element, this.state, this.state.bodyOptions.mode);
+          //this.setState(newState);
           if (currentOptions.paginationOptions.showEnablePagination) {
             Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
               {"chat_id": this.state.chat_id}, function(_newState) {

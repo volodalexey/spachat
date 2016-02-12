@@ -478,17 +478,17 @@ const Filter = React.createClass({
     return options;
   },
 
-  changeRTE: function(element, state, mode) {
-    let currentOptions = this.optionsDefinition(state, mode),
-      po = currentOptions.paginationOptions;
+  changeRTE: function(element, currentOptions) {
+      let po = currentOptions.paginationOptions;
     if (element.checked) {
       po.mode_change = "rte";
       po.rtePerPage = true;
+      po.currentPage = null;
     } else {
       po.mode_change = "nrte";
       po.rtePerPage = false;
     }
-    return {[po.text]: po};
+    return currentOptions;
   },
 
   changePerPage: function(element, currentOptions) {
@@ -503,14 +503,6 @@ const Filter = React.createClass({
     }
 
     return currentOptions;
-  },
-
-  showPerPage: function(element, state, mode) {
-    let currentOptions = this.optionsDefinition(state, mode),
-      po = currentOptions.paginationOptions;
-    po.currentPage = null;
-
-    return {[po.text]: po};
   },
 
   render: function() {

@@ -154,6 +154,9 @@ const Pagination = React.createClass({
         case 'changeMode':
           let currentOptions = this.optionsDefinition(this.props.data, this.props.data.bodyMode);
           currentOptions.goToOptions.show = !currentOptions.goToOptions.show;
+          if (currentOptions.goToOptions.show && currentOptions.goToOptions.rteChoicePage){
+            currentOptions.goToOptions.pageShow = currentOptions.paginationOptions.currentPage;
+          }
           this.props.handleEvent.changeState({[currentOptions.goToOptions.text]: currentOptions.goToOptions});
           break;
       }
@@ -283,6 +286,36 @@ const Pagination = React.createClass({
       });
   },
 
+  changePage: function(element, currentOptions) {
+    let value = parseInt(element.value, 10),
+      gto = currentOptions.goToOptions,
+      po = currentOptions.paginationOptions;
+    gto.pageShow = element.value;
+    if (!(value === 0 || Number.isNaN(value))) {
+      if(value > po.lastPage){
+        gto.page = po.lastPage;
+      } else {
+        if (value < po.firstPage){
+          gto.page = po.firstPage;
+        } else {
+          gto.page = value;
+        }
+      }
+      if (gto.rteChoicePage) {
+        if(value > po.lastPage){
+          po.currentPage = po.lastPage;
+        } else {
+          if (value < po.firstPage){
+            po.currentPage = po.firstPage;
+          } else {
+            po.currentPage = value;
+          }
+        }
+      }
+    }
+    return currentOptions;
+  },
+
   render: function() {
     let onEvent = {
         onClick: this.handleClick
@@ -304,9 +337,9 @@ const Pagination = React.createClass({
           <Location_Wrapper events={onEvent} data={data} configs={this.props.configs}
                             mainContainer={this.props.mainContainer}/>
         }
-      </div>
+      </div>;
     } else {
-      return <div></div>
+      return <div></div>;
     }
 
   }

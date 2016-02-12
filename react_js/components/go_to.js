@@ -109,62 +109,30 @@ const GoTo = React.createClass({
     return config;
   },
 
-/*  defineOptions: function(mode) {
-    let options = {};
-    switch (mode) {
-      case 'CREATE_CHAT':
-        options['goToOptions'] = this.props.data.createChat_GoToOptions;
-        break;
-      case 'CHATS':
-        options['goToOptions'] = this.props.data.chats_GoToOptions;
-        break;
-      case 'USERS':
-        options['goToOptions'] = this.props.data.users_GoToOptions;
-        break;
-      default:
-        options = null;
-        break;
-    }
-    return options;
-  },*/
-
-  changeRTE: function(element, state) {
-    switch (state.bodyMode) {
-      case "CHATS":
-        if (element.checked) {
-          state.chats_GoToOptions.mode_change = "rte";
-          state.chats_GoToOptions.rteChoicePage = true;
-          return {chats_GoToOptions: state.chats_GoToOptions};
-        } else {
-          state.chats_GoToOptions.mode_change = "nrte";
-          state.chats_GoToOptions.rteChoicePage = false;
-          return {chats_GoToOptions: state.chats_GoToOptions};
-        }
-        break;
-      case "USERS":
-        if (element.checked) {
-          this.state.users_GoToOptions.mode_change = "rte";
-          this.state.users_GoToOptions.rteChoicePage = true;
-          this.setState({users_GoToOptions: this.state.users_GoToOptions});
-        } else {
-          this.state.users_GoToOptions.mode_change = "nrte";
-          this.state.users_GoToOptions.rteChoicePage = false;
-          this.setState({users_GoToOptions: this.state.users_GoToOptions});
-        }
-        break;
+  changeRTE: function(element, currentOptions) {
+    let gto = currentOptions.goToOptions;
+    if (element.checked) {
+      gto.mode_change = "rte";
+      gto.rteChoicePage = true;
+      currentOptions.paginationOptions.currentPage = gto.page;
+      return currentOptions;
+    } else {
+      gto.mode_change = "nrte";
+      gto.rteChoicePage = false;
+      return currentOptions;
     }
   },
 
   render: function() {
     let currentOptions = this.optionsDefinition(this.props.data, this.props.mode),
       gto = currentOptions.goToOptions;
-    if (gto && gto.show) {
+    if (gto && gto.show && currentOptions.paginationOptions && currentOptions.paginationOptions.show) {
       let configs = this.prepareConfig(this.props.configs, gto.mode_change),
         data = {
-        mode_change: gto.mode_change,
-        rteChoicePage: gto.rteChoicePage,
-        page: gto.page
-      };
+          mode_change: gto.mode_change,
+          rteChoicePage: gto.rteChoicePage,
+          page: gto.pageShow
+        };
       return <div>
         {
           <Location_Wrapper events={this.props.events} data={data} configs={configs}/>

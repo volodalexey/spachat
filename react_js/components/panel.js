@@ -77,7 +77,7 @@ const Panel = React.createClass({
     }
   },
 
-  getInitialState: function(){
+  getInitialState: function() {
     if (this.props.location === 'left') {
       return {
         openChatsInfoArray: [],
@@ -102,7 +102,8 @@ const Panel = React.createClass({
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
-          "chat": null
+          page: 0,
+          pageShow: 1
         },
         chats_PaginationOptions: {
           text: "chats_PaginationOptions",
@@ -152,7 +153,8 @@ const Panel = React.createClass({
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
-          "user": null
+          page: 0,
+          pageShow: 1
         },
         users_PaginationOptions: {
           text: "users_PaginationOptions",
@@ -195,7 +197,9 @@ const Panel = React.createClass({
           text: "joinUser_GoToOptions",
           show: false,
           rteChoicePage: true,
-          mode_change: "rte"
+          mode_change: "rte",
+          page: 0,
+          pageShow: 1
         },
         joinUser_ListOptions: {
           text: "joinUser_ListOptions",
@@ -215,7 +219,9 @@ const Panel = React.createClass({
           text: "createChat_GoToOptions",
           show: false,
           rteChoicePage: true,
-          mode_change: "rte"
+          mode_change: "rte",
+          page: 0,
+          pageShow: 1
         },
 
         joinChat_ExtraToolbarOptions: {
@@ -231,7 +237,9 @@ const Panel = React.createClass({
           text: "joinChat_GoToOptions",
           show: false,
           rteChoicePage: true,
-          mode_change: "rte"
+          mode_change: "rte",
+          page: 0,
+          pageShow: 1
         },
 
         createBlog_ExtraToolbarOptions: {
@@ -247,7 +255,9 @@ const Panel = React.createClass({
           text: "createBlog_GoToOptions",
           show: false,
           rteChoicePage: true,
-          mode_change: "rte"
+          mode_change: "rte",
+          page: 0,
+          pageShow: 1
         },
 
         joinBlog_ExtraToolbarOptions: {
@@ -263,7 +273,9 @@ const Panel = React.createClass({
           text: "joinBlog_GoToOptions",
           show: false,
           rteChoicePage: true,
-          mode_change: "rte"
+          mode_change: "rte",
+          page: 0,
+          pageShow: 1
         },
 
         blogs_ExtraToolbarOptions: {
@@ -276,10 +288,12 @@ const Panel = React.createClass({
           show: false
         },
         blogs_GoToOptions: {
-          tetx: "blogs_GoToOptions",
+          text: "blogs_GoToOptions",
           show: false,
           rteChoicePage: true,
-          mode_change: "rte"
+          mode_change: "rte",
+          page: 0,
+          pageShow: 1
         },
         blogs_ListOptions: {
           text: "blogs_ListOptions",
@@ -368,7 +382,7 @@ const Panel = React.createClass({
     }
   },
 
-  componentWillMount: function(){
+  componentWillMount: function() {
     if (this.props.userInfo[this.props.location]) {
       this.setState(this.props.userInfo[this.props.location]);
       if (this.props.location === "left") {
@@ -381,7 +395,7 @@ const Panel = React.createClass({
     }
   },
 
-  componentDidMount: function(){
+  componentDidMount: function() {
     document.addEventListener('load', this.handleLoad, true);
     document.addEventListener('resize', this.handleResize, false);
     document.addEventListener('resize', this.handleResize, false);
@@ -430,7 +444,7 @@ const Panel = React.createClass({
     this.confirmPassword = null;
   },
 
-  componentDidUpdate: function(){
+  componentDidUpdate: function() {
     this.resizePanel();
     if (this.state.bodyMode === MODE.USER_INFO_EDIT) {
       this.userName = this.panelBody.querySelector('[data-main="user_name_input"]');
@@ -443,8 +457,10 @@ const Panel = React.createClass({
     }
   },
 
-  handleClick: function(event){
-    let element = this.getDataParameter(event.currentTarget, 'action'), newState;
+  handleClick: function(event) {
+    let element = this.getDataParameter(event.currentTarget, 'action'),
+      newState, currentOptions, gto, po,
+      self = this;
     if (element) {
       switch (element.dataset.action) {
         case 'togglePanel':
@@ -460,13 +476,19 @@ const Panel = React.createClass({
           this.changeMode(element);
           break;
         case 'changeRTE':
-          newState = Filter.prototype.changeRTE(element, this.state, this.state.bodyMode);
-          this.setState(newState);
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
+          currentOptions = Filter.prototype.changeRTE(element, currentOptions);
+          if(currentOptions.paginationOptions.rtePerPage){
+            Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
+              self.setState(_newState);
+            });
+          } else {
+            this.setState(currentOptions);
+          }
           break;
         case 'showPerPage':
-          newState = Filter.prototype.showPerPage(element, this.state, this.state.bodyMode);
-          this.setState(newState);
-          let currentOptions = this.optionsDefinition(this.state, this.state.bodyMode), self = this;
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
+          currentOptions.paginationOptions.currentPage = null;
           if (currentOptions.paginationOptions.showEnablePagination) {
             Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
               self.setState(_newState);
@@ -474,8 +496,26 @@ const Panel = React.createClass({
           }
           break;
         case 'changeRTE_goTo':
-          newState = GoTo.prototype.changeRTE(element, this.state);
-          this.setState(newState);
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
+          currentOptions = GoTo.prototype.changeRTE(element, currentOptions);
+          if(currentOptions.goToOptions.rteChoicePage){
+            Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
+              self.setState(_newState);
+            });
+          } else {
+            this.setState(currentOptions);
+          }
+          break;
+        case "switchPage":
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
+          gto = currentOptions.goToOptions;
+          po = currentOptions.paginationOptions;
+          if (gto.page) {
+            po.currentPage = gto.page;
+          }
+          Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
+            self.setState(_newState);
+          });
           break;
         case 'changeUserInfo':
           this.changeUserInfo();
@@ -515,10 +555,10 @@ const Panel = React.createClass({
     this.resizePanel();
   },
 
-  onInput: function(){
+  onInput: function() {
   },
 
-  handleChange: function(event){
+  handleChange: function(event) {
     let currentOptions, self = this;
     switch (event.target.dataset.role) {
       case 'selectLanguage':
@@ -544,13 +584,17 @@ const Panel = React.createClass({
           }
           break;
         case 'changePage':
-
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
+          currentOptions = Pagination.prototype.changePage(element, currentOptions);
+          Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
+            self.setState(_newState);
+          });
           break;
       }
     }
   },
 
-  handleTransitionEnd: function(event){
+  handleTransitionEnd: function(event) {
     if (event.target.dataset && event.target.dataset.role === 'detail_view_container') {
       let chatIdValue = event.target.dataset.chat_id;
       var resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
@@ -563,7 +607,7 @@ const Panel = React.createClass({
     }
   },
 
-  closeChat: function(element){
+  closeChat: function(element) {
     if (this.props.location === "left") {
       let parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
       let chatId = parentElement.dataset.chat_id;
@@ -571,7 +615,7 @@ const Panel = React.createClass({
     }
   },
 
-  logout: function(){
+  logout: function() {
     let newState;
     event_bus.trigger('changeStatePopup', {
       show: true,
@@ -594,7 +638,7 @@ const Panel = React.createClass({
     });
   },
 
-  togglePanel: function(forceClose){
+  togglePanel: function(forceClose) {
     this.openOrClosePanel(this.outerContainer.clientWidth + this.togglePanelElement.clientWidth >
       document.body.clientWidth, forceClose);
   },
@@ -651,12 +695,12 @@ const Panel = React.createClass({
     this.getInfoForBody(element.dataset.mode_to);
   },
 
-  getInfoForBody: function(mode){
+  getInfoForBody: function(mode) {
     let self = this, currentOptions;
     if (mode === MODE.USERS) {
       users_bus.getMyInfo(null, function(error, options, userInfo) {
         users_bus.getContactsInfo(error, userInfo.user_ids, function(_error, contactsInfo) {
-          if (_error){
+          if (_error) {
             console.error(_error);
             return;
           }
@@ -675,15 +719,15 @@ const Panel = React.createClass({
         }
         event_bus.trigger("getOpenChats", function(openChats) {
           currentOptions = self.optionsDefinition(self.state, self.state.bodyMode);
-            Pagination.prototype.handleCountPagination(chatsArray, currentOptions, function(_newState) {
-              self.setState({_newState, "chat_ids": chatsArray, "openChats": openChats});
-            });
+          Pagination.prototype.handleCountPagination(chatsArray, currentOptions, function(_newState) {
+            self.setState({_newState, "chat_ids": chatsArray, "openChats": openChats});
+          });
         });
       });
     }
   },
 
-  setUserInfo: function(userInfo){
+  setUserInfo: function(userInfo) {
     this.setState({userInfo: userInfo});
   },
 
@@ -691,7 +735,7 @@ const Panel = React.createClass({
     return document.body.offsetWidth + 'px';
   },
 
-  showMoreInfo: function(element){
+  showMoreInfo: function(element) {
     let chatIdValue = element.dataset.chat_id,
       detailView = element.querySelector('[data-role="detail_view_container"]'),
       pointer = element.querySelector('[data-role="pointer"]'),
@@ -715,7 +759,7 @@ const Panel = React.createClass({
     }
   },
 
-  changeMode: function(element){
+  changeMode: function(element) {
     if (!element || !element.dataset) return;
     let chat_part = element.dataset.chat_part,
       newMode = element.dataset.mode_to,
@@ -765,17 +809,17 @@ const Panel = React.createClass({
     }
   },
 
-  changeUserInfo: function(){
+  changeUserInfo: function() {
     this.setState({bodyMode: MODE.USER_INFO_EDIT});
     this.previous_UserInfo_Mode = MODE.USER_INFO_EDIT;
   },
 
-  cancelChangeUserInfo: function(){
+  cancelChangeUserInfo: function() {
     this.setState({bodyMode: MODE.USER_INFO_SHOW});
     this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
   },
 
-  saveChangeUserInfo: function(){
+  saveChangeUserInfo: function() {
     let self = this, newState;
     if (this.userName.value && this.oldPassword.value && this.newPassword.value &&
       this.confirmPassword.value) {
@@ -867,7 +911,7 @@ const Panel = React.createClass({
     }
   },
 
-  onChatDestroyed: function(chatId){
+  onChatDestroyed: function(chatId) {
     if (this.state.openChats) {
       delete this.state.openChats[chatId];
     }
@@ -915,7 +959,7 @@ const Panel = React.createClass({
     }
   },
 
-  onChangeLanguage: function(event){
+  onChangeLanguage: function(event) {
     this.changeLanguage(event);
   },
 
@@ -927,18 +971,18 @@ const Panel = React.createClass({
     }
   },
 
-  toggleListOptions: function(chatsLength){
+  toggleListOptions: function(chatsLength) {
     if (this.props.location === "left") {
       this.state.chats_ListOptions.final = chatsLength;
       this.setState({chats_ListOptions: this.state.chats_ListOptions});
     }
   },
 
-  changeState: function(newState){
+  changeState: function(newState) {
     this.setState(newState);
   },
 
-  renderHandlers: function(events){
+  renderHandlers: function(events) {
     let handlers = {};
     if (events) {
       for (var dataKey in events) {
