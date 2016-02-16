@@ -14,6 +14,7 @@ import ExtraToolbar from '../components/extra_toolbar'
 import Body from '../components/body'
 import Editor from '../components/editor'
 import Pagination from '../components/pagination'
+import GoTo from '../components/go_to'
 
 const Chat = React.createClass({
   chatsArray: [],
@@ -49,7 +50,7 @@ const Chat = React.createClass({
         show: false,
         rteChoicePage: true,
         mode_change: "rte",
-        page: 0,
+        page: null,
         pageShow: 1
       },
       messages_PaginationOptions: {
@@ -93,7 +94,7 @@ const Chat = React.createClass({
         show: false,
         rteChoicePage: true,
         mode_change: "rte",
-        page: 0,
+        page: null,
         pageShow: 1
       },
       logger_PaginationOptions: {
@@ -160,7 +161,7 @@ const Chat = React.createClass({
         show: false,
         rteChoicePage: true,
         mode_change: "rte",
-        page: 0,
+        page: null,
         pageShow: 1
       },
       contactList_ListOptions: {
@@ -276,17 +277,18 @@ const Chat = React.createClass({
 
   handleClick: function(event) {
     let element = this.getDataParameter(event.currentTarget, 'action'), self = this,
-      currentOptions;
+      currentOptions, gto, po;
     if (element) {
       switch (element.dataset.action) {
         case 'changeMode':
           this.changeMode(element);
           break;
         case 'changeRTE':
-          currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
           currentOptions = Filter.prototype.changeRTE(element, currentOptions);
           if(currentOptions.paginationOptions.rtePerPage){
-            Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
+            Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
+              {"chat_id": this.state.chat_id}, function(_newState) {
               self.setState(_newState);
             });
           } else {
@@ -296,14 +298,36 @@ const Chat = React.createClass({
         case 'showPerPage':
           currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
           currentOptions.paginationOptions.currentPage = null;
-          //newState = Filter.prototype.showPerPage(element, this.state, this.state.bodyOptions.mode);
-          //this.setState(newState);
           if (currentOptions.paginationOptions.showEnablePagination) {
             Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
               {"chat_id": this.state.chat_id}, function(_newState) {
                 self.setState(_newState);
               });
           }
+          break;
+        case 'changeRTE_goTo':
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
+          currentOptions = GoTo.prototype.changeRTE(element, currentOptions);
+          if(currentOptions.goToOptions.rteChoicePage){
+            Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode,
+              {"chat_id": this.state.chat_id}, function(_newState) {
+              self.setState(_newState);
+            });
+          } else {
+            this.setState(currentOptions);
+          }
+          break;
+        case "switchPage":
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
+          gto = currentOptions.goToOptions;
+          po = currentOptions.paginationOptions;
+          if (gto.page) {
+            po.currentPage = gto.page;
+          }
+          Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
+            {"chat_id": this.state.chat_id}, function(_newState) {
+            self.setState(_newState);
+          });
           break;
         case 'closeChat':
         case 'saveStatesChat':
@@ -329,6 +353,14 @@ const Chat = React.createClass({
           } else  {
             this.setState(currentOptions);
           }
+          break;
+        case 'changePage':
+          currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
+          currentOptions = Pagination.prototype.changePage(element, currentOptions);
+          Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
+            {"chat_id": this.state.chat_id}, function(_newState) {
+            self.setState(_newState);
+          });
           break;
       }
     }
@@ -463,7 +495,9 @@ const Chat = React.createClass({
         </div>
         <footer className="flex-item-auto">
           <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>
-          <div data-role="go_to_container" className="c-100"></div>
+          <div data-role="go_to_container" className="c-200">
+            <GoTo mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
+          </div>
           <div data-role="pagination_container" className="flex filter_container justContent c-200">
             <Pagination mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}
                         handleEvent={handleEvent}/>

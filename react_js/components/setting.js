@@ -262,7 +262,6 @@ const Settings = React.createClass({
       this.props.data.settings_ListOptions.adjust_width = false;
     }
     this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
-    this.showSplitterItems();
   },
 
   defineDefaultSizeConfig: function(all_size_configs, current_data_key) {

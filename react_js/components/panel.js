@@ -102,7 +102,7 @@ const Panel = React.createClass({
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
-          page: 0,
+          page: null,
           pageShow: 1
         },
         chats_PaginationOptions: {
@@ -153,7 +153,7 @@ const Panel = React.createClass({
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
-          page: 0,
+          page: null,
           pageShow: 1
         },
         users_PaginationOptions: {
@@ -198,7 +198,7 @@ const Panel = React.createClass({
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
-          page: 0,
+          page: null,
           pageShow: 1
         },
         joinUser_ListOptions: {
@@ -220,7 +220,7 @@ const Panel = React.createClass({
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
-          page: 0,
+          page: null,
           pageShow: 1
         },
 
@@ -238,7 +238,7 @@ const Panel = React.createClass({
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
-          page: 0,
+          page: null,
           pageShow: 1
         },
 
@@ -256,7 +256,7 @@ const Panel = React.createClass({
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
-          page: 0,
+          page: null,
           pageShow: 1
         },
 
@@ -274,7 +274,7 @@ const Panel = React.createClass({
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
-          page: 0,
+          page: null,
           pageShow: 1
         },
 
@@ -292,7 +292,7 @@ const Panel = React.createClass({
           show: false,
           rteChoicePage: true,
           mode_change: "rte",
-          page: 0,
+          page: null,
           pageShow: 1
         },
         blogs_ListOptions: {
@@ -328,7 +328,7 @@ const Panel = React.createClass({
         connections_ExtraToolbarOptions: {
           show: false
         },
-        connections_FilterOptions: {
+        connections_GoToOptions: {
           show: false
         },
         connections_PaginationOptions: {
@@ -397,8 +397,7 @@ const Panel = React.createClass({
 
   componentDidMount: function() {
     document.addEventListener('load', this.handleLoad, true);
-    document.addEventListener('resize', this.handleResize, false);
-    document.addEventListener('resize', this.handleResize, false);
+    window.addEventListener('resize', this.resizePanel, false);
     event_bus.on('getPanelDescription', this.getPanelDescription);
     event_bus.on('AddedNewChat', this.toggleListOptions);
     event_bus.on('chatDestroyed', this.onChatDestroyed);
@@ -426,8 +425,8 @@ const Panel = React.createClass({
   },
 
   componentWillUnmount: function() {
-    window.removeEventListener('load', this.handleLoad);
-    document.removeEventListener('resize', this.handleResize);
+    document.removeEventListener('load', this.handleLoad);
+    window.removeEventListener('resize', this.resizePanel);
     event_bus.off('getPanelDescription', this.getPanelDescription);
     event_bus.off('AddedNewChat', this.toggleListOptions);
     event_bus.off('chatDestroyed', this.getInfoForBody);
@@ -459,7 +458,7 @@ const Panel = React.createClass({
 
   handleClick: function(event) {
     let element = this.getDataParameter(event.currentTarget, 'action'),
-      newState, currentOptions, gto, po,
+      currentOptions, gto, po,
       self = this;
     if (element) {
       switch (element.dataset.action) {
@@ -704,24 +703,32 @@ const Panel = React.createClass({
             console.error(_error);
             return;
           }
-          currentOptions = self.optionsDefinition(self.state, self.state.bodyMode);
-          Pagination.prototype.handleCountPagination(contactsInfo, currentOptions, function(_newState) {
-            self.setState({_newState, "userInfo": userInfo});
-          });
+          currentOptions = self.optionsDefinition(self.state, mode);
+          if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
+            Pagination.prototype.countPagination(currentOptions, null, mode, null, function(_newState) {
+              self.setState(_newState);
+            });
+          } else {
+            self.setState({"userInfo": userInfo});
+          }
         });
       });
     }
-    if ((mode === MODE.CHATS)) {
+    if ((mode === MODE.CHATS) && (this.props.location === 'left')) {
       chats_bus.getAllChats(null, function(error, chatsArray) {
         if (error) {
           console.error(error);
           return;
         }
         event_bus.trigger("getOpenChats", function(openChats) {
-          currentOptions = self.optionsDefinition(self.state, self.state.bodyMode);
-          Pagination.prototype.handleCountPagination(chatsArray, currentOptions, function(_newState) {
-            self.setState({_newState, "chat_ids": chatsArray, "openChats": openChats});
-          });
+          currentOptions = self.optionsDefinition(self.state, mode);
+          if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
+            Pagination.prototype.countPagination(currentOptions, null, mode, null, function(_newState) {
+              self.setState({_newState, "chat_ids": chatsArray, "openChats": openChats});
+            });
+          } else {
+            self.setState({"chat_ids": chatsArray, "openChats": openChats});
+          }
         });
       });
     }
@@ -801,8 +808,6 @@ const Panel = React.createClass({
             }
             break;
           case "GO_TO":
-            //currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
-            //currentOptions.goToOptions.show = element.checked;
             break;
         }
         break;
@@ -999,7 +1004,6 @@ const Panel = React.createClass({
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange,
-      onInput: this.onInput,
       onTransitionEnd: this.handleTransitionEnd
     };
 

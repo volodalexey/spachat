@@ -147,7 +147,7 @@ const ChatsManager = React.createClass({
         callback(err);
         return;
       }
-      let chatDescription = {};
+      let chatDescription = Chat.prototype.getInitialState();
       chatDescription.chat_id = res.uuid;
       chatDescription.user_ids = [];
       chatDescription.user_ids.push(users_bus.getUserId());

@@ -152,10 +152,12 @@ const Pagination = React.createClass({
           this.switchPage(element);
           break;
         case 'changeMode':
-          let currentOptions = this.optionsDefinition(this.props.data, this.props.data.bodyMode);
+          let mode = this.props.data.bodyMode ? this.props.data.bodyMode : this.props.data.bodyOptions.mode,
+            currentOptions = this.optionsDefinition(this.props.data, mode);
           currentOptions.goToOptions.show = !currentOptions.goToOptions.show;
           if (currentOptions.goToOptions.show && currentOptions.goToOptions.rteChoicePage){
             currentOptions.goToOptions.pageShow = currentOptions.paginationOptions.currentPage;
+            currentOptions.goToOptions.page = currentOptions.paginationOptions.currentPage;
           }
           this.props.handleEvent.changeState({[currentOptions.goToOptions.text]: currentOptions.goToOptions});
           break;
