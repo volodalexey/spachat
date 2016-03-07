@@ -47,10 +47,12 @@ Users_bus.prototype = {
     }
   },
 
-  setUserId: function(user_id) {
+  setUserId: function(user_id, skip_websocket) {
     if(user_id){
       this.user_id = user_id;
-      websocket.createAndListen();
+      if (!skip_websocket){
+        websocket.createAndListen();
+      }
       this.userDatabaseDescription.db_name = user_id;
       event_bus.trigger('setUserId', user_id);
       this.setCookie('user_id', user_id, {expires: 24 * 60 * 60});
@@ -232,7 +234,7 @@ Users_bus.prototype = {
         chat_ids: []
       };
 
-      self.setUserId(user_id); // temp to store user
+      self.setUserId(user_id, true); // temp to store user
       indexeddb.addOrUpdateAll(
         self.userDatabaseDescription,
         'information',

@@ -31,7 +31,8 @@
     "react-router": "^1.0.0",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.6",
-    "webpack-dev-middleware": "^1.2.0"
+    "webpack-dev-middleware": "^1.2.0",
+    "ws": "^1.0.1"
   },
   "engines": {
     "node": "0.12.7",
