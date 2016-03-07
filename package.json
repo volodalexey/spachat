@@ -15,7 +15,6 @@
     "es6-react-mixins": "^0.2.1",
     "express": "^4.13.3",
     "express-urlrewrite": "^1.2.0",
-    "express-ws": "^0.2.6",
     "gulp": "^3.9.0",
     "gulp-html-replace": "^1.5.3",
     "gulp-less": "^3.0.5",

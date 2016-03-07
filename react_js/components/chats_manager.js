@@ -8,6 +8,7 @@ import indexeddb from '../js/indexeddb.js'
 import chats_bus from '../js/chats_bus.js'
 import ajax_core from '../js/ajax_core.js'
 import messages from '../js/messages.js'
+import websocket from '../js/websocket.js'
 
 import Chat from '../components/chat'
 import Popup from '../components/popup'
@@ -34,6 +35,7 @@ const ChatsManager = React.createClass({
     event_bus.on('getOpenChats', this.getOpenChats, this);
     event_bus.on('toCloseChat', this.toCloseChat, this);
     event_bus.on('chatsDestroy', this.destroyChats);
+    event_bus.on('web_socket_message', this.onChatMessageRouter);
 
     this.mainConteiner = document.querySelector('[data-role="main_container"]');
   },
@@ -44,6 +46,7 @@ const ChatsManager = React.createClass({
     event_bus.off('getOpenChats', this.getOpenChats);
     event_bus.off('toCloseChat', this.toCloseChat);
     event_bus.off('chatsDestroy', this.destroyChats);
+    event_bus.off('web_socket_message', this.onChatMessageRouter);
 
     this.mainConteiner = null;
   },
@@ -141,32 +144,56 @@ const ChatsManager = React.createClass({
   },
 
   createNewChat: function() {
-    let self = this;
-    this.get_JSON_res('/api/uuid', function(err, res) {
-      if (err) {
-        callback(err);
-        return;
-      }
-      let chatDescription = Chat.prototype.getInitialState();
-      chatDescription.chat_id = res.uuid;
-      chatDescription.user_ids = [];
-      chatDescription.user_ids.push(users_bus.getUserId());
-      self.addNewChatToIndexedDB(chatDescription, function(err) {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        users_bus.putChatIdAndSave(chatDescription.chat_id, function(err, userInfo) {
-          if (err) {
-            console.error(err);
-            return;
-          }
-
-          event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
-          self.handleChat(chatDescription, null, true);
-        });
-      })
+    websocket.sendMessage({
+      type: "chat_create",
+      from_user_id: users_bus.getUserId()
     });
+
+    //let self = this;
+    //this.get_JSON_res('/api/uuid', function(err, res) {
+    //  if (err) {
+    //    callback(err);
+    //    return;
+    //  }
+    //  let chatDescription = Chat.prototype.getInitialState();
+    //  chatDescription.chat_id = res.uuid;
+    //  chatDescription.user_ids = [];
+    //  chatDescription.user_ids.push(users_bus.getUserId());
+    //  self.addNewChatToIndexedDB(chatDescription, function(err) {
+    //    if (err) {
+    //      console.error(err);
+    //      return;
+    //    }
+    //    users_bus.putChatIdAndSave(chatDescription.chat_id, function(err, userInfo) {
+    //      if (err) {
+    //        console.error(err);
+    //        return;
+    //      }
+    //
+    //      event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
+    //      self.handleChat(chatDescription, null, true);
+    //    });
+    //  })
+    //});
+  },
+
+  onChatMessageRouter: function(messageData) {
+
+    switch (messageData.type) {
+      case 'chat_created':
+        this.chatCreateApproved(messageData);
+        break;
+      case 'chat_joined':
+        this.chatJoinApproved(messageData);
+        break;
+      case 'notifyChat':
+        Chat.prototype.chatsArray.forEach(function(_chat) {
+          if (messageData.chat_description.chat_id === _chat.chat_id) {
+            _chat.trigger(messageData.chat_type, messageData);
+          }
+        });
+        break;
+    }
   },
 
   addNewChatToIndexedDB: function(chat_description, callback) {

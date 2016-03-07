@@ -39,20 +39,20 @@ var Web_socket_connections_collection = function() {
 
 Web_socket_connections_collection.prototype = {
 
-  apply_wss: function(wss) {
-    this.wss = wss;
+  apply_wss: function(clients) {
+    this.clients = clients;
   },
 
   get_all_wsc: function() {
-    if (this.wss) {
-      return this.wss.clients;
+    if (this.clients) {
+      return this.clients;
     } else {
       return [];
     }
   },
 
   destroy: function() {
-    this.wss = null;
+    this.clients = null;
     this.chats_message_router = null;
     this.users_message_router = null;
   },

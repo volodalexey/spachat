@@ -43,12 +43,12 @@ Websocket.prototype = {
     if (!this.socket) {
       return;
     }
-    var sels = this;
-    sels.removeSocketListeners();
-    sels.socket.onopen = sels.bindedOnOpen;
-    sels.socket.onclose = sels.bindedOnClose;
-    sels.socket.onmessage = sels.bindedOnMessage;
-    sels.socket.onerror = sels.bindedOnError;
+    var self = this;
+    self.removeSocketListeners();
+    self.socket.onopen = self.bindedOnOpen;
+    self.socket.onclose = self.bindedOnClose;
+    self.socket.onmessage = self.bindedOnMessage;
+    self.socket.onerror = self.bindedOnError;
   },
 
   removeSocketListeners: function() {
@@ -117,7 +117,7 @@ Websocket.prototype = {
         }
       }
     } else {
-      this.trigger('message', parsedMessageData);
+      event_bus.trigger('web_socket_message', parsedMessageData);
     }
   },
 
@@ -148,7 +148,6 @@ Websocket.prototype = {
     this.sendMessage(requestData);
   }
 };
-//extend_core.prototype.inherit(websocket, throw_event_core);
 extend_core.prototype.inherit(Websocket, id_core);
 
 export default new Websocket();

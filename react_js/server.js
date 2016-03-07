@@ -7,20 +7,38 @@ var server = require('http').createServer(),
   id_Generator = require('./server_js/id_generator'),
   app = express(),
   WebSocketServer = require('ws').Server,
-  webSocketServer = new WebSocketServer({server: server});
-
-webSocketServer.on('connection', function(ws) {
-    console.log('новое соединение');
-    ws.on('open', function() {
-      console.log('Connection open!');
+  webSocketServer = new WebSocketServer({server: server}),
+  web_socket_connections_collection = require('./server_js/web_socket_connections_collection'),
+  clients = [],
+  getDeleteClient = function(ws) {
+    var deleteClient;
+    clients.every(function(_client, index) {
+      if (_client === ws) {
+        deleteClient = index;
+      }
+      return !deleteClient;
     });
 
+    return deleteClient;
+  };
+
+webSocketServer.on('connection', function(ws) {
+    clients.push(ws);
+    console.log('новое соединение');
+    web_socket_connections_collection.on_wsc_open(ws);
+    ws.on('message', function(messageData) {
+      web_socket_connections_collection.on_wsc_message(this, messageData);
+    });
     ws.on('close', function(event) {
-      console.log('Connection close!');
+      var position = getDeleteClient(ws);
+      clients.splice(position, 1);
+      web_socket_connections_collection.on_wsc_close(this, event.code, event.message);
+
+      console.log('Connection close!', clients);
       if (event.wasClean) {
         console.log('Соединение закрыто чисто');
       } else {
-        console.log('Обрыв соединения');
+        console.log('Обрыв соединения', clients);
       }
       console.log('Код: ' + event.code + ' причина: ' + event.reason);
     });
@@ -29,6 +47,7 @@ webSocketServer.on('connection', function(ws) {
     });
   }
 );
+web_socket_connections_collection.apply_wss(clients);
 
 app.use(webpackDevMiddleware(webpack(WebpackConfig), {
   publicPath: '/__build__/',
