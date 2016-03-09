@@ -19,7 +19,7 @@ const Messages = React.createClass({
 
   getMessages: function() {
     let self = this;
-    messages.prototype.getAllMessages(this.props.data.chat_id, this.props.data.bodyOptions.mode, function(messages) {
+    messages.prototype.getAllMessages(this.props.data.chat_id, this.props.data.bodyOptions.mode, function(err, messages) {
       let currentOptions = self.optionsDefinition(self.props.data, self.props.data.bodyOptions.mode),
         po = currentOptions.paginationOptions,
         lo = currentOptions.listOptions;

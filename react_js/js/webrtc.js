@@ -716,4 +716,4 @@ WebRTC.prototype = {
 };
 extend_core.prototype.inherit(WebRTC, event_core);
 
-export default WebRTC();
+export default new WebRTC();

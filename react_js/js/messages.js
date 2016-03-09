@@ -50,13 +50,11 @@ Messages.prototype = {
     indexeddb.getAll(
       description,
       table,
-      function(getAllErr, messages) {
-        if (getAllErr) {
-          console.error(getAllErr);
-          return;
-        }
-        if (callback) {
-          callback(messages);
+      function(err, messages) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, messages);
         }
       }
     );
@@ -68,7 +66,8 @@ Messages.prototype = {
   addMessage(mode, message, chatId, callback) {
     let Message = this.getMessageConstructor(mode);
     let _message = (new Message({innerHTML: message})).toJSON();
-    indexeddb.addAll(
+    indexeddb.addOrPutAll(
+      'put',
       this.setCollectionDescription(chatId),
       this.tableDefinition(mode),
       [

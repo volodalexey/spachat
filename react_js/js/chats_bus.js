@@ -109,7 +109,8 @@ Chats_bus.prototype = {
   },
 
   putChatToIndexedDB: function(chat_description, callback) {
-    indexeddb.addOrUpdateAll(
+    indexeddb.addOrPutAll(
+      'put',
       this.collectionDescription,
       null,
       [

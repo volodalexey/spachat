@@ -91,6 +91,7 @@ const Register = React.createClass({
           "element": "input",
           "type": "text",
           "class": "flex-item-w50p",
+          "autoComplete": "off",
           "location": "userName",
           "name": "userName",
           "data": {
@@ -115,6 +116,7 @@ const Register = React.createClass({
           "element": "input",
           "type": "password",
           "class": "flex-item-w50p",
+          "autoComplete": "off",
           "location": "userPassword",
           "name": "userPassword",
           "data": {
@@ -139,6 +141,7 @@ const Register = React.createClass({
           "element": "input",
           "type": "password",
           "class": "flex-item-w50p",
+          "autoComplete": "off",
           "location": "userPasswordConfirm",
           "name": "userPasswordConfirm",
           "data": {
@@ -308,7 +311,7 @@ const Register = React.createClass({
       <div>
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
-            <form className="flex-inner-container form-small" data-role="registerForm" onSubmit={this.handleSubmit}>
+            <form autoComplete="off" className="flex-inner-container form-small" data-role="registerForm" onSubmit={this.handleSubmit}>
               <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}/>
             </form>
           </div>

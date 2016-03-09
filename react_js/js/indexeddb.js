@@ -75,13 +75,21 @@ class indexeddb extends AsyncCore {
   }
 
   onOpenBlocked(options, callback, event) {
-    event.currentTarget.error.options = options;
-    callback(event.currentTarget.error);
+    if (event.currentTarget.readyState) {
+      event.currentTarget.options = options;
+      callback(event.currentTarget);
+    }
   }
 
   _proceedOpen(options, version, callback) {
-    var self = this;
-    var openRequest = indexedDB.open(options.db_name, version);
+    var self = this, openRequest;
+    try {
+      openRequest = indexedDB.open(options.db_name, version);
+    } catch (error) {
+      error.options = options;
+      callback(error);
+      return;
+    }
     openRequest.onsuccess = self.onOpenSuccess.bind(self, options, callback);
     openRequest.onerror = self.onOpenError.bind(self, options, callback);
     openRequest.onupgradeneeded = self.onOpenUpgrade.bind(self, options, callback);
@@ -101,6 +109,9 @@ class indexeddb extends AsyncCore {
           callback(err);
           return;
         }
+        if (self.canNotProceed(callback)) {
+          return;
+        }
         var version = globalUserInfo.db_versions[options.db_name] ?
           globalUserInfo.db_versions[options.db_name] : self.defaultVersion;
 
@@ -109,32 +120,29 @@ class indexeddb extends AsyncCore {
           if (force) {
             version = self.openDatabases[options.db_name].db.version + 1;
             self.openDatabases[options.db_name].db.close();
-            self.openDatabases[options.db_name] = null;
+            delete self.openDatabases[options.db_name];
+            globalUserInfo.db_versions[options.db_name] = version;
             // store new version in user credentials
-            self.putGlobalUserDBVersion(
-              self.user_id,
-              options.db_name,
-              version,
-              function(err) {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
+            self.saveGlobalUser(globalUserInfo, function(err) {
+              if (err) {
+                callback(err);
+              } else if (self.canProceed(callback)) {
+                self._proceedOpen(options, version, callback);
               }
-            )
+            });
           } else {
             self.onOpenSuccess(options, callback);
-            return;
           }
+        } else {
+          self._proceedOpen(options, version, callback);
         }
-        self._proceedOpen(options, version, callback);
       });
     } else {
       self._proceedOpen(options, self.defaultVersion, callback);
     }
   }
 
-  addOrUpdateAll(options, table_name, addOrUpdateData, callback) {
+  addOrPutAll(action ,options, table_name, addOrPutItems, callback) {
     var self = this, cur_table_description;
 
     if (self.canNotProceed(callback)) {
@@ -143,8 +151,8 @@ class indexeddb extends AsyncCore {
 
     cur_table_description = self.getCurrentTableDescription(options, table_name);
 
-    var executeAddOrUpdateAll = function() {
-      var trans, store;
+    var executeAddOrPutAll = function() {
+      var trans, store, addOrPutCount = addOrPutItems.length;
       try {
         trans = self.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readwrite");
         store = trans.objectStore(cur_table_description.table_name);
@@ -154,55 +162,30 @@ class indexeddb extends AsyncCore {
         callback(error);
         return;
       }
+      trans.oncomplete = () => {
+        callback(null);
+      };
+      trans.onerror = (err) => {
+        err.options = options;
+        err.cur_table_description = cur_table_description;
+        callback(err);
+      };
 
-      self.async_eachSeries(addOrUpdateData, function(addOrPut, _callback) {
-        var addOrUpdateCursor;
-        try {
-          addOrUpdateCursor = store.openCursor(IDBKeyRange.only(addOrPut[cur_table_description.table_parameter.keyPath]));
-        } catch (error) {
-          error.options = options;
-          error.cur_table_description = cur_table_description;
-          callback(error);
-          return;
-        }
-        addOrUpdateCursor.onsuccess = function(event) {
-          if (event.target.result) {
-            // Update
-            var updateRequest = event.target.result.update(addOrPut);
-            updateRequest.onsuccess = function() {
-              _callback();
-            };
-            updateRequest.onerror = function(e) {
-              _callback(e.currentTarget.error);
-            };
-          } else {
-            // Add
-            var addRequest = store.add(addOrPut);
-            addRequest.onsuccess = function() {
-              _callback();
-            };
-            addRequest.onerror = function(e) {
-              _callback(e.currentTarget.error);
-            };
+      var i = 0,
+        putNext = () => {
+          if (self.canProceed(callback)) {
+            if (i < addOrPutCount) {
+              store[action](addOrPutItems[i]).onsuccess = putNext;
+              ++i;
+            }
           }
         };
-        addOrUpdateCursor.onerror = function(e) {
-          _callback(e.currentTarget.error);
-        };
-      }, function(err) {
-        if (err) {
-          err.options = options;
-          err.cur_table_description = cur_table_description;
-          callback(err);
-        } else {
-          callback(null);
-        }
-      });
-    }
+      putNext();
+    };
 
     var _isTableInTables = self.isTableInTables(options.db_name, cur_table_description.table_name);
-    if (self.openDatabases[options.db_name] && _isTableInTables) {
-      executeAddOrUpdateAll();
+    if (_isTableInTables) {
+      executeAddOrPutAll();
     } else {
       self.open(
         options,
@@ -210,8 +193,8 @@ class indexeddb extends AsyncCore {
         function(err, upgraded) {
           if (err) {
             callback(err, upgraded);
-          } else {
-            executeAddOrUpdateAll();
+          } else if (self.canProceed(callback)) {
+            executeAddOrPutAll();
           }
         }
       );
@@ -228,7 +211,7 @@ class indexeddb extends AsyncCore {
     cur_table_description = self.getCurrentTableDescription(options, table_name);
 
     var _isTableInTables = self.isTableInTables(options.db_name, cur_table_description.table_name);
-    if (self.openDatabases[options.db_name] && _isTableInTables) {
+    if (_isTableInTables) {
       self._executeGetAll(options, cur_table_description.table_name, callback);
     } else {
       self.open(
@@ -237,7 +220,7 @@ class indexeddb extends AsyncCore {
         function(err, upgraded) {
           if (err) {
             callback(err, upgraded);
-          } else {
+          } else if (self.canProceed(callback)) {
             self._executeGetAll(options, cur_table_description.table_name, callback);
           }
         }
@@ -257,23 +240,21 @@ class indexeddb extends AsyncCore {
       callback(error);
       return;
     }
-
-    openRequest.onsuccess = function(e) {
-      var result = e.target.result;
-      if (!!result === false) {
-        callback(null, returnData);
-        return;
-      }
-      returnData.push(result.value);
-
-      result.continue();
+    trans.oncomplete = () => {
+      callback(null, returnData);
     };
-
-    openRequest.onerror = function(e) {
-      var err = e.currentTarget.error;
+    trans.onerror = (err) => {
       err.options = options;
       err.cur_table_description = cur_table_description;
       callback(err);
+    };
+
+    openRequest.onsuccess = function(e) {
+      var cursor = e.target.result;
+      if (cursor) {
+        returnData.push(cursor.value);
+        cursor.continue();
+      }
     };
   }
 
@@ -290,19 +271,10 @@ class indexeddb extends AsyncCore {
     cur_table_description = self.getCurrentTableDescription(options, table_name);
 
     var executeGet = function() {
-      var trans, store, result;
+      var trans, store, getCursor, result;
       try {
         trans = self.openDatabases[options.db_name].db.transaction([cur_table_description.table_name], "readonly");
         store = trans.objectStore(cur_table_description.table_name);
-      } catch (error) {
-        error.options = options;
-        error.cur_table_description = cur_table_description;
-        callback(error);
-        return;
-      }
-
-      var getCursor;
-      try {
         getCursor = store.openCursor(IDBKeyRange.only(getValue));
       } catch (error) {
         error.options = options;
@@ -310,19 +282,21 @@ class indexeddb extends AsyncCore {
         callback(error);
         return;
       }
-      getCursor.onsuccess = function(event) {
-        if (event.target.result) {
-          result = event.target.result.value;
-        }
+      trans.oncomplete = () => {
         callback(null, result);
       };
-      getCursor.onerror = function(e) {
-        var err = e.currentTarget.error;
+      trans.onerror = (err) => {
         err.options = options;
         err.cur_table_description = cur_table_description;
         callback(err);
       };
-    }
+
+      getCursor.onsuccess = function(event) {
+        if (event.target.result) {
+          result = event.target.result.value;
+        }
+      };
+    };
 
     var _isTableInTables = self.isTableInTables(options.db_name, cur_table_description.table_name);
     if (self.openDatabases[options.db_name] && _isTableInTables) {
@@ -412,77 +386,6 @@ class indexeddb extends AsyncCore {
     }
   }
 
-  addAll(options, table_name, toAdd, callback) {
-    var self = this, cur_table_description;
-
-    if (self.canNotProceed(callback)) {
-      return;
-    }
-
-    cur_table_description = self.getCurrentTableDescription(options, table_name);
-
-    var _isTableInTables = self.isTableInTables(options.db_name, cur_table_description.table_name);
-    if (self.openDatabases[options.db_name] && _isTableInTables) {
-      self._executeAddAll(options, cur_table_description.table_name, toAdd, callback);
-    } else {
-      self.open(
-        options,
-        !_isTableInTables,
-        function(err, upgraded) {
-          if (err) {
-            callback(err, upgraded);
-          } else {
-            self._executeAddAll(options, cur_table_description.table_name, toAdd, callback);
-          }
-        }
-      );
-    }
-  }
-
-  _executeAddAll(options, table_name, toAdd, callback) {
-    var self = this, trans, store;
-    if (self.canNotProceed(callback)) {
-      return;
-    }
-
-    try {
-      trans = self.openDatabases[options.db_name].db.transaction([table_name], "readwrite");
-      store = trans.objectStore(table_name);
-    } catch (error) {
-      error.options = options;
-      error.table_name = table_name;
-      callback(error);
-      return;
-    }
-
-    self.async_eachSeries(toAdd, function(curAdd, _callback) {
-      if (self.canNotProceed(callback)) {
-        return;
-      }
-      var putRequest = store.put(curAdd);
-      putRequest.onerror = function(e) {
-        _callback(e.currentTarget.error);
-      };
-      putRequest.onsuccess = function() {
-        if (self.canNotProceed(callback)) {
-          return;
-        }
-        _callback();
-      };
-    }, function(err) {
-      if (err) {
-        err.options = options;
-        err.table_name = table_name;
-        callback(err);
-      } else {
-        if (self.canNotProceed(callback)) {
-          return;
-        }
-        callback(null);
-      }
-    });
-  }
-
   getCurrentTableDescription(options, table_name) {
     var found_table_description;
     if (table_name) {
@@ -496,13 +399,16 @@ class indexeddb extends AsyncCore {
     return found_table_description ? found_table_description : options.table_descriptions[0];
   }
 
-  canNotProceed(callback) {
-    var self = this;
-    if (self.stateInfo !== self.STATES.READY) {
+  canProceed(callback) {
+    if (this.stateInfo !== this.STATES.READY) {
       callback(new Error('ErrorState'));
-      return true;
+      return false;
     }
-    return false;
+    return true;
+  }
+
+  canNotProceed(callback) {
+    return !this.canProceed(callback);
   }
 
   getGlobalUserCredentials(userName, userPassword, callback) {
@@ -585,7 +491,8 @@ class indexeddb extends AsyncCore {
 
   saveGlobalUser(globalUserInfo, callback) {
     var self = this;
-    self.addOrUpdateAll(
+    self.addOrPutAll(
+      'put',
       globalUsersDatabaseDescription,
       null,
       [

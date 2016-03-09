@@ -9,6 +9,7 @@ import chats_bus from '../js/chats_bus.js'
 import ajax_core from '../js/ajax_core.js'
 import messages from '../js/messages.js'
 import websocket from '../js/websocket.js'
+import webrtc from '../js/webrtc.js'
 
 import Chat from '../components/chat'
 import Popup from '../components/popup'
@@ -102,7 +103,15 @@ const ChatsManager = React.createClass({
         }
 
         if (chatDescription) {
-          self.handleChat(chatDescription, restoreOption, false);
+          //self.handleChat(chatDescription, restoreOption, false);
+          websocket.sendMessage({
+            type: "chat_join",
+            from_user_id: users_bus.getUserId(),
+            chat_description: {
+              chat_id: chatDescription.chat_id
+            },
+            restore_chat_state: restoreOption
+          });
         } else {
           console.error(new Error('Chat with such id not found in the database!'));
         }
@@ -125,13 +134,18 @@ const ChatsManager = React.createClass({
     return openedChat;
   },
 
-  handleChat: function(chatDescription, restoreOption, newChat) {
+  handleChat: function(messageData, restoreOption, newChat) {
     let self = this, chat = {};
-    chat.chat_id = chatDescription.chat_id;
-    chat.chatDescription = chatDescription;
-    chat.restoreOption = restoreOption;
+    chat.chatDescription = Chat.prototype.getInitialState();
+    chat.chatDescription.chat_id = messageData.chat_description.chat_id;
+    if (messageData.chat_description){
+      this.extend(chat, messageData.chat_description)
+    }
+
+    //chat.chatDescription = chatDescription;
+    chat.restoreOption = messageData.restore_chat_state;
     Chat.prototype.chatsArray.push(chat);
-    let description = messages.prototype.setCollectionDescription(chatDescription.chat_id);
+    let description = messages.prototype.setCollectionDescription(messageData.chat_description.chat_id);
     indexeddb.open(description, newChat, function(err) {
       if (err) {
         console.error(err);
@@ -139,46 +153,34 @@ const ChatsManager = React.createClass({
       }
 
       event_bus.trigger("changeOpenChats", "CHATS");
+      if (messageData.chat_wscs_descrs) {
+        webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
+      } else {
+        websocket.wsRequest({
+          chat_id: newChat.chat_id,
+          url: "/api/chat/websocketconnections"
+        }, function(err, response) {
+          if (err) {
+            console.error(err);
+            return;
+          }
+          webrtc.handleConnectedDevices(response.chat_wscs_descrs);
+        });
+      }
       self.forceUpdate();
     });
   },
 
   createNewChat: function() {
+    if (!websocket)  return;
+
     websocket.sendMessage({
       type: "chat_create",
       from_user_id: users_bus.getUserId()
     });
-
-    //let self = this;
-    //this.get_JSON_res('/api/uuid', function(err, res) {
-    //  if (err) {
-    //    callback(err);
-    //    return;
-    //  }
-    //  let chatDescription = Chat.prototype.getInitialState();
-    //  chatDescription.chat_id = res.uuid;
-    //  chatDescription.user_ids = [];
-    //  chatDescription.user_ids.push(users_bus.getUserId());
-    //  self.addNewChatToIndexedDB(chatDescription, function(err) {
-    //    if (err) {
-    //      console.error(err);
-    //      return;
-    //    }
-    //    users_bus.putChatIdAndSave(chatDescription.chat_id, function(err, userInfo) {
-    //      if (err) {
-    //        console.error(err);
-    //        return;
-    //      }
-    //
-    //      event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
-    //      self.handleChat(chatDescription, null, true);
-    //    });
-    //  })
-    //});
   },
 
   onChatMessageRouter: function(messageData) {
-
     switch (messageData.type) {
       case 'chat_created':
         this.chatCreateApproved(messageData);
@@ -193,6 +195,123 @@ const ChatsManager = React.createClass({
           }
         });
         break;
+    }
+  },
+
+  chatCreateApproved: function(event) {
+    var self = this;
+    if (event.from_ws_device_id) {
+      event_bus.set_ws_device_id(event.from_ws_device_id);
+    }
+
+    this.addNewChatToIndexedDB(event.chat_description, function(err, chat) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      users_bus.putChatIdAndSave(chat.chat_id, function(err, userInfo) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
+        //self.handleChat(chat, null, true);
+        websocket.sendMessage({
+          type: "chat_join",
+          from_user_id: users_bus.getUserId(),
+          chat_description: {
+            chat_id: chat.chat_id
+          }
+        });
+      });
+    })
+  },
+
+  /**
+   * join request for this chat was approved by the server
+   * make offer for each device for this chat
+   */
+  chatJoinApproved: function(event) {
+    let self = this, newState;
+    event_bus.set_ws_device_id(event.target_ws_device_id);
+
+    indexeddb.getByKeyPath(
+      chats_bus.collectionDescription,
+      null,
+      event.chat_description.chat_id,
+      function(getError, chat_description) {
+        if (getError) {
+          console.error(getError);
+          return;
+        }
+
+        if (!chat_description) {
+          event_bus.trigger('changeStatePopup', {
+            show: true,
+            type: 'error',
+            message: 86,
+            onDataActionClick: function(action) {
+              switch (action) {
+                case 'confirmCancel':
+                  newState = Popup.prototype.handleClose(this.state);
+                  this.setState(newState);
+                  break;
+              }
+            }
+          });
+          return;
+        }
+
+        users_bus.putChatIdAndSave(event.chat_description.chat_id, function(err, userInfo) {
+          if (err) {
+            console.error(err);
+            return;
+          }
+
+          event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
+
+          if (!self.isChatOpened(chat_description.chat_id)) {
+            // force to open chat
+            self.chatWorkflow(event);
+          } else if (self.isChatOpened(chat_description.chat_id) && event.chat_wscs_descrs) {
+            webrtc.handleConnectedDevices(event.chat_wscs_descrs);
+          }
+        });
+      }
+    );
+  },
+
+  chatWorkflow: function(event) {
+    this.createChatLayout(event);
+  },
+
+  /**
+   * create chat layout
+   * create tables in indexeddb for chat
+   */
+  createChatLayout: function(messageData) {
+    var self = this;
+    if (messageData.type === "chat_joined") {
+      indexeddb.getByKeyPath(
+        chats_bus.collectionDescription,
+        null,
+        messageData.chat_description.chat_id,
+        function(getError, localChatDescription) {
+          if (getError) {
+            console.error(getError);
+            return;
+          }
+
+          if (localChatDescription && messageData.restore_chat_state) {
+            messageData.chat_description = localChatDescription;
+          }
+          self.handleChat(messageData, null, false);
+        }
+      );
+    } else {
+      self.handleChat(messageData, null, true);
     }
   },
 
@@ -332,5 +451,6 @@ const ChatsManager = React.createClass({
 
 extend_core.prototype.inherit(ChatsManager, dom_core);
 extend_core.prototype.inherit(ChatsManager, ajax_core);
+extend_core.prototype.inherit(ChatsManager, extend_core);
 
 export default ChatsManager;

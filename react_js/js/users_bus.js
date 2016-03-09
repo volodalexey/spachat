@@ -191,7 +191,8 @@ Users_bus.prototype = {
   },
 
   saveMyInfo: function(userInfo, _callback) {
-    indexeddb.addOrUpdateAll(
+    indexeddb.addOrPutAll(
+      'put',
       this.userDatabaseDescription,
       'information',
       [userInfo],
@@ -200,7 +201,8 @@ Users_bus.prototype = {
   },
 
   addNewUserToIndexedDB: function(user_description, callback) {
-    indexeddb.addOrUpdateAll(
+    indexeddb.addOrPutAll(
+      'put',
       this.userDatabaseDescription,
       'users',
       [
@@ -235,7 +237,8 @@ Users_bus.prototype = {
       };
 
       self.setUserId(user_id, true); // temp to store user
-      indexeddb.addOrUpdateAll(
+      indexeddb.addOrPutAll(
+        'put',
         self.userDatabaseDescription,
         'information',
         [

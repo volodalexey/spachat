@@ -197,7 +197,7 @@ const Pagination = React.createClass({
   countQuantityPages: function(currentOptions, mode, options, callback) {
     let self = this;
     if (currentOptions.listOptions.data_download) {
-      messages.prototype.getAllMessages(options.chat_id, mode, function(messages) {
+      messages.prototype.getAllMessages(options.chat_id, mode, function(err, messages) {
         self.handleCountPagination(messages, currentOptions, callback);
       });
     } else {

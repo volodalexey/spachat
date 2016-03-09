@@ -5,6 +5,9 @@ import Localization from '../js/localization.js'
 const Input = React.createClass({
   renderAtt: function() {
     let params = {};
+    if (this.props.config.autoComplete) {
+      params["autoComplete"] = this.props.config.autoComplete;
+    }
     if (this.props.config.class) {
       params["className"] = this.props.config.class;
     }
