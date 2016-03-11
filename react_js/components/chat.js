@@ -200,7 +200,7 @@ const Chat = React.createClass({
   componentWillMount: function() {
     let index = this.chatsArray.indexOf(this.props.data), self = this, data = this.props.data;
     if (!data.restoreOption) {
-      this.setState({chat_id: data.chat_id, index: index});
+      this.setState({chat_id: data.chatDescription.chat_id, index: index});
     } else {
       data.chatDescription.index = index;
       this.setState(data.chatDescription);
@@ -231,6 +231,27 @@ const Chat = React.createClass({
     this.splitter_right.addEventListener('touchstart', this.startResize);
     this.splitter_right.addEventListener('touchmove', this.startResize);
     this.splitter_right.addEventListener('touchend', this.startResize);
+  },
+
+/*  shouldComponentUpdate: function(nextState){
+    if (this.getChat(nextState.data.chatDescription.chat_id)){
+      return false;
+    } else {
+      return true;
+    }
+  },*/
+
+  getChat: function(chatId){
+    let openedChat;
+
+    this.chatsArray.every(function(_chat) {
+      if (_chat.chatDescription.chat_id === chatId) {
+        openedChat = _chat;
+      }
+      return !openedChat;
+    });
+
+    return openedChat;
   },
 
   componentWillUnmount: function() {

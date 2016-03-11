@@ -29,7 +29,7 @@ const Messages = React.createClass({
           self.setState({messages: messages, previousStart: lo.start, previousFinal: lo.final});
         }
       } else {
-        if (messages.length !== self.state.messages.length) {
+        if (messages && messages.length !== self.state.messages.length) {
           self.setState({messages: messages, previousStart: 0, previousFinal: 0});
         }
       }

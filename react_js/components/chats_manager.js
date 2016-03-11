@@ -55,7 +55,7 @@ const ChatsManager = React.createClass({
   getOpenChats: function(callback) {
     let openChats = {};
     Chat.prototype.chatsArray.forEach(function(chat) {
-      openChats[chat.chat_id] = true;
+      openChats[chat.chatDescription.chat_id] = true;
     });
     callback(openChats);
   },
@@ -103,7 +103,6 @@ const ChatsManager = React.createClass({
         }
 
         if (chatDescription) {
-          //self.handleChat(chatDescription, restoreOption, false);
           websocket.sendMessage({
             type: "chat_join",
             from_user_id: users_bus.getUserId(),
@@ -125,7 +124,7 @@ const ChatsManager = React.createClass({
   isChatOpened: function(chatId) {
     let openedChat;
     Chat.prototype.chatsArray.every(function(_chat) {
-      if (_chat.chat_id === chatId) {
+      if (_chat.chatDescription.chat_id === chatId) {
         openedChat = _chat;
       }
       return !openedChat;
@@ -134,19 +133,18 @@ const ChatsManager = React.createClass({
     return openedChat;
   },
 
-  handleChat: function(messageData, restoreOption, newChat) {
-    let self = this, chat = {};
-    chat.chatDescription = Chat.prototype.getInitialState();
-    chat.chatDescription.chat_id = messageData.chat_description.chat_id;
+  handleChat: function(messageData, restoreOption) {
+    let self = this, newChat = {};
+    newChat.chatDescription = Chat.prototype.getInitialState();
+    newChat.chatDescription.chat_id = messageData.chat_description.chat_id;
     if (messageData.chat_description){
-      this.extend(chat, messageData.chat_description)
+      this.extend(newChat.chatDescription, messageData.chat_description)
     }
 
-    //chat.chatDescription = chatDescription;
-    chat.restoreOption = messageData.restore_chat_state;
-    Chat.prototype.chatsArray.push(chat);
+    newChat.restoreOption = messageData.restore_chat_state;
+    Chat.prototype.chatsArray.push(newChat);
     let description = messages.prototype.setCollectionDescription(messageData.chat_description.chat_id);
-    indexeddb.open(description, newChat, function(err) {
+    indexeddb.open(description, false, function(err) {
       if (err) {
         console.error(err);
         return;
@@ -157,7 +155,7 @@ const ChatsManager = React.createClass({
         webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
       } else {
         websocket.wsRequest({
-          chat_id: newChat.chat_id,
+          chat_id: newChat.chatDescription.chat_id,
           url: "/api/chat/websocketconnections"
         }, function(err, response) {
           if (err) {
@@ -190,7 +188,7 @@ const ChatsManager = React.createClass({
         break;
       case 'notifyChat':
         Chat.prototype.chatsArray.forEach(function(_chat) {
-          if (messageData.chat_description.chat_id === _chat.chat_id) {
+          if (messageData.chat_description.chat_id === _chat.chatDescription.chat_id) {
             _chat.trigger(messageData.chat_type, messageData);
           }
         });
@@ -217,7 +215,6 @@ const ChatsManager = React.createClass({
         }
 
         event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
-        //self.handleChat(chat, null, true);
         websocket.sendMessage({
           type: "chat_join",
           from_user_id: users_bus.getUserId(),
@@ -307,11 +304,11 @@ const ChatsManager = React.createClass({
           if (localChatDescription && messageData.restore_chat_state) {
             messageData.chat_description = localChatDescription;
           }
-          self.handleChat(messageData, null, false);
+          self.handleChat(messageData, null);
         }
       );
     } else {
-      self.handleChat(messageData, null, true);
+      self.handleChat(messageData, null);
     }
   },
 
@@ -442,7 +439,7 @@ const ChatsManager = React.createClass({
     } else {
       let items = [];
       Chat.prototype.chatsArray.forEach(function(_chat) {
-        items.push(<Chat data={_chat} key={_chat.chat_id}/>);
+        items.push(<Chat data={_chat} key={_chat.chatDescription.chat_id}/>);
       });
       return <div className="flex-outer-container" data-role="chat_wrapper">{items}</div>;
     }
