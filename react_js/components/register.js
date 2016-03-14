@@ -158,7 +158,6 @@ const Register = React.createClass({
           "type": "submit",
           "text": 53,
           "location": "registerButton",
-          //"link": "/chat",
           "data": {
             "description": 55,
             "action": "register",
@@ -170,7 +169,7 @@ const Register = React.createClass({
     }
   },
 
-  getInitialState: function(){
+  getInitialState: function() {
     return {
       popupOptions: {
         messagePopupShow: false,
@@ -181,16 +180,16 @@ const Register = React.createClass({
     }
   },
 
-  componentDidMount: function(){
+  componentDidMount: function() {
     this.registerForm = document.querySelector('[data-role="registerForm"]');
     this.toggleWaiter();
   },
 
-  componentWillUnmount: function(){
+  componentWillUnmount: function() {
     this.registerForm = null;
   },
 
-  handleClick: function(){
+  handleClick: function() {
   },
 
   handleChange: function(event) {
@@ -205,7 +204,7 @@ const Register = React.createClass({
     }
   },
 
-  handleSubmit: function(event){
+  handleSubmit: function(event) {
     event.preventDefault();
     let self = this, newState,
       userName = this.registerForm.elements.userName.value,
@@ -306,12 +305,15 @@ const Register = React.createClass({
       onClick: this.handleClick,
       onChange: this.handleChange
     };
-
+    //https://www.zigpress.com/2014/11/22/stop-chrome-messing-forms/
     return (
       <div>
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
-            <form autoComplete="off" className="flex-inner-container form-small" data-role="registerForm" onSubmit={this.handleSubmit}>
+            <form autoComplete="off" className="flex-inner-container form-small" data-role="registerForm"
+                  onSubmit={this.handleSubmit}>
+              <input style={{display:'none'}} type="text" />
+              <input style={{display:'none'}} type="password" />
               <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}/>
             </form>
           </div>

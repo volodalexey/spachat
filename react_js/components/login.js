@@ -153,6 +153,7 @@ const Login = React.createClass({
 
   componentDidMount: function() {
     this.loginForm = document.querySelector('[data-role="loginForm"]');
+    this.loginForm.addEventListener('click', this.handleClick, true);
     this.toggleWaiter();
   },
 
@@ -161,6 +162,9 @@ const Login = React.createClass({
   },
 
   handleClick: function(event) {
+    if (event.currentTarget.dataset.action === 'clickRedirectToRegister') {
+      this.clickRedirectToRegister(event);
+    }
   },
 
   handleChange: function(event) {
@@ -177,6 +181,7 @@ const Login = React.createClass({
 
   handleSubmit: function(event) {
     event.preventDefault();
+
     let self = this, newState,
       userName = this.loginForm.elements.userName.value,
       userPassword = this.loginForm.elements.userPassword.value;
@@ -247,6 +252,12 @@ const Login = React.createClass({
         });
       this.setState(newState);
     }
+  },
+
+  clickRedirectToRegister: function(event){
+    event.preventDefault();
+    event.stopPropagation();
+    location.replace('register');
   },
 
   render: function() {
