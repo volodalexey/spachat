@@ -10,6 +10,7 @@ import ajax_core from '../js/ajax_core.js'
 import messages from '../js/messages.js'
 import websocket from '../js/websocket.js'
 import webrtc from '../js/webrtc.js'
+import model_core from '../js/model_core.js'
 
 import Chat from '../components/chat'
 import Popup from '../components/popup'
@@ -142,6 +143,7 @@ const ChatsManager = React.createClass({
     }
 
     newChat.restoreOption = messageData.restore_chat_state;
+    this.setCreator(newChat.chatDescription);
     Chat.prototype.chatsArray.push(newChat);
     let description = messages.prototype.setCollectionDescription(messageData.chat_description.chat_id);
     indexeddb.open(description, false, function(err) {
@@ -189,7 +191,7 @@ const ChatsManager = React.createClass({
       case 'notifyChat':
         Chat.prototype.chatsArray.forEach(function(_chat) {
           if (messageData.chat_description.chat_id === _chat.chatDescription.chat_id) {
-            _chat.trigger(messageData.chat_type, messageData);
+            event_bus.trigger(messageData.chat_type, messageData);
           }
         });
         break;
@@ -449,5 +451,6 @@ const ChatsManager = React.createClass({
 extend_core.prototype.inherit(ChatsManager, dom_core);
 extend_core.prototype.inherit(ChatsManager, ajax_core);
 extend_core.prototype.inherit(ChatsManager, extend_core);
+extend_core.prototype.inherit(ChatsManager, model_core);
 
 export default ChatsManager;

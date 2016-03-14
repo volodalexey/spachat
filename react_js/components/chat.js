@@ -7,6 +7,10 @@ import switcher_core from '../js/switcher_core.js'
 import dom_core from '../js/dom_core.js'
 import event_bus from '../js/event_bus.js'
 import messages from '../js/messages.js'
+import webrtc from '../js/webrtc.js'
+import chats_bus from '../js/chats_bus.js'
+import users_bus from '../js/users_bus.js'
+import model_core from '../js/model_core.js'
 
 import Header from '../components/header'
 import Filter from '../components/filter'
@@ -15,12 +19,14 @@ import Body from '../components/body'
 import Editor from '../components/editor'
 import Pagination from '../components/pagination'
 import GoTo from '../components/go_to'
+import Popup from '../components/popup'
 
 const Chat = React.createClass({
   chatsArray: [],
 
   getInitialState: function() {
     return {
+      user_ids: [],
       padding: {
         bottom: 5
       },
@@ -200,7 +206,10 @@ const Chat = React.createClass({
   componentWillMount: function() {
     let index = this.chatsArray.indexOf(this.props.data), self = this, data = this.props.data;
     if (!data.restoreOption) {
-      this.setState({chat_id: data.chatDescription.chat_id, index: index});
+      this.setState({chat_id: data.chatDescription.chat_id,
+        createdByUserId: data.chatDescription.createdByUserId,
+        createdDatetime: data.chatDescription.createdDatetime,
+        index: index});
     } else {
       data.chatDescription.index = index;
       this.setState(data.chatDescription);
@@ -221,6 +230,8 @@ const Chat = React.createClass({
 
     event_bus.on('changeMode', this.changeMode, this);
     event_bus.on('getChatDescription', this.getChatDescription, this);
+    event_bus.on('chat_toggled_ready', this.onChatToggledReady, this);
+    event_bus.on('srv_chat_join_request', this.onChatJoinRequest, this);
 
     this.splitter_left.addEventListener('mousedown', this.startResize);
     this.splitter_left.addEventListener('touchstart', this.startResize);
@@ -233,30 +244,11 @@ const Chat = React.createClass({
     this.splitter_right.addEventListener('touchend', this.startResize);
   },
 
-/*  shouldComponentUpdate: function(nextState){
-    if (this.getChat(nextState.data.chatDescription.chat_id)){
-      return false;
-    } else {
-      return true;
-    }
-  },*/
-
-  getChat: function(chatId){
-    let openedChat;
-
-    this.chatsArray.every(function(_chat) {
-      if (_chat.chatDescription.chat_id === chatId) {
-        openedChat = _chat;
-      }
-      return !openedChat;
-    });
-
-    return openedChat;
-  },
-
   componentWillUnmount: function() {
     event_bus.off('changeMode', this.changeMode, this);
     event_bus.off('getChatDescription', this.getChatDescription, this);
+    event_bus.off('chat_toggled_ready', this.onChatToggledReady, this);
+    event_bus.off('srv_chat_join_request', this.onChatJoinRequest, this);
 
     this.splitter_left.removeEventListener('mousedown', this.startResize);
     this.splitter_left.removeEventListener('touchstart', this.startResize);
@@ -481,6 +473,64 @@ const Chat = React.createClass({
     return className;
   },
 
+  onChatToggledReady: function(eventData) {
+    this.chat_ready_state = eventData.ready_state;
+  },
+
+  onChatJoinRequest: function(eventData) {
+    let  self = this, newState;
+    event_bus.set_ws_device_id(eventData.target_ws_device_id);
+    if (!this.chat_ready_state || !this.amICreator(this.state)) {
+      return;
+    }
+
+    event_bus.trigger('changeStatePopup', {
+      show: true,
+      type: 'confirm',
+      message: eventData.request_body.message,
+      onDataActionClick: function(action) {
+        switch (action) {
+          case 'confirmOk':
+            newState = Popup.prototype.handleClose(this.state);
+            if (!self.isInUsers(self.state, eventData.from_user_id)) {
+              // add user and save chat with this user
+              self.state.user_ids.push(eventData.from_user_id);
+              chats_bus.updateChatField(self.state.chat_id, 'user_ids', self.state.user_ids, function(error) {
+                if (error) {
+                  event_bus.trigger('changeStatePopup', {
+                    show: true,
+                    type: 'confirm',
+                    message: err,
+                    onDataActionClick: function(action) {
+                      switch (action) {
+                        case 'confirmCancel':
+                          newState = Popup.prototype.handleClose(self.state);
+                          self.setState(newState);
+                          break;
+                      }
+                    }
+                  });
+                  return;
+                }
+                self._listenWebRTCConnection();
+                webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
+              });
+            } else {
+              self._listenWebRTCConnection();
+              webrtc.handleConnectedDevices(eventData.user_wscs_descrs);
+            }
+            this.setState(newState);
+            break;
+          case 'confirmCancel':
+            newState = Popup.prototype.handleClose(self.state);
+            this.setState(newState);
+            break;
+        }
+      }
+    });
+
+  },
+
   changeState: function(newState) {
     this.setState(newState);
   },
@@ -526,10 +576,47 @@ const Chat = React.createClass({
         </footer>
       </section>
     )
+  },
+
+  valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids'],
+
+  valueOfChat: function() {
+    let toStringObject = {}, self = this;
+    self.valueOfKeys.forEach(function(key) {
+      toStringObject[key] = self.state[key];
+    });
+    return toStringObject;
+  },
+
+  _webRTCConnectionReady: function(eventConnection) {
+    if (eventConnection.hasChatId(this.state.chat_id)) {
+      // if connection for chat join request
+      var messageData = {
+        type: "chatJoinApproved",
+        from_user_id: users_bus.getUserId(),
+        chat_description: this.valueOfChat()
+      };
+      if (eventConnection.isActive()) {
+        eventConnection.dataChannel.send(JSON.stringify(messageData));
+        this._notListenWebRTCConnection();
+      } else {
+        console.warn('No friendship data channel!');
+      }
+    }
+  },
+
+  _notListenWebRTCConnection: function() {
+    event_bus.off('webrtc_connection_established', this._webRTCConnectionReady);
+  },
+
+  _listenWebRTCConnection: function() {
+    this._notListenWebRTCConnection();
+    event_bus.on('webrtc_connection_established', this._webRTCConnectionReady, this);
   }
 });
 
 extend_core.prototype.inherit(Chat, dom_core);
 extend_core.prototype.inherit(Chat, switcher_core);
+extend_core.prototype.inherit(Chat, model_core);
 
 export default Chat;

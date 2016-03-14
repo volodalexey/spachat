@@ -3,6 +3,8 @@ import React from 'react'
 import event_bus from '../js/event_bus.js'
 import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
+import websocket from '../js/websocket.js'
+import users_bus from '../js/users_bus.js'
 
 import Location_Wrapper from './location_wrapper'
 
@@ -223,6 +225,9 @@ const Settings = React.createClass({
         case 'changeAdjustWidth':
           this.changeAdjustWidth(element);
           break;
+        case 'toggleChatUsersFriendship':
+          this.toggleChatUsersFriendship(element);
+          break;
       }
     }
   },
@@ -234,6 +239,18 @@ const Settings = React.createClass({
     if (!element) return;
     this.props.data.formatOptions.sendEnter = element.checked;
     this.props.handleEvent.changeState({formatOptions: this.props.data.formatOptions});
+  },
+
+  toggleChatUsersFriendship: function(element) {
+    let self = this;
+    websocket.sendMessage({
+      type: "chat_toggle_ready",
+      chat_description: {
+        chat_id: self.props.data.chat_id
+      },
+      from_user_id: users_bus.getUserId(),
+      ready_state: element.checked
+    });
   },
 
   changeChatSize: function(element) {

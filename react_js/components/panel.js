@@ -9,6 +9,7 @@ import event_bus from '../js/event_bus.js'
 import chats_bus from '../js/chats_bus.js'
 import users_bus from '../js/users_bus.js'
 import switcher_core from '../js/switcher_core.js'
+import websocket from '../js/websocket.js'
 
 import Triple_Element from '../components/triple_element'
 import Popup from '../components/popup'
@@ -528,6 +529,9 @@ const Panel = React.createClass({
         case 'logout':
           this.logout();
           break;
+        case 'requestChatByChatId':
+          this.requestChatByChatId();
+          break;
         case 'showChat':
           event_bus.trigger('showChat', element);
           break;
@@ -635,6 +639,48 @@ const Panel = React.createClass({
         }
       }
     });
+  },
+
+  requestChatByChatId: function() {
+    let chat_id_input = this.inner_container.querySelector('[data-role="chat_id_input"]'),
+      chat_message_input = this.inner_container.querySelector('[data-role="chat_message_input"]'),
+      requestButton = this.inner_container.querySelector('[data-action="requestChatByChatId"]'), newState;
+
+    if (requestButton && chat_id_input && chat_id_input.value && chat_message_input && chat_message_input.value) {
+
+      websocket.sendMessage({
+        type: "chat_join_request",
+        from_user_id: users_bus.getUserId(),
+        to_chat_id: chat_id_input.value,
+        request_body: {
+          message: chat_message_input.value
+        }
+      });
+    } else {
+      //popap_manager.renderPopap(
+      //  'error',
+      //  {message: 90},
+      //  function(action) {
+      //    switch (action) {
+      //      case 'confirmCancel':
+      //        popap_manager.onClose();
+      //        break;
+      //    }
+      //  }
+      //);
+      event_bus.trigger('changeStatePopup', {
+        show: true,
+        type: 'error',
+        message: 90,
+        onDataActionClick: function(action) {
+          switch (action) {
+            case 'confirmOk':
+              newState = Popup.prototype.handleClose(this.state);
+              break;
+          }
+        }
+      });
+    }
   },
 
   togglePanel: function(forceClose) {
