@@ -230,6 +230,7 @@ const Chat = React.createClass({
 
     event_bus.on('changeMode', this.changeMode, this);
     event_bus.on('getChatDescription', this.getChatDescription, this);
+    event_bus.on('chat_message', this.onChatMessage, this);
     event_bus.on('chat_toggled_ready', this.onChatToggledReady, this);
     event_bus.on('srv_chat_join_request', this.onChatJoinRequest, this);
 
@@ -247,6 +248,7 @@ const Chat = React.createClass({
   componentWillUnmount: function() {
     event_bus.off('changeMode', this.changeMode, this);
     event_bus.off('getChatDescription', this.getChatDescription, this);
+    event_bus.off('chat_message', this.onChatMessage, this);
     event_bus.off('chat_toggled_ready', this.onChatToggledReady, this);
     event_bus.off('srv_chat_join_request', this.onChatJoinRequest, this);
 
@@ -522,7 +524,7 @@ const Chat = React.createClass({
             this.setState(newState);
             break;
           case 'confirmCancel':
-            newState = Popup.prototype.handleClose(self.state);
+            newState = Popup.prototype.handleClose(this.state);
             this.setState(newState);
             break;
         }
@@ -606,12 +608,35 @@ const Chat = React.createClass({
   },
 
   _notListenWebRTCConnection: function() {
-    event_bus.off('webrtc_connection_established', this._webRTCConnectionReady);
+    webrtc.off('webrtc_connection_established', this._webRTCConnectionReady);
   },
 
   _listenWebRTCConnection: function() {
     this._notListenWebRTCConnection();
-    event_bus.on('webrtc_connection_established', this._webRTCConnectionReady, this);
+    webrtc.on('webrtc_connection_established', this._webRTCConnectionReady, this);
+  },
+
+  onChatMessage: function(eventData) {
+    if(this.state.chat_id !== eventData.chat_description.chat_id)
+      return;
+    let self = this, newState = this.state;
+    messages.prototype.addRemoteMessage(eventData, this.state.bodyOptions.mode, this.state.chat_id,
+      function(err){
+      if (err){
+        console.error(err);
+        return;
+      }
+
+        if (newState.messages_PaginationOptions.showEnablePagination) {
+          newState.messages_PaginationOptions.currentPage = null;
+          Pagination.prototype.countPagination(null, newState, newState.bodyOptions.mode,
+            {"chat_id": newState.chat_id}, function(_newState) {
+              self.setState(_newState);
+            });
+        } else {
+          self.setState({messages_PaginationOptions: newState.messages_PaginationOptions});
+        }
+    });
   }
 });
 

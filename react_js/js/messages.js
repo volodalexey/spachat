@@ -6,6 +6,7 @@ import switcher_core from '../js/switcher_core.js'
 import html_log_message from '../js/html_log_message.js'
 import html_message from '../js/html_message.js'
 import users_bus from '../js/users_bus.js'
+import webrtc from '../js/webrtc.js'
 
 var Messages = function() {
 };
@@ -64,8 +65,8 @@ Messages.prototype = {
    * add message to the database
    */
   addMessage(mode, message, chatId, callback) {
-    let Message = this.getMessageConstructor(mode);
-    let _message = (new Message({innerHTML: message})).toJSON();
+    let self = this,  Message = this.getMessageConstructor(mode),
+     _message = (new Message({innerHTML: message})).toJSON();
     indexeddb.addOrPutAll(
       'put',
       this.setCollectionDescription(chatId),
@@ -83,7 +84,45 @@ Messages.prototype = {
           return;
         }
 
+        var messageData = {
+          type: "notifyChat",
+          chat_type: "chat_message",
+          message: _message,
+          chat_description: {
+            chat_id: chatId
+          }
+        };
+        webrtc.broadcastChatMessage(chatId, JSON.stringify(messageData));
+
         callback && callback(error, message);
+      }
+    );
+  },
+
+  addRemoteMessage: function(remoteMessage, mode, chatId, callback) {
+    var self = this;
+    var message = (new html_message(remoteMessage.message)).toJSON();
+
+    indexeddb.addOrPutAll(
+      'add',
+      this.setCollectionDescription(chatId),
+      this.tableDefinition(mode),
+      [
+        message
+      ],
+      function(error) {
+        if (error) {
+          if (callback) {
+            callback(error);
+          } else {
+            console.error(error);
+          }
+          return;
+        }
+
+        if (callback) {
+          callback(error);
+        }
       }
     );
   }

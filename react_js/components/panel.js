@@ -644,7 +644,8 @@ const Panel = React.createClass({
   requestChatByChatId: function() {
     let chat_id_input = this.inner_container.querySelector('[data-role="chat_id_input"]'),
       chat_message_input = this.inner_container.querySelector('[data-role="chat_message_input"]'),
-      requestButton = this.inner_container.querySelector('[data-action="requestChatByChatId"]'), newState;
+      requestButton = this.inner_container.querySelector('[data-action="requestChatByChatId"]'), newState,
+      self = this;
 
     if (requestButton && chat_id_input && chat_id_input.value && chat_message_input && chat_message_input.value) {
 
@@ -657,25 +658,15 @@ const Panel = React.createClass({
         }
       });
     } else {
-      //popap_manager.renderPopap(
-      //  'error',
-      //  {message: 90},
-      //  function(action) {
-      //    switch (action) {
-      //      case 'confirmCancel':
-      //        popap_manager.onClose();
-      //        break;
-      //    }
-      //  }
-      //);
       event_bus.trigger('changeStatePopup', {
         show: true,
         type: 'error',
         message: 90,
         onDataActionClick: function(action) {
           switch (action) {
-            case 'confirmOk':
+            case 'confirmCancel':
               newState = Popup.prototype.handleClose(this.state);
+              this.setState(newState);
               break;
           }
         }

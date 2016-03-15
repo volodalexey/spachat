@@ -1,6 +1,3 @@
-//WebRTC.prototype.webrtc_template = WebRTC.prototype.template(webrtc_template);
-//WebRTC.prototype.waiter_template = WebRTC.prototype.template(waiter_template);
-
 import event_core from '../js/event_core.js'
 import extend_core from '../js/extend_core.js'
 import event_bus from '../js/event_bus.js'

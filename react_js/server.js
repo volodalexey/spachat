@@ -34,11 +34,11 @@ webSocketServer.on('connection', function(ws) {
       clients.splice(position, 1);
       web_socket_connections_collection.on_wsc_close(this, event.code, event.message);
 
-      console.log('Connection close!', clients);
+      console.log('Connection close!');
       if (event.wasClean) {
         console.log('Соединение закрыто чисто');
       } else {
-        console.log('Обрыв соединения', clients);
+        console.log('Обрыв соединения');
       }
       console.log('Код: ' + event.code + ' причина: ' + event.reason);
     });

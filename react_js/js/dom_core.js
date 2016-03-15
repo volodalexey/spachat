@@ -1,5 +1,4 @@
 import React from 'react'
-//import extend_core from '../js/extend_core.js'
 
 var Dom_core = function() {
 };

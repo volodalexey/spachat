@@ -37,7 +37,9 @@ const ChatsManager = React.createClass({
     event_bus.on('getOpenChats', this.getOpenChats, this);
     event_bus.on('toCloseChat', this.toCloseChat, this);
     event_bus.on('chatsDestroy', this.destroyChats);
+    event_bus.on('chatJoinApproved', this.chatCreateApproved);
     event_bus.on('web_socket_message', this.onChatMessageRouter);
+    event_bus.on('notifyChat', this.onChatMessageRouter);
 
     this.mainConteiner = document.querySelector('[data-role="main_container"]');
   },
@@ -48,7 +50,9 @@ const ChatsManager = React.createClass({
     event_bus.off('getOpenChats', this.getOpenChats);
     event_bus.off('toCloseChat', this.toCloseChat);
     event_bus.off('chatsDestroy', this.destroyChats);
+    event_bus.off('chatJoinApproved', this.chatCreateApproved);
     event_bus.off('web_socket_message', this.onChatMessageRouter);
+    event_bus.off('notifyChat', this.onChatMessageRouter);
 
     this.mainConteiner = null;
   },
