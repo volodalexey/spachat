@@ -148,6 +148,7 @@ const ChatsManager = React.createClass({
 
     newChat.restoreOption = messageData.restore_chat_state;
     this.setCreator(newChat.chatDescription);
+    this.addMyUserId(newChat.chatDescription);
     Chat.prototype.chatsArray.push(newChat);
     let description = messages.prototype.setCollectionDescription(messageData.chat_description.chat_id);
     indexeddb.open(description, false, function(err) {
@@ -319,7 +320,14 @@ const ChatsManager = React.createClass({
   },
 
   addNewChatToIndexedDB: function(chat_description, callback) {
-    chats_bus.putChatToIndexedDB(chat_description, callback);
+    let newChat = {};
+    newChat = Chat.prototype.getInitialState();
+    if (chat_description){
+      this.extend(newChat, chat_description)
+    }
+    this.setCreator(newChat);
+    this.addMyUserId(newChat);
+    chats_bus.putChatToIndexedDB(newChat, callback);
   },
 
   toCloseChat: function(saveStates, chatId) {

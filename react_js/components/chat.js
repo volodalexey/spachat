@@ -26,7 +26,6 @@ const Chat = React.createClass({
 
   getInitialState: function() {
     return {
-      user_ids: [],
       padding: {
         bottom: 5
       },
@@ -209,6 +208,7 @@ const Chat = React.createClass({
       this.setState({chat_id: data.chatDescription.chat_id,
         createdByUserId: data.chatDescription.createdByUserId,
         createdDatetime: data.chatDescription.createdDatetime,
+        user_ids: data.chatDescription.user_ids,
         index: index});
     } else {
       data.chatDescription.index = index;

@@ -11,6 +11,7 @@ import PanelUsers from './panel_users'
 import PanelChats from './panel_chats'
 import Messages from './message'
 import Settings from './setting'
+import ContactList from './contact_list'
 
 const Body = React.createClass({
   MODE: {
@@ -997,6 +998,7 @@ const Body = React.createClass({
       case this.MODE.MESSAGES:
       case this.MODE.LOGGER:
       case this.MODE.SETTINGS:
+      case this.MODE.CONTACT_LIST:
         return {};
         break;
 
@@ -1050,6 +1052,9 @@ const Body = React.createClass({
         break;
       case this.MODE.SETTINGS:
         return <Settings data={this.props.data} handleEvent={this.props.handleEvent}/>;
+        break;
+      case this.MODE.CONTACT_LIST:
+        return <ContactList data={this.props.data} handleEvent={this.props.handleEvent}/>;
         break;
       default:
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs}/>);

@@ -69,7 +69,6 @@ WebRTC.prototype = {
 
   handleDeviceActive: function(ws_descr) {
     var self = this;
-    console.log(event_bus.ws_device_id,event_bus);
     if (event_bus.ws_device_id === ws_descr.ws_device_id) {
       console.warn('the information about myself');
       return;
