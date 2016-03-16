@@ -10,6 +10,7 @@ import chats_bus from '../js/chats_bus.js'
 import users_bus from '../js/users_bus.js'
 import switcher_core from '../js/switcher_core.js'
 import websocket from '../js/websocket.js'
+import webrtc from '../js/webrtc.js'
 
 import Triple_Element from '../components/triple_element'
 import Popup from '../components/popup'
@@ -403,6 +404,7 @@ const Panel = React.createClass({
     event_bus.on('AddedNewChat', this.toggleListOptions);
     event_bus.on('chatDestroyed', this.onChatDestroyed);
     event_bus.on('changeOpenChats', this.getInfoForBody);
+    event_bus.on('web_socket_message', this.onPanelMessageRouter);
 
     if (this.props.location === "left") {
       this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
@@ -432,6 +434,7 @@ const Panel = React.createClass({
     event_bus.off('AddedNewChat', this.toggleListOptions);
     event_bus.off('chatDestroyed', this.getInfoForBody);
     event_bus.off('changeOpenChats', this.getInfoForBody);
+    event_bus.off('web_socket_message', this.onPanelMessageRouter);
 
     this.outerContainer = null;
     this.inner_container = null;
@@ -478,7 +481,7 @@ const Panel = React.createClass({
         case 'changeRTE':
           currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
           currentOptions = Filter.prototype.changeRTE(element, currentOptions);
-          if(currentOptions.paginationOptions.rtePerPage){
+          if (currentOptions.paginationOptions.rtePerPage) {
             Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
               self.setState(_newState);
             });
@@ -498,7 +501,7 @@ const Panel = React.createClass({
         case 'changeRTE_goTo':
           currentOptions = this.optionsDefinition(this.state, this.state.bodyMode);
           currentOptions = GoTo.prototype.changeRTE(element, currentOptions);
-          if(currentOptions.goToOptions.rteChoicePage){
+          if (currentOptions.goToOptions.rteChoicePage) {
             Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
               self.setState(_newState);
             });
@@ -542,6 +545,14 @@ const Panel = React.createClass({
         case 'closeChat':
           if (this.props.location !== "left") return;
           this.closeChat(element);
+          break;
+        case 'requestFriendByUserId':
+          if (this.props.location !== "left") return;
+          this.requestFriendByUserId(element);
+          break;
+        case 'readyForFriendRequest':
+          if (this.props.location !== "left") return;
+          this.readyForFriendRequest(element);
           break;
       }
     }
@@ -743,10 +754,10 @@ const Panel = React.createClass({
           currentOptions = self.optionsDefinition(self.state, mode);
           if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
             Pagination.prototype.countPagination(currentOptions, null, mode, null, function(_newState) {
-              self.setState(_newState);
+              self.setState({_newState, "userInfo": userInfo, "contactsInfo": contactsInfo});
             });
           } else {
-            self.setState({"userInfo": userInfo});
+            self.setState({"userInfo": userInfo, "contactsInfo": contactsInfo});
           }
         });
       });
@@ -1085,6 +1096,181 @@ const Panel = React.createClass({
         </div>
       </section>
     )
+  },
+
+  requestFriendByUserId: function() {
+    let newState,
+      user_id_input = this.inner_container.querySelector('[data-role="user_id_input"]'),
+      user_message_input = this.inner_container.querySelector('[data-role="user_message_input"]'),
+      requestButton = this.inner_container.querySelector('[data-action="requestFriendByUserId"]');
+
+    if (requestButton && user_id_input && user_id_input.value && user_message_input && user_message_input.value) {
+      websocket.sendMessage({
+        type: "user_add",
+        from_user_id: users_bus.getUserId(),
+        to_user_id: user_id_input.value,
+        request_body: {
+          message: user_message_input.value
+        }
+      });
+    } else {
+      event_bus.trigger('changeStatePopup', {
+        show: true,
+        type: 'error',
+        message: 89,
+        onDataActionClick: function(action) {
+          switch (action) {
+            case 'confirmCancel':
+              newState = Popup.prototype.handleClose(this.state);
+              this.setState(newState);
+              break;
+          }
+        }
+      });
+    }
+  },
+
+  readyForFriendRequest: function(element) {
+    this.state.joinUser_ListOptions.readyForRequest = element.checked;
+    this.setState({joinUser_ListOptions: this.state.joinUser_ListOptions});
+    websocket.sendMessage({
+      type: "user_toggle_ready",
+      from_user_id: users_bus.getUserId(),
+      ready_state: element.checked
+    });
+  },
+
+  /**
+   * handle message from web-socket (if it is connected with chats some how)
+   */
+  onPanelMessageRouter: function(messageData) {
+    if (this.props.location !== "left") {
+      return;
+    }
+
+    switch (messageData.type) {
+      case 'user_add':
+        if (this.state.bodyMode === MODE.JOIN_USER) {
+          this.showRemoteFriendshipRequest(messageData);
+        }
+        break;
+      case 'user_add_sent':
+        if (this.state.bodyMode === MODE.JOIN_USER) {
+          event_bus.set_ws_device_id(messageData.from_ws_device_id);
+          this.listenNotifyUser(messageData.to_user_id);
+        }
+        break;
+      case 'friendship_confirmed':
+        if (messageData.user_wscs_descrs) {
+          this.listenWebRTCConnection(messageData.from_user_id);
+          console.log('handleConnectedDevices', messageData.user_wscs_descrs);
+          webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
+        }
+        break;
+      case 'device_toggled_ready':
+        event_bus.set_ws_device_id(messageData.from_ws_device_id);
+        break;
+    }
+  },
+
+  onNotifyUser: function(user_id, messageData) {
+    var self = this;
+    console.log('onNotifyUser', user_id);
+    users_bus.addNewUserToIndexedDB(messageData.user_description, function(error, user_description) {
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      users_bus.putUserIdAndSave(user_id);
+      console.log('putUserIdAndSave', user_id);
+      self.notListenNotifyUser();
+    });
+  },
+
+  webRTCConnectionReady: function(user_id, triggerConnection) {
+    var _this = this;
+    console.log('webRTCConnectionReady', triggerConnection.hasUserId(user_id), user_id);
+    if (triggerConnection.hasUserId(user_id)) {
+      // if connection for user friendship
+      _this.notListenWebRTCConnection();
+      users_bus.getUserDescription({}, function(error, user_description) {
+        if (error) {
+          console.error(error);
+          return;
+        }
+        var messageData = {
+          type: "notifyUser",
+          user_description: user_description
+        };
+        if (triggerConnection.isActive()) {
+          triggerConnection.dataChannel.send(JSON.stringify(messageData));
+        } else {
+          console.warn('No friendship data channel!');
+        }
+      });
+    }
+  },
+
+  notListenWebRTCConnection: function() {
+    if (this.bindedWebRTCConnectionReady) {
+      webrtc.off('webrtc_connection_established', this.bindedWebRTCConnectionReady);
+    }
+  },
+
+  listenWebRTCConnection: function(user_id) {
+    this.notListenWebRTCConnection();
+    this.bindedWebRTCConnectionReady = this.webRTCConnectionReady.bind(this, user_id);
+    webrtc.on('webrtc_connection_established', this.bindedWebRTCConnectionReady);
+  },
+
+  notListenNotifyUser: function() {
+    if (this.bindedOnNotifyUser) {
+      event_bus.off('notifyUser', this.bindedOnNotifyUser);
+    }
+  },
+
+  listenNotifyUser: function(user_id) {
+    console.log('listenNotifyUser', user_id);
+    this.notListenNotifyUser();
+    this.bindedOnNotifyUser = this.onNotifyUser.bind(this, user_id);
+    event_bus.on('notifyUser', this.bindedOnNotifyUser);
+  },
+
+  showRemoteFriendshipRequest: function(messageData) {
+    let self = this, newState;
+    event_bus.set_ws_device_id(messageData.target_ws_device_id);
+    if (!messageData.user_wscs_descrs) {
+      return;
+    }
+    event_bus.trigger('changeStatePopup', {
+      show: true,
+      type: 'confirm',
+      message: messageData.request_body.message,
+      onDataActionClick: function(action) {
+        switch (action) {
+          case 'confirmCancel':
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            break;
+          case 'confirmOk':
+            self.listenWebRTCConnection(messageData.from_user_id);
+            self.listenNotifyUser(messageData.from_user_id);
+            websocket.sendMessage({
+              type: "friendship_confirmed",
+              from_user_id: users_bus.getUserId(),
+              to_user_id: messageData.from_user_id,
+              request_body: messageData.request_body
+            });
+            console.log('handleConnectedDevices', messageData.user_wscs_descrs);
+            webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
+
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            break;
+        }
+      }
+    });
   }
 });
 

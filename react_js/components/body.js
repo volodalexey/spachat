@@ -773,7 +773,7 @@ const Body = React.createClass({
           }
         }
       ],
-      settings_config:[
+      settings_config: [
         {
           "role": "locationWrapper",
           "classList": "w-100p p-t-b flex-sp-between",
@@ -957,7 +957,7 @@ const Body = React.createClass({
     }
   },
 
-  defineConfigs: function(mode){
+  defineConfigs: function(mode) {
     switch (mode) {
       case this.MODE.CHATS:
         return {
@@ -1006,19 +1006,15 @@ const Body = React.createClass({
     }
   },
 
-  defineComponents: function(mode, configs){
+  defineComponents: function(mode, configs) {
     let items = [], data, self = this;
     switch (mode) {
       case this.MODE.USERS:
-        data = [{
-          userName: "Bacy",
-          user_id: "fghnjmd-f-beb-erg84g5t4g4"
-        },
-          {
-            userName: "Pety",
-            user_id: "454857y75 5yt4n5nt45t-n4597"
-          }];
-        return <PanelUsers data={data}/>;
+        let contactsInfo = this.props.data.contactsInfo;
+        if (this.props.data.users_PaginationOptions.show) {
+          contactsInfo = this.limitationQuantityRecords(contactsInfo, this.props.data, this.props.mode);
+        }
+        return <PanelUsers data={contactsInfo}/>;
         break;
       case this.MODE.JOIN_USER:
         data = {"readyForFriendRequest": this.props.data.joinUser_ListOptions.readyForRequest};
@@ -1027,16 +1023,16 @@ const Body = React.createClass({
         break;
       case this.MODE.CHATS:
         let chat_ids = this.props.data.chat_ids;
-        if(this.props.data.chats_PaginationOptions.show){
+        if (this.props.data.chats_PaginationOptions.show) {
           chat_ids = this.limitationQuantityRecords(chat_ids, this.props.data, this.props.mode);
         }
         data = {
           "chat_ids": chat_ids,
-          "openChatsInfoArray": self.props.data.openChatsInfoArray,
-          "closingChatsInfoArray": self.props.data.closingChatsInfoArray,
+          "openChatsInfoArray": this.props.data.openChatsInfoArray,
+          "closingChatsInfoArray": this.props.data.closingChatsInfoArray,
           "openChats": this.props.data.openChats
         };
-        return <PanelChats events={self.props.events} data={data} configs={configs}/>;
+        return <PanelChats events={this.props.events} data={data} configs={configs}/>;
         break;
       case this.MODE.USER_INFO_SHOW:
         data = this.props.userInfo;
@@ -1050,7 +1046,7 @@ const Body = React.createClass({
         break;
 
       case this.MODE.MESSAGES:
-          return <Messages data={this.props.data} handleEvent={this.props.handleEvent}/>;
+        return <Messages data={this.props.data} handleEvent={this.props.handleEvent}/>;
         break;
       case this.MODE.SETTINGS:
         return <Settings data={this.props.data} handleEvent={this.props.handleEvent}/>;
@@ -1062,7 +1058,7 @@ const Body = React.createClass({
     return items;
   },
 
-  limitationQuantityRecords: function(data, state, mode){
+  limitationQuantityRecords: function(data, state, mode) {
     if (data && data.length) {
       let currentOptions = this.optionsDefinition(state, mode);
       if (currentOptions.listOptions.final > data.length || !currentOptions.listOptions.final) {
@@ -1073,7 +1069,7 @@ const Body = React.createClass({
     return data;
   },
 
-  render: function(){
+  render: function() {
     let configs = this.defineConfigs(this.props.mode);
     if (!configs) {
       return <div></div>

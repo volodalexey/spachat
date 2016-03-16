@@ -926,7 +926,7 @@ define('panel', [
         var requestButton = _this.body_container.querySelector('[data-action="requestFriendByUserId"]');
 
         if (requestButton && user_id_input && user_id_input.value && user_message_input && user_message_input.value) {
-          _this.disableButton('requestFriendByUserId', requestButton);
+          //_this.disableButton('requestFriendByUserId', requestButton);
           websocket.sendMessage({
             type: "user_add",
             from_user_id: users_bus.getUserId(),
