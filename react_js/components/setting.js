@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 
 import event_bus from '../js/event_bus.js'
 import extend_core from '../js/extend_core.js'
@@ -144,9 +145,20 @@ const Settings = React.createClass({
           "location": "chat_id_container",
           "class": "flex-item-1-auto",
           "data": {
-            "key": "chat_id"
+            "key": "chat_id",
+            "role": "chat_id"
           },
           "disabled": true
+        },
+        {
+          "element": "button",
+          "text": 107,
+          "location": "chat_id_container",
+          "data": {
+            "throw": "true",
+            "action": "copyChatId"
+          },
+          "disable": false
         },
         {
           "role": "locationWrapper",
@@ -209,6 +221,11 @@ const Settings = React.createClass({
     this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
   },
 
+  componentDidMount(){
+    this.body = ReactDOM.findDOMNode(this);
+    this.chatId = this.body.querySelector('[data-role="chat_id"]');
+  },
+
   handleClick: function(event) {
     let element = this.getDataParameter(event.currentTarget, 'action');
     if (element) {
@@ -228,6 +245,9 @@ const Settings = React.createClass({
         case 'toggleChatUsersFriendship':
           this.toggleChatUsersFriendship(element);
           break;
+        case 'copyChatId':
+          this.copyChatId(element);
+          break;
       }
     }
   },
@@ -239,6 +259,20 @@ const Settings = React.createClass({
     if (!element) return;
     this.props.data.formatOptions.sendEnter = element.checked;
     this.props.handleEvent.changeState({formatOptions: this.props.data.formatOptions});
+  },
+
+  copyChatId(element){
+    this.chatId.disabled = false;
+    this.chatId.focus();
+    this.chatId.select();
+    try {
+      let successful = document.execCommand('copy'),
+        msg = successful ? 'successful' : 'unsuccessful';
+      console.log('Copy chatId was ' + msg);
+    } catch(err) {
+      console.log('Oops, unable to copy');
+    }
+    this.chatId.disabled = true;
   },
 
   toggleChatUsersFriendship: function(element) {
