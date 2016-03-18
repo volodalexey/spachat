@@ -254,10 +254,14 @@ const Login = React.createClass({
     }
   },
 
-  clickRedirectToRegister: function(event){
+  clickRedirectToRegister: function(event) {
     event.preventDefault();
     event.stopPropagation();
     location.replace('register');
+  },
+
+  handleEvents: function(event) {
+    this.descriptionContext.showDescription(event);
   },
 
   render: function() {
@@ -266,7 +270,13 @@ const Login = React.createClass({
       onChange: this.handleChange
     };
     return (
-      <div>
+      <div onMouseDown={this.handleEvents}
+           onMouseMove={this.handleEvents}
+           onMouseUp={this.handleEvents}
+           onClick={this.handleEvents}
+           onTouchEnd={this.handleEvents}
+           onTouchMove={this.handleEvents}
+           onTouchStart={this.handleEvents}>
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
             <form className="flex-inner-container form-small" data-role="loginForm" onSubmit={this.handleSubmit}>
@@ -275,7 +285,7 @@ const Login = React.createClass({
           </div>
         </div>
         <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
-        <Description />
+        <Description ref={(obj) => this.descriptionContext = obj} />
       </div>
     )
   }

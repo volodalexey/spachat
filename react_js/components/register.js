@@ -3,7 +3,7 @@ import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import Location_Wrapper from './location_wrapper'
 import Popup from '../components/popup'
-import Decription from '../components/description'
+import Description from '../components/description'
 
 import ajax_core from '../js/ajax_core.js'
 import extend_core from '../js/extend_core.js'
@@ -300,6 +300,10 @@ const Register = React.createClass({
     });
   },
 
+  handleEvents: function(event) {
+    this.descriptionContext.showDescription(event);
+  },
+
   render: function() {
     let onEvent = {
       onClick: this.handleClick,
@@ -307,7 +311,13 @@ const Register = React.createClass({
     };
     //https://www.zigpress.com/2014/11/22/stop-chrome-messing-forms/
     return (
-      <div>
+      <div onMouseDown={this.handleEvents}
+           onMouseMove={this.handleEvents}
+           onMouseUp={this.handleEvents}
+           onClick={this.handleEvents}
+           onTouchEnd={this.handleEvents}
+           onTouchMove={this.handleEvents}
+           onTouchStart={this.handleEvents}>
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
             <form autoComplete="off" className="flex-inner-container form-small" data-role="registerForm"
@@ -319,7 +329,7 @@ const Register = React.createClass({
           </div>
         </div>
         <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
-        <Decription />
+        <Description ref={(obj) => this.descriptionContext = obj} />
       </div>
     )
   }

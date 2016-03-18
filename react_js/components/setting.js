@@ -273,11 +273,7 @@ const Settings = React.createClass({
   },
 
   changeAdjustWidth: function(element) {
-    if (element.checked) {
-      this.props.data.settings_ListOptions.adjust_width = true;
-    } else {
-      this.props.data.settings_ListOptions.adjust_width = false;
-    }
+    this.props.data.settings_ListOptions.adjust_width = element.checked;
     this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
   },
 

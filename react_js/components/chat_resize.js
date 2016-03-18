@@ -31,19 +31,11 @@ const ChatResize = React.createClass({
     this.line_resize = this.chat_resize_container.querySelector('[data-role="resize_line"]');
     event_bus.on('transformToResizeState', this.transformToResizeState, this);
     event_bus.on('redirectResize', this.handleResize, this);
-    this.chat_resize_container.addEventListener('mouseup', this.handleResize);
-    this.chat_resize_container.addEventListener('touchend', this.handleResize);
-    this.chat_resize_container.addEventListener('mousemove', this.handleResize);
-    this.chat_resize_container.addEventListener('touchmove', this.handleResize);
   },
 
   componentWillUnmount: function() {
     event_bus.off('transformToResizeState', this.transformToResizeState);
     event_bus.off('redirectResize', this.handleResize);
-    this.chat_resize_container.removeEventListener('mouseup', this.handleResize);
-    this.chat_resize_container.removeEventListener('touchend', this.handleResize);
-    this.chat_resize_container.removeEventListener('mousemove', this.handleResize);
-    this.chat_resize_container.removeEventListener('touchmove', this.handleResize);
   },
 
   transformToResizeState: function(event, _chat) {
@@ -161,7 +153,9 @@ const ChatResize = React.createClass({
   render: function() {
     return (
       <div data-role="chat_resize_container"
-           className={this.defineClass("clear chat-resize-container ")}>
+           className={this.defineClass("clear chat-resize-container ")}
+           onMouseUp={this.handleResize} onMouseMove={this.handleResize}
+           onTouchEnd={this.handleResize} onTouchMove={this.handleResize}>
         <div className="line" style={{left: this.state.left_position_line_resize}}
              data-role="resize_line"></div>
       </div>

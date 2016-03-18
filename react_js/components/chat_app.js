@@ -107,17 +107,27 @@ const ChatApp = React.createClass({
     });
   },
 
+  handleEvents: function(event) {
+    this.descriptionContext.showDescription(event);
+  },
+
   render: function() {
     if (this.state.userInfo && this.state.userInfo.hasOwnProperty('user_id')) {
       return (
-        <div>
+        <div onMouseDown={this.handleEvents}
+             onMouseMove={this.handleEvents}
+             onMouseUp={this.handleEvents}
+             onClick={this.handleEvents}
+             onTouchEnd={this.handleEvents}
+             onTouchMove={this.handleEvents}
+             onTouchStart={this.handleEvents}>
           <Panel location={this.props.LEFT} userInfo={this.state.userInfo}/>
           <div data-role="main_container" className="w-100p h-100p p-abs">
             <ChatsManager />
           </div>
           <Panel location={this.props.RIGHT} userInfo={this.state.userInfo}/>
           <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
-          <Description />
+          <Description ref={(obj) => this.descriptionContext = obj} />
           <ChatResize />
         </div>
       )
