@@ -185,6 +185,19 @@ const PanelToolbar = React.createClass({
             "mode_to": "CONNECTIONS"
           },
           "disable": false
+        },
+        {
+          "element": "button",
+          "icon": "",
+          "text": 22,
+          "class": "floatR flex-item-1-0p",
+          "location": "buttons",
+          "data": {
+            "role": "btnToolbar",
+            "action": "switchPanelMode",
+            "mode_to": "SETTINGS_GLOBAL"
+          },
+          "disable": false
         }
       ]
     }

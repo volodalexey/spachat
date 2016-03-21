@@ -26,6 +26,8 @@ const Chat = React.createClass({
 
   getInitialState: function() {
     return {
+      hideTopPart: false,
+      hideBottomPart: false,
       padding: {
         bottom: 5
       },
@@ -205,11 +207,13 @@ const Chat = React.createClass({
   componentWillMount: function() {
     let index = this.chatsArray.indexOf(this.props.data), self = this, data = this.props.data;
     if (!data.restoreOption) {
-      this.setState({chat_id: data.chatDescription.chat_id,
+      this.setState({
+        chat_id: data.chatDescription.chat_id,
         createdByUserId: data.chatDescription.createdByUserId,
         createdDatetime: data.chatDescription.createdDatetime,
         user_ids: data.chatDescription.user_ids,
-        index: index});
+        index: index
+      });
     } else {
       data.chatDescription.index = index;
       this.setState(data.chatDescription);
@@ -301,11 +305,11 @@ const Chat = React.createClass({
         case 'changeRTE':
           currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
           currentOptions = Filter.prototype.changeRTE(element, currentOptions);
-          if(currentOptions.paginationOptions.rtePerPage){
+          if (currentOptions.paginationOptions.rtePerPage) {
             Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
               {"chat_id": this.state.chat_id}, function(_newState) {
-              self.setState(_newState);
-            });
+                self.setState(_newState);
+              });
           } else {
             this.setState(currentOptions);
           }
@@ -323,11 +327,11 @@ const Chat = React.createClass({
         case 'changeRTE_goTo':
           currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
           currentOptions = GoTo.prototype.changeRTE(element, currentOptions);
-          if(currentOptions.goToOptions.rteChoicePage){
+          if (currentOptions.goToOptions.rteChoicePage) {
             Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode,
               {"chat_id": this.state.chat_id}, function(_newState) {
-              self.setState(_newState);
-            });
+                self.setState(_newState);
+              });
           } else {
             this.setState(currentOptions);
           }
@@ -341,13 +345,19 @@ const Chat = React.createClass({
           }
           Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
             {"chat_id": this.state.chat_id}, function(_newState) {
-            self.setState(_newState);
-          });
+              self.setState(_newState);
+            });
           break;
         case 'closeChat':
         case 'saveStatesChat':
         case 'saveAndCloseChat':
           event_bus.trigger('toCloseChat', element.dataset.action, this.state.chat_id);
+          break;
+        case 'hideTopPart':
+          this.setState({hideTopPart: !this.state.hideTopPart});
+          break;
+        case 'hideBottomPart':
+          this.setState({hideBottomPart: !this.state.hideBottomPart});
           break;
       }
     }
@@ -365,7 +375,7 @@ const Chat = React.createClass({
               {"chat_id": this.state.chat_id}, function(_newState) {
                 self.setState(_newState);
               });
-          } else  {
+          } else {
             this.setState(currentOptions);
           }
           break;
@@ -374,8 +384,8 @@ const Chat = React.createClass({
           currentOptions = Pagination.prototype.changePage(element, currentOptions);
           Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
             {"chat_id": this.state.chat_id}, function(_newState) {
-            self.setState(_newState);
-          });
+              self.setState(_newState);
+            });
           break;
       }
     }
@@ -480,7 +490,7 @@ const Chat = React.createClass({
   },
 
   onChatJoinRequest: function(eventData) {
-    let  self = this, newState;
+    let self = this, newState;
     event_bus.set_ws_device_id(eventData.target_ws_device_id);
     if (!this.chat_ready_state || !this.amICreator(this.state)) {
       return;
@@ -556,17 +566,33 @@ const Chat = React.createClass({
              data-splitteritem="right">
         </div>
         <Header data={this.state} handleEvent={handleEvent} events={onEvent}/>
-        <div data-role="extra_toolbar_container" className="flex-sp-around flex-shrink-0 p-t c-200">
+        <div data-role="extra_toolbar_container"
+             className={this.state.hideTopPart ?
+             "flex-sp-around flex-shrink-0 p-t c-200 hide" :
+              "flex-sp-around flex-shrink-0 p-t c-200"}>
           <ExtraToolbar mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
         </div>
-        <div data-role="filter_container" className="flex wrap background-pink flex-shrink-0 c-200">
+        <div data-role="filter_container"
+             className={this.state.hideTopPart ?
+             "flex wrap background-pink flex-shrink-0 c-200 hide" :
+              "flex wrap background-pink flex-shrink-0 c-200"}>
           <Filter mode={this.state.bodyOptions.mode} data={this.state} handleEvent={handleEvent} events={onEvent}/>
         </div>
-        <div data-role="body_container" className="modal-body" data-param_content="message">
+        <div className="p-abs" style={{'zIndex': 5}}>
+          <button data-action="hideTopPart" onClick={this.handleClick}>/\</button>
+        </div>
+        <div data-role="body_container"
+             className={this.props.scrollEachChat ? "modal-body overflow-y-scroll p-rel" : "modal-body p-rel"}
+             data-param_content="message">
           <Body mode={this.state.bodyOptions.mode} data={this.state} options={this.props.data} events={onEvent}
                 userInfo={null} handleEvent={handleEvent}/>
         </div>
-        <footer className="flex-item-auto">
+        <div className="p-abs">
+          <div className="p-abs" style={{'bottom': 0}}>
+            <button data-action="hideBottomPart" onClick={this.handleClick}>\/</button>
+          </div>
+        </div>
+        <footer className={this.state.hideBottomPart ? "flex-item-auto hide" : "flex-item-auto"}>
           <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>
           <div data-role="go_to_container" className="c-200">
             <GoTo mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
@@ -617,15 +643,15 @@ const Chat = React.createClass({
   },
 
   onChatMessage: function(eventData) {
-    if(this.state.chat_id !== eventData.chat_description.chat_id)
+    if (this.state.chat_id !== eventData.chat_description.chat_id)
       return;
     let self = this, newState = this.state;
     messages.prototype.addRemoteMessage(eventData, this.state.bodyOptions.mode, this.state.chat_id,
-      function(err){
-      if (err){
-        console.error(err);
-        return;
-      }
+      function(err) {
+        if (err) {
+          console.error(err);
+          return;
+        }
 
         if (newState.messages_PaginationOptions.showEnablePagination) {
           newState.messages_PaginationOptions.currentPage = null;
@@ -636,7 +662,7 @@ const Chat = React.createClass({
         } else {
           self.setState({messages_PaginationOptions: newState.messages_PaginationOptions});
         }
-    });
+      });
   }
 });
 

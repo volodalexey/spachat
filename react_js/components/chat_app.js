@@ -24,7 +24,8 @@ const ChatApp = React.createClass({
         type: '',
         options: {},
         onDataActionClick: null
-      }
+      },
+      scrollEachChat: true
     };
   },
 
@@ -43,6 +44,7 @@ const ChatApp = React.createClass({
     event_bus.on('changeStatePopup', this.handleChangePopup, this);
     event_bus.on('logout', this.logout, this);
     event_bus.on('setUserId', this.logout, this);
+    event_bus.on('changeScrollEachChat', this.changeScrollEachChat, this);
   },
 
   componentWillUnmount: function() {
@@ -70,6 +72,10 @@ const ChatApp = React.createClass({
     newState = Popup.prototype.handleChangeState(this.state, options.show, options.type,
       options.message, options.onDataActionClick.bind(this));
     this.setState(newState);
+  },
+
+  changeScrollEachChat(element){
+    this.setState({scrollEachChat: element.checked});
   },
 
   logout(user_id){
@@ -123,9 +129,9 @@ const ChatApp = React.createClass({
              onTouchStart={this.handleEvents}>
           <Panel location={this.props.LEFT} userInfo={this.state.userInfo}/>
           <div data-role="main_container" className="w-100p h-100p p-abs">
-            <ChatsManager />
+            <ChatsManager scrollEachChat={this.state.scrollEachChat}/>
           </div>
-          <Panel location={this.props.RIGHT} userInfo={this.state.userInfo}/>
+          <Panel location={this.props.RIGHT} userInfo={this.state.userInfo} data={this.state}/>
           <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
           <Description ref={(obj) => this.descriptionContext = obj} />
           <ChatResize />

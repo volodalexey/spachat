@@ -451,9 +451,10 @@ const ChatsManager = React.createClass({
     if (!Chat.prototype.chatsArray.length) {
       return <div className="flex-outer-container" data-role="chat_wrapper"></div>
     } else {
-      let items = [];
+      let items = [],self = this;
       Chat.prototype.chatsArray.forEach(function(_chat) {
-        items.push(<Chat data={_chat} key={_chat.chatDescription.chat_id}/>);
+        items.push(<Chat data={_chat} key={_chat.chatDescription.chat_id}
+                         scrollEachChat={self.props.scrollEachChat}/>);
       });
       return <div className="flex-outer-container" data-role="chat_wrapper">{items}</div>;
     }

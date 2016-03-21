@@ -38,9 +38,15 @@ const Messages = React.createClass({
 
   renderItems: function() {
     var self = this, items = [];
+    //items.push(
+    //  <button data-action="hideTopPart" onClick={this.props.events.onClick} key="hideTopPart"> ^ </button>
+    //);
     this.state.messages.forEach(function(_message) {
       items.push(self.renderItem(_message));
     });
+/*    items.push(
+      <button data-action="hideBottomPart" onClick={this.props.events.onClick} key="hideBottomPart"> \/ </button>
+    );*/
     return items;
   },
 

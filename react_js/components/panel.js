@@ -37,6 +37,7 @@ const MODE = {
   DETAIL_VIEW: 'DETAIL_VIEW',
 
   CONNECTIONS: 'CONNECTIONS',
+  SETTINGS_GLOBAL: 'SETTINGS_GLOBAL',
 
   CREATE_BLOG: 'CREATE_BLOG',
   JOIN_BLOG: 'JOIN_BLOG',
@@ -319,6 +320,7 @@ const Panel = React.createClass({
         toggleElemHide: false,
         toggleToolbarElemHide: true,
         bodyMode: "USER_INFO_SHOW",
+        scrollEachChat: true,
 
         popupOptions: {
           messagePopupShow: false,
@@ -603,6 +605,11 @@ const Panel = React.createClass({
           Pagination.prototype.countPagination(currentOptions, null, this.state.bodyMode, null, function(_newState) {
             self.setState(_newState);
           });
+          break;
+        case 'scrollEachChat':
+          if (this.props.location !== "right") return;
+          event_bus.trigger('changeScrollEachChat', element);
+          this.setState({scrollEachChat: element.checked});
           break;
       }
     }

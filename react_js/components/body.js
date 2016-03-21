@@ -31,6 +31,7 @@ const Body = React.createClass({
     DETAIL_VIEW: 'DETAIL_VIEW',
 
     CONNECTIONS: 'CONNECTIONS',
+    SETTINGS_GLOBAL: 'SETTINGS_GLOBAL',
 
     CREATE_BLOG: 'CREATE_BLOG',
     JOIN_BLOG: 'JOIN_BLOG',
@@ -954,6 +955,24 @@ const Body = React.createClass({
             "role": "adjust_width_label"
           }
         }
+      ],
+      settings_global_config: [
+        {
+          "role": "locationWrapper",
+          "classList": "w-100p",
+          "location": "scrollEachChat"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "text": 'scrollEachChat',
+          "class": "check-box-size",
+          "location": "scrollEachChat",
+          "data": {
+            "key": "scrollEachChat",
+            "action": "scrollEachChat"
+          }
+        }
       ]
     }
   },
@@ -993,6 +1012,9 @@ const Body = React.createClass({
         break;
       case this.MODE.CONNECTIONS:
         return this.props.connections_config;
+        break;
+      case this.MODE.SETTINGS_GLOBAL:
+        return this.props.settings_global_config;
         break;
 
       case this.MODE.MESSAGES:
@@ -1048,7 +1070,8 @@ const Body = React.createClass({
         break;
 
       case this.MODE.MESSAGES:
-        return <Messages data={this.props.data} handleEvent={this.props.handleEvent}/>;
+        return <Messages data={this.props.data} handleEvent={this.props.handleEvent}
+                         events={this.props.events}/>;
         break;
       case this.MODE.SETTINGS:
         return <Settings data={this.props.data} handleEvent={this.props.handleEvent}/>;
@@ -1057,7 +1080,8 @@ const Body = React.createClass({
         return <ContactList data={this.props.data} handleEvent={this.props.handleEvent}/>;
         break;
       default:
-        items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs}/>);
+        items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs}
+                                     data={this.props.data}/>);
         break;
     }
     return items;
