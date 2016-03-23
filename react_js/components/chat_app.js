@@ -115,6 +115,10 @@ const ChatApp = React.createClass({
 
   handleEvents: function(event) {
     this.descriptionContext.showDescription(event);
+
+    if(event.type === 'mouseup' || event.type === 'touchend'){
+      event_bus.trigger('onMouseUp', event);
+    }
   },
 
   render: function() {

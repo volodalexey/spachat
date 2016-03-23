@@ -44,7 +44,7 @@ define('chat_platform', [
 
     chat_platform.prototype = {
 
-      min_chats_width: 350,
+      min_toggle_container_width: 350,
       min_move: 5,
 
       bindContexts: function() {
@@ -156,11 +156,11 @@ define('chat_platform', [
         }
         _this.resizeMouseDown = true;
         _this.positionrSplitterItem = event.currentTarget.dataset.splitteritem;
-        _this.chatResize = _chat;
-        _this.splitterWidth = _chat.splitter_left.clientWidth;
-        _this.offsetLeft_splitter_left = _this.getOffset(_chat.splitter_left).offsetLeft;
+        _this.chatToggle = _chat;
+        _this.btnWidth = _chat.splitter_left.clientWidth;
+        _this.offsetLeft_btn = _this.getOffset(_chat.splitter_left).offsetLeft;
         _this.offsetLeft_splitter_right = _this.getOffset(_chat.splitter_right).offsetLeft;
-        _this.chatResizeWidth = _chat.chat_element.clientWidth;
+        _this.toggleContainerWidth = _chat.chat_element.clientWidth;
       },
 
       handleResizer: function(event) {
@@ -186,18 +186,18 @@ define('chat_platform', [
                 if (Math.abs(_this.absoluteDeltaX - deltaX) > _this.min_move) {
                   _this.redraw_chat = true;
                   if (_this.positionrSplitterItem === 'left' &&
-                    _this.offsetLeft_splitter_right - clientX + _this.splitterWidth > _this.min_chats_width ||
+                    _this.offsetLeft_splitter_right - clientX + _this.btnWidth > _this.min_toggle_container_width ||
                     _this.positionrSplitterItem === 'right' &&
-                    clientX - _this.offsetLeft_splitter_left > _this.min_chats_width
+                    clientX - _this.offsetLeft_btn > _this.min_toggle_container_width
                   ) {
                     _this.line_resize.style.left = (_this.line_resize.offsetLeft + deltaX) + 'px';
                     _this.resizeClientX = clientX;
                   } else {
                     if (_this.positionrSplitterItem === 'left') {
-                      _this.line_resize.style.left = _this.offsetLeft_splitter_right - _this.min_chats_width + _this.splitterWidth + 'px';
+                      _this.line_resize.style.left = _this.offsetLeft_splitter_right - _this.min_toggle_container_width + _this.btnWidth + 'px';
                     }
                     if (_this.positionrSplitterItem === 'right') {
-                      _this.line_resize.style.left = _this.offsetLeft_splitter_left + _this.min_chats_width + 'px';
+                      _this.line_resize.style.left = _this.offsetLeft_btn + _this.min_toggle_container_width + 'px';
                     }
                     _this.resizeClientX = clientX;
                   }
@@ -209,34 +209,34 @@ define('chat_platform', [
           case 'touchend':
             if (_this.redraw_chat) {
               if (_this.positionrSplitterItem === 'left') {
-                if (_this.chatResizeWidth + _this.absoluteDeltaX >= _this.min_chats_width) {
-                  _this.chatResize.chat_element.style.width = _this.chatResizeWidth + _this.absoluteDeltaX + 'px';
+                if (_this.toggleContainerWidth + _this.absoluteDeltaX >= _this.min_toggle_container_width) {
+                  _this.chatToggle.chat_element.style.width = _this.toggleContainerWidth + _this.absoluteDeltaX + 'px';
                 } else {
-                  _this.chatResize.chat_element.style.width = _this.min_chats_width + 'px';
+                  _this.chatToggle.chat_element.style.width = _this.min_toggle_container_width + 'px';
                 }
               }
               if (_this.positionrSplitterItem === 'right') {
-                if (_this.chatResizeWidth - _this.absoluteDeltaX >= _this.min_chats_width) {
-                  _this.chatResize.chat_element.style.width = _this.chatResizeWidth - _this.absoluteDeltaX + 'px';
+                if (_this.toggleContainerWidth - _this.absoluteDeltaX >= _this.min_toggle_container_width) {
+                  _this.chatToggle.chat_element.style.width = _this.toggleContainerWidth - _this.absoluteDeltaX + 'px';
                 } else {
-                  _this.chatResize.chat_element.style.width = _this.min_chats_width + 'px';
+                  _this.chatToggle.chat_element.style.width = _this.min_toggle_container_width + 'px';
                 }
               }
-              _this.chatResize.settings_ListOptions.size_current = _this.chatResize.chat_element.style.width;
-              _this.chatResize.settings_ListOptions.size_custom_value = _this.chatResize.chat_element.style.width;
+              _this.chatToggle.settings_ListOptions.size_current = _this.chatToggle.chat_element.style.width;
+              _this.chatToggle.settings_ListOptions.size_custom_value = _this.chatToggle.chat_element.style.width;
             }
             _this.resizeMouseDown = false;
             _this.chat_resize_container.classList.remove('draggable');
             _this.line_resize.style.left = 0;
             delete _this.positionrSplitterItem;
-            delete _this.splitterWidth;
-            delete _this.offsetLeft_splitter_left;
+            delete _this.btnWidth;
+            delete _this.offsetLeft_btn;
             delete _this.offsetLeft_splitter_right;
-            delete _this.chatResizeWidth;
+            delete _this.toggleContainerWidth;
             delete _this.resizeClientX;
             delete _this.resizeClientX_absolue;
             delete _this.deltaX_absolute;
-            delete _this.chatResize;
+            delete _this.chatToggle;
             delete _this.redraw_chat;
         }
       },

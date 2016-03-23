@@ -20,9 +20,19 @@ import Editor from '../components/editor'
 import Pagination from '../components/pagination'
 import GoTo from '../components/go_to'
 import Popup from '../components/popup'
+import ToggleVisibleChatPart from '../components/toggle_visible_chat_part'
 
 const Chat = React.createClass({
   chatsArray: [],
+
+  getDefaultProps: function() {
+    return {
+      location: {
+        TOP: "TOP",
+        BOTTOM: "BOTTOM"
+      }
+    }
+  },
 
   getInitialState: function() {
     return {
@@ -549,7 +559,8 @@ const Chat = React.createClass({
 
   render: function() {
     let handleEvent = {
-      changeState: this.changeState
+      changeState: this.changeState,
+      toggleVisible: this.toggleVisible
     };
     let onEvent = {
       onClick: this.handleClick,
@@ -568,8 +579,8 @@ const Chat = React.createClass({
         <Header data={this.state} handleEvent={handleEvent} events={onEvent}/>
         <div data-role="extra_toolbar_container"
              className={this.state.hideTopPart ?
-             "flex-sp-around flex-shrink-0 p-t c-200 hide" :
-              "flex-sp-around flex-shrink-0 p-t c-200"}>
+             "flex-sp-around flex-shrink-0 c-200 hide" :
+              "flex-sp-around flex-shrink-0 c-200"}>
           <ExtraToolbar mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
         </div>
         <div data-role="filter_container"
@@ -578,20 +589,14 @@ const Chat = React.createClass({
               "flex wrap background-pink flex-shrink-0 c-200"}>
           <Filter mode={this.state.bodyOptions.mode} data={this.state} handleEvent={handleEvent} events={onEvent}/>
         </div>
-        <div className="p-abs" style={{'zIndex': 5}}>
-          <button data-action="hideTopPart" onClick={this.handleClick}>/\</button>
-        </div>
+        <ToggleVisibleChatPart data={this.state} location={this.props.location.TOP} events={onEvent}/>
         <div data-role="body_container"
              className={this.props.scrollEachChat ? "modal-body overflow-y-scroll p-rel" : "modal-body p-rel"}
              data-param_content="message">
           <Body mode={this.state.bodyOptions.mode} data={this.state} options={this.props.data} events={onEvent}
                 userInfo={null} handleEvent={handleEvent}/>
         </div>
-        <div className="p-abs">
-          <div className="p-abs" style={{'bottom': 0}}>
-            <button data-action="hideBottomPart" onClick={this.handleClick}>\/</button>
-          </div>
-        </div>
+        <ToggleVisibleChatPart data={this.state} location={this.props.location.BOTTOM} events={onEvent}/>
         <footer className={this.state.hideBottomPart ? "flex-item-auto hide" : "flex-item-auto"}>
           <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>
           <div data-role="go_to_container" className="c-200">
