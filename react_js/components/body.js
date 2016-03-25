@@ -10,8 +10,9 @@ import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
 import PanelChats from './panel_chats'
 import Messages from './message'
-import Settings from './setting'
+import Setting from './setting'
 import ContactList from './contact_list'
+import Connections from './connections'
 
 const Body = React.createClass({
   MODE: {
@@ -656,24 +657,6 @@ const Body = React.createClass({
           "disabled": false
         }
       ],
-      connections_config: [
-        {
-          "element": "button",
-          "icon": "exit_icon",
-          "text": 38,
-          "class": "button-convex",
-          "data": {
-            "role": "",
-            "action": "logout",
-            "throw": "true",
-            "location": "navbar"
-          },
-          "name": "",
-          "disable": false,
-          "sort": 6,
-          "mode": "USER_INFO_SHOW"
-        }
-      ],
       users_info_config: [
         {
           "role": "locationWrapper",
@@ -1010,13 +993,11 @@ const Body = React.createClass({
       case this.MODE.USER_INFO_EDIT:
         return this.props.user_info_edit_config;
         break;
-      case this.MODE.CONNECTIONS:
-        return this.props.connections_config;
-        break;
       case this.MODE.SETTINGS_GLOBAL:
         return this.props.settings_global_config;
         break;
 
+      case this.MODE.CONNECTIONS:
       case this.MODE.MESSAGES:
       case this.MODE.LOGGER:
       case this.MODE.SETTINGS:
@@ -1073,10 +1054,13 @@ const Body = React.createClass({
         return <Messages data={this.props.data} handleEvent={this.props.handleEvent}/>;
         break;
       case this.MODE.SETTINGS:
-        return <Settings data={this.props.data} handleEvent={this.props.handleEvent}/>;
+        return <Setting data={this.props.data} handleEvent={this.props.handleEvent}/>;
         break;
       case this.MODE.CONTACT_LIST:
         return <ContactList data={this.props.data} handleEvent={this.props.handleEvent}/>;
+        break;
+      case this.MODE.CONNECTIONS:
+        return <Connections />;
         break;
       default:
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs}

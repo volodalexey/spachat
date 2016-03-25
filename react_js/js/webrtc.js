@@ -39,6 +39,7 @@ WebRTC.prototype = {
   createConnection: function(options) {
     var connection = new Connection(options);
     this.connections.push(connection);
+    event_bus.trigger('createConnection');
     return connection;
   },
 
@@ -52,6 +53,10 @@ WebRTC.prototype = {
     });
 
     return connection;
+  },
+
+  getAllConnections: function() {
+    return this.connections;
   },
 
   /**
