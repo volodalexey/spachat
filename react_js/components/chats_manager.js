@@ -384,7 +384,7 @@ const ChatsManager = React.createClass({
   getDestroyChatPosition: function(chat_id) {
     let destroyChatPosition;
     Chat.prototype.chatsArray.every(function(_chat, index) {
-      if (_chat.chat_id === chat_id) {
+      if (_chat.chatDescription.chat_id === chat_id) {
         destroyChatPosition = index;
       }
       return !destroyChatPosition;
@@ -448,15 +448,16 @@ const ChatsManager = React.createClass({
   },
 
   render: function() {
+    let self = this;
     if (!Chat.prototype.chatsArray.length) {
-      return <div className="flex-outer-container" data-role="chat_wrapper"></div>
+      return <div className="flex-outer-container align-start" data-role="chat_wrapper"></div>
     } else {
-      let items = [],self = this;
+      let items = [];
       Chat.prototype.chatsArray.forEach(function(_chat) {
         items.push(<Chat data={_chat} key={_chat.chatDescription.chat_id}
                          scrollEachChat={self.props.scrollEachChat}/>);
       });
-      return <div className="flex-outer-container" data-role="chat_wrapper">{items}</div>;
+      return <div className="flex-outer-container align-start" data-role="chat_wrapper">{items}</div>;
     }
   }
 });

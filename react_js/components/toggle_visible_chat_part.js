@@ -9,7 +9,7 @@ const ToggleVisibleChatPart = React.createClass({
   getDefaultProps: function() {
     return {
       min_move: 5,
-      padding: 5
+      padding: 4
     }
   },
 
@@ -63,7 +63,8 @@ const ToggleVisibleChatPart = React.createClass({
       case 'mousemove':
       case 'touchmove':
         if (this.state.resizeMouseDown) {
-          let clientX = event.clientX, toggle_btn;
+          let clientX = event.clientX, toggle_btn,
+            size_container = parseInt(this.props.data.settings_ListOptions.size_current, 10);
           if (event.type === 'touchmove' && event.changedTouches) {
             clientX = event.changedTouches[0].clientX;
           }
@@ -82,10 +83,14 @@ const ToggleVisibleChatPart = React.createClass({
                 && this.toggleButton.offsetLeft + deltaX >= 0
                 || (deltaX > 0) &&
                 this.toggleButton.offsetLeft + this.state.btnWidth + this.props.padding <
-                parseInt(this.props.data.settings_ListOptions.size_current, 10)
+                size_container
               ) {
                 this.resizeClientX = clientX;
                 this.left = this.toggleButton.offsetLeft + deltaX + 'px';
+              }
+              if (parseInt(this.left) + this.state.btnWidth >=
+                size_container) {
+                this.left = size_container - this.state.btnWidth - this.props.padding + 'px';
               }
               this.setState({left: this.left});
             }
@@ -123,7 +128,6 @@ const ToggleVisibleChatPart = React.createClass({
     } else {
       this.props.events.onClick(event);
     }
-
   },
 
   render: function() {

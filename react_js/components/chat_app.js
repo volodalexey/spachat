@@ -132,7 +132,8 @@ const ChatApp = React.createClass({
              onTouchMove={this.handleEvents}
              onTouchStart={this.handleEvents}>
           <Panel location={this.props.LEFT} userInfo={this.state.userInfo}/>
-          <div data-role="main_container" className="w-100p h-100p p-abs">
+          <div data-role="main_container"
+               className={this.state.scrollEachChat ? "w-100p h-100p p-abs" : "w-100p p-abs"}>
             <ChatsManager scrollEachChat={this.state.scrollEachChat}/>
           </div>
           <Panel location={this.props.RIGHT} userInfo={this.state.userInfo} data={this.state}/>

@@ -172,8 +172,7 @@ const Header = React.createClass({
   render: function() {
     let options = this.defineOptions();
     return (
-      <header data-role="header_container"
-              className={this.props.data.hideTopPart ? "modal-header hide" : "modal-header"}>
+      <header data-role="header_container" className="modal-header">
         <Location_Wrapper events={this.props.events} data={options} mainContainer={this.props.mainContainer}
                           configs={this.props.configs} mode={this.props.data.bodyOptions.mode}/>
       </header>

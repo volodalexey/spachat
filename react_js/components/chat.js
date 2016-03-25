@@ -559,8 +559,7 @@ const Chat = React.createClass({
 
   render: function() {
     let handleEvent = {
-      changeState: this.changeState,
-      toggleVisible: this.toggleVisible
+      changeState: this.changeState
     };
     let onEvent = {
       onClick: this.handleClick,
@@ -576,37 +575,40 @@ const Chat = React.createClass({
         <div className={this.defineSplitterClass('chat-splitter-item right ')} data-role="splitter_item"
              data-splitteritem="right">
         </div>
-        <Header data={this.state} handleEvent={handleEvent} events={onEvent}/>
-        <div data-role="extra_toolbar_container"
-             className={this.state.hideTopPart ?
-             "flex-sp-around flex-shrink-0 c-200 hide" :
-              "flex-sp-around flex-shrink-0 c-200"}>
-          <ExtraToolbar mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
-        </div>
-        <div data-role="filter_container"
-             className={this.state.hideTopPart ?
+        <div className={this.props.scrollEachChat ? 'w-inh ' : 'p-fx w-inh'} style={{'zIndex': 3}}>
+          <div className={this.state.hideTopPart ? "hide" : ""}>
+            <Header data={this.state} handleEvent={handleEvent} events={onEvent}/>
+            <div data-role="extra_toolbar_container" className="flex-sp-around flex-shrink-0 c-200">
+              <ExtraToolbar mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
+            </div>
+            <div data-role="filter_container"
+                 className={this.state.hideTopPart ?
              "flex wrap background-pink flex-shrink-0 c-200 hide" :
               "flex wrap background-pink flex-shrink-0 c-200"}>
-          <Filter mode={this.state.bodyOptions.mode} data={this.state} handleEvent={handleEvent} events={onEvent}/>
+              <Filter mode={this.state.bodyOptions.mode} data={this.state} handleEvent={handleEvent} events={onEvent}/>
+            </div>
+          </div>
+          <ToggleVisibleChatPart data={this.state} location={this.props.location.TOP} events={onEvent}/>
         </div>
-        <ToggleVisibleChatPart data={this.state} location={this.props.location.TOP} events={onEvent}/>
         <div data-role="body_container"
              className={this.props.scrollEachChat ? "modal-body overflow-y-scroll p-rel" : "modal-body p-rel"}
              data-param_content="message">
           <Body mode={this.state.bodyOptions.mode} data={this.state} options={this.props.data} events={onEvent}
                 userInfo={null} handleEvent={handleEvent}/>
         </div>
-        <ToggleVisibleChatPart data={this.state} location={this.props.location.BOTTOM} events={onEvent}/>
-        <footer className={this.state.hideBottomPart ? "flex-item-auto hide" : "flex-item-auto"}>
-          <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>
-          <div data-role="go_to_container" className="c-200">
-            <GoTo mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
-          </div>
-          <div data-role="pagination_container" className="flex filter_container justContent c-200">
-            <Pagination mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}
-                        handleEvent={handleEvent}/>
-          </div>
-        </footer>
+        <div className={this.props.scrollEachChat ? 'w-inh' : 'p-fx w-inh'} style={{'zIndex': 4, 'bottom': 0}}>
+          <ToggleVisibleChatPart data={this.state} location={this.props.location.BOTTOM} events={onEvent}/>
+          <footer className={this.state.hideBottomPart ? "flex-item-auto hide" : "flex-item-auto"}>
+            <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>
+            <div data-role="go_to_container" className="c-200">
+              <GoTo mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
+            </div>
+            <div data-role="pagination_container" className="flex filter_container justContent c-200">
+              <Pagination mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}
+                          handleEvent={handleEvent}/>
+            </div>
+          </footer>
+        </div>
       </section>
     )
   },
