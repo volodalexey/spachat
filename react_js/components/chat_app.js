@@ -51,6 +51,7 @@ const ChatApp = React.createClass({
     event_bus.off('changeStatePopup', this.handleChangePopup, this);
     event_bus.off('logout', this.logout, this);
     event_bus.off('setUserId', this.logout, this);
+    event_bus.off('changeScrollEachChat', this.changeScrollEachChat, this);
   },
 
   componentWillMount: function() {

@@ -38,6 +38,8 @@ const Chat = React.createClass({
     return {
       hideTopPart: false,
       hideBottomPart: false,
+      toggleTopButtonLeft: '0px',
+      toggleBottomButtonLeft: '0px',
       padding: {
         bottom: 5
       },
@@ -588,7 +590,8 @@ const Chat = React.createClass({
               <Filter mode={this.state.bodyOptions.mode} data={this.state} handleEvent={handleEvent} events={onEvent}/>
             </div>
           </div>
-          <ToggleVisibleChatPart data={this.state} location={this.props.location.TOP} events={onEvent}/>
+          <ToggleVisibleChatPart data={this.state} location={this.props.location.TOP} events={onEvent}
+                                 handleEvent={handleEvent}/>
         </div>
         <div data-role="body_container"
              className={this.props.scrollEachChat ? "modal-body overflow-y-scroll p-rel" : "modal-body p-rel"}
@@ -597,7 +600,8 @@ const Chat = React.createClass({
                 userInfo={null} handleEvent={handleEvent}/>
         </div>
         <div className={this.props.scrollEachChat ? 'w-inh' : 'p-fx w-inh'} style={{'zIndex': 4, 'bottom': 0}}>
-          <ToggleVisibleChatPart data={this.state} location={this.props.location.BOTTOM} events={onEvent}/>
+          <ToggleVisibleChatPart data={this.state} location={this.props.location.BOTTOM} events={onEvent}
+                                 handleEvent={handleEvent}/>
           <footer className={this.state.hideBottomPart ? "flex-item-auto hide" : "flex-item-auto"}>
             <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>
             <div data-role="go_to_container" className="c-200">

@@ -86,7 +86,7 @@ const Panel = React.createClass({
         openChatsInfoArray: [],
         closingChatsInfoArray: [],
         chat_ids: [],
-        openChats: [],
+        openChats: {},
         openedState: false,
         left: '-700px',
         toggleElemHide: false,
@@ -314,7 +314,7 @@ const Panel = React.createClass({
         openChatsInfoArray: [],
         closingChatsInfoArray: [],
         chat_ids: [],
-        openChats: [],
+        openChats: {},
         openedState: false,
         right: '-700px',
         toggleElemHide: false,
@@ -403,12 +403,10 @@ const Panel = React.createClass({
     document.addEventListener('load', this.handleLoad, true);
     window.addEventListener('resize', this.resizePanel, false);
     event_bus.on('getPanelDescription', this.getPanelDescription);
-    event_bus.on('AddedNewChat', this.toggleListOptions);
-    event_bus.on('chatDestroyed', this.onChatDestroyed);
-    event_bus.on('changeOpenChats', this.getInfoForBody);
-    event_bus.on('web_socket_message', this.onPanelMessageRouter);
-
     if (this.props.location === "left") {
+      event_bus.on('AddedNewChat', this.toggleListOptions);
+      event_bus.on('changeOpenChats', this.getInfoForBody);
+      event_bus.on('web_socket_message', this.onPanelMessageRouter);
       this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
       this.inner_container = document.querySelector('[data-role="left_panel_inner_container"]');
       this.outerContainer.style.right = '100vw';
@@ -433,10 +431,11 @@ const Panel = React.createClass({
     document.removeEventListener('load', this.handleLoad);
     window.removeEventListener('resize', this.resizePanel);
     event_bus.off('getPanelDescription', this.getPanelDescription);
-    event_bus.off('AddedNewChat', this.toggleListOptions);
-    event_bus.off('chatDestroyed', this.getInfoForBody);
-    event_bus.off('changeOpenChats', this.getInfoForBody);
-    event_bus.off('web_socket_message', this.onPanelMessageRouter);
+    if (this.props.location === "left") {
+      event_bus.off('AddedNewChat', this.toggleListOptions);
+      event_bus.off('changeOpenChats', this.getInfoForBody);
+      event_bus.off('web_socket_message', this.onPanelMessageRouter);
+    }
 
     this.outerContainer = null;
     this.inner_container = null;
@@ -751,6 +750,9 @@ const Panel = React.createClass({
 
   getInfoForBody: function(mode) {
     let self = this, currentOptions;
+    if (!mode) {
+      mode = this.state.bodyMode;
+    }
     if (mode === MODE.USERS) {
       users_bus.getMyInfo(null, function(error, options, userInfo) {
         users_bus.getContactsInfo(error, userInfo.user_ids, function(_error, contactsInfo) {
@@ -969,13 +971,6 @@ const Panel = React.createClass({
       this.setState({"chat_ids": [], "openChats": []});
       callback(this.state, this.props.location);
     }
-  },
-
-  onChatDestroyed: function(chatId) {
-    if (this.state.openChats) {
-      delete this.state.openChats[chatId];
-    }
-    this.setState({openChats: this.state.openChats});
   },
 
   resizePanel: function() {

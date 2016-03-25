@@ -965,7 +965,7 @@ const Body = React.createClass({
         {
           "element": "input",
           "type": "checkbox",
-          "text": 'scrollEachChat',
+          "text": 108,
           "class": "check-box-size",
           "location": "scrollEachChat",
           "data": {

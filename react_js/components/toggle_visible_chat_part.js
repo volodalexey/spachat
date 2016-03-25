@@ -17,11 +17,19 @@ const ToggleVisibleChatPart = React.createClass({
     return {
       position_btn: 0,
       resizeMouseDown: false,
-      btnWidth: null,
-      left: '0px'
+      btnWidth: null
     };
   },
-  componentDidMount: function() {
+
+  componentWillMount: function() {
+    if(this.props.location === 'TOP'){
+      this.setState({left: this.props.data.toggleTopButtonLeft});
+    } else if(this.props.location === 'BOTTOM'){
+      this.setState({left: this.props.data.toggleBottomButtonLeft});
+    }
+  },
+
+    componentDidMount: function() {
     this.toggle_container = ReactDOM.findDOMNode(this);
     this.toggleButton = this.toggle_container.querySelector('[data-role="toggleButton"]');
     event_bus.on('onMouseUp', this.handleResize, this);
@@ -103,7 +111,6 @@ const ToggleVisibleChatPart = React.createClass({
           if (event.type === 'touchend') {
             this.redraw_toggle_btn = false;
           }
-
           this.setState({
             resizeMouseDown: false,
             position_btn: 0,
@@ -111,7 +118,11 @@ const ToggleVisibleChatPart = React.createClass({
             btnWidth: null,
             left: this.left
           });
-
+          if(this.props.location === 'TOP'){
+            this.props.handleEvent.changeState({toggleTopButtonLeft: this.left});
+          } else if(this.props.location === 'BOTTOM'){
+            this.props.handleEvent.changeState({toggleBottomButtonLeft: this.left});
+          }
           delete this.resizeClientX;
           delete this.resizeClientX_absolue;
           delete this.backlight;

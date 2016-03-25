@@ -372,7 +372,6 @@ const ChatsManager = React.createClass({
   destroyChat: function(description) {
     let position = this.getDestroyChatPosition(description.chat_id);
     Chat.prototype.chatsArray.splice(position, 1);
-    event_bus.trigger('chatDestroyed', description.chat_id);
     event_bus.trigger("changeOpenChats");
     this.forceUpdate();
   },
