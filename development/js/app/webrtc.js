@@ -63,6 +63,7 @@ define('webrtc', [
       createConnection: function(options) {
         var connection = new Connection(options);
         this.connections.push(connection);
+        console.log('push', this.connections);
         return connection;
       },
 
@@ -722,6 +723,7 @@ define('webrtc', [
         _this._removeDataChannelListeners(connection.dataChannel);
         _this._removePeerConnectionListeners(connection.peerConnection);
         _this.connections.splice(_this.connections.indexOf(connection), 1);
+        console.log('splice', _this.connections);
       },
 
       onWebSocketMessage: function(messageData) {

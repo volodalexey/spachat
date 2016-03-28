@@ -310,7 +310,10 @@ const ChatsManager = React.createClass({
 
           if (localChatDescription && messageData.restore_chat_state) {
             messageData.chat_description = localChatDescription;
+          } else {
+            messageData.chat_description.user_ids = localChatDescription.user_ids
           }
+
           self.handleChat(messageData, null);
         }
       );
@@ -373,6 +376,7 @@ const ChatsManager = React.createClass({
     let position = this.getDestroyChatPosition(description.chat_id);
     Chat.prototype.chatsArray.splice(position, 1);
     event_bus.trigger("changeOpenChats");
+    event_bus.trigger("chatDestroyed", description.chat_id);
     this.forceUpdate();
   },
 
