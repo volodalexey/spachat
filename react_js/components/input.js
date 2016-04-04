@@ -48,8 +48,8 @@ const Input = React.createClass({
     }
     if (this.props.config.name) {
       params['id'] = this.props.config.id;
-      if (this.props.config.type === "radio" && this.props.index !== undefined) {
-        params['name'] = this.props.config.name + '_' + this.props.index;
+      if (this.props.config.type === "radio" && this.props.data.index !== undefined) {
+        params['name'] = this.props.config.name + '_' + this.props.data.index;
       } else {
         params['name'] = this.props.config.name;
       }

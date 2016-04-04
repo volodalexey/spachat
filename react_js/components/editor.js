@@ -90,7 +90,7 @@ const Editor = React.createClass({
           this.changeEdit();
           break;
         case 'changeMode':
-          event_bus.trigger('changeMode', element);
+          event_bus.trigger('changeMode', element, this.props.data.chat_id);
           break;
         case 'sendMessage':
           this.sendMessage();

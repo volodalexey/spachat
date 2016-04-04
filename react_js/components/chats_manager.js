@@ -60,7 +60,7 @@ const ChatsManager = React.createClass({
   getOpenChats: function(callback) {
     let openChats = {};
     Chat.prototype.chatsArray.forEach(function(chat) {
-      openChats[chat.chatDescription.chat_id] = true;
+      openChats[chat.chat_description.chat_id] = true;
     });
     callback(openChats);
   },
@@ -97,30 +97,7 @@ const ChatsManager = React.createClass({
       return;
     }
 
-    indexeddb.getByKeyPath(
-      chats_bus.collectionDescription,
-      null,
-      chatId,
-      function(getError, chatDescription) {
-        if (getError) {
-          console.error(getError);
-          return;
-        }
-
-        if (chatDescription) {
-          websocket.sendMessage({
-            type: "chat_join",
-            from_user_id: users_bus.getUserId(),
-            chat_description: {
-              chat_id: chatDescription.chat_id
-            },
-            restore_chat_state: restoreOption
-          });
-        } else {
-          console.error(new Error('Chat with such id not found in the database!'));
-        }
-      }
-    );
+    this.createNewChat(null, true, restoreOption, chatId);
   },
 
   /**
@@ -129,7 +106,7 @@ const ChatsManager = React.createClass({
   isChatOpened: function(chatId) {
     let openedChat;
     Chat.prototype.chatsArray.every(function(_chat) {
-      if (_chat.chatDescription.chat_id === chatId) {
+      if (_chat.chat_description.chat_id === chatId) {
         openedChat = _chat;
       }
       return !openedChat;
@@ -138,64 +115,66 @@ const ChatsManager = React.createClass({
     return openedChat;
   },
 
-  handleChat: function(messageData, restoreOption) {
-    let self = this, newChat = {};
-    newChat.chatDescription = Chat.prototype.getInitialState();
-    newChat.chatDescription.chat_id = messageData.chat_description.chat_id;
-    if (messageData.chat_description){
-      this.extend(newChat.chatDescription, messageData.chat_description)
-    }
-
-    newChat.restoreOption = messageData.restore_chat_state;
-    this.setCreator(newChat.chatDescription);
-    this.addMyUserId(newChat.chatDescription);
-    Chat.prototype.chatsArray.push(newChat);
-    let description = messages.prototype.setCollectionDescription(messageData.chat_description.chat_id);
-    indexeddb.open(description, false, function(err) {
-      if (err) {
-        console.error(err);
-        return;
+  getIndexCurrentChat: function(chatId) {
+    let _indexCurrentChat;
+    Chat.prototype.chatsArray.every(function(_chat, index) {
+      if (_chat.chat_description && _chat.chat_description.chat_id === chatId ||
+        _chat.chat_id === chatId) {
+        _indexCurrentChat = index;
       }
-
-      event_bus.trigger("changeOpenChats", "CHATS");
-      if (messageData.chat_wscs_descrs) {
-        webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
-      } else {
-        websocket.wsRequest({
-          chat_id: newChat.chatDescription.chat_id,
-          url: "/api/chat/websocketconnections"
-        }, function(err, response) {
-          if (err) {
-            console.error(err);
-            return;
-          }
-          webrtc.handleConnectedDevices(response.chat_wscs_descrs);
-        });
-      }
-      self.forceUpdate();
+      return !_indexCurrentChat;
     });
+
+    return _indexCurrentChat;
   },
 
-  createNewChat: function() {
+  handleChat: function(messageData, chat_description) {
+    event_bus.trigger("changeOpenChats", "CHATS");
+    if (messageData.chat_wscs_descrs) {
+      webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
+    } else {
+      websocket.wsRequest({
+        chat_id: chat_description.chat_id,
+        url: "/api/chat/websocketconnections"
+      }, function(err, response) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        webrtc.handleConnectedDevices(response.chat_wscs_descrs);
+      });
+    }
+    this.forceUpdate();
+  },
+
+  createNewChat: function(event, show, restoreOption, chatId) {
     if (!websocket)  return;
 
-    websocket.sendMessage({
-      type: "chat_create",
-      from_user_id: users_bus.getUserId()
-    });
+    let newRawChat = {};
+    newRawChat.mode = 'raw';
+    if (show) {
+      newRawChat.show = show;
+      if (chatId) {
+        newRawChat.chat_id = chatId;
+      }
+      if (restoreOption) {
+        newRawChat.restoreOption = restoreOption;
+      }
+    }
+    newRawChat.logMessages = [];
+    Chat.prototype.chatsArray.push(newRawChat);
+    console.log('Chat.prototype.chatsArray', Chat.prototype.chatsArray);
+    this.forceUpdate();
   },
 
   onChatMessageRouter: function(messageData) {
     switch (messageData.type) {
-      case 'chat_created':
-        this.chatCreateApproved(messageData);
-        break;
       case 'chat_joined':
         this.chatJoinApproved(messageData);
         break;
       case 'notifyChat':
         Chat.prototype.chatsArray.forEach(function(_chat) {
-          if (messageData.chat_description.chat_id === _chat.chatDescription.chat_id) {
+          if (messageData.chat_description.chat_id === _chat.chat_description.chat_id) {
             event_bus.trigger(messageData.chat_type, messageData);
           }
         });
@@ -204,22 +183,25 @@ const ChatsManager = React.createClass({
   },
 
   chatCreateApproved: function(event) {
-    var self = this;
     if (event.from_ws_device_id) {
       event_bus.set_ws_device_id(event.from_ws_device_id);
     }
+    event_bus.trigger('send_log_message', event.chat_description.chat_id, 'Adding chat to IndexedDB');
 
-    this.addNewChatToIndexedDB(event.chat_description, function(err, chat) {
+    this.addNewChatToIndexedDB({chat_id: event.chat_description.chat_id}, function(err, chat) {
       if (err) {
         console.error(err);
+        event_bus.trigger('send_log_message', chat.chat_id, err);
         return;
       }
-
+      event_bus.trigger('send_log_message', chat.chat_id, 'Added chat to IndexedDB. Saving chat in List Chats users.');
       users_bus.putChatIdAndSave(chat.chat_id, function(err, userInfo) {
         if (err) {
           console.error(err);
+          event_bus.trigger('send_log_message', chat.chat_id, err);
           return;
         }
+        event_bus.trigger('send_log_message', chat.chat_id, 'Saved chat in List Chats users. Sending chat_join.');
 
         event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
         websocket.sendMessage({
@@ -238,8 +220,10 @@ const ChatsManager = React.createClass({
    * make offer for each device for this chat
    */
   chatJoinApproved: function(event) {
-    let self = this, newState;
+    let self = this, newState, index;
     event_bus.set_ws_device_id(event.target_ws_device_id);
+    event_bus.trigger('send_log_message', event.chat_description.chat_id, 'Chat join approved');
+    event_bus.trigger('send_log_message', event.chat_description.chat_id, 'Getting chat description');
 
     indexeddb.getByKeyPath(
       chats_bus.collectionDescription,
@@ -268,64 +252,45 @@ const ChatsManager = React.createClass({
           return;
         }
 
-        users_bus.putChatIdAndSave(event.chat_description.chat_id, function(err, userInfo) {
-          if (err) {
-            console.error(err);
-            return;
-          }
-
-          event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
-
-          if (!self.isChatOpened(chat_description.chat_id)) {
-            // force to open chat
-            self.chatWorkflow(event);
-          } else if (self.isChatOpened(chat_description.chat_id) && event.chat_wscs_descrs) {
-            webrtc.handleConnectedDevices(event.chat_wscs_descrs);
-          }
-        });
+        index = self.getIndexCurrentChat(chat_description.chat_id);
+        Chat.prototype.chatsArray[index].mode = 'ready';
+        if(!event.chat_description.restoreOption){
+          Chat.prototype.chatsArray[index].chat_description = {};
+          self.extend(Chat.prototype.chatsArray[index].chat_description,
+            {
+              chat_id: chat_description.chat_id,
+              createdByUserId: chat_description.createdByUserId,
+              createdDatetime: chat_description.createdDatetime,
+              user_ids: chat_description.user_ids
+            });
+        } else {
+          Chat.prototype.chatsArray[index].chat_description = chat_description;
+        }
+        self.chatWorkflow(event, chat_description);
       }
     );
   },
 
-  chatWorkflow: function(event) {
-    this.createChatLayout(event);
+  chatWorkflow: function(event, chat_description) {
+    let self = this;
+    self.createChatLayout(event, chat_description);
+    if (event.chat_wscs_descrs) {
+      webrtc.handleConnectedDevices(event.chat_wscs_descrs);
+    }
   },
 
   /**
    * create chat layout
    * create tables in indexeddb for chat
    */
-  createChatLayout: function(messageData) {
+  createChatLayout: function(messageData, chat_description) {
     var self = this;
-    if (messageData.type === "chat_joined") {
-      indexeddb.getByKeyPath(
-        chats_bus.collectionDescription,
-        null,
-        messageData.chat_description.chat_id,
-        function(getError, localChatDescription) {
-          if (getError) {
-            console.error(getError);
-            return;
-          }
-
-          if (localChatDescription && messageData.restore_chat_state) {
-            messageData.chat_description = localChatDescription;
-          } else {
-            messageData.chat_description.user_ids = localChatDescription.user_ids
-          }
-
-          self.handleChat(messageData, null);
-        }
-      );
-    } else {
-      self.handleChat(messageData, null);
-    }
+    self.handleChat(messageData, chat_description);
   },
 
   addNewChatToIndexedDB: function(chat_description, callback) {
-    let newChat = {};
-    newChat = Chat.prototype.getInitialState();
-    if (chat_description){
+    let newChat = Chat.prototype.getInitialState();
+    if (chat_description) {
       this.extend(newChat, chat_description)
     }
     this.setCreator(newChat);
@@ -374,7 +339,9 @@ const ChatsManager = React.createClass({
 
   destroyChat: function(description) {
     let position = this.getDestroyChatPosition(description.chat_id);
+    console.log('destroy chat', Chat.prototype.chatsArray);
     Chat.prototype.chatsArray.splice(position, 1);
+    console.log('destroy chat', Chat.prototype.chatsArray);
     event_bus.trigger("changeOpenChats");
     event_bus.trigger("chatDestroyed", description.chat_id);
     this.forceUpdate();
@@ -387,7 +354,7 @@ const ChatsManager = React.createClass({
   getDestroyChatPosition: function(chat_id) {
     let destroyChatPosition;
     Chat.prototype.chatsArray.every(function(_chat, index) {
-      if (_chat.chatDescription.chat_id === chat_id) {
+      if (_chat.chat_description.chat_id === chat_id) {
         destroyChatPosition = index;
       }
       return !destroyChatPosition;
@@ -456,9 +423,10 @@ const ChatsManager = React.createClass({
       return <div className="flex-outer-container align-start" data-role="chat_wrapper"></div>
     } else {
       let items = [];
-      Chat.prototype.chatsArray.forEach(function(_chat) {
-        items.push(<Chat data={_chat} key={_chat.chatDescription.chat_id}
-                         scrollEachChat={self.props.scrollEachChat}/>);
+      console.log('render ChatsArray', Chat.prototype.chatsArray);
+      Chat.prototype.chatsArray.forEach(function(_chat, index) {
+        items.push(<Chat data={_chat} key={_chat.chat_description && _chat.chat_description.chat_id ? _chat.chat_description.chat_id : index}
+                         mode={_chat.mode} index={index} scrollEachChat={self.props.scrollEachChat}/>);
       });
       return <div className="flex-outer-container align-start" data-role="chat_wrapper">{items}</div>;
     }

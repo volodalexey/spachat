@@ -8,9 +8,11 @@ import dom_core from '../js/dom_core.js'
 import event_bus from '../js/event_bus.js'
 import messages from '../js/messages.js'
 import webrtc from '../js/webrtc.js'
+import websocket from '../js/websocket.js'
 import chats_bus from '../js/chats_bus.js'
 import users_bus from '../js/users_bus.js'
 import model_core from '../js/model_core.js'
+import indexeddb from '../js/indexeddb.js'
 
 import Header from '../components/header'
 import Filter from '../components/filter'
@@ -217,70 +219,130 @@ const Chat = React.createClass({
   },
 
   componentWillMount: function() {
-    let index = this.chatsArray.indexOf(this.props.data), self = this, data = this.props.data;
-    if (!data.restoreOption) {
-      this.setState({
-        chat_id: data.chatDescription.chat_id,
-        createdByUserId: data.chatDescription.createdByUserId,
-        createdDatetime: data.chatDescription.createdDatetime,
-        user_ids: data.chatDescription.user_ids,
-        index: index
-      });
-    } else {
-      data.chatDescription.index = index;
-      this.setState(data.chatDescription);
-      let currentOptions = this.optionsDefinition(data.chatDescription, data.chatDescription.bodyOptions.mode);
-      if (currentOptions.paginationOptions.showEnablePagination) {
-        Pagination.prototype.countPagination(currentOptions, null, data.chatDescription.bodyOptions.mode,
-          {"chat_id": data.chatDescription.chat_id}, function(_newState) {
-            self.setState(_newState);
-          });
+    let index = this.props.index, self = this, data = this.props.data;
+    if (this.props.data.mode && this.props.data.mode === 'raw') {
+      this.setState({logMessages: this.props.data.logMessages,
+        index: index});
+    } else if (this.props.data.mode && this.props.data.mode === 'ready'){
+      if (!data.restoreOption) {
+        this.setState({
+          chat_id: data.chat_description.chat_id,
+          createdByUserId: data.chat_description.createdByUserId,
+          createdDatetime: data.chat_description.createdDatetime,
+          user_ids: data.chat_description.user_ids,
+          index: index
+        });
+      } else {
+        data.chat_description.index = index;
+        this.setState(data.chat_description);
+        let currentOptions = this.optionsDefinition(data.chat_description, data.chat_description.bodyOptions.mode);
+        if (currentOptions.paginationOptions.showEnablePagination) {
+          Pagination.prototype.countPagination(currentOptions, null, data.chat_description.bodyOptions.mode,
+            {"chat_id": data.chat_description.chat_id}, function(_newState) {
+              self.setState(_newState);
+            });
+        }
       }
     }
   },
 
   componentDidMount: function() {
-    this.chat = ReactDOM.findDOMNode(this);
-    this.splitter_left = this.chat.querySelector('[data-splitteritem="left"]');
-    this.splitter_right = this.chat.querySelector('[data-splitteritem="right"]');
+    if (this.props.data.mode === 'raw') {
+      let self = this;
+      this.state.logMessages.push('sendingMessage chat_create');
+      this.setState({logMessages: this.state.logMessages,
+      chat_mode: this.props.data.mode});
+      event_bus.on('web_socket_message', this.onChatMessageRouter);
+      event_bus.on('send_log_message', this.getLogMessage);
+      if (this.props.data.show && this.props.data.chat_id) {
+        this.state.logMessages.push('Getting chat description');
+        this.setState({logMessages: this.state.logMessages});
+        indexeddb.getByKeyPath(
+          chats_bus.collectionDescription,
+          null,
+          this.props.data.chat_id,
+          function(getError, chatDescription) {
+            if (getError) {
+              return console.error(getError);
+            }
 
-    event_bus.on('changeMode', this.changeMode, this);
-    event_bus.on('getChatDescription', this.getChatDescription, this);
-    event_bus.on('chat_message', this.onChatMessage, this);
-    event_bus.on('chat_toggled_ready', this.onChatToggledReady, this);
-    event_bus.on('srv_chat_join_request', this.onChatJoinRequest, this);
+            if (chatDescription) {
+              websocket.sendMessage({
+                type: "chat_join",
+                from_user_id: users_bus.getUserId(),
+                chat_description: {
+                  chat_id: chatDescription.chat_id,
+                  restoreOption: self.props.data.restoreOption
+                }
+              });
+            } else {
+              console.error(new Error('Chat with such id not found in the database!'));
+            }
+          }
+        );
+      } else {
+        websocket.sendMessage({
+          type: "chat_create",
+          from_user_id: users_bus.getUserId()
+        });
+      }
+    } else {
+      this.props.data.chat_description.chat_mode = this.props.data.mode;
+      this.setState(this.props.data.chat_description);
 
-    this.splitter_left.addEventListener('mousedown', this.startResize);
-    this.splitter_left.addEventListener('touchstart', this.startResize);
-    this.splitter_left.addEventListener('touchmove', this.startResize);
-    this.splitter_left.addEventListener('touchend', this.startResize);
+      this.chat = ReactDOM.findDOMNode(this);
+      this.splitter_left = this.chat.querySelector('[data-splitteritem="left"]');
+      this.splitter_right = this.chat.querySelector('[data-splitteritem="right"]');
 
-    this.splitter_right.addEventListener('mousedown', this.startResize);
-    this.splitter_right.addEventListener('touchstart', this.startResize);
-    this.splitter_right.addEventListener('touchmove', this.startResize);
-    this.splitter_right.addEventListener('touchend', this.startResize);
+      event_bus.on('changeMode', this.changeMode, this);
+      event_bus.on('getChatDescription', this.getChatDescription, this);
+      event_bus.on('chat_message', this.onChatMessage, this);
+      event_bus.on('chat_toggled_ready', this.onChatToggledReady, this);
+      event_bus.on('srv_chat_join_request', this.onChatJoinRequest, this);
+
+      this.splitter_left.addEventListener('mousedown', this.startResize);
+      this.splitter_left.addEventListener('touchstart', this.startResize);
+      this.splitter_left.addEventListener('touchmove', this.startResize);
+      this.splitter_left.addEventListener('touchend', this.startResize);
+
+      this.splitter_right.addEventListener('mousedown', this.startResize);
+      this.splitter_right.addEventListener('touchstart', this.startResize);
+      this.splitter_right.addEventListener('touchmove', this.startResize);
+      this.splitter_right.addEventListener('touchend', this.startResize);
+    }
   },
 
   componentWillUnmount: function() {
-    event_bus.off('changeMode', this.changeMode, this);
-    event_bus.off('getChatDescription', this.getChatDescription, this);
-    event_bus.off('chat_message', this.onChatMessage, this);
-    event_bus.off('chat_toggled_ready', this.onChatToggledReady, this);
-    event_bus.off('srv_chat_join_request', this.onChatJoinRequest, this);
+    if (this.state.chat_mode === 'raw') {
+      event_bus.off('web_socket_message', this.onChatMessageRouter);
+      event_bus.off('send_log_message', this.getLogMessage);
+    } else if(this.state.chat_mode === 'ready'){
+      event_bus.off('changeMode', this.changeMode, this);
+      event_bus.off('getChatDescription', this.getChatDescription, this);
+      event_bus.off('chat_message', this.onChatMessage, this);
+      event_bus.off('chat_toggled_ready', this.onChatToggledReady, this);
+      event_bus.off('srv_chat_join_request', this.onChatJoinRequest, this);
 
-    this.splitter_left.removeEventListener('mousedown', this.startResize);
-    this.splitter_left.removeEventListener('touchstart', this.startResize);
-    this.splitter_left.removeEventListener('touchmove', this.startResize);
-    this.splitter_left.removeEventListener('touchend', this.startResize);
+      this.splitter_left.removeEventListener('mousedown', this.startResize);
+      this.splitter_left.removeEventListener('touchstart', this.startResize);
+      this.splitter_left.removeEventListener('touchmove', this.startResize);
+      this.splitter_left.removeEventListener('touchend', this.startResize);
 
-    this.splitter_right.removeEventListener('mousedown', this.startResize);
-    this.splitter_right.removeEventListener('touchstart', this.startResize);
-    this.splitter_right.removeEventListener('touchmove', this.startResize);
-    this.splitter_right.removeEventListener('touchend', this.startResize);
+      this.splitter_right.removeEventListener('mousedown', this.startResize);
+      this.splitter_right.removeEventListener('touchstart', this.startResize);
+      this.splitter_right.removeEventListener('touchmove', this.startResize);
+      this.splitter_right.removeEventListener('touchend', this.startResize);
 
-    this.chat = null;
-    this.splitter_left = null;
-    this.splitter_right = null;
+      this.chat = null;
+      this.splitter_left = null;
+      this.splitter_right = null;
+    }
+  },
+
+  getLogMessage: function(chat_id, message) {
+    if (chat_id !== this.state.chat_id) return;
+    this.state.logMessages.push(message);
+    this.setState({logMessages: this.state.logMessages});
   },
 
   startResize: function(event) {
@@ -403,7 +465,8 @@ const Chat = React.createClass({
     }
   },
 
-  changeMode: function(element) {
+  changeMode: function(element, chat_id) {
+    if (chat_id && chat_id !== this.state.chat_id) return;
     this.switchModes([
       {
         chat_part: element.dataset.chat_part,
@@ -489,6 +552,22 @@ const Chat = React.createClass({
     );
   },
 
+  onChatMessageRouter: function(messageData) {
+    if (this.state.chat_id && this.state.chat_id !== messageData.chat_description.chat_id) return;
+    switch (messageData.type) {
+      case 'chat_created':
+        this.state.logMessages.push('get chatId: ' + messageData.chat_description.chat_id);
+        this.setState({logMessages: this.state.logMessages,
+          chat_id: messageData.chat_description.chat_id});
+        console.log(this.chatsArray);
+        let index = this.chatsArray.indexOf(this.props.data);
+        this.chatsArray[index].chat_description = this.state;
+        console.log(this.chatsArray);
+        event_bus.trigger('chatJoinApproved', messageData);
+        break;
+    }
+  },
+
   defineSplitterClass: function(className) {
     if (!this.state.settings_ListOptions.adjust_width ||
       this.state.settings_ListOptions.current_data_key !== "custom_size") {
@@ -559,64 +638,6 @@ const Chat = React.createClass({
     this.setState(newState);
   },
 
-  render: function() {
-    let handleEvent = {
-      changeState: this.changeState
-    };
-    let onEvent = {
-      onClick: this.handleClick,
-      onChange: this.handleChange
-    };
-
-    return (
-      <section className="modal" data-chat_id={this.props.data.chat_id}
-               style={{width: this.state.settings_ListOptions.size_current}}>
-        <div className={this.defineSplitterClass('chat-splitter-item ')} data-role="splitter_item"
-             data-splitteritem="left">
-        </div>
-        <div className={this.defineSplitterClass('chat-splitter-item right ')} data-role="splitter_item"
-             data-splitteritem="right">
-        </div>
-        <div className={this.props.scrollEachChat ? 'w-inh ' : 'p-fx w-inh'} style={{'zIndex': 3}}>
-          <div className={this.state.hideTopPart ? "hide" : ""}>
-            <Header data={this.state} handleEvent={handleEvent} events={onEvent}/>
-            <div data-role="extra_toolbar_container" className="flex-sp-around flex-shrink-0 c-200">
-              <ExtraToolbar mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
-            </div>
-            <div data-role="filter_container"
-                 className={this.state.hideTopPart ?
-             "flex wrap background-pink flex-shrink-0 c-200 hide" :
-              "flex wrap background-pink flex-shrink-0 c-200"}>
-              <Filter mode={this.state.bodyOptions.mode} data={this.state} handleEvent={handleEvent} events={onEvent}/>
-            </div>
-          </div>
-          <ToggleVisibleChatPart data={this.state} location={this.props.location.TOP} events={onEvent}
-                                 handleEvent={handleEvent}/>
-        </div>
-        <div data-role="body_container"
-             className={this.props.scrollEachChat ? "modal-body overflow-y-scroll p-rel" : "modal-body p-rel"}
-             data-param_content="message">
-          <Body mode={this.state.bodyOptions.mode} data={this.state} options={this.props.data} events={onEvent}
-                userInfo={null} handleEvent={handleEvent}/>
-        </div>
-        <div className={this.props.scrollEachChat ? 'w-inh' : 'p-fx w-inh'} style={{'zIndex': 4, 'bottom': 0}}>
-          <ToggleVisibleChatPart data={this.state} location={this.props.location.BOTTOM} events={onEvent}
-                                 handleEvent={handleEvent}/>
-          <footer className={this.state.hideBottomPart ? "flex-item-auto hide" : "flex-item-auto"}>
-            <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>
-            <div data-role="go_to_container" className="c-200">
-              <GoTo mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
-            </div>
-            <div data-role="pagination_container" className="flex filter_container justContent c-200">
-              <Pagination mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}
-                          handleEvent={handleEvent}/>
-            </div>
-          </footer>
-        </div>
-      </section>
-    )
-  },
-
   valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids'],
 
   valueOfChat: function() {
@@ -674,11 +695,86 @@ const Chat = React.createClass({
           self.setState({messages_PaginationOptions: newState.messages_PaginationOptions});
         }
       });
+  },
+
+  render: function() {
+    if (this.props.data.mode === 'raw') {
+      let items = [];
+      this.state.logMessages.forEach(function(_message, index) {
+        items.push(<div key={index}>{_message}</div>);
+      });
+      return (
+        <section className="modal">
+          <button>Close</button>
+          <div>
+            Messages:
+            {items}
+          </div>
+        </section>
+      )
+    } else {
+      let handleEvent = {
+        changeState: this.changeState
+      };
+      let onEvent = {
+        onClick: this.handleClick,
+        onChange: this.handleChange
+      };
+      return (
+        <section className="modal" data-chat_id={this.props.data.chat_description.chat_id}
+                 style={{width: this.state.settings_ListOptions.size_current}}>
+          <div className={this.defineSplitterClass('chat-splitter-item ')} data-role="splitter_item"
+               data-splitteritem="left">
+          </div>
+          <div className={this.defineSplitterClass('chat-splitter-item right ')} data-role="splitter_item"
+               data-splitteritem="right">
+          </div>
+          <div className={this.props.scrollEachChat ? 'w-inh ' : 'p-fx w-inh'} style={{'zIndex': 3}}>
+            <div className={this.state.hideTopPart ? "hide" : ""}>
+              <Header data={this.state} handleEvent={handleEvent} events={onEvent}/>
+              <div data-role="extra_toolbar_container" className="flex-sp-around flex-shrink-0 c-200">
+                <ExtraToolbar mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
+              </div>
+              <div data-role="filter_container"
+                   className={this.state.hideTopPart ?
+             "flex wrap background-pink flex-shrink-0 c-200 hide" :
+              "flex wrap background-pink flex-shrink-0 c-200"}>
+                <Filter mode={this.state.bodyOptions.mode} data={this.state} handleEvent={handleEvent}
+                        events={onEvent}/>
+              </div>
+            </div>
+            <ToggleVisibleChatPart data={this.state} location={this.props.location.TOP} events={onEvent}
+                                   handleEvent={handleEvent}/>
+          </div>
+          <div data-role="body_container"
+               className={this.props.scrollEachChat ? "modal-body overflow-y-scroll p-rel" : "modal-body p-rel"}
+               data-param_content="message">
+            <Body mode={this.state.bodyOptions.mode} data={this.state} options={this.props.data} events={onEvent}
+                  userInfo={null} handleEvent={handleEvent}/>
+          </div>
+          <div className={this.props.scrollEachChat ? 'w-inh' : 'p-fx w-inh'} style={{'zIndex': 4, 'bottom': 0}}>
+            <ToggleVisibleChatPart data={this.state} location={this.props.location.BOTTOM} events={onEvent}
+                                   handleEvent={handleEvent}/>
+            <footer className={this.state.hideBottomPart ? "flex-item-auto hide" : "flex-item-auto"}>
+              <Editor mode={this.state.bodyOptions.mode} data={this.state} events={onEvent} handleEvent={handleEvent}/>
+              <div data-role="go_to_container" className="c-200">
+                <GoTo mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
+              </div>
+              <div data-role="pagination_container" className="flex filter_container justContent c-200">
+                <Pagination mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}
+                            handleEvent={handleEvent}/>
+              </div>
+            </footer>
+          </div>
+        </section>
+      )
+    }
   }
 });
 
 extend_core.prototype.inherit(Chat, dom_core);
 extend_core.prototype.inherit(Chat, switcher_core);
 extend_core.prototype.inherit(Chat, model_core);
+extend_core.prototype.inherit(Chat, extend_core);
 
 export default Chat;
