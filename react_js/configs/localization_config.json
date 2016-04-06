@@ -538,5 +538,10 @@
     "id": 108,
     "en": "Scroll Each Chat",
     "ru": "Скролл в каждом чате"
+  },
+  {
+    "id": 109,
+    "en": "Header and footer control",
+    "ru": "Управление шапкой и футером"
   }
 ]

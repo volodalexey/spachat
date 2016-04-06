@@ -22,14 +22,14 @@ const ToggleVisibleChatPart = React.createClass({
   },
 
   componentWillMount: function() {
-    if(this.props.location === 'TOP'){
+    if (this.props.location === 'TOP') {
       this.setState({left: this.props.data.toggleTopButtonLeft});
-    } else if(this.props.location === 'BOTTOM'){
+    } else if (this.props.location === 'BOTTOM') {
       this.setState({left: this.props.data.toggleBottomButtonLeft});
     }
   },
 
-    componentDidMount: function() {
+  componentDidMount: function() {
     this.toggle_container = ReactDOM.findDOMNode(this);
     this.toggleButton = this.toggle_container.querySelector('[data-role="toggleButton"]');
     event_bus.on('onMouseUp', this.handleResize, this);
@@ -118,9 +118,9 @@ const ToggleVisibleChatPart = React.createClass({
             btnWidth: null,
             left: this.left
           });
-          if(this.props.location === 'TOP'){
+          if (this.props.location === 'TOP') {
             this.props.handleEvent.changeState({toggleTopButtonLeft: this.left});
-          } else if(this.props.location === 'BOTTOM'){
+          } else if (this.props.location === 'BOTTOM') {
             this.props.handleEvent.changeState({toggleBottomButtonLeft: this.left});
           }
           delete this.resizeClientX;
@@ -141,10 +141,27 @@ const ToggleVisibleChatPart = React.createClass({
     }
   },
 
+  defineClassName(bodyMode, location){
+    let className = "p-abs w-100p ";
+    if (location === "BOTTOM" && bodyMode === 'SETTINGS') {
+      className = className + 'hide'
+    } else {
+      if (this.backlight) {
+        className = className + 'toggle-visible ';
+      }
+      if (!this.props.data.headerFooterControl) {
+        className = className + 'hide'
+      }
+    }
+
+    return className;
+  },
+
   render: function() {
-    if (this.props.location === 'TOP') {
+    let location = this.props.location, bodyMode = this.props.data.bodyOptions.mode;
+    if (location === 'TOP') {
       return (
-        <div className={this.backlight ? "p-abs w-100p toggle-visible" : "p-abs w-100p"}
+        <div className={this.defineClassName(bodyMode, location)}
              style={{'zIndex': 5}} data-role="toggleContainer"
              onMouseUp={this.handleResize} onMouseMove={this.handleResize}
              onTouchEnd={this.handleResize} onTouchMove={this.handleResize}>
@@ -158,29 +175,24 @@ const ToggleVisibleChatPart = React.createClass({
           </button>
         </div>
       )
-    } else if (this.props.location === 'BOTTOM') {
-      if (this.props.data.bodyOptions.mode === "SETTINGS") {
-        return <div></div>
-      } else {
-        return (
-          <div className="p-abs w-100p"
-               data-role="toggleContainer"
-               onMouseUp={this.handleResize} onMouseMove={this.handleResize}
-               onTouchEnd={this.handleResize} onTouchMove={this.handleResize}>
-            <div className="p-abs"
-                 className={this.backlight ? "p-abs w-100p toggle-visible" : "p-abs w-100p"}
-                 style={{'bottom': 0}}>
-              <button data-role="toggleButton" data-action="hideBottomPart" style={{'left': this.state.left}}
-                      onClick={this.handleClick}
-                      onMouseDown={this.startResize}
-                      onTouchEnd={this.startResize}
-                      onTouchMove={this.startResize}
-                      onTouchStart={this.startResize}>\/
-              </button>
-            </div>
+    } else if (location === 'BOTTOM') {
+      return (
+        <div className={this.defineClassName(bodyMode, location)}
+             data-role="toggleContainer"
+             onMouseUp={this.handleResize} onMouseMove={this.handleResize}
+             onTouchEnd={this.handleResize} onTouchMove={this.handleResize}>
+          <div className={this.defineClassName(bodyMode, location)}
+               style={{'bottom': 0}}>
+            <button data-role="toggleButton" data-action="hideBottomPart" style={{'left': this.state.left}}
+                    onClick={this.handleClick}
+                    onMouseDown={this.startResize}
+                    onTouchEnd={this.startResize}
+                    onTouchMove={this.startResize}
+                    onTouchStart={this.startResize}>\/
+            </button>
           </div>
-        )
-      }
+        </div>
+      )
     }
   }
 });

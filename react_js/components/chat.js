@@ -40,6 +40,7 @@ const Chat = React.createClass({
     return {
       hideTopPart: false,
       hideBottomPart: false,
+      headerFooterControl: false,
       toggleTopButtonLeft: '0px',
       toggleBottomButtonLeft: '0px',
       padding: {
@@ -221,9 +222,11 @@ const Chat = React.createClass({
   componentWillMount: function() {
     let index = this.props.index, self = this, data = this.props.data;
     if (this.props.data.mode && this.props.data.mode === 'raw') {
-      this.setState({logMessages: this.props.data.logMessages,
-        index: index});
-    } else if (this.props.data.mode && this.props.data.mode === 'ready'){
+      this.setState({
+        logMessages: this.props.data.logMessages,
+        index: index
+      });
+    } else if (this.props.data.mode && this.props.data.mode === 'ready') {
       if (!data.restoreOption) {
         this.setState({
           chat_id: data.chat_description.chat_id,
@@ -250,8 +253,10 @@ const Chat = React.createClass({
     if (this.props.data.mode === 'raw') {
       let self = this;
       this.state.logMessages.push('sendingMessage chat_create');
-      this.setState({logMessages: this.state.logMessages,
-      chat_mode: this.props.data.mode});
+      this.setState({
+        logMessages: this.state.logMessages,
+        chat_mode: this.props.data.mode
+      });
       event_bus.on('web_socket_message', this.onChatMessageRouter);
       event_bus.on('send_log_message', this.getLogMessage);
       if (this.props.data.show && this.props.data.chat_id) {
@@ -316,7 +321,7 @@ const Chat = React.createClass({
     if (this.state.chat_mode === 'raw') {
       event_bus.off('web_socket_message', this.onChatMessageRouter);
       event_bus.off('send_log_message', this.getLogMessage);
-    } else if(this.state.chat_mode === 'ready'){
+    } else if (this.state.chat_mode === 'ready') {
       event_bus.off('changeMode', this.changeMode, this);
       event_bus.off('getChatDescription', this.getChatDescription, this);
       event_bus.off('chat_message', this.onChatMessage, this);
@@ -557,8 +562,10 @@ const Chat = React.createClass({
     switch (messageData.type) {
       case 'chat_created':
         this.state.logMessages.push('get chatId: ' + messageData.chat_description.chat_id);
-        this.setState({logMessages: this.state.logMessages,
-          chat_id: messageData.chat_description.chat_id});
+        this.setState({
+          logMessages: this.state.logMessages,
+          chat_id: messageData.chat_description.chat_id
+        });
         console.log(this.chatsArray);
         let index = this.chatsArray.indexOf(this.props.data);
         this.chatsArray[index].chat_description = this.state;

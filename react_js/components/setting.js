@@ -209,6 +209,22 @@ const Settings = React.createClass({
             "action": "changeSendEnter",
             "name": ""
           }
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+          "location": "toggle_parts_chat"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "text": 109,
+          "class": "check-box-size",
+          "location": "toggle_parts_chat",
+          "data": {
+            "key": "headerFooterControl",
+            "action": "toggleHeaderFooter"
+          }
         }
       ]
     }
@@ -248,6 +264,9 @@ const Settings = React.createClass({
         case 'copyChatId':
           this.copyChatId(element);
           break;
+        case 'toggleHeaderFooter':
+          this.toggleHeaderFooter(element);
+          break;
       }
     }
   },
@@ -259,6 +278,12 @@ const Settings = React.createClass({
     if (!element) return;
     this.props.data.formatOptions.sendEnter = element.checked;
     this.props.handleEvent.changeState({formatOptions: this.props.data.formatOptions});
+  },
+
+  toggleHeaderFooter(element) {
+    if (!element) return;
+    this.props.data.headerFooterControl = element.checked;
+    this.props.handleEvent.changeState({headerFooterControl: this.props.data.headerFooterControl});
   },
 
   copyChatId(element){
@@ -369,7 +394,8 @@ const Settings = React.createClass({
         "chat_id": this.props.data.chat_id,
         "sendEnter": this.props.data.formatOptions.sendEnter,
         "index": this.props.data.index,
-        "adjust_width": this.props.data.settings_ListOptions.adjust_width
+        "adjust_width": this.props.data.settings_ListOptions.adjust_width,
+        "headerFooterControl": this.props.data.headerFooterControl
       };
     let onEvent = {
       onClick: this.handleClick,
