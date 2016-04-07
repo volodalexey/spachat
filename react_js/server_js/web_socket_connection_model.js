@@ -12,6 +12,7 @@ Web_socket_connection_model.prototype = {
     wsc.ready_states = [];
     wsc.__proto__.put_user_id = Web_socket_connection_model.prototype.put_user_id;
     wsc.__proto__.put_chat_id = Web_socket_connection_model.prototype.put_chat_id;
+    wsc.__proto__.delete_chat_id = Web_socket_connection_model.prototype.delete_chat_id;
     wsc.__proto__.send_error = Web_socket_connection_model.prototype.send_error;
     wsc.__proto__.has_user_id = Web_socket_connection_model.prototype.has_user_id;
     wsc.__proto__.has_chat_id = Web_socket_connection_model.prototype.has_chat_id;
@@ -27,6 +28,7 @@ Web_socket_connection_model.prototype = {
     wsc.ready_states = null;
     wsc.__proto__.put_user_id = null;
     wsc.__proto__.put_chat_id = null;
+    wsc.__proto__.delete_chat_id = null;
     wsc.__proto__.send_error = null;
     wsc.__proto__.has_user_id = null;
     wsc.__proto__.has_chat_id = null;
@@ -71,6 +73,13 @@ Web_socket_connection_model.prototype = {
     var wsc = this;
     if (wsc.has_chat_id(chat_id) === false) {
       wsc.chats_ids.push(chat_id);
+    }
+  },
+
+  delete_chat_id: function(chat_id) {
+    var wsc = this;
+    if (wsc.has_chat_id(chat_id) === true) {
+      wsc.chats_ids.splice(wsc.chats_ids.indexOf(chat_id), 1);
     }
   },
 

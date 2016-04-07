@@ -22,11 +22,11 @@ const Connections = React.createClass({
   },
 
   componentDidMount: function() {
-    event_bus.on('createConnection', this.getConnections, this);
+    event_bus.on('changeConnection', this.getConnections, this);
   },
 
   componentWillUnmount: function() {
-    event_bus.off('createConnection', this.getConnections, this);
+    event_bus.off('changeConnection', this.getConnections, this);
   },
 
   getConnections: function() {

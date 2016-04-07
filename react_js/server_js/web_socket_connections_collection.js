@@ -19,7 +19,8 @@ var Web_socket_connections_collection = function() {
     webrtc_offer: this.webrtc_message_router.onDeviceOffer,
     webrtc_answer: this.webrtc_message_router.onDeviceAnswer,
     webrtc_accept: this.webrtc_message_router.onDeviceAccept,
-    "/api/chat/websocketconnections": this.chats_message_router.ws_getChatWebSocketsConnections
+    "/api/chat/websocketconnections": this.chats_message_router.ws_getChatWebSocketsConnections,
+    chat_leave: this.chats_message_router.onDeviceChatLeave
   };
 
   this.contextMap = {
@@ -33,7 +34,8 @@ var Web_socket_connections_collection = function() {
     webrtc_offer: this.webrtc_message_router,
     webrtc_answer: this.webrtc_message_router,
     webrtc_accept: this.webrtc_message_router,
-    "/api/chat/websocketconnections": this.chats_message_router
+    "/api/chat/websocketconnections": this.chats_message_router,
+    chat_leave: this.chats_message_router
   };
 };
 

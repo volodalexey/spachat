@@ -147,7 +147,7 @@ const ChatsManager = React.createClass({
     this.forceUpdate();
   },
 
-  createNewChat: function(event, show, restoreOption, chatId) {
+  createNewChat: function(event, show, restoreOption, chatId, message_request) {
     if (!websocket)  return;
 
     let newRawChat = {};
@@ -161,9 +161,12 @@ const ChatsManager = React.createClass({
         newRawChat.restoreOption = restoreOption;
       }
     }
+    if (message_request && chatId){
+      newRawChat.chat_id = chatId;
+      newRawChat.message_request = message_request;
+    }
     newRawChat.logMessages = [];
     Chat.prototype.chatsArray.push(newRawChat);
-    console.log('Chat.prototype.chatsArray', Chat.prototype.chatsArray);
     this.forceUpdate();
   },
 
@@ -174,7 +177,7 @@ const ChatsManager = React.createClass({
         break;
       case 'notifyChat':
         Chat.prototype.chatsArray.forEach(function(_chat) {
-          if (messageData.chat_description.chat_id === _chat.chat_description.chat_id) {
+          if (_chat.chat_description && messageData.chat_description.chat_id === _chat.chat_description.chat_id) {
             event_bus.trigger(messageData.chat_type, messageData);
           }
         });
@@ -187,8 +190,7 @@ const ChatsManager = React.createClass({
       event_bus.set_ws_device_id(event.from_ws_device_id);
     }
     event_bus.trigger('send_log_message', event.chat_description.chat_id, 'Adding chat to IndexedDB');
-
-    this.addNewChatToIndexedDB({chat_id: event.chat_description.chat_id}, function(err, chat) {
+    this.addNewChatToIndexedDB(event.chat_description, function(err, chat) {
       if (err) {
         console.error(err);
         event_bus.trigger('send_log_message', chat.chat_id, err);
@@ -253,39 +255,33 @@ const ChatsManager = React.createClass({
         }
 
         index = self.getIndexCurrentChat(chat_description.chat_id);
-        Chat.prototype.chatsArray[index].mode = 'ready';
-        if(!event.chat_description.restoreOption){
-          Chat.prototype.chatsArray[index].chat_description = {};
-          self.extend(Chat.prototype.chatsArray[index].chat_description,
-            {
-              chat_id: chat_description.chat_id,
-              createdByUserId: chat_description.createdByUserId,
-              createdDatetime: chat_description.createdDatetime,
-              user_ids: chat_description.user_ids
-            });
-        } else {
-          Chat.prototype.chatsArray[index].chat_description = chat_description;
+        if (index === undefined) return;
+
+        if (Chat.prototype.chatsArray[index].mode !== 'ready') {
+          Chat.prototype.chatsArray[index].mode = 'ready';
+          if(!event.chat_description.restoreOption){
+            Chat.prototype.chatsArray[index].chat_description = {};
+            self.extend(Chat.prototype.chatsArray[index].chat_description,
+              {
+                chat_id: chat_description.chat_id,
+                createdByUserId: chat_description.createdByUserId,
+                createdDatetime: chat_description.createdDatetime,
+                user_ids: chat_description.user_ids
+              });
+          } else {
+            Chat.prototype.chatsArray[index].chat_description = chat_description;
+          }
+          self.chatWorkflow(event, chat_description);
+        } else if (Chat.prototype.chatsArray[index].mode === 'ready' && event.chat_wscs_descrs) {
+          webrtc.handleConnectedDevices(event.chat_wscs_descrs);
         }
-        self.chatWorkflow(event, chat_description);
       }
     );
   },
 
   chatWorkflow: function(event, chat_description) {
     let self = this;
-    self.createChatLayout(event, chat_description);
-    if (event.chat_wscs_descrs) {
-      webrtc.handleConnectedDevices(event.chat_wscs_descrs);
-    }
-  },
-
-  /**
-   * create chat layout
-   * create tables in indexeddb for chat
-   */
-  createChatLayout: function(messageData, chat_description) {
-    var self = this;
-    self.handleChat(messageData, chat_description);
+    self.handleChat(event, chat_description);
   },
 
   addNewChatToIndexedDB: function(chat_description, callback) {
@@ -339,9 +335,7 @@ const ChatsManager = React.createClass({
 
   destroyChat: function(description) {
     let position = this.getDestroyChatPosition(description.chat_id);
-    console.log('destroy chat', Chat.prototype.chatsArray);
     Chat.prototype.chatsArray.splice(position, 1);
-    console.log('destroy chat', Chat.prototype.chatsArray);
     event_bus.trigger("changeOpenChats");
     event_bus.trigger("chatDestroyed", description.chat_id);
     this.forceUpdate();
@@ -423,7 +417,6 @@ const ChatsManager = React.createClass({
       return <div className="flex-outer-container align-start" data-role="chat_wrapper"></div>
     } else {
       let items = [];
-      console.log('render ChatsArray', Chat.prototype.chatsArray);
       Chat.prototype.chatsArray.forEach(function(_chat, index) {
         items.push(<Chat data={_chat} key={_chat.chat_description && _chat.chat_description.chat_id ? _chat.chat_description.chat_id : index}
                          mode={_chat.mode} index={index} scrollEachChat={self.props.scrollEachChat}/>);

@@ -62,9 +62,6 @@ Connection.prototype = {
     if(!this.chats_ids.length){
       this.destroy();
     }
-/*    if (!this.handleAnyContexts()) {
-      this.destroy();
-    }*/
   },
 
   hasUserId: function(user_id) {

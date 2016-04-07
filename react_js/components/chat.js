@@ -285,7 +285,20 @@ const Chat = React.createClass({
             }
           }
         );
+      } else if (this.props.data.message_request && this.props.data.chat_id){
+        this.state.logMessages.push('Websocket sendMessage "chat_join_request"');
+        this.setState({logMessages: this.state.logMessages});
+        websocket.sendMessage({
+          type: "chat_join_request",
+          from_user_id: users_bus.getUserId(),
+          to_chat_id: this.props.data.chat_id,
+          request_body: {
+            message: this.props.data.message_request
+          }
+        });
       } else {
+        this.state.logMessages.push('Websocket sendMessage "chat_create"');
+        this.setState({logMessages: this.state.logMessages});
         websocket.sendMessage({
           type: "chat_create",
           from_user_id: users_bus.getUserId()
@@ -566,10 +579,8 @@ const Chat = React.createClass({
           logMessages: this.state.logMessages,
           chat_id: messageData.chat_description.chat_id
         });
-        console.log(this.chatsArray);
         let index = this.chatsArray.indexOf(this.props.data);
         this.chatsArray[index].chat_description = this.state;
-        console.log(this.chatsArray);
         event_bus.trigger('chatJoinApproved', messageData);
         break;
     }

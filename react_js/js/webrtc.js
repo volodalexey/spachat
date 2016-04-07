@@ -1,3 +1,4 @@
+import websocket from '../js/websocket'
 import event_core from '../js/event_core.js'
 import extend_core from '../js/extend_core.js'
 import event_bus from '../js/event_bus.js'
@@ -39,7 +40,7 @@ WebRTC.prototype = {
   createConnection: function(options) {
     var connection = new Connection(options);
     this.connections.push(connection);
-    event_bus.trigger('createConnection');
+    event_bus.trigger('changeConnection');
     return connection;
   },
 
@@ -103,8 +104,6 @@ WebRTC.prototype = {
    */
   handleDevicePassive: function(messageData) {
     var self = this;
-    console.log(event_bus.ws_device_id,event_bus);
-
     if (event_bus.get_ws_device_id() === messageData.from_ws_device_id) {
       console.warn('the information about myself');
       return;
@@ -319,7 +318,9 @@ WebRTC.prototype = {
     var _this = this;
     curConnection.log('log', {message: 'try: acceptRemoteAnswerAuto:setRemoteDescription'});
     try {
-      var remoteAnswerDescription = new RTCSessionDescription(curConnection.active.remoteAnswerDescription);
+      var _RTCSessionDescription = window.webkitRTCSessionDescription || window.mozRTCSessionDescription ||
+        window.RTCSessionDescription;
+      var remoteAnswerDescription = new _RTCSessionDescription(curConnection.active.remoteAnswerDescription);
       curConnection.active.peerConnection.setRemoteDescription(remoteAnswerDescription);
     } catch (error) {
       if (callback) {
@@ -405,7 +406,9 @@ WebRTC.prototype = {
     var _this = this;
     curConnection.log('log', {message: 'try: createRTCPeerConnection'});
     try {
-      var peerConnection = new webkitRTCPeerConnection(_this.configuration.RTC, _this.configuration.constraints);
+      var _peerConnection = window.webkitPeerConnection00 || window.webkitRTCPeerConnection || window.mozRTCPeerConnection ||
+      window.RTCPeerConnection || window.PeerConnection;
+      var peerConnection = new _peerConnection(_this.configuration.RTC, _this.configuration.constraints);
     } catch (error) {
       if (callback) {
         callback(error);
@@ -464,6 +467,7 @@ WebRTC.prototype = {
 
   onDataChannelClose: function(curConnection, event) {
     this._removeDataChannelListeners(curConnection.dataChannel);
+    this.connections.splice(this.connections.indexOf(curConnection), 1);
     console.warn('Data channel was closed', event);
   },
 
@@ -627,7 +631,9 @@ WebRTC.prototype = {
 
     curConnection.log('log', {message: 'try: createLocalAnswer:setRemoteDescription'});
     try {
-      var remoteOfferDescription = new RTCSessionDescription(curConnection.passive.remoteOfferDescription);
+      var _RTCSessionDescription = window.webkitRTCSessionDescription || window.mozRTCSessionDescription ||
+        window.RTCSessionDescription;
+      var remoteOfferDescription = new _RTCSessionDescription(curConnection.passive.remoteOfferDescription);
       peerConnection.setRemoteDescription(remoteOfferDescription);
     } catch (error) {
       if (callback) {
@@ -697,12 +703,20 @@ WebRTC.prototype = {
     _this.connections.forEach(function(connetion) {
       connetion.removeChatId(chat_id);
     });
+    websocket.sendMessage({
+      type: "chat_leave",
+      from_user_id: users_bus.getUserId(),
+      chat_description: {
+        chat_id: chat_id
+      }
+    });
   },
 
   onConnectionDestroyed: function(connection) {
     var _this = this;
     _this._removeDataChannelListeners(connection.dataChannel);
     _this._removePeerConnectionListeners(connection.peerConnection);
+    connection.dataChannel.close();
     _this.connections.splice(_this.connections.indexOf(connection), 1);
   },
 

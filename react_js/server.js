@@ -33,7 +33,6 @@ webSocketServer.on('connection', function(ws) {
       var position = getDeleteClient(ws);
       clients.splice(position, 1);
       web_socket_connections_collection.on_wsc_close(this, event.code, event.message);
-
       console.log('Connection close!');
       if (event.wasClean) {
         console.log('Соединение закрыто чисто');

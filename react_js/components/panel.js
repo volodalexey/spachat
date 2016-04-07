@@ -661,19 +661,10 @@ const Panel = React.createClass({
   requestChatByChatId: function() {
     let chat_id_input = this.inner_container.querySelector('[data-role="chat_id_input"]'),
       chat_message_input = this.inner_container.querySelector('[data-role="chat_message_input"]'),
-      requestButton = this.inner_container.querySelector('[data-action="requestChatByChatId"]'), newState,
-      self = this;
+      requestButton = this.inner_container.querySelector('[data-action="requestChatByChatId"]'), newState;
 
     if (requestButton && chat_id_input && chat_id_input.value && chat_message_input && chat_message_input.value) {
-
-      websocket.sendMessage({
-        type: "chat_join_request",
-        from_user_id: users_bus.getUserId(),
-        to_chat_id: chat_id_input.value,
-        request_body: {
-          message: chat_message_input.value
-        }
-      });
+      event_bus.trigger('addNewChatAuto', null, null, null, chat_id_input.value, chat_message_input.value);
     } else {
       event_bus.trigger('changeStatePopup', {
         show: true,

@@ -111,7 +111,6 @@ Chats_message_router.prototype = {
   onDeviceChatJoinRequest: function(cur_wsc, parsedMessageData) {
     cur_wsc.put_user_id(parsedMessageData.from_user_id);
     var to_chat_wscs_descrs = this.get_chat_wscs_descrs(parsedMessageData.to_chat_id);
-
     var responseData = {
       type: 'notifyChat',
       chat_type: 'srv_chat_join_request',
@@ -128,6 +127,8 @@ Chats_message_router.prototype = {
         }
       ]
     };
+    console.warn('srv_chat_join_request', responseData);
+
     var active = this.broadcast_ready_chat_message(parsedMessageData.to_chat_id, responseData);
     if (active.length) {
       var successData = {
@@ -174,6 +175,14 @@ Chats_message_router.prototype = {
     };
 
     cur_wsc.send(JSON.stringify(responseData));
+  },
+
+  onDeviceChatLeave: function(cur_wsc, parsedMessageData) {
+    cur_wsc.delete_chat_id(parsedMessageData.chat_description.chat_id);
+    console.log('Chat leave from',
+      'ws_device_id = ' + cur_wsc.ws_device_id,
+      'user_id = ' + parsedMessageData.from_user_id,
+      'to chat_id = ' + parsedMessageData.chat_description.chat_id);
   }
 };
 
