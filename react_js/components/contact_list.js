@@ -1,9 +1,11 @@
 import React from 'react'
-
+import Localization from '../js/localization.js'
 import chats_bus from '../js/chats_bus.js'
+import extend_core from '../js/extend_core.js'
+import dom_core from '../js/dom_core.js'
+import event_bus from '../js/event_bus.js'
 
 import Body from '../components/body'
-
 import Location_Wrapper from './location_wrapper'
 
 const ContactList = React.createClass({
@@ -32,8 +34,28 @@ const ContactList = React.createClass({
     });
   },
 
+  handleClick: function(event) {
+    let element = this.getDataParameter(event.currentTarget, 'action');
+    if (element) {
+      switch (element.dataset.action) {
+        case 'makeFriends':
+          this.makeFriends(element);
+          break;
+      }
+    }
+  },
+
+  makeFriends(element){
+    let userId = element.dataset.key;
+    if(userId) {
+      event_bus.trigger('makeFriends', userId, element);
+    } else {
+      console.error('Unable to get UserId');
+    }
+  },
+
   renderItems: function(configs) {
-    let items = [];
+    let items = [], self = this, control_btn;
     this.state.users.forEach(function(_user) {
       items.push(
         <div key={_user.user_id} className="flex-sp-start margin-t-b">
@@ -41,8 +63,19 @@ const ContactList = React.createClass({
             <img src="img\app\3.ico" width="35px" height="35px" className="border-radius-5"></img>
           </div>
           <div className="message flex-item-1-auto flex-dir-col flex-sp-between">
-            <div>{_user.userName}</div>
+            <div className="text-bold">{_user.userName}</div>
             <div>{_user.user_id}</div>
+            {(() => {
+              if (_user.userName === '-//-//-//-'){
+                return (
+                  <div className="flex-just-center">
+                    <button data-key={_user.user_id} data-action="makeFriends" onClick={self.handleClick}>
+                      {Localization.getLocText(66)}
+                    </button>
+                  </div>
+                )
+              }
+            })()}
           </div>
         </div>
       );
@@ -63,5 +96,6 @@ const ContactList = React.createClass({
     }
   }
 });
+extend_core.prototype.inherit(ContactList, dom_core);
 
 export default ContactList;

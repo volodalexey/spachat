@@ -56,7 +56,17 @@ const Input = React.createClass({
     }
     if (this.props.config.type === "text") {
       if (this.props.config.data && this.props.config.data.key && this.props.data) {
-        params["value"] = this.props.data[this.props.config.data.key];
+        if (typeof this.props.data[this.props.config.data.key] === "number") {
+          if (this.props.config.data.replace_key){
+            let text = Localization.getLocText(this.props.data[this.props.config.data.key]);
+            params["value"] = text.replace('{' + this.props.config.data.replace_key + '}',
+              this.props.data[this.props.config.data.replace_key]);
+          } else {
+            params["value"] = Localization.getLocText(this.props.data[this.props.config.data.key]);
+          }
+        } else {
+          params["value"] = this.props.data[this.props.config.data.key];
+        }
       }
     }
     return params;

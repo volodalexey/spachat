@@ -206,7 +206,9 @@ const Panel = React.createClass({
         },
         joinUser_ListOptions: {
           text: "joinUser_ListOptions",
-          readyForRequest: false
+          readyForRequest: false,
+          userId: '',
+          messageRequest: null
         },
 
         createChat_ExtraToolbarOptions: {
@@ -407,6 +409,7 @@ const Panel = React.createClass({
       event_bus.on('AddedNewChat', this.toggleListOptions);
       event_bus.on('changeOpenChats', this.getInfoForBody);
       event_bus.on('web_socket_message', this.onPanelMessageRouter);
+      event_bus.on('makeFriends', this.onForceMakeFriends);
       this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
       this.inner_container = document.querySelector('[data-role="left_panel_inner_container"]');
       this.outerContainer.style.right = '100vw';
@@ -448,7 +451,7 @@ const Panel = React.createClass({
     this.confirmPassword = null;
   },
 
-  componentDidUpdate: function() {
+  componentDidUpdate: function(prevProps, prevState) {
     this.resizePanel();
     if (this.state.bodyMode === MODE.USER_INFO_EDIT) {
       this.userName = this.panelBody.querySelector('[data-main="user_name_input"]');
@@ -682,12 +685,12 @@ const Panel = React.createClass({
     }
   },
 
-  togglePanel: function(forceClose) {
+  togglePanel: function(forceClose, options) {
     this.openOrClosePanel(this.outerContainer.clientWidth + this.togglePanelElement.clientWidth >
-      document.body.clientWidth, forceClose);
+      document.body.clientWidth, forceClose, options);
   },
 
-  openOrClosePanel: function(bigMode, forceClose) {
+  openOrClosePanel: function(bigMode, forceClose, options) {
     if (this.props.location === 'left' && this.outerContainer.style.right === '100vw') {
       this.outerContainer.style.right = '';
     }
@@ -703,7 +706,7 @@ const Panel = React.createClass({
         openedState: true,
         [this.props.location]: '0px'
       });
-      this.getInfoForBody(this.state.bodyMode);
+      this.getInfoForBody(this.state.bodyMode, options);
     } else {
       z_index--;
       this.setState({
@@ -724,7 +727,7 @@ const Panel = React.createClass({
     }
   },
 
-  switchPanelMode: function(element) {
+  switchPanelMode: function(element, options) {
     if (element.dataset.mode_to === MODE.USER_INFO_SHOW && this.previous_UserInfo_Mode) {
       this.setState({bodyMode: this.previous_UserInfo_Mode});
     } else {
@@ -736,11 +739,14 @@ const Panel = React.createClass({
     if (this.state.bodyMode === MODE.USER_INFO_SHOW) {
       this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
     }
-    this.getInfoForBody(element.dataset.mode_to);
+    this.getInfoForBody(element.dataset.mode_to, options);
   },
 
-  getInfoForBody: function(mode) {
+  getInfoForBody: function(mode, options) {
     let self = this, currentOptions;
+    if (options && options.bodyMode){
+      mode = options.bodyMode;
+    }
     if (!mode) {
       mode = this.state.bodyMode;
     }
@@ -779,6 +785,20 @@ const Panel = React.createClass({
           }
         });
       });
+    }
+    if ((mode === MODE.JOIN_USER) && (this.props.location === 'left')){
+      if (options && options.userId){
+        if (options.force){
+          this.state.joinUser_ListOptions.userId = options.userId;
+          this.state.joinUser_ListOptions.messageRequest = options.messageRequest;
+          this.setState({joinUser_ListOptions: this.state.joinUser_ListOptions,
+            bodyMode: options.bodyMode});
+        }
+      }else {
+        this.state.joinUser_ListOptions.userId = '';
+        this.state.joinUser_ListOptions.messageRequest = null;
+        this.setState({joinUser_ListOptions: this.state.joinUser_ListOptions});
+      }
     }
   },
 
@@ -1038,57 +1058,18 @@ const Panel = React.createClass({
     return handlers;
   },
 
-  render: function() {
-    let handleEvent = {
-      changeState: this.changeState
+  onForceMakeFriends(userId, element){
+    let options = {
+      userId: userId,
+      bodyMode: MODE.JOIN_USER,
+      messageRequest: 110,
+      force: true
     };
-    let onEvent = {
-      onClick: this.handleClick,
-      onChange: this.handleChange,
-      onTransitionEnd: this.handleTransitionEnd
-    };
-
-    let location = this.props.location;
-    let btnConfig = (location === 'left') ? this.props.leftBtnConfig : this.props.rightBtnConfig;
-    let panel_toolbar_class = (location === 'left') ? 'w-100p flex-dir-col flex-item-auto c-200' : 'w-100p flex-dir-col c-200';
-    var style = {[location]: this.state[location]};
-    return (
-      <section style={style} data-role={location + '_panel_outer_container'}
-               className={location + '-panel hide p-fx panel animate c-100'}>
-        <div className="p-rel h-100p flex-dir-col">
-          <Triple_Element events={onEvent} config={btnConfig} hide={this.state.toggleElemHide}/>
-          <div data-role={location + '_panel_inner_container'}
-               className="min-width-350 flex-item-1-auto clear flex-dir-col h-100p">
-            <header id={location} data-role={location + '_panel_toolbar'} className={panel_toolbar_class}>
-              <PanelToolbar location={location} mode={this.state.bodyMode} events={onEvent}
-                            hide={this.state.toggleToolbarElemHide}
-              />
-            </header>
-            <div data-role={location + '_extra_toolbar_container'}
-                 className="flex-sp-around flex-item-auto c-200">
-              <ExtraToolbar mode={this.state.bodyMode} data={this.state} events={onEvent}/>
-            </div>
-            <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
-              <Filter mode={this.state.bodyMode} data={this.state} events={onEvent}/>
-            </div>
-            <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
-              <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
-                    userInfo={this.state.userInfo? this.state.userInfo : this.props.userInfo}/>
-            </div>
-            <footer className="flex-item-auto">
-              <div data-role={location + '_go_to_container'} className="c-200">
-                <GoTo mode={this.state.bodyMode} data={this.state} events={onEvent}/>
-              </div>
-              <div data-role={location + '_pagination_containe'}
-                   className="flex filter_container justContent c-200">
-                <Pagination mode={this.state.bodyMode} data={this.state} events={onEvent}
-                            handleEvent={handleEvent}/>
-              </div>
-            </footer>
-          </div>
-        </div>
-      </section>
-    )
+    if (this.state.openedState){
+      this.switchPanelMode(element, options);
+    } else {
+      this.togglePanel(null, options);
+    }
   },
 
   requestFriendByUserId: function() {
@@ -1264,6 +1245,59 @@ const Panel = React.createClass({
         }
       }
     });
+  },
+
+  render: function() {
+    let handleEvent = {
+      changeState: this.changeState
+    };
+    let onEvent = {
+      onClick: this.handleClick,
+      onChange: this.handleChange,
+      onTransitionEnd: this.handleTransitionEnd
+    };
+
+    let location = this.props.location;
+    let btnConfig = (location === 'left') ? this.props.leftBtnConfig : this.props.rightBtnConfig;
+    let panel_toolbar_class = (location === 'left') ? 'w-100p flex-dir-col flex-item-auto c-200' : 'w-100p flex-dir-col c-200';
+    var style = {[location]: this.state[location]};
+    return (
+      <section style={style} data-role={location + '_panel_outer_container'}
+               className={location + '-panel hide p-fx panel animate c-100'}>
+        <div className="p-rel h-100p flex-dir-col">
+          <Triple_Element events={onEvent} config={btnConfig} hide={this.state.toggleElemHide}/>
+          <div data-role={location + '_panel_inner_container'}
+               className="min-width-350 flex-item-1-auto clear flex-dir-col h-100p">
+            <header id={location} data-role={location + '_panel_toolbar'} className={panel_toolbar_class}>
+              <PanelToolbar location={location} mode={this.state.bodyMode} events={onEvent}
+                            hide={this.state.toggleToolbarElemHide}
+              />
+            </header>
+            <div data-role={location + '_extra_toolbar_container'}
+                 className="flex-sp-around flex-item-auto c-200">
+              <ExtraToolbar mode={this.state.bodyMode} data={this.state} events={onEvent}/>
+            </div>
+            <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
+              <Filter mode={this.state.bodyMode} data={this.state} events={onEvent}/>
+            </div>
+            <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
+              <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
+                    userInfo={this.state.userInfo? this.state.userInfo : this.props.userInfo}/>
+            </div>
+            <footer className="flex-item-auto">
+              <div data-role={location + '_go_to_container'} className="c-200">
+                <GoTo mode={this.state.bodyMode} data={this.state} events={onEvent}/>
+              </div>
+              <div data-role={location + '_pagination_containe'}
+                   className="flex filter_container justContent c-200">
+                <Pagination mode={this.state.bodyMode} data={this.state} events={onEvent}
+                            handleEvent={handleEvent}/>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </section>
+    )
   }
 });
 

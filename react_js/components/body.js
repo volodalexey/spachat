@@ -684,7 +684,8 @@ const Body = React.createClass({
           "class": "flex-item-w50p",
           "location": "user_id",
           "data": {
-            "role": "user_id_input"
+            "role": "user_id_input",
+            "key": 'userId'
           },
           "name": "",
           "id": "user_id",
@@ -715,7 +716,9 @@ const Body = React.createClass({
           "class": "flex-item-w50p",
           "location": "user_message",
           "data": {
-            "role": "user_message_input"
+            "role": "user_message_input",
+            "key": "messageRequest",
+            "replace_key": "userName"
           },
           "name": "",
           "id": "user_message"
@@ -1022,7 +1025,12 @@ const Body = React.createClass({
         return <PanelUsers data={contactsInfo}/>;
         break;
       case this.MODE.JOIN_USER:
-        data = {"readyForFriendRequest": this.props.data.joinUser_ListOptions.readyForRequest};
+        data = {
+          "readyForFriendRequest": this.props.data.joinUser_ListOptions.readyForRequest,
+          "userId": this.props.data.joinUser_ListOptions.userId,
+          "messageRequest": this.props.data.joinUser_ListOptions.messageRequest,
+          "userName": this.props.data.userInfo.userName
+        };
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}/>);
         return items;
         break;
