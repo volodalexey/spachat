@@ -189,7 +189,7 @@ const ChatsManager = React.createClass({
     if (event.from_ws_device_id) {
       event_bus.set_ws_device_id(event.from_ws_device_id);
     }
-    event_bus.trigger('send_log_message', event.chat_description.chat_id, 'Adding chat to IndexedDB');
+    event_bus.trigger('send_log_message', event.chat_description.chat_id, 'Adding chat to IndexedDB.');
     this.addNewChatToIndexedDB(event.chat_description, function(err, chat) {
       if (err) {
         console.error(err);
@@ -203,8 +203,6 @@ const ChatsManager = React.createClass({
           event_bus.trigger('send_log_message', chat.chat_id, err);
           return;
         }
-        event_bus.trigger('send_log_message', chat.chat_id, 'Saved chat in List Chats users. Sending chat_join.');
-
         event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
         websocket.sendMessage({
           type: "chat_join",
@@ -213,6 +211,8 @@ const ChatsManager = React.createClass({
             chat_id: chat.chat_id
           }
         });
+        event_bus.trigger('send_log_message', chat.chat_id,
+          'Saved chat in List Chats users. Websocket sendMessage "Chat join".');
       });
     })
   },
@@ -224,8 +224,8 @@ const ChatsManager = React.createClass({
   chatJoinApproved: function(event) {
     let self = this, newState, index;
     event_bus.set_ws_device_id(event.target_ws_device_id);
-    event_bus.trigger('send_log_message', event.chat_description.chat_id, 'Chat join approved');
-    event_bus.trigger('send_log_message', event.chat_description.chat_id, 'Getting chat description');
+    event_bus.trigger('send_log_message', event.chat_description.chat_id,
+      'Chat join approved. Getting chat description.');
 
     indexeddb.getByKeyPath(
       chats_bus.collectionDescription,
@@ -254,10 +254,13 @@ const ChatsManager = React.createClass({
           return;
         }
 
+        event_bus.trigger('send_log_message', chat_description.chat_id, 'Get chat description.');
+
         index = self.getIndexCurrentChat(chat_description.chat_id);
         if (index === undefined) return;
 
         if (Chat.prototype.chatsArray[index].mode !== 'ready') {
+          event_bus.trigger('send_log_message', chat_description.chat_id, 'Upgrade to chat "ready".');
           Chat.prototype.chatsArray[index].mode = 'ready';
           if(!event.chat_description.restoreOption){
             Chat.prototype.chatsArray[index].chat_description = {};
@@ -271,17 +274,13 @@ const ChatsManager = React.createClass({
           } else {
             Chat.prototype.chatsArray[index].chat_description = chat_description;
           }
-          self.chatWorkflow(event, chat_description);
+          self.handleChat(event, chat_description);
         } else if (Chat.prototype.chatsArray[index].mode === 'ready' && event.chat_wscs_descrs) {
+          event_bus.trigger('send_log_message', chat_description.chat_id, 'Webrtc handleConnectedDevices".');
           webrtc.handleConnectedDevices(event.chat_wscs_descrs);
         }
       }
     );
-  },
-
-  chatWorkflow: function(event, chat_description) {
-    let self = this;
-    self.handleChat(event, chat_description);
   },
 
   addNewChatToIndexedDB: function(chat_description, callback) {

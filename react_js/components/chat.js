@@ -252,7 +252,7 @@ const Chat = React.createClass({
   componentDidMount: function() {
     if (this.props.data.mode === 'raw') {
       let self = this;
-      this.state.logMessages.push('sendingMessage chat_create');
+      this.state.logMessages.push('Create raw chat.');
       this.setState({
         logMessages: this.state.logMessages,
         chat_mode: this.props.data.mode
@@ -260,7 +260,7 @@ const Chat = React.createClass({
       event_bus.on('web_socket_message', this.onChatMessageRouter);
       event_bus.on('send_log_message', this.getLogMessage);
       if (this.props.data.show && this.props.data.chat_id) {
-        this.state.logMessages.push('Getting chat description');
+        this.state.logMessages.push('Getting chat description.');
         this.setState({logMessages: this.state.logMessages});
         indexeddb.getByKeyPath(
           chats_bus.collectionDescription,
@@ -280,13 +280,15 @@ const Chat = React.createClass({
                   restoreOption: self.props.data.restoreOption
                 }
               });
+              self.state.logMessages.push('Get chat description. Websocket sendMessage "Chat join".');
+              self.setState({logMessages: self.state.logMessages});
             } else {
               console.error(new Error('Chat with such id not found in the database!'));
             }
           }
         );
       } else if (this.props.data.message_request && this.props.data.chat_id){
-        this.state.logMessages.push('Websocket sendMessage "chat_join_request"');
+        this.state.logMessages.push('Websocket sendMessage "Chat join request".');
         this.setState({logMessages: this.state.logMessages});
         websocket.sendMessage({
           type: "chat_join_request",
@@ -297,7 +299,7 @@ const Chat = React.createClass({
           }
         });
       } else {
-        this.state.logMessages.push('Websocket sendMessage "chat_create"');
+        this.state.logMessages.push('Websocket sendMessage "Chat create".');
         this.setState({logMessages: this.state.logMessages});
         websocket.sendMessage({
           type: "chat_create",
@@ -307,7 +309,6 @@ const Chat = React.createClass({
     } else {
       this.props.data.chat_description.chat_mode = this.props.data.mode;
       this.setState(this.props.data.chat_description);
-
       this.chat = ReactDOM.findDOMNode(this);
       this.splitter_left = this.chat.querySelector('[data-splitteritem="left"]');
       this.splitter_right = this.chat.querySelector('[data-splitteritem="right"]');
