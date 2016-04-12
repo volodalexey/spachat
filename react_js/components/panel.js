@@ -246,7 +246,11 @@ const Panel = React.createClass({
           page: null,
           pageShow: 1
         },
-
+        joinChat_ListOptions: {
+          text: "joinChat_ListOptions",
+          chatId: '',
+          messageRequest: null
+        },
         createBlog_ExtraToolbarOptions: {
           show: false
         },
@@ -398,6 +402,8 @@ const Panel = React.createClass({
       if (this.props.location === "right") {
         this.setState({'right': '-700px', 'openedState': false});
       }
+    } else {
+      this.setState({userInfo: this.props.userInfo});
     }
   },
 
@@ -428,6 +434,15 @@ const Panel = React.createClass({
     this.outerContainer.style.zIndex = z_index;
 
     this.outerContainer.addEventListener('transitionend', this.handleTransitionEnd);
+    if(this.props.location === "left" && this.props.locationQuery && this.props.locationQuery.join_chat_id){
+      let options = {
+        chatId: this.props.locationQuery.join_chat_id,
+        bodyMode: MODE.JOIN_CHAT,
+        messageRequest: 113,
+        force: true
+      };
+      this.togglePanel(null, options);
+    }
   },
 
   componentWillUnmount: function() {
@@ -667,7 +682,7 @@ const Panel = React.createClass({
       requestButton = this.inner_container.querySelector('[data-action="requestChatByChatId"]'), newState;
 
     if (requestButton && chat_id_input && chat_id_input.value && chat_message_input && chat_message_input.value) {
-      event_bus.trigger('addNewChatAuto', null, null, null, chat_id_input.value, chat_message_input.value);
+      event_bus.trigger('requestChatByChatId', chat_id_input.value, chat_message_input.value);
     } else {
       event_bus.trigger('changeStatePopup', {
         show: true,
@@ -798,6 +813,20 @@ const Panel = React.createClass({
         this.state.joinUser_ListOptions.userId = '';
         this.state.joinUser_ListOptions.messageRequest = null;
         this.setState({joinUser_ListOptions: this.state.joinUser_ListOptions});
+      }
+    }
+    if ((mode === MODE.JOIN_CHAT) && (this.props.location === 'left')){
+      if (options && options.chatId){
+        if (options.force){
+          this.state.joinChat_ListOptions.chatId = options.chatId;
+          this.state.joinChat_ListOptions.messageRequest = options.messageRequest;
+          this.setState({joinChat_ListOptions: this.state.joinChat_ListOptions,
+            bodyMode: options.bodyMode});
+        }
+      }else {
+        this.state.joinChat_ListOptions.chatId = '';
+        this.state.joinChat_ListOptions.messageRequest = null;
+        this.setState({joinChat_ListOptions: this.state.joinChat_ListOptions});
       }
     }
   },

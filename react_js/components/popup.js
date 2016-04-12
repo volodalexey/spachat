@@ -1,8 +1,9 @@
 import React from 'react'
 
-import Localization from '../js/localization.js'
-import dom_core from '../js/dom_core.js'
-import extend_core from '../js/extend_core.js'
+import Localization from '../js/localization'
+import dom_core from '../js/dom_core'
+import extend_core from '../js/extend_core'
+import utils from '../js/utils'
 
 import Location_Wrapper from './location_wrapper'
 
@@ -194,16 +195,19 @@ const Popup = React.createClass({
     return {popupOptions: state.popupOptions};
   },
 
-  handleChangeState: function(state, show, type, message, onDataActionClick) {
+  handleChangeState: function(state, show, type, message, onDataActionClick, data) {
     state.popupOptions.messagePopupShow = show;
     state.popupOptions.type = type;
     state.popupOptions.options = {message: message};
     state.popupOptions.onDataActionClick = onDataActionClick;
+    if(data){
+      state.popupOptions.data = data;
+    }
     return {popupOptions: state.popupOptions};
   },
 
   defineParams: function(params) {
-    let config;
+    let config, text;
     this.onDataActionClick = params.onDataActionClick;
     switch (params.type) {
       case 'confirm':
@@ -217,8 +221,12 @@ const Popup = React.createClass({
         config = this.props.successConfig;
         break;
     }
+    text = typeof params.options.message === "number" ? Localization.getLocText(params.options.message) : params.options.message;
+    if(params.data){
+      text = utils.objectToUrl(params.data, text);
+    }
     return {
-      "body_text": typeof params.options.message === "number" ? Localization.getLocText(params.options.message) : params.options.message,
+      "body_text": text,
       "configs": config,
       "type": params.type
     }

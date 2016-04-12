@@ -1,6 +1,7 @@
 import React from 'react'
 
-import Localization from '../js/localization.js'
+import Localization from '../js/localization'
+import utils from '../js/utils'
 
 const Input = React.createClass({
   renderAtt: function() {
@@ -57,13 +58,8 @@ const Input = React.createClass({
     if (this.props.config.type === "text") {
       if (this.props.config.data && this.props.config.data.key && this.props.data) {
         if (typeof this.props.data[this.props.config.data.key] === "number") {
-          if (this.props.config.data.replace_key){
-            let text = Localization.getLocText(this.props.data[this.props.config.data.key]);
-            params["value"] = text.replace('{' + this.props.config.data.replace_key + '}',
-              this.props.data[this.props.config.data.replace_key]);
-          } else {
-            params["value"] = Localization.getLocText(this.props.data[this.props.config.data.key]);
-          }
+          let text = Localization.getLocText(this.props.data[this.props.config.data.key]);
+          params["value"] = utils.objectToUrl(this.props.data, text);
         } else {
           params["value"] = this.props.data[this.props.config.data.key];
         }

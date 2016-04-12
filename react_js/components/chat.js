@@ -43,6 +43,7 @@ const Chat = React.createClass({
       headerFooterControl: false,
       toggleTopButtonLeft: '0px',
       toggleBottomButtonLeft: '0px',
+      toggleChatUsersFriendship: false,
       padding: {
         bottom: 5
       },
@@ -381,6 +382,7 @@ const Chat = React.createClass({
 
   getChatDescription: function(chatId, _callback) {
     if (this.state.chat_id === chatId) {
+      this.state.toggleChatUsersFriendship = false;
       if (_callback) {
         _callback(this.state);
       }

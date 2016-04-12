@@ -438,7 +438,8 @@ const Body = React.createClass({
           "class": "flex-item-w50p",
           "location": "chat_id_input",
           "data": {
-            "role": "chat_id_input"
+            "role": "chat_id_input",
+            "key": "chatId"
           },
           "id": "chat_id_input"
         },
@@ -460,7 +461,8 @@ const Body = React.createClass({
           "class": "flex-item-w50p",
           "location": "chat_message_input",
           "data": {
-            "role": "chat_message_input"
+            "role": "chat_message_input",
+            "key": "messageRequest"
           },
           "id": "chat_message_input"
         },
@@ -717,8 +719,7 @@ const Body = React.createClass({
           "location": "user_message",
           "data": {
             "role": "user_message_input",
-            "key": "messageRequest",
-            "replace_key": "userName"
+            "key": "messageRequest"
           },
           "name": "",
           "id": "user_message"
@@ -1046,6 +1047,15 @@ const Body = React.createClass({
           "openChats": this.props.data.openChats
         };
         return <PanelChats events={this.props.events} data={data} configs={configs}/>;
+        break;
+      case this.MODE.JOIN_CHAT:
+        data = {
+          "chatId": this.props.data.joinChat_ListOptions.chatId,
+          "messageRequest": this.props.data.joinChat_ListOptions.messageRequest,
+          "userName": this.props.data.userInfo.userName
+        };
+        items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}/>);
+        return items;
         break;
       case this.MODE.USER_INFO_SHOW:
         data = this.props.userInfo;

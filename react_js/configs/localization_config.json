@@ -531,8 +531,8 @@
   },
   {
     "id": 107,
-    "en": "Copy",
-    "ru": "Копировать"
+    "en": "Copy chat Id",
+    "ru": "Копировать Id чата"
   },
   {
     "id": 108,
@@ -546,7 +546,27 @@
   },
   {
     "id": 110,
-    "en": "User {userName} wants to make you in their contact list.",
-    "ru": "Пользователь {userName} хочет внести вас в свой список контактов."
+    "en": "Hello. I, {userName}, want to make you in their contact list.",
+    "ru": "Здравствуйте. Я, {userName}, хочу внести вас в свой список контактов."
+  },
+  {
+    "id": 111,
+    "en": "Invite by url",
+    "ru": "Пригласить по url"
+  },
+  {
+    "id": 112,
+    "en": "Copy this line and send the user to whom you want to add to chat.  {url}",
+    "ru": "Скопируйте данную строку и отошлите пользователю, которого Вы хотите добавить в чат.  {url}"
+  },
+  {
+    "id": 113,
+    "en": "Hello. I, {userName}, want to join your chat.",
+    "ru": "Здравствуйте. Я, {userName}, хочу присоединиться к Вашему чату."
+  },
+  {
+    "id": 114,
+    "en": "This chat already exists in your chat list. Do you want to open it?",
+    "ru": "Указанный чат уже существует в Вашем списке чатов. Желаете его открыть?"
   }
 ]

@@ -24,16 +24,15 @@ const PanelChats = React.createClass({
       };
       items.push(
         <div data-action="show_more_info" data-role="chatWrapper"
-             data-chat_id={chat.chat_id} key={chat.chat_id}>
+             data-chat_id={chat.chat_id} key={chat.chat_id} className="margin-b-em">
           <Location_Wrapper key={1} data={chat} events={this.props.events}
                             configs={this.props.configs.chats_info_config}/>
-
           {(() => {
             let resultClosing = self.props.data.closingChatsInfoArray.indexOf(chat.chat_id);
             if (resultClosing !== -1) {
               return (<div data-role="detail_view_container" style={{maxHeight: '0em'}}
                            className="max-height-0" data-state="expanded" data-chat_id={chat.chat_id}>
-                <Location_Wrapper key={1} data={chat} events={this.props.events}
+                <Location_Wrapper key={chat.chat_id} data={chat} events={this.props.events}
                                   configs={this.props.configs.detail_view_config}
                                   calcDisplay={calcDisplay}/>
               </div>)
@@ -42,7 +41,7 @@ const PanelChats = React.createClass({
                 return (<div data-role="detail_view_container" style={{maxHeight: '15em'}}
                              className="max-height-auto max-height-0"
                              data-state="expanded" data-chat_id={chat.chat_id}>
-                  <Location_Wrapper key={1} data={chat} events={this.props.events}
+                  <Location_Wrapper key={chat.chat_id} data={chat} events={this.props.events}
                                     configs={this.props.configs.detail_view_config}
                                     calcDisplay={calcDisplay}/>
                 </div>)

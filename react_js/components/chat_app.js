@@ -63,7 +63,7 @@ const ChatApp = React.createClass({
       this.history.pushState(null, 'login');
     } else {
       users_bus.getMyInfo(null, function(error, _options, userInfo) {
-        self.setState({userInfo: userInfo});
+        self.setState({userInfo: userInfo, locationQuery: self.props.location.query});
         self.toggleWaiter();
       });
     }
@@ -72,7 +72,7 @@ const ChatApp = React.createClass({
   handleChangePopup: function(options) {
     let newState;
     newState = Popup.prototype.handleChangeState(this.state, options.show, options.type,
-      options.message, options.onDataActionClick.bind(this));
+      options.message, options.onDataActionClick.bind(this), options.data);
     this.setState(newState);
   },
 
@@ -133,7 +133,7 @@ const ChatApp = React.createClass({
              onTouchEnd={this.handleEvents}
              onTouchMove={this.handleEvents}
              onTouchStart={this.handleEvents}>
-          <Panel location={this.props.LEFT} userInfo={this.state.userInfo}/>
+          <Panel location={this.props.LEFT} locationQuery={this.state.locationQuery} userInfo={this.state.userInfo}/>
           <div data-role="main_container"
                className={this.state.scrollEachChat ? "w-100p h-100p p-abs" : "w-100p p-abs"}>
             <ChatsManager scrollEachChat={this.state.scrollEachChat}/>

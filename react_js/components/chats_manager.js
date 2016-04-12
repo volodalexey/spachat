@@ -40,6 +40,7 @@ const ChatsManager = React.createClass({
     event_bus.on('chatJoinApproved', this.chatCreateApproved);
     event_bus.on('web_socket_message', this.onChatMessageRouter);
     event_bus.on('notifyChat', this.onChatMessageRouter);
+    event_bus.on('requestChatByChatId', this.requestChatByChatId);
 
     this.mainConteiner = document.querySelector('[data-role="main_container"]');
   },
@@ -53,6 +54,7 @@ const ChatsManager = React.createClass({
     event_bus.off('chatJoinApproved', this.chatCreateApproved);
     event_bus.off('web_socket_message', this.onChatMessageRouter);
     event_bus.off('notifyChat', this.onChatMessageRouter);
+    event_bus.off('requestChatByChatId', this.requestChatByChatId);
 
     this.mainConteiner = null;
   },
@@ -60,26 +62,29 @@ const ChatsManager = React.createClass({
   getOpenChats: function(callback) {
     let openChats = {};
     Chat.prototype.chatsArray.forEach(function(chat) {
+      if (!chat.chat_description) return;
       openChats[chat.chat_description.chat_id] = true;
     });
     callback(openChats);
   },
 
-  showChat: function(element) {
-    let self = this, newState,
-      parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper'),
+  showChat: function(element, chat_id) {
+    let self = this, newState, restoreOption, parentElement;
+    if(element){
+      parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
       restoreOption = element.dataset.restore_chat_state;
-    if (!parentElement) {
+    }
+    if (!parentElement && !chat_id) {
       console.error(new Error('Parent element not found!'));
       return;
     }
 
-    if (!parentElement.dataset.chat_id) {
+    if (parentElement && !parentElement.dataset.chat_id && !chat_id) {
       console.error(new Error('Chat wrapper does not have chat id!'));
       return;
     }
 
-    let chatId = parentElement.dataset.chat_id;
+    let chatId = parentElement ? parentElement.dataset.chat_id : chat_id;
     if (this.isChatOpened(chatId)) {
       event_bus.trigger('changeStatePopup', {
         show: true,
@@ -308,6 +313,60 @@ const ChatsManager = React.createClass({
           break;
       }
     });
+  },
+
+  requestChatByChatId(chatId, requestMessage){
+    let self = this, newState;
+    indexeddb.getByKeyPath(
+      chats_bus.collectionDescription,
+      null,
+      chatId,
+      function(getError, chat_description) {
+        if (getError) {
+          console.error(getError);
+          return;
+        }
+
+        if (!chat_description) {
+          self.createNewChat(null, null, null, chatId, requestMessage);
+        } else  {
+          if (self.isChatOpened(chatId)) {
+            event_bus.trigger('changeStatePopup', {
+              show: true,
+              type: 'error',
+              message: 93,
+              onDataActionClick: function(action) {
+                switch (action) {
+                  case 'confirmCancel':
+                    newState = Popup.prototype.handleClose(this.state);
+                    this.setState(newState);
+                    break;
+                }
+              }
+            });
+          } else {
+            event_bus.trigger('changeStatePopup', {
+              show: true,
+              type: 'confirm',
+              message: 114,
+              onDataActionClick: function(action) {
+                switch (action) {
+                  case 'confirmCancel':
+                    newState = Popup.prototype.handleClose(this.state);
+                    this.setState(newState);
+                    break;
+                  case 'confirmOk':
+                    newState = Popup.prototype.handleClose(this.state);
+                    this.setState(newState);
+                    self.showChat(null, chatId);
+                    break;
+                }
+              }
+            });
+          }
+        }
+      }
+    );
   },
 
   closeChat: function(description) {

@@ -8,6 +8,7 @@ import websocket from '../js/websocket.js'
 import users_bus from '../js/users_bus.js'
 
 import Location_Wrapper from './location_wrapper'
+import Popup from './popup'
 
 const Settings = React.createClass({
   getDefaultProps: function() {
@@ -151,31 +152,27 @@ const Settings = React.createClass({
           "disabled": true
         },
         {
+          "role": "locationWrapper",
+          "classList": "w-100p p-t-b flex-sp-between",
+          "location": "chat_id_controls"
+        },
+        {
           "element": "button",
           "text": 107,
-          "location": "chat_id_container",
+          "location": "chat_id_controls",
           "data": {
-            "throw": "true",
             "action": "copyChatId"
           },
           "disable": false
         },
         {
-          "role": "locationWrapper",
-          "classList": "w-100p p-t-b flex-sp-between",
-          "location": "logger_massage"
-        },
-        {
           "element": "button",
-          "text": 34,
-          "location": "logger_massage",
+          "text": 111,
+          "location": "chat_id_controls",
           "data": {
-            "throw": "true",
-            "action": "changeMode",
-            "chat_part": "body",
-            "mode_to": "LOGGER"
+            "action": "inviteByUrl"
           },
-          "disable": true
+          "disable": false
         },
         {
           "role": "locationWrapper",
@@ -189,7 +186,8 @@ const Settings = React.createClass({
           "class": "check-box-size",
           "location": "chat_users_apply",
           "data": {
-            "action": "toggleChatUsersFriendship"
+            "action": "toggleChatUsersFriendship",
+            "key": "toggleChatUsersFriendship"
           }
         },
         {
@@ -262,10 +260,13 @@ const Settings = React.createClass({
           this.toggleChatUsersFriendship(element);
           break;
         case 'copyChatId':
-          this.copyChatId(element);
+          this.copyChatId();
           break;
         case 'toggleHeaderFooter':
           this.toggleHeaderFooter(element);
+          break;
+        case 'inviteByUrl':
+          this.inviteByUrl(element);
           break;
       }
     }
@@ -286,7 +287,7 @@ const Settings = React.createClass({
     this.props.handleEvent.changeState({headerFooterControl: this.props.data.headerFooterControl});
   },
 
-  copyChatId(element){
+  copyChatId(){
     this.chatId.disabled = false;
     this.chatId.focus();
     this.chatId.select();
@@ -300,15 +301,48 @@ const Settings = React.createClass({
     this.chatId.disabled = true;
   },
 
-  toggleChatUsersFriendship: function(element) {
+  inviteByUrl(){
+    let newState, self = this,
+      url = window.location.protocol + "//" + window.location.host + "/chat?join_chat_id=" + this.props.data.chat_id;
+    console.log(url);
+    event_bus.trigger('changeStatePopup', {
+      show: true,
+      type: 'confirm',
+      message: 112,
+      onDataActionClick: function(action) {
+        switch (action) {
+          case 'confirmCancel':
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            break;
+          case 'confirmOk':
+            if(!self.props.data.toggleChatUsersFriendship){
+              self.toggleChatUsersFriendship(null, true);
+            }
+            newState = Popup.prototype.handleClose(this.state);
+            this.setState(newState);
+            break;
+        }
+      },
+    data: {"url": url}
+    });
+  },
+
+  toggleChatUsersFriendship: function(element, forceChecked) {
     let self = this;
+    if (!element) {
+      element = this.body.querySelector('[data-action="toggleChatUsersFriendship"]');
+    }
+
+    this.props.data.toggleChatUsersFriendship = forceChecked ? forceChecked : element.checked;
+    this.props.handleEvent.changeState({toggleChatUsersFriendship: this.props.data.toggleChatUsersFriendship});
     websocket.sendMessage({
       type: "chat_toggle_ready",
       chat_description: {
         chat_id: self.props.data.chat_id
       },
       from_user_id: users_bus.getUserId(),
-      ready_state: element.checked
+      ready_state: this.props.data.toggleChatUsersFriendship
     });
   },
 
@@ -395,7 +429,8 @@ const Settings = React.createClass({
         "sendEnter": this.props.data.formatOptions.sendEnter,
         "index": this.props.data.index,
         "adjust_width": this.props.data.settings_ListOptions.adjust_width,
-        "headerFooterControl": this.props.data.headerFooterControl
+        "headerFooterControl": this.props.data.headerFooterControl,
+        "toggleChatUsersFriendship": this.props.data.toggleChatUsersFriendship
       };
     let onEvent = {
       onClick: this.handleClick,
