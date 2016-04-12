@@ -89,6 +89,7 @@ Connection.prototype = {
   putUserId: function(user_id) {
     if (this.hasUserId(user_id) === false) {
       this.users_ids.push(user_id);
+      event_bus.trigger('changeConnection');
     }
   },
 

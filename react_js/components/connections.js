@@ -18,15 +18,22 @@ const Connections = React.createClass({
   componentWillMount: function() {
     let self = this;
     this.getConnections();
-
   },
 
   componentDidMount: function() {
-    event_bus.on('changeConnection', this.getConnections, this);
+    event_bus.on('changeConnectionList', this.getConnections, this);
   },
 
   componentWillUnmount: function() {
-    event_bus.off('changeConnection', this.getConnections, this);
+    event_bus.off('changeConnectionList', this.getConnections, this);
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    if (!this.props.data.openedState && !nextProps.data.openedState){
+      return false;
+    } else {
+      return true;
+    }
   },
 
   getConnections: function() {

@@ -421,6 +421,7 @@ const Panel = React.createClass({
       this.outerContainer.style.right = '100vw';
     }
     if (this.props.location === "right") {
+      event_bus.on('changeConnection', this.changeConnection, this);
       this.outerContainer = document.querySelector('[data-role="right_panel_outer_container"]');
       this.inner_container = document.querySelector('[data-role="right_panel_inner_container"]');
       this.outerContainer.style.left = '100vw';
@@ -453,6 +454,8 @@ const Panel = React.createClass({
       event_bus.off('AddedNewChat', this.toggleListOptions);
       event_bus.off('changeOpenChats', this.getInfoForBody);
       event_bus.off('web_socket_message', this.onPanelMessageRouter);
+    } else if (this.props.location === "right") {
+      event_bus.off('changeConnection', this.changeConnection, this);
     }
 
     this.outerContainer = null;
@@ -1010,6 +1013,12 @@ const Panel = React.createClass({
     if (callback) {
       this.setState({"chat_ids": [], "openChats": []});
       callback(this.state, this.props.location);
+    }
+  },
+
+  changeConnection(){
+    if (this.state.openedState){
+      event_bus.trigger('changeConnectionList');
     }
   },
 

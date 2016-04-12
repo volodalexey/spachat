@@ -127,7 +127,7 @@ const Settings = React.createClass({
           }
         }
       ],
-      setting_config: [
+      setting_config_creator: [
         {
           "role": "locationWrapper",
           "classList": "w-100p p-t-b flex-sp-between",
@@ -171,6 +171,95 @@ const Settings = React.createClass({
           "location": "chat_id_controls",
           "data": {
             "action": "inviteByUrl"
+          },
+          "disable": false
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+          "location": "chat_users_apply"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "text": 79,
+          "class": "check-box-size",
+          "location": "chat_users_apply",
+          "data": {
+            "action": "toggleChatUsersFriendship",
+            "key": "toggleChatUsersFriendship"
+          }
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+          "location": "send_enter"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "text": 35,
+          "class": "check-box-size",
+          "location": "send_enter",
+          "data": {
+            "key": "sendEnter",
+            "role": "btnEdit",
+            "action": "changeSendEnter",
+            "name": ""
+          }
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+          "location": "toggle_parts_chat"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "text": 109,
+          "class": "check-box-size",
+          "location": "toggle_parts_chat",
+          "data": {
+            "key": "headerFooterControl",
+            "action": "toggleHeaderFooter"
+          }
+        }
+      ],
+      setting_config: [
+        {
+          "role": "locationWrapper",
+          "classList": "w-100p p-t-b flex-sp-between",
+          "location": "chat_id_container"
+        },
+        {
+          "element": "label",
+          "icon": "",
+          "text": 5,
+          "class": "",
+          "location": "chat_id_container"
+        },
+        {
+          "element": "input",
+          "type": "text",
+          "location": "chat_id_container",
+          "class": "flex-item-1-auto",
+          "data": {
+            "key": "chat_id",
+            "role": "chat_id"
+          },
+          "disabled": true
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "w-100p p-t-b flex-sp-between",
+          "location": "chat_id_controls"
+        },
+        {
+          "element": "button",
+          "text": 107,
+          "location": "chat_id_controls",
+          "data": {
+            "action": "copyChatId"
           },
           "disable": false
         },
@@ -447,8 +536,10 @@ const Settings = React.createClass({
   },
 
   render: function() {
+    let config = this.props.data.createdByUserId === users_bus.getUserId() ? this.props.setting_config_creator :
+      this.props.setting_config;
     return <div >
-      {this.renderItems(this.props.setting_config)}
+      {this.renderItems(config)}
       <div className="textbox">
         <div className="title c-100">
           {this.renderItems(this.props.size_container_config)}

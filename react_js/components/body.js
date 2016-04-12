@@ -1078,7 +1078,7 @@ const Body = React.createClass({
         return <ContactList data={this.props.data} handleEvent={this.props.handleEvent}/>;
         break;
       case this.MODE.CONNECTIONS:
-        return <Connections />;
+        return <Connections data={this.props.data} />;
         break;
       default:
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs}

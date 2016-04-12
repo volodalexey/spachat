@@ -468,6 +468,7 @@ WebRTC.prototype = {
   onDataChannelClose: function(curConnection, event) {
     this._removeDataChannelListeners(curConnection.dataChannel);
     this.connections.splice(this.connections.indexOf(curConnection), 1);
+    event_bus.trigger('changeConnection');
     console.warn('Data channel was closed', event);
   },
 
