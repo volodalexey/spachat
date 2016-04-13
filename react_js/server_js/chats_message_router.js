@@ -43,13 +43,13 @@ Chats_message_router.prototype = {
     var chat_id = id_Generator.generateId();
     cur_wsc.put_chat_id(chat_id);
     cur_wsc.put_user_id(parsedMessageData.from_user_id);
-
     var responseData = {
       type: 'chat_created',
       from_user_id: parsedMessageData.from_user_id,
       from_ws_device_id: cur_wsc.ws_device_id,
       chat_description: {
-        chat_id: chat_id
+        chat_id: chat_id,
+        temp_chat_id: parsedMessageData.chat_description.temp_chat_id
       }
     };
 

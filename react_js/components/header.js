@@ -148,11 +148,36 @@ const Header = React.createClass({
           "class": "flex-item-1-0p",
           "name": "Setting"
         }
+      ],
+      configs_raw_chat: [
+        {
+          "role": "locationWrapper",
+          "classList": "flex-just-center",
+          "location": "topPanel",
+          "data": {
+            "role": "topHeaderPanel"
+          }
+        },
+        {
+          "element": "button",
+          "icon": "exit_icon",
+          "text": null,
+          "location": "topPanel",
+          "data": {
+            "throw": "true",
+            "target": "event_bus",
+            "action": "closeRawChat",
+            "description": 21
+          },
+          "class": "button-margin-height min-width-4em",
+          "name": "CloseChat"
+        }
       ]
     }
   },
 
-  defineOptions: function(){
+  defineOptions: function(chat_mode){
+    if(chat_mode !== "ready") return;
     if (this.props.data.headerOptions.show) {
       let options = {}, newState = this.props.data;
       switch (this.props.data.headerOptions.mode) {
@@ -169,12 +194,25 @@ const Header = React.createClass({
     }
   },
 
+  defineConfig(chat_mode){
+    let config;
+    switch (chat_mode){
+      case "raw":
+        return config = this.props.configs_raw_chat;
+        break;
+      case "ready":
+        return config = this.props.configs;
+        break;
+    }
+  },
+
   render: function() {
-    let options = this.defineOptions();
+    let options = this.defineOptions(this.props.chat_mode),
+      config = this.defineConfig(this.props.chat_mode);
     return (
       <header data-role="header_container" className="modal-header">
         <Location_Wrapper events={this.props.events} data={options} mainContainer={this.props.mainContainer}
-                          configs={this.props.configs} mode={this.props.data.bodyOptions.mode}/>
+                          configs={config} mode={this.props.data.bodyOptions.mode}/>
       </header>
     )
   }

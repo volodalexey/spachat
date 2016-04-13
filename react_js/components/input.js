@@ -60,7 +60,7 @@ const Input = React.createClass({
         if (typeof this.props.data[this.props.config.data.key] === "number") {
           let text = Localization.getLocText(this.props.data[this.props.config.data.key]);
           params["value"] = utils.objectToUrl(this.props.data, text);
-        } else {
+        } else if (this.props.data[this.props.config.data.key]) {
           params["value"] = this.props.data[this.props.config.data.key];
         }
       }

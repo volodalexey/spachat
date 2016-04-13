@@ -15,6 +15,8 @@ import model_core from '../js/model_core.js'
 import Chat from '../components/chat'
 import Popup from '../components/popup'
 
+var id_Generator = require('../server_js/id_generator');
+
 const ChatsManager = React.createClass({
   getDefaultProps: function() {
     return {
@@ -157,6 +159,7 @@ const ChatsManager = React.createClass({
 
     let newRawChat = {};
     newRawChat.mode = 'raw';
+    newRawChat.temp_chat_id = id_Generator.generateId();
     if (show) {
       newRawChat.show = show;
       if (chatId) {
@@ -298,8 +301,12 @@ const ChatsManager = React.createClass({
     chats_bus.putChatToIndexedDB(newChat, callback);
   },
 
-  toCloseChat: function(saveStates, chatId) {
+  toCloseChat: function(saveStates, chatId, temp_chat_id) {
     let self = this;
+    if (!chatId && temp_chat_id){
+      self.closeChat(null, temp_chat_id);
+      return;
+    }
     event_bus.trigger('getChatDescription', chatId, function(description) {
       switch (saveStates) {
         case 'closeChat':
@@ -369,7 +376,7 @@ const ChatsManager = React.createClass({
     );
   },
 
-  closeChat: function(description) {
+  closeChat: function(description, temp_chat_id) {
     let newState, self = this;
     event_bus.trigger('changeStatePopup', {
       show: true,
@@ -382,7 +389,7 @@ const ChatsManager = React.createClass({
             this.setState(newState);
             break;
           case 'confirmOk':
-            self.destroyChat(description);
+            self.destroyChat(description, temp_chat_id);
             newState = Popup.prototype.handleClose(this.state);
             this.setState(newState);
             break;
@@ -391,11 +398,13 @@ const ChatsManager = React.createClass({
     });
   },
 
-  destroyChat: function(description) {
-    let position = this.getDestroyChatPosition(description.chat_id);
+  destroyChat: function(description, temp_chat_id) {
+    let position = this.getDestroyChatPosition((!description && temp_chat_id) ? temp_chat_id : description.chat_id);
+    if (description && !temp_chat_id){
+      event_bus.trigger("chatDestroyed", description.chat_id);
+      event_bus.trigger("changeOpenChats");
+    }
     Chat.prototype.chatsArray.splice(position, 1);
-    event_bus.trigger("changeOpenChats");
-    event_bus.trigger("chatDestroyed", description.chat_id);
     this.forceUpdate();
   },
 
@@ -406,7 +415,7 @@ const ChatsManager = React.createClass({
   getDestroyChatPosition: function(chat_id) {
     let destroyChatPosition;
     Chat.prototype.chatsArray.every(function(_chat, index) {
-      if (_chat.chat_description.chat_id === chat_id) {
+      if (_chat.chat_description && _chat.chat_description.chat_id === chat_id || _chat.temp_chat_id === chat_id) {
         destroyChatPosition = index;
       }
       return !destroyChatPosition;
@@ -476,7 +485,8 @@ const ChatsManager = React.createClass({
     } else {
       let items = [];
       Chat.prototype.chatsArray.forEach(function(_chat, index) {
-        items.push(<Chat data={_chat} key={_chat.chat_description && _chat.chat_description.chat_id ? _chat.chat_description.chat_id : index}
+        items.push(<Chat data={_chat}
+                         key={_chat.chat_description && _chat.chat_description.chat_id ? _chat.chat_description.chat_id : _chat.temp_chat_id}
                          mode={_chat.mode} index={index} scrollEachChat={self.props.scrollEachChat}/>);
       });
       return <div className="flex-outer-container align-start" data-role="chat_wrapper">{items}</div>;

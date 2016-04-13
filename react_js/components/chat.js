@@ -225,6 +225,7 @@ const Chat = React.createClass({
     if (this.props.data.mode && this.props.data.mode === 'raw') {
       this.setState({
         logMessages: this.props.data.logMessages,
+        temp_chat_id: this.props.data.temp_chat_id,
         index: index
       });
     } else if (this.props.data.mode && this.props.data.mode === 'ready') {
@@ -234,10 +235,12 @@ const Chat = React.createClass({
           createdByUserId: data.chat_description.createdByUserId,
           createdDatetime: data.chat_description.createdDatetime,
           user_ids: data.chat_description.user_ids,
+          temp_chat_id: this.props.data.temp_chat_id,
           index: index
         });
       } else {
         data.chat_description.index = index;
+        data.chat_description.temp_chat_id = this.props.data.temp_chat_id;
         this.setState(data.chat_description);
         let currentOptions = this.optionsDefinition(data.chat_description, data.chat_description.bodyOptions.mode);
         if (currentOptions.paginationOptions.showEnablePagination) {
@@ -288,7 +291,7 @@ const Chat = React.createClass({
             }
           }
         );
-      } else if (this.props.data.message_request && this.props.data.chat_id){
+      } else if (this.props.data.message_request && this.props.data.chat_id) {
         this.state.logMessages.push('Websocket sendMessage "Chat join request".');
         this.setState({logMessages: this.state.logMessages});
         websocket.sendMessage({
@@ -297,6 +300,9 @@ const Chat = React.createClass({
           to_chat_id: this.props.data.chat_id,
           request_body: {
             message: this.props.data.message_request
+          },
+          chat_description: {
+            temp_chat_id: self.state.temp_chat_id
           }
         });
       } else {
@@ -304,7 +310,10 @@ const Chat = React.createClass({
         this.setState({logMessages: this.state.logMessages});
         websocket.sendMessage({
           type: "chat_create",
-          from_user_id: users_bus.getUserId()
+          from_user_id: users_bus.getUserId(),
+          chat_description: {
+            temp_chat_id: self.state.temp_chat_id
+        }
         });
       }
     } else {
@@ -383,6 +392,7 @@ const Chat = React.createClass({
   getChatDescription: function(chatId, _callback) {
     if (this.state.chat_id === chatId) {
       this.state.toggleChatUsersFriendship = false;
+      this.state.temp_chat_id = null;
       if (_callback) {
         _callback(this.state);
       }
@@ -447,6 +457,9 @@ const Chat = React.createClass({
         case 'saveStatesChat':
         case 'saveAndCloseChat':
           event_bus.trigger('toCloseChat', element.dataset.action, this.state.chat_id);
+          break;
+        case "closeRawChat":
+          event_bus.trigger('toCloseChat', element.dataset.action, null, this.state.temp_chat_id);
           break;
         case 'hideTopPart':
           this.setState({hideTopPart: !this.state.hideTopPart});
@@ -574,7 +587,8 @@ const Chat = React.createClass({
   },
 
   onChatMessageRouter: function(messageData) {
-    if (this.state.chat_id && this.state.chat_id !== messageData.chat_description.chat_id) return;
+    if (this.state.chat_id && this.state.chat_id !== messageData.chat_description.chat_id ||
+      messageData.chat_description && this.state.temp_chat_id !== messageData.chat_description.temp_chat_id) return;
     switch (messageData.type) {
       case 'chat_created':
         this.state.logMessages.push('get chatId: ' + messageData.chat_description.chat_id);
@@ -719,28 +733,30 @@ const Chat = React.createClass({
   },
 
   render: function() {
+    let handleEvent = {
+      changeState: this.changeState
+    };
+    let onEvent = {
+      onClick: this.handleClick,
+      onChange: this.handleChange
+    };
     if (this.props.data.mode === 'raw') {
       let items = [];
       this.state.logMessages.forEach(function(_message, index) {
-        items.push(<div key={index}>{_message}</div>);
+        items.push(
+          <div key={index} className="myMessage message margin-t-b">
+            {_message}
+          </div>);
       });
       return (
         <section className="modal">
-          <button>Close</button>
-          <div>
-            Messages:
+          <Header data={this.state} chat_mode={this.props.data.mode} handleEvent={handleEvent} events={onEvent}/>
+          <div className="modal-body overflow-y-scroll">
             {items}
           </div>
         </section>
       )
     } else {
-      let handleEvent = {
-        changeState: this.changeState
-      };
-      let onEvent = {
-        onClick: this.handleClick,
-        onChange: this.handleChange
-      };
       return (
         <section className="modal" data-chat_id={this.props.data.chat_description.chat_id}
                  style={{width: this.state.settings_ListOptions.size_current}}>
@@ -752,7 +768,7 @@ const Chat = React.createClass({
           </div>
           <div className={this.props.scrollEachChat ? 'w-inh ' : 'p-fx w-inh'} style={{'zIndex': 3}}>
             <div className={this.state.hideTopPart ? "hide" : ""}>
-              <Header data={this.state} handleEvent={handleEvent} events={onEvent}/>
+              <Header data={this.state} chat_mode={this.props.data.mode} handleEvent={handleEvent} events={onEvent}/>
               <div data-role="extra_toolbar_container" className="flex-sp-around flex-shrink-0 c-200">
                 <ExtraToolbar mode={this.state.bodyOptions.mode} data={this.state} events={onEvent}/>
               </div>

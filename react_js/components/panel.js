@@ -207,7 +207,7 @@ const Panel = React.createClass({
         joinUser_ListOptions: {
           text: "joinUser_ListOptions",
           readyForRequest: false,
-          userId: '',
+          userId: null,
           messageRequest: null
         },
 
@@ -248,7 +248,7 @@ const Panel = React.createClass({
         },
         joinChat_ListOptions: {
           text: "joinChat_ListOptions",
-          chatId: '',
+          chatId: null,
           messageRequest: null
         },
         createBlog_ExtraToolbarOptions: {
@@ -813,7 +813,7 @@ const Panel = React.createClass({
             bodyMode: options.bodyMode});
         }
       }else {
-        this.state.joinUser_ListOptions.userId = '';
+        this.state.joinUser_ListOptions.userId = null;
         this.state.joinUser_ListOptions.messageRequest = null;
         this.setState({joinUser_ListOptions: this.state.joinUser_ListOptions});
       }
@@ -827,7 +827,7 @@ const Panel = React.createClass({
             bodyMode: options.bodyMode});
         }
       }else {
-        this.state.joinChat_ListOptions.chatId = '';
+        this.state.joinChat_ListOptions.chatId = null;
         this.state.joinChat_ListOptions.messageRequest = null;
         this.setState({joinChat_ListOptions: this.state.joinChat_ListOptions});
       }
