@@ -8,18 +8,18 @@
 }
 .modal-header {
   flex: 0 0 auto;
-  background-color: #ba68c8;
+  background-color: #BA68C8;
   justify-content: center;
 }
 .modal-body {
-  background-color: #e1bee7;
+  background-color: #E1BEE7;
   flex: 1 1 auto;
   overflow-y: scroll;
 }
 .message {
   height: initial;
   border-radius: 5px;
-  background-color: #f3e5f5;
+  background-color: #F3E5F5;
   overflow-wrap: break-word;
   margin: 0 2px 0 2px;
 }
@@ -46,7 +46,7 @@
   border-radius: 5px;
 }
 .c-pink {
-  background-color: #ffc0cb;
+  background-color: #FFC0CB;
 }
 .c-mist {
   background-color: #ffe4e1;
@@ -55,22 +55,22 @@
   background-color: #add8e6;
 }
 .background-pink {
-  background-color: #ffc0cb;
+  background-color: #FFC0CB;
 }
 .c-01 {
   background-color: #ffffff;
 }
 .c-50 {
-  background-color: #f3e5f5;
+  background-color: #F3E5F5;
 }
 .c-100 {
-  background-color: #e1bee7;
+  background-color: #E1BEE7;
 }
 .c-200 {
-  background-color: #ce93d8;
+  background-color: #CE93D8;
 }
 .c-300 {
-  background-color: #ba68c8;
+  background-color: #BA68C8;
 }
 .color-blue {
   color: blue;
@@ -82,7 +82,7 @@
   color: green;
 }
 body {
-  background-color: #f3e5f5;
+  background-color: #F3E5F5;
   margin: 0;
 }
 .hide {
@@ -159,7 +159,7 @@ body {
   min-width: 40px;
 }
 .form-small {
-  background: linear-gradient(to top, #e1bee7, #bdbdbd);
+  background: linear-gradient(to top, #E1BEE7, #BDBDBD);
   margin: 20px 0;
   padding: 5px;
   max-width: 400px;
@@ -190,9 +190,9 @@ body {
 }
 .description {
   position: absolute;
-  border: 1px solid #ba68c8;
-  box-shadow: 0 0 10px #bdbdbd;
-  background-color: #f3e5f5;
+  border: 1px solid #BA68C8;
+  box-shadow: 0 0 10px #BDBDBD;
+  background-color: #F3E5F5;
   overflow-wrap: break-word;
   z-index: 200;
 }
@@ -238,7 +238,7 @@ body {
   border-radius: 0.4em;
 }
 .border-popap-footer {
-  border-top: 0.1em solid #ce93d8;
+  border-top: 0.1em solid #CE93D8;
 }
 .tetx-line-center {
   margin: 1.2em 0 0;
@@ -270,8 +270,8 @@ img {
   height: 90px;
   flex: 0 1 auto;
   overflow-y: scroll;
-  border: 2px solid #a7a7bb;
-  background-color: #f0f8ff;
+  border: 2px solid #A7A7BB;
+  background-color: #F0F8FF;
 }
 .onScroll {
   min-height: 90px;
@@ -293,7 +293,7 @@ img {
 .lblStyle {
   width: 30px;
   text-align: center;
-  background: #f0f8ff;
+  background: #F0F8FF;
   border: 1px solid grey;
 }
 .panel {
@@ -316,7 +316,7 @@ img {
 }
 .max-height-0 {
   overflow: hidden;
-  background: #f3e5f5;
+  background: #F3E5F5;
   transition: max-height 0.2s ease-out;
 }
 .max-height-0.max-height-auto {
@@ -347,7 +347,7 @@ img {
   width: 100%;
 }
 .background {
-  background-color: #ffc0cb;
+  background-color: #FFC0CB;
 }
 .elements {
   padding: 0.15em;
@@ -361,7 +361,7 @@ img {
   top: -1.1em;
 }
 .textbox {
-  border: 0.1em solid #bdbdbd;
+  border: 0.1em solid #BDBDBD;
   margin: 1em 0.3em;
   position: relative;
   padding: 1em 0.5em 0.5em;
@@ -524,7 +524,7 @@ button {
 }
 .activeTollbar {
   border: 2px solid rgba(0, 0, 0, 0.2);
-  background-color: #e1bee7;
+  background-color: #E1BEE7;
   box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.2), inset 0px -2px 0 rgba(0, 0, 0, 0.1), inset 0 0 22px rgba(0, 0, 0, 0.1);
 }
 button:disabled {
