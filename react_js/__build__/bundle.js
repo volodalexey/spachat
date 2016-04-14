@@ -10,6 +10,8 @@ webpackJsonp([0],[
 
 	var _reactDom = __webpack_require__(41);
 
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	var _total = __webpack_require__(171);
 
 	var _total2 = _interopRequireDefault(_total);
@@ -20,7 +22,7 @@ webpackJsonp([0],[
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	(0, _reactDom.ReactDOM)(_react2.default.createElement(_index2.default, null), document.getElementById('app'));
+	_reactDom2.default.render(_react2.default.createElement(_index2.default, null), document.getElementById('app'));
 
 /***/ },
 /* 1 */,
