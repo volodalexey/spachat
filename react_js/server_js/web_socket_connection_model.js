@@ -89,10 +89,11 @@ Web_socket_connection_model.prototype = {
     var strErr = JSON.stringify({
       message: error.toString(),
       type: "error",
+      request_type: parsedMessageData.request_type,
       chat_description: parsedMessageData.chat_description
     });
     if (wsc.readyState !== wsc.CLOSED) {
-      wsc.send(JSON.stringify(strErr));
+      wsc.send(strErr);
     } // TODO remove from connections?
   },
 

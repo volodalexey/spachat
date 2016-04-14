@@ -113,7 +113,7 @@ const ChatsManager = React.createClass({
   isChatOpened: function(chatId) {
     let openedChat;
     Chat.prototype.chatsArray.every(function(_chat) {
-      if (_chat.chat_description.chat_id === chatId) {
+      if (_chat.chat_description && _chat.chat_description.chat_id === chatId || _chat.temp_chat_id === chatId) {
         openedChat = _chat;
       }
       return !openedChat;
@@ -190,6 +190,16 @@ const ChatsManager = React.createClass({
           }
         });
         break;
+      case 'error':
+        switch (messageData.request_type){
+          case 'notifyChat':
+            if (messageData.chat_description && messageData.chat_description.temp_chat_id){
+              event_bus.trigger('send_log_message', messageData.chat_description.temp_chat_id,
+                {text: messageData.message, type: 'error'});
+            }
+            break;
+        }
+        break;
     }
   },
 
@@ -197,18 +207,20 @@ const ChatsManager = React.createClass({
     if (event.from_ws_device_id) {
       event_bus.set_ws_device_id(event.from_ws_device_id);
     }
-    event_bus.trigger('send_log_message', event.chat_description.chat_id, 'Adding chat to IndexedDB.');
+    event_bus.trigger('send_log_message', event.chat_description.chat_id,
+      {text: 'Adding chat to IndexedDB.', type: 'information'} );
     this.addNewChatToIndexedDB(event.chat_description, function(err, chat) {
       if (err) {
         console.error(err);
-        event_bus.trigger('send_log_message', chat.chat_id, err);
+        event_bus.trigger('send_log_message', chat.chat_id, {text: err, type: 'error'});
         return;
       }
-      event_bus.trigger('send_log_message', chat.chat_id, 'Added chat to IndexedDB. Saving chat in List Chats users.');
+      event_bus.trigger('send_log_message', chat.chat_id,
+        {text: 'Added chat to IndexedDB. Saving chat in List Chats users.', type: 'information'} );
       users_bus.putChatIdAndSave(chat.chat_id, function(err, userInfo) {
         if (err) {
           console.error(err);
-          event_bus.trigger('send_log_message', chat.chat_id, err);
+          event_bus.trigger('send_log_message', chat.chat_id, {text: err, type: 'error'});
           return;
         }
         event_bus.trigger('AddedNewChat', userInfo.chat_ids.length);
@@ -220,7 +232,7 @@ const ChatsManager = React.createClass({
           }
         });
         event_bus.trigger('send_log_message', chat.chat_id,
-          'Saved chat in List Chats users. Websocket sendMessage "Chat join".');
+          {text: 'Saved chat in List Chats users. Websocket sendMessage "Chat join".', type: 'information'});
       });
     })
   },
@@ -233,7 +245,7 @@ const ChatsManager = React.createClass({
     let self = this, newState, index;
     event_bus.set_ws_device_id(event.target_ws_device_id);
     event_bus.trigger('send_log_message', event.chat_description.chat_id,
-      'Chat join approved. Getting chat description.');
+      {text: 'Chat join approved. Getting chat description.', type: 'information'});
 
     indexeddb.getByKeyPath(
       chats_bus.collectionDescription,
@@ -262,13 +274,12 @@ const ChatsManager = React.createClass({
           return;
         }
 
-        event_bus.trigger('send_log_message', chat_description.chat_id, 'Get chat description.');
-
+        event_bus.trigger('send_log_message', chat_description.chat_id, {text: 'Get chat description.', type: 'information'});
         index = self.getIndexCurrentChat(chat_description.chat_id);
         if (index === undefined) return;
 
         if (Chat.prototype.chatsArray[index].mode !== 'ready') {
-          event_bus.trigger('send_log_message', chat_description.chat_id, 'Upgrade to chat "ready".');
+          event_bus.trigger('send_log_message', chat_description.chat_id, {text: 'Upgrade to chat "ready".', type: 'information'});
           Chat.prototype.chatsArray[index].mode = 'ready';
           if(!event.chat_description.restoreOption){
             Chat.prototype.chatsArray[index].chat_description = {};
@@ -284,7 +295,8 @@ const ChatsManager = React.createClass({
           }
           self.handleChat(event, chat_description);
         } else if (Chat.prototype.chatsArray[index].mode === 'ready' && event.chat_wscs_descrs) {
-          event_bus.trigger('send_log_message', chat_description.chat_id, 'Webrtc handleConnectedDevices".');
+          event_bus.trigger('send_log_message', chat_description.chat_id,
+            {text: 'Webrtc handleConnectedDevices".', type: 'information'});
           webrtc.handleConnectedDevices(event.chat_wscs_descrs);
         }
       }

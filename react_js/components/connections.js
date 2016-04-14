@@ -16,16 +16,17 @@ const Connections = React.createClass({
   },
 
   componentWillMount: function() {
-    let self = this;
     this.getConnections();
   },
 
   componentDidMount: function() {
     event_bus.on('changeConnectionList', this.getConnections, this);
+    event_bus.on('changeMyUsers', this.getConnections, this);
   },
 
   componentWillUnmount: function() {
     event_bus.off('changeConnectionList', this.getConnections, this);
+    event_bus.off('changeMyUsers', this.getConnections, this);
   },
 
   shouldComponentUpdate(nextProps, nextState){

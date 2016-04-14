@@ -256,7 +256,7 @@ const Chat = React.createClass({
   componentDidMount: function() {
     if (this.props.data.mode === 'raw') {
       let self = this;
-      this.state.logMessages.push('Create raw chat.');
+      this.state.logMessages.push({text: 'Create raw chat.', type: 'information'});
       this.setState({
         logMessages: this.state.logMessages,
         chat_mode: this.props.data.mode
@@ -264,7 +264,7 @@ const Chat = React.createClass({
       event_bus.on('web_socket_message', this.onChatMessageRouter);
       event_bus.on('send_log_message', this.getLogMessage);
       if (this.props.data.show && this.props.data.chat_id) {
-        this.state.logMessages.push('Getting chat description.');
+        this.state.logMessages.push({text: 'Getting chat description.', type: 'information'});
         this.setState({logMessages: this.state.logMessages});
         indexeddb.getByKeyPath(
           chats_bus.collectionDescription,
@@ -292,7 +292,7 @@ const Chat = React.createClass({
           }
         );
       } else if (this.props.data.message_request && this.props.data.chat_id) {
-        this.state.logMessages.push('Websocket sendMessage "Chat join request".');
+        this.state.logMessages.push({text: 'Websocket sendMessage "Chat join request".', type: 'information'});
         this.setState({logMessages: this.state.logMessages});
         websocket.sendMessage({
           type: "chat_join_request",
@@ -306,14 +306,14 @@ const Chat = React.createClass({
           }
         });
       } else {
-        this.state.logMessages.push('Websocket sendMessage "Chat create".');
+        this.state.logMessages.push({text: 'Websocket sendMessage "Chat create".', type: 'information'});
         this.setState({logMessages: this.state.logMessages});
         websocket.sendMessage({
           type: "chat_create",
           from_user_id: users_bus.getUserId(),
           chat_description: {
             temp_chat_id: self.state.temp_chat_id
-        }
+          }
         });
       }
     } else {
@@ -369,8 +369,8 @@ const Chat = React.createClass({
   },
 
   getLogMessage: function(chat_id, message) {
-    if (chat_id !== this.state.chat_id) return;
-    this.state.logMessages.push(message);
+    if (chat_id !== this.state.chat_id && chat_id !== this.state.temp_chat_id) return;
+    this.state.logMessages.push({text: message.text, type: message.type});
     this.setState({logMessages: this.state.logMessages});
   },
 
@@ -591,7 +591,7 @@ const Chat = React.createClass({
       messageData.chat_description && this.state.temp_chat_id !== messageData.chat_description.temp_chat_id) return;
     switch (messageData.type) {
       case 'chat_created':
-        this.state.logMessages.push('get chatId: ' + messageData.chat_description.chat_id);
+        this.state.logMessages.push({text: 'get chatId: ' + messageData.chat_description.chat_id, type: 'information'});
         this.setState({
           logMessages: this.state.logMessages,
           chat_id: messageData.chat_description.chat_id
@@ -741,11 +741,13 @@ const Chat = React.createClass({
       onChange: this.handleChange
     };
     if (this.props.data.mode === 'raw') {
-      let items = [];
+      let items = [], className;
       this.state.logMessages.forEach(function(_message, index) {
+        className = (_message.type === 'error') ? "myMessage message margin-t-b color-red" : "myMessage message margin-t-b";
         items.push(
-          <div key={index} className="myMessage message margin-t-b">
-            {_message}
+          <div key={index}
+               className={className}>
+            {_message.text}
           </div>);
       });
       return (

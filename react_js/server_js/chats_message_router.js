@@ -150,6 +150,7 @@ Chats_message_router.prototype = {
         })
       )
     } else {
+      parsedMessageData.request_type = 'notifyChat';
       cur_wsc.send_error(new Error('Target chat connection is not found or not ready!'), parsedMessageData);
     }
   },

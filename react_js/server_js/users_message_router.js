@@ -70,6 +70,7 @@ Users_message_router.prototype = {
         })
       )
     } else {
+      parsedMessageData.request_type = 'user_add_sent';
       cur_wsc.send_error(new Error('Target connection is not found or not ready!'), parsedMessageData);
     }
   },

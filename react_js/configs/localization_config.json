@@ -568,5 +568,10 @@
     "id": 114,
     "en": "This chat already exists in your chat list. Do you want to open it?",
     "ru": "Указанный чат уже существует в Вашем списке чатов. Желаете его открыть?"
+  },
+  {
+    "id": 115,
+    "en": "Target connection is not found or not ready!",
+    "ru": "Соединение с указанным пользователем не найдено или не готово!"
   }
 ]

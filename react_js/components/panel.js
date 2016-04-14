@@ -422,6 +422,7 @@ const Panel = React.createClass({
     }
     if (this.props.location === "right") {
       event_bus.on('changeConnection', this.changeConnection, this);
+      event_bus.on('changeUsersConnections', this.changeConnection, this);
       this.outerContainer = document.querySelector('[data-role="right_panel_outer_container"]');
       this.inner_container = document.querySelector('[data-role="right_panel_inner_container"]');
       this.outerContainer.style.left = '100vw';
@@ -456,6 +457,7 @@ const Panel = React.createClass({
       event_bus.off('web_socket_message', this.onPanelMessageRouter);
     } else if (this.props.location === "right") {
       event_bus.off('changeConnection', this.changeConnection, this);
+      event_bus.off('changeUsersConnections', this.changeConnection, this);
     }
 
     this.outerContainer = null;
@@ -1159,7 +1161,6 @@ const Panel = React.createClass({
     if (this.props.location !== "left") {
       return;
     }
-
     switch (messageData.type) {
       case 'user_add':
         if (this.state.bodyMode === MODE.JOIN_USER) {
@@ -1182,6 +1183,25 @@ const Panel = React.createClass({
       case 'device_toggled_ready':
         event_bus.set_ws_device_id(messageData.from_ws_device_id);
         break;
+      case 'error':
+        switch (messageData.request_type){
+          case 'user_add_sent':
+            event_bus.trigger('changeStatePopup', {
+              show: true,
+              type: 'error',
+              message: 115,
+              onDataActionClick: function(action) {
+                switch (action) {
+                  case 'confirmCancel':
+                    let newState = Popup.prototype.handleClose(this.state);
+                    this.setState(newState);
+                    break;
+                }
+              }
+            });
+            break;
+        }
+        break;
     }
   },
 
@@ -1194,7 +1214,16 @@ const Panel = React.createClass({
         return;
       }
 
-      users_bus.putUserIdAndSave(user_id);
+      users_bus.putUserIdAndSave(user_id, function (_err){
+        if (_err){
+          return console.error(_err);
+        }
+
+        event_bus.trigger('changeMyUsers');
+        if (self.state.bodyMode === MODE.USERS){
+          self.getInfoForBody(self.state.bodyMode);
+        }
+      });
       console.log('putUserIdAndSave', user_id);
       self.notListenNotifyUser();
     });

@@ -17,6 +17,20 @@ const ContactList = React.createClass({
   },
 
   componentWillMount: function() {
+    this.getContacts();
+  },
+
+  componentDidMount: function() {
+    event_bus.on('changeUsersConnections', this.getContacts, this);
+    event_bus.on('changeMyUsers', this.getContacts, this);
+  },
+
+  componentWillUnmount: function() {
+    event_bus.off('changeUsersConnections', this.getContacts, this);
+    event_bus.off('changeMyUsers', this.getContacts, this);
+  },
+
+  getContacts(){
     let self = this;
     chats_bus.getChatContacts(this.props.data.chat_id, function(error, contactsInfo) {
       if (error) {
@@ -47,7 +61,7 @@ const ContactList = React.createClass({
 
   makeFriends(element){
     let userId = element.dataset.key;
-    if(userId) {
+    if (userId) {
       event_bus.trigger('makeFriends', userId, element);
     } else {
       console.error('Unable to get UserId');
@@ -66,7 +80,7 @@ const ContactList = React.createClass({
             <div className="text-bold">{_user.userName}</div>
             <div>{_user.user_id}</div>
             {(() => {
-              if (_user.userName === '-//-//-//-'){
+              if (_user.userName === '-//-//-//-') {
                 return (
                   <div className="flex-just-center">
                     <button data-key={_user.user_id} data-action="makeFriends" onClick={self.handleClick}>
