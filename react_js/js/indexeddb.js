@@ -1,4 +1,4 @@
-var globalUsersDatabaseDescription = require('json!../configs/indexeddb/global_users.json');
+var globalUsersDatabaseDescription = require('../configs/indexeddb/global_users.json');
 
 import AsyncCore from '../js/async_core.js'
 import EventBus from '../js/event_bus.js'

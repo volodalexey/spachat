@@ -42,6 +42,14 @@ module.exports = {
         query: {
           presets: ['react', 'es2015']
         }
+      },
+      {
+        test: /\.svg$/,
+        loader: production ? 'file?name=svg/[name].[ext]?[hash]' : 'file?name=svg/[name].[ext]'
+      },
+      {
+        test: /\.json$/,
+        loader: 'json'
       }
     ]
   },

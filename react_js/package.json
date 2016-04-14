@@ -25,7 +25,8 @@
     "ws": "^1.0.1"
   },
   "scripts": {
-    "webpack": "./node_modules/.bin/cross-env NODE_ENV=production ./node_modules/.bin/webpack --display-error-details --config ./webpack.config.js"
+    "webpack": "./node_modules/.bin/cross-env NODE_ENV=production ./node_modules/.bin/webpack --display-error-details --config ./webpack.config.js",
+    "server:dev": "./node_modules/.bin/cross-env node ./development_server.js"
   },
   "engines": {
     "node": "4.4.0",

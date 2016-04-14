@@ -1,4 +1,4 @@
-var localization_config = require('json!../configs/localization_config.json');
+var localization_config = require('../configs/localization_config.json');
 import React from 'react'
 
 var Localization = function(lang) {
