@@ -64,6 +64,7 @@ const Button = React.createClass({
           </div>))
       } else {
         content.push(<img key={this.props.config.icon} data-onload={this.props.config.onload ? 'true' : ''}
+                          data-role={this.props.config.data.role}
                           src={"components/icon/" + this.props.config.icon + ".svg"}/>);
       }
     }

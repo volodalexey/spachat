@@ -76,7 +76,8 @@ const Panel = React.createClass({
         },
         onload: true,
         "class": "panel-button right-panel-button "
-      }
+      },
+      z_index: 80
     }
   },
 
@@ -433,7 +434,7 @@ const Panel = React.createClass({
 
     this.outerContainer.classList.remove("hide");
     this.outerContainer.style.maxWidth = window.innerWidth + 'px';
-    this.outerContainer.style.zIndex = z_index;
+    this.outerContainer.style.zIndex = this.props.z_index;
 
     this.outerContainer.addEventListener('transitionend', this.handleTransitionEnd);
     if(this.props.location === "left" && this.props.locationQuery && this.props.locationQuery.join_chat_id){
@@ -584,10 +585,10 @@ const Panel = React.createClass({
 
   handleLoad: function(event) {
     if (!this.togglePanelElement) return;
-    if (this.props.location === "left" && event.target.dataset.onload) {
+    if (this.props.location === "left" && event.target.dataset.onload && event.target.dataset.role === 'mainButtonLeftPanel') {
       this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
     }
-    if (this.props.location === "right" && event.target.dataset.onload) {
+    if (this.props.location === "right" && event.target.dataset.onload && event.target.dataset.role === 'mainButtonRightPanel') {
       this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
     }
     this.resizePanel();

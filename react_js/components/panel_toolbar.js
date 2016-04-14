@@ -146,7 +146,7 @@ const PanelToolbar = React.createClass({
       panelRightToolbarConfig: [
         {
           "role": "locationWrapper",
-          "classList": "flex",
+          "classList": "flex-wrap",
           "location": "buttons"
         },
         {
@@ -188,7 +188,7 @@ const PanelToolbar = React.createClass({
         },
         {
           "element": "button",
-          "icon": "",
+          "icon": "settings_panel",
           "text": 22,
           "class": "floatR flex-item-1-0p",
           "location": "buttons",
