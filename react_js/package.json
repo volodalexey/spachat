@@ -8,6 +8,7 @@
     "babel-loader": "^6.0.1",
     "babel-preset-es2015": "^6.1.2",
     "babel-preset-react": "^6.1.18",
+    "cross-env": "^1.0.7",
     "css-loader": "^0.22.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "history": "^1.13.1",
@@ -22,6 +23,9 @@
     "webpack": "^1.12.6",
     "webpack-dev-middleware": "^1.2.0",
     "ws": "^1.0.1"
+  },
+  "scripts": {
+    "webpack": "./node_modules/.bin/cross-env NODE_ENV=production ./node_modules/.bin/webpack --display-error-details --config ./webpack.config.js"
   },
   "engines": {
     "node": "4.4.0",
