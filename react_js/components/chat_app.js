@@ -1,6 +1,5 @@
 import React from 'react'
-import { History } from 'react-router'
-
+import { browserHistory } from 'react-router'
 import users_bus from '../js/users_bus.js'
 import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
@@ -13,7 +12,6 @@ import Description from '../components/description'
 import ChatResize from '../components/chat_resize'
 
 const ChatApp = React.createClass({
-  mixins: [History],
 
   getInitialState: function() {
     return {
@@ -60,7 +58,7 @@ const ChatApp = React.createClass({
     let self = this,
       userId = users_bus.getUserId();
     if (!userId) {
-      this.history.pushState(null, 'login');
+      browserHistory.push('/login');
     } else {
       users_bus.getMyInfo(null, function(error, _options, userInfo) {
         self.setState({userInfo: userInfo, locationQuery: self.props.location.query});
@@ -88,9 +86,9 @@ const ChatApp = React.createClass({
       event_bus.trigger('getPanelDescription', function(description, location) {
         panelDescription[location] = description;
       });
-      this.savePanelStates(panelDescription, function() {
+      this.savePanelStates(panelDescription, () => {
         self.toggleWaiter();
-        self.history.pushState(null, 'login');
+        browserHistory.push('/login');
       })
     }
   },

@@ -15,9 +15,16 @@ module.exports = {
     aggregateTimeout: 100
   },
 
+  stats: {
+    colors: true,
+    modules: true,
+    reasons: true,
+    errorDetails: true
+  },
+
   entry: {
-    app: './js',
-    vendor: ['react', 'react-dom', 'react-router', 'history']
+    app: './js/index.js',
+    vendor: ['react', 'react-dom', 'react-router']
   },
   
   output: {
@@ -29,15 +36,18 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.css$/, 
+        test: /\.css$/,
+        exclude: /(node_modules|bower_components)/,
         loader: 'style-loader!css-loader'
       },
       {
         test: /\.less$/,
+        exclude: /(node_modules|bower_components)/,
         loader: 'style!css!less'
       },
       {
         test: /\.jsx?$/,
+        exclude: /(node_modules|bower_components)/,
         loader: 'babel',
         query: {
           presets: ['react', 'es2015']
@@ -45,10 +55,12 @@ module.exports = {
       },
       {
         test: /\.svg$/,
+        exclude: /(node_modules|bower_components)/,
         loader: production ? 'file?name=svg/[name].[ext]?[hash]' : 'file?name=svg/[name].[ext]'
       },
       {
         test: /\.json$/,
+        exclude: /(node_modules|bower_components)/,
         loader: 'json'
       }
     ]

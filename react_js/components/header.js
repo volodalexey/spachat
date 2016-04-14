@@ -1,5 +1,4 @@
 import React from 'react'
-import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import Location_Wrapper from './location_wrapper'
 

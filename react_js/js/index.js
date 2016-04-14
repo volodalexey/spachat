@@ -1,13 +1,10 @@
 import React from 'react'
-import { render } from 'react-dom'
-import { createHistory, useBasename } from 'history'
-import { Router, Route, Link, History, Redirect } from 'react-router'
-
+import { ReactDOM } from 'react-dom'
 import Less from '../less/total.less'
 
 import Index from '../components/index'
 
-render((
+ReactDOM((
   <Index />
 ), document.getElementById('app'));
 

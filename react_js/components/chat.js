@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Router, Route, Link, History, Redirect } from 'react-router'
 
 import extend_core from '../js/extend_core.js'
 import switcher_core from '../js/switcher_core.js'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Router, Route, Link, History, Redirect, Lifecycle } from 'react-router'
+import { browserHistory } from 'react-router'
 
 import Location_Wrapper from './location_wrapper'
 import Popup from '../components/popup'
@@ -12,7 +12,6 @@ import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
 
 const Login = React.createClass({
-  mixins: [History],
 
   getDefaultProps: function() {
     return {
@@ -209,7 +208,7 @@ const Login = React.createClass({
           users_bus.getMyInfo(null, function(err, options, userInfo) {
             if (userPassword === userInfo.userPassword) {
               users_bus.checkLoginState();
-              self.history.pushState(null, 'chat');
+              browserHistory.push('/chat');
             } else {
               self.toggleWaiter();
               newState = Popup.prototype.handleChangeState(self.state, true, 'error', 104,

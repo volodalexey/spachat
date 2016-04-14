@@ -1,11 +1,6 @@
 import React from 'react'
-import { Router, Route, Link, History, Redirect } from 'react-router'
-
-import users_bus from '../js/users_bus.js'
-import chats_bus from '../js/chats_bus.js'
 import switcher_core from '../js/switcher_core.js'
 import extend_core from '../js/extend_core.js'
-
 import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
 import PanelChats from './panel_chats'

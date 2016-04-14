@@ -1,5 +1,5 @@
 import React from 'react'
-import { Router, Route, Link, History, Redirect } from 'react-router'
+import { browserHistory } from 'react-router'
 
 import Location_Wrapper from './location_wrapper'
 import Popup from '../components/popup'
@@ -10,12 +10,10 @@ import extend_core from '../js/extend_core.js'
 
 import id_core from '../js/id_core.js'
 import users_bus from '../js/users_bus.js'
-import indexeddb from '../js/indexeddb.js'
 import Localization from '../js/localization.js'
 import overlay_core from '../js/overlay_core.js'
 
 const Register = React.createClass({
-  mixins: [History],
 
   getDefaultProps: function() {
     return {
@@ -240,7 +238,7 @@ const Register = React.createClass({
                   case 'confirmCancel':
                     newState = Popup.prototype.handleClose(self.state);
                     self.setState(newState);
-                    self.history.pushState(null, '/login');
+                    browserHistory.push('/login');
                     break;
                 }
               }

@@ -105,5 +105,5 @@ server.listen(port, function(err) {
     console.log(err);
     return;
   }
-  console.log('Server listening on ' + server.address().port + ', Ctrl+C to stop;');
+  console.log('Server listening on http://localhost:' + server.address().port + ', Ctrl+C to stop;');
 });
