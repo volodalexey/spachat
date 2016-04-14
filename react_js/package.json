@@ -1,0 +1,40 @@
+{
+  "name": "spachat",
+  "version": "0.5.0",
+  "private": true,
+  "description": "Single Page Application Chat",
+  "dependencies": {
+    "babel-core": "^6.1.2",
+    "babel-loader": "^6.0.1",
+    "babel-preset-es2015": "^6.1.2",
+    "babel-preset-react": "^6.1.18",
+    "css-loader": "^0.22.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "history": "^1.13.1",
+    "json-loader": "^0.5.3",
+    "less": "^2.5.3",
+    "less-loader": "^2.2.1",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-router": "^1.0.0",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.6",
+    "webpack-dev-middleware": "^1.2.0",
+    "ws": "^1.0.1"
+  },
+  "engines": {
+    "node": "4.4.0",
+    "npm": "2.14.20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:volodalexey/spachat.git"
+  },
+  "keywords": [
+    "ReactJS",
+    "WebRTC",
+    "IndexedDB",
+    "NodeJS"
+  ],
+  "license": "MIT"
+}
