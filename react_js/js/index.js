@@ -1,10 +1,10 @@
 import React from 'react'
-import { ReactDOM } from 'react-dom'
+import ReactDOM from 'react-dom'
 import Less from '../less/total.less'
 
 import Index from '../components/index'
 
-ReactDOM((
+ReactDOM.render((
   <Index />
 ), document.getElementById('app'));
 
