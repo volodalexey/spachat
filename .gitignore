@@ -1,4 +1,7 @@
 .idea
 /node_modules
-/bower_components
+/vanilla_js/node_modules
+/react_js/node_modules
+/vanilla_js/npm-debug.log
+/react_js/npm-debug.log
 npm-debug.log
