@@ -25,7 +25,7 @@ const LinkButton = React.createClass({
     if (this.props.data && this.props.config.data.key_disable && this.props.data[this.props.config.data.key_disable]) {
       params['disabled'] = this.props.data[this.props.config.data.key_disable];
       var flag = true;
-      var src = "components/icon/" + this.props.config.icon + ".svg";
+      var src = "/__build__/svg/" + this.props.config.icon + ".svg";
     }
 
     if (this.props.config.type) {
@@ -59,7 +59,7 @@ const LinkButton = React.createClass({
             </div>
           </div>)
       } else {
-        content.push(<img key={this.props.config.icon} src={"components/icon/" + this.props.config.icon + ".svg"}/>);
+        content.push(<img key={this.props.config.icon} src={"/__build__/svg/" + this.props.config.icon + ".svg"}/>);
       }
     }
     if (this.props.config.text) {
@@ -71,7 +71,7 @@ const LinkButton = React.createClass({
       content.push(this.props.data[this.props.config.data.key]);
     }
     if (this.props.config.data && this.props.config.data.description) {
-      content.push(<img key={"description"} src="components/icon/description_icon.svg"
+      content.push(<img key={"description"} src="/__build__/svg/description_icon.svg"
                         className="description_icon-position"/>);
     }
     return content;

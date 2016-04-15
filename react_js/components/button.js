@@ -23,7 +23,7 @@ const Button = React.createClass({
     if (this.props.data && this.props.config.data && this.props.data[this.props.config.data.key_disable]) {
       params['disabled'] = this.props.data[this.props.config.data.key_disable];
       var flag = true;
-      var src = "components/icon/" + this.props.config.icon + ".svg";
+      var src = "/__build__/svg/" + this.props.config.icon + ".svg";
     }
 
     if (this.props.calcDisplay) {
@@ -65,7 +65,7 @@ const Button = React.createClass({
       } else {
         content.push(<img key={this.props.config.icon} data-onload={this.props.config.onload ? 'true' : ''}
                           data-role={this.props.config.data.role}
-                          src={"components/icon/" + this.props.config.icon + ".svg"}/>);
+                          src={"/__build__/svg/" + this.props.config.icon + ".svg"}/>);
       }
     }
     if (this.props.config.text) {
@@ -77,7 +77,7 @@ const Button = React.createClass({
       content.push(this.props.data[this.props.config.data.key]);
     }
     if (this.props.config.data && this.props.config.data.description) {
-      content.push(<img key={"description"} src="components/icon/description_icon.svg"
+      content.push(<img key={"description"} src="/__build__/svg/description_icon.svg"
                         className="description_icon-position"/>);
     }
     return content;

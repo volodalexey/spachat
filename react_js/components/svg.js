@@ -6,7 +6,7 @@ const Svg = React.createClass({
     if (this.props.data && this.props.data.pointerRotate !== -1) {
       className = className + 'rotate-90';
     }
-    return <img src={"components/icon/" + this.props.config.icon} className={className}
+    return <img src={"/__build__/svg/" + this.props.config.icon} className={className}
                 data-role="pointer"/>;
   }
 });

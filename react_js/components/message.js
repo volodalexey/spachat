@@ -59,7 +59,6 @@ const Messages = React.createClass({
             </div>
           </div>
           <div className="width-40px flex-just-center flex-dir-col">
-            <img src="img\app\6.ico" width="35px" height="35px" className="border-radius-5 flex-item-auto"/>
             <div className="user-info flex-item-1-auto c-01">{message.createdByUserId}</div>
           </div>
         </div>
@@ -72,7 +71,6 @@ const Messages = React.createClass({
       return (
         <div className="flex-sp-start margin-t-b" key={message.messageId}>
           <div className="width-40px flex-just-center flex-dir-col">
-            <img src="img\app\3.ico" width="35px" height="35px" className="border-radius-5 flex-item-auto"/>
             <div className="user-info c-50">{message.createdByUserId}</div>
           </div>
           <div className="message flex-item-1-auto flex-dir-col flex-sp-between">
