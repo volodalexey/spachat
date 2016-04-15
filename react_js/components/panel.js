@@ -1338,8 +1338,7 @@ const Panel = React.createClass({
                className="min-width-350 flex-item-1-auto clear flex-dir-col h-100p">
             <header id={location} data-role={location + '_panel_toolbar'} className={panel_toolbar_class}>
               <PanelToolbar location={location} mode={this.state.bodyMode} events={onEvent}
-                            hide={this.state.toggleToolbarElemHide}
-              />
+                            hide={this.state.toggleToolbarElemHide}/>
             </header>
             <div data-role={location + '_extra_toolbar_container'}
                  className="flex-sp-around flex-item-auto c-200">

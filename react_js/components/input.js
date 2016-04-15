@@ -1,11 +1,9 @@
 import React from 'react'
-
 import Localization from '../js/localization'
-import utils from '../js/utils'
 
 const Input = React.createClass({
   renderAtt: function() {
-    let params = {};
+    let params = {}, display;
     if (this.props.config.autoComplete) {
       params["autoComplete"] = this.props.config.autoComplete;
     }
@@ -19,8 +17,6 @@ const Input = React.createClass({
         }
       }
     }
-
-    let display;
     if (this.props.calcDisplay) {
       display = this.props.calcDisplay(this.props.config);
     }
@@ -57,10 +53,7 @@ const Input = React.createClass({
     }
     if (this.props.config.type === "text") {
       if (this.props.config.data && this.props.config.data.key && this.props.data) {
-        if (typeof this.props.data[this.props.config.data.key] === "number") {
-          let text = Localization.getLocText(this.props.data[this.props.config.data.key]);
-          params["value"] = utils.objectToUrl(this.props.data, text);
-        } else if (this.props.data[this.props.config.data.key]) {
+        if(this.props.data[this.props.config.data.key]){
           params["value"] = this.props.data[this.props.config.data.key];
         }
       }

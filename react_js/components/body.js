@@ -1,6 +1,9 @@
 import React from 'react'
 import switcher_core from '../js/switcher_core.js'
 import extend_core from '../js/extend_core.js'
+import Localization from '../js/localization'
+import utils from '../js/utils'
+
 import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
 import PanelChats from './panel_chats'
@@ -1024,9 +1027,12 @@ const Body = React.createClass({
         data = {
           "readyForFriendRequest": this.props.data.joinUser_ListOptions.readyForRequest,
           "userId": this.props.data.joinUser_ListOptions.userId,
-          "messageRequest": this.props.data.joinUser_ListOptions.messageRequest,
+          "messageRequest":  this.props.data.joinUser_ListOptions.messageRequest,
           "userName": this.props.data.userInfo.userName
         };
+        if (this.props.data.joinUser_ListOptions.messageRequest){
+          data.messageRequest = this.transformationData(data, this.props.data.joinUser_ListOptions.messageRequest);
+        }
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}/>);
         return items;
         break;
@@ -1046,9 +1052,12 @@ const Body = React.createClass({
       case this.MODE.JOIN_CHAT:
         data = {
           "chatId": this.props.data.joinChat_ListOptions.chatId,
-          "messageRequest": this.props.data.joinChat_ListOptions.messageRequest,
+          "messageRequest":  this.props.data.joinChat_ListOptions.messageRequest,
           "userName": this.props.data.userInfo.userName
         };
+        if (this.props.data.joinChat_ListOptions.messageRequest){
+          data.messageRequest = this.transformationData(data, this.props.data.joinChat_ListOptions.messageRequest);
+        }
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}/>);
         return items;
         break;
@@ -1081,6 +1090,12 @@ const Body = React.createClass({
         break;
     }
     return items;
+  },
+
+  transformationData(_data, _transform_value){
+    let transform_value = Localization.getLocText(_transform_value);
+    transform_value = utils.objectToUrl(_data, transform_value);
+    return transform_value;
   },
 
   limitationQuantityRecords: function(data, state, mode) {
