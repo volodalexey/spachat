@@ -54,7 +54,6 @@ const ChatApp = React.createClass({
   },
 
   componentWillMount: function() {
-    users_bus.checkLoginState();
     let self = this,
       userId = users_bus.getUserId();
     if (!userId) {

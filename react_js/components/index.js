@@ -1,26 +1,34 @@
 import React from 'react'
 import {Router, Route, browserHistory} from 'react-router'
 
+import Localization from '../js/localization.js'
+import users_bus from '../js/users_bus.js'
+
 import Login from '../components/login'
 import Chat_App from '../components/chat_app'
 import Register from '../components/register'
-import Localization from '../js/localization.js'
+
 
 const requireAuth = function(nextState, replace) {
-    if (!true) { // TODO authentication.isLoggedIn()
+    users_bus.checkLoginState();
+    if (!users_bus.getUserId()) {
       redirectToLogin(nextState, replace);
     }
   },
   noMatchRedirect = function(nextState, replace) {
-    if (true) { // TODO authentication.isLoggedIn()
+    users_bus.checkLoginState();
+    if (users_bus.getUserId()) {
       replace('/chat');
     } else {
       replace('/login');
     }
   },
   redirectToLogin = function(nextState, replace) {
-    // nextState.location.pathname; TODO save and use after login
-    replace('/login');
+    if(nextState.location.search){
+      browserHistory.desired_path = nextState.location.pathname;
+      browserHistory.desired_search = nextState.location.search;
+    }
+      replace('/login');
   },
   Index = React.createClass({
     componentDidMount: function() {

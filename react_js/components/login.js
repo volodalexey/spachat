@@ -208,7 +208,13 @@ const Login = React.createClass({
           users_bus.getMyInfo(null, function(err, options, userInfo) {
             if (userPassword === userInfo.userPassword) {
               users_bus.checkLoginState();
-              browserHistory.push('/chat');
+              if (browserHistory.desired_path && browserHistory.desired_search){
+                browserHistory.push(browserHistory.desired_path + browserHistory.desired_search);
+                browserHistory.desired_path = null;
+                browserHistory.desired_search = null;
+              } else {
+                browserHistory.push('/chat');
+              }
             } else {
               self.toggleWaiter();
               newState = Popup.prototype.handleChangeState(self.state, true, 'error', 104,
@@ -256,7 +262,12 @@ const Login = React.createClass({
   clickRedirectToRegister: function(event) {
     event.preventDefault();
     event.stopPropagation();
-    location.replace('register');
+    if (browserHistory.desired_path && browserHistory.desired_search) {
+      browserHistory.push(browserHistory.desired_path + browserHistory.desired_search);
+      location.replace('register?' + browserHistory.desired_path + browserHistory.desired_search);
+    } else {
+      location.replace('register');
+    }
   },
 
   handleEvents: function(event) {

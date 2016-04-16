@@ -216,7 +216,7 @@ const Register = React.createClass({
             userName: userName,
             userPassword: userPassword
           },
-          function(regErr) {
+          function(regErr, account) {
             self.toggleWaiter();
             if (regErr) {
               newState = Popup.prototype.handleChangeState(self.state, true, 'error', regErr,
@@ -232,13 +232,14 @@ const Register = React.createClass({
               self.setState(newState);
               return;
             }
+            users_bus.setUserId(account.user_id);
             newState = Popup.prototype.handleChangeState(self.state, true, 'success', 96,
               function(action) {
                 switch (action) {
                   case 'confirmCancel':
                     newState = Popup.prototype.handleClose(self.state);
                     self.setState(newState);
-                    browserHistory.push('/login');
+                    browserHistory.push(self.props.location.search.slice(1));
                     break;
                 }
               }
