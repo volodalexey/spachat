@@ -1,8 +1,11 @@
 ## SPACHAT - Single Page Application Chat
 
-SPACHAT - web application for communication between clients with the help of WebRTC technology (in browser). 
+SPACHAT - web application for communication between clients with the help of WebRTC technology (in browser).
+
 NodeJS works as signalling server for peers (for exchange session description protocols).
+
 Each client uses indexedDB as main storage. Clients can create/join chats, create/join users.
+
 Each chat can save its state.
 
 ## DEMO

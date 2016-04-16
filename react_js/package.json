@@ -3,6 +3,12 @@
   "version": "0.5.0",
   "private": true,
   "description": "Single Page Application Chat",
+  "author": "Alexey Volodko",
+  "contributors": [
+    {
+      "name": "Alina Volodko"
+    }
+  ],
   "dependencies": {
     "babel-core": "^6.7.6",
     "babel-loader": "^6.2.4",
@@ -25,6 +31,7 @@
     "ws": "^1.1.0"
   },
   "scripts": {
+    "start": "node production_server.js",
     "webpack": "./node_modules/.bin/cross-env NODE_ENV=production ./node_modules/.bin/webpack --display-error-details --config ./webpack.config.js",
     "server:dev": "./node_modules/.bin/cross-env node ./development_server.js",
     "server:prod": "./node_modules/.bin/cross-env node ./production_server.js"
@@ -33,10 +40,7 @@
     "node": "4.4.0",
     "npm": "2.14.20"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:volodalexey/spachat.git"
-  },
+  "repository": "https://github.com/volodalexey/spachat.git",
   "keywords": [
     "ReactJS",
     "WebRTC",
