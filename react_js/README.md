@@ -9,7 +9,7 @@ Each client uses indexedDB as main storage. Clients can create/join chats, creat
 Each chat can save its state.
 
 ## DEMO
-<a href="https://s-p-a-chat.herokuapp.com/" target="_blank">SPACHAT</a>
+<a href="https://s-p-a-chat.appspot.com" target="_blank">SPACHAT</a>
 - Chrome & Firefox
 
 ##### Description will be provided soon
