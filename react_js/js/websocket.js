@@ -28,7 +28,22 @@ Websocket.prototype = {
   },
 
   create: function() {
-    this.socket = new WebSocket(this.protocol + window.location.host + this.href);
+    try {
+      this.socket = new WebSocket(this.protocol + window.location.host + this.href);
+    } catch (e) {
+      event_bus.trigger('changeStatePopup', {
+        show: true,
+        type: 'error',
+        message: e.message ? e.message : e,
+        onDataActionClick: function(action) {
+          switch (action) {
+            case 'confirmCancel':
+              this.setState(Popup.prototype.handleClose(this.state));
+              break;
+          }
+        }
+      });
+    }
   },
 
   dispose: function() {
