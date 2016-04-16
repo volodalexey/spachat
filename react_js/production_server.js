@@ -8,7 +8,7 @@ var fs = require('fs'),
   rootFilePath = path.join(__dirname, public_path, index_file_path),
   id_Generator = require('./server_js/id_generator'),
   WebSocketServer = require('ws').Server,
-  webSocketServer = new WebSocketServer({server: server}),
+  webSocketServer = new WebSocketServer({server: server, port: 3000}),
   web_socket_connections_collection = require('./server_js/web_socket_connections_collection'),
   clients = [];
 
@@ -35,6 +35,9 @@ webSocketServer.on('connection', function(ws) {
     });
   }
 );
+webSocketServer.on('error', function(err){
+  console.log('server closed by error: '+err);
+});
 web_socket_connections_collection.apply_wss(clients);
 
 // convert any objects to JSON string format

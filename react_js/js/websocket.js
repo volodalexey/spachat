@@ -12,7 +12,7 @@ var Websocket = function() {
 
 Websocket.prototype = {
 
-  href: '/websocket',
+  port: 3000,
 
   bindContexts: function() {
     var self = this;
@@ -28,22 +28,7 @@ Websocket.prototype = {
   },
 
   create: function() {
-    try {
-      this.socket = new WebSocket(this.protocol + window.location.host + this.href);
-    } catch (e) {
-      event_bus.trigger('changeStatePopup', {
-        show: true,
-        type: 'error',
-        message: e.message ? e.message : e,
-        onDataActionClick: function(action) {
-          switch (action) {
-            case 'confirmCancel':
-              this.setState(Popup.prototype.handleClose(this.state));
-              break;
-          }
-        }
-      });
-    }
+    this.socket = new WebSocket(this.protocol + window.location.hostname + ':' + this.port);
   },
 
   dispose: function() {
