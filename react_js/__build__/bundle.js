@@ -2712,7 +2712,7 @@ webpackJsonp([0],[
 
 	Websocket.prototype = {
 
-	  href: '/websocket',
+	  port: 3000,
 
 	  bindContexts: function bindContexts() {
 	    var self = this;
@@ -2728,22 +2728,7 @@ webpackJsonp([0],[
 	  },
 
 	  create: function create() {
-	    try {
-	      this.socket = new WebSocket(this.protocol + window.location.host + this.href);
-	    } catch (e) {
-	      _event_bus2.default.trigger('changeStatePopup', {
-	        show: true,
-	        type: 'error',
-	        message: e.message ? e.message : e,
-	        onDataActionClick: function onDataActionClick(action) {
-	          switch (action) {
-	            case 'confirmCancel':
-	              this.setState(_popup2.default.prototype.handleClose(this.state));
-	              break;
-	          }
-	        }
-	      });
-	    }
+	    this.socket = new WebSocket(this.protocol + window.location.hostname + ':' + this.port);
 	  },
 
 	  dispose: function dispose() {
