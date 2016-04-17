@@ -1922,8 +1922,6 @@ webpackJsonp([0],{
 
 	Websocket.prototype = {
 
-	  port: 3000,
-
 	  bindContexts: function bindContexts() {
 	    var self = this;
 	    self.bindedOnOpen = self.onOpen.bind(self);
@@ -1938,7 +1936,7 @@ webpackJsonp([0],{
 	  },
 
 	  create: function create() {
-	    this.socket = new WebSocket(this.protocol + window.location.hostname + ':' + this.port);
+	    this.socket = new WebSocket(this.protocol + window.location.host);
 	  },
 
 	  dispose: function dispose() {

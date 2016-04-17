@@ -2,13 +2,14 @@ var fs = require('fs'),
   path = require('path'),
   httpServer = require('http'),
   server = httpServer.createServer(),
-  port = process.env.PORT || 8082,
+  server_port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8082,
+  server_ip_address = process.env.OPENSHIFT_NODEJS_IP || 'localhost',
   index_file_path = 'index.html',
   public_path = '__build__',
   rootFilePath = path.join(__dirname, public_path, index_file_path),
   id_Generator = require('./server_js/id_generator'),
   WebSocketServer = require('ws').Server,
-  webSocketServer = new WebSocketServer({server: server, port: 3000}),
+  webSocketServer = new WebSocketServer({server: server}),
   web_socket_connections_collection = require('./server_js/web_socket_connections_collection'),
   clients = [];
 
@@ -118,7 +119,7 @@ server.on('request', function(req, res) {
   }
   readStaticFile({contentType: contentType, encoding: encoding, fullPath: fullPath}, req, res);
 });
-server.listen(port, function(err) {
+server.listen(server_port, server_ip_address, function(err) {
   if (err) {
     console.log(err);
     return;

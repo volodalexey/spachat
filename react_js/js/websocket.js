@@ -12,8 +12,6 @@ var Websocket = function() {
 
 Websocket.prototype = {
 
-  port: 3000,
-
   bindContexts: function() {
     var self = this;
     self.bindedOnOpen = self.onOpen.bind(self);
@@ -28,7 +26,7 @@ Websocket.prototype = {
   },
 
   create: function() {
-    this.socket = new WebSocket(this.protocol + window.location.hostname + ':' + this.port);
+    this.socket = new WebSocket(this.protocol + window.location.host);
   },
 
   dispose: function() {

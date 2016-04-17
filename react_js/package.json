@@ -36,9 +36,9 @@
     "start": "node production_server.js",
     "webpack": "./node_modules/.bin/cross-env NODE_ENV=production ./node_modules/.bin/webpack --display-error-details --config ./webpack.config.js",
     "server:dev": "./node_modules/.bin/cross-env node ./development_server.js",
-    "server:prod": "./node_modules/.bin/cross-env node ./production_server.js",
-    "deploy": "gcloud preview app deploy"
+    "server:prod": "./node_modules/.bin/cross-env node ./production_server.js"
   },
+  "main": "production_server.js",
   "engines": {
     "node": "4.4.0",
     "npm": "2.14.20"
