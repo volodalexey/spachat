@@ -12,6 +12,8 @@ var Websocket = function() {
 
 Websocket.prototype = {
 
+  port: ':8000',
+
   bindContexts: function() {
     var self = this;
     self.bindedOnOpen = self.onOpen.bind(self);
@@ -26,7 +28,13 @@ Websocket.prototype = {
   },
 
   create: function() {
-    this.socket = new WebSocket(this.protocol + window.location.host);
+    var url;
+    if (window.location.hostname.indexOf('localhost') >= 0) {
+      url = this.protocol + window.location.host;
+    } else {
+      url = this.protocol + window.location.hostname + this.port;
+    }
+    this.socket = new WebSocket(url);
   },
 
   dispose: function() {
