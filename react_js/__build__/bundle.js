@@ -1,5 +1,6 @@
-webpackJsonp([0],[
-/* 0 */
+webpackJsonp([0],{
+
+/***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25,760 +26,15 @@ webpackJsonp([0],[
 	_reactDom2.default.render(_react2.default.createElement(_index2.default, null), document.getElementById('app'));
 
 /***/ },
-/* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */,
-/* 19 */,
-/* 20 */,
-/* 21 */,
-/* 22 */,
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */,
-/* 68 */,
-/* 69 */,
-/* 70 */,
-/* 71 */,
-/* 72 */,
-/* 73 */,
-/* 74 */,
-/* 75 */,
-/* 76 */,
-/* 77 */,
-/* 78 */,
-/* 79 */,
-/* 80 */,
-/* 81 */,
-/* 82 */,
-/* 83 */,
-/* 84 */,
-/* 85 */,
-/* 86 */,
-/* 87 */,
-/* 88 */,
-/* 89 */,
-/* 90 */,
-/* 91 */,
-/* 92 */,
-/* 93 */,
-/* 94 */,
-/* 95 */,
-/* 96 */,
-/* 97 */,
-/* 98 */,
-/* 99 */,
-/* 100 */,
-/* 101 */,
-/* 102 */,
-/* 103 */,
-/* 104 */,
-/* 105 */,
-/* 106 */,
-/* 107 */,
-/* 108 */,
-/* 109 */,
-/* 110 */,
-/* 111 */,
-/* 112 */,
-/* 113 */,
-/* 114 */,
-/* 115 */,
-/* 116 */,
-/* 117 */,
-/* 118 */,
-/* 119 */,
-/* 120 */,
-/* 121 */,
-/* 122 */,
-/* 123 */,
-/* 124 */,
-/* 125 */,
-/* 126 */,
-/* 127 */,
-/* 128 */,
-/* 129 */,
-/* 130 */,
-/* 131 */,
-/* 132 */,
-/* 133 */,
-/* 134 */,
-/* 135 */,
-/* 136 */,
-/* 137 */,
-/* 138 */,
-/* 139 */,
-/* 140 */,
-/* 141 */,
-/* 142 */,
-/* 143 */,
-/* 144 */,
-/* 145 */,
-/* 146 */,
-/* 147 */,
-/* 148 */,
-/* 149 */,
-/* 150 */,
-/* 151 */,
-/* 152 */,
-/* 153 */,
-/* 154 */,
-/* 155 */,
-/* 156 */,
-/* 157 */,
-/* 158 */,
-/* 159 */,
-/* 160 */,
-/* 161 */,
-/* 162 */,
-/* 163 */,
-/* 164 */,
-/* 165 */,
-/* 166 */,
-/* 167 */,
-/* 168 */,
-/* 169 */,
-/* 170 */,
-/* 171 */,
-/* 172 */
-/***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(173);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(214)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./total.less", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./total.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 173 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(174)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".modal {\n  position: relative;\n  width: 350px;\n  display: flex;\n  flex-direction: column;\n  height: inherit;\n  box-shadow: 0px 0px 5px 3px rgba(0, 0, 0, 0.25);\n}\n.modal-header {\n  flex: 0 0 auto;\n  background-color: #A1887F;\n  justify-content: center;\n}\n.modal-body {\n  background-color: #D7CCC8;\n  flex: 1 1 auto;\n}\n.overflow-y-scroll {\n  overflow-y: scroll;\n}\n.message {\n  height: initial;\n  border-radius: 5px;\n  background-color: #EFEBE9;\n  word-break: break-all;\n  margin: 0 2px 0 2px;\n}\n.myMessage {\n  background-color: #ECEFF1;\n  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);\n}\n.date-format {\n  text-align: end;\n  color: grey;\n  font-size: 0.7em;\n  right: 0;\n  bottom: 0;\n}\n.border-radius-5 {\n  border-radius: 5px;\n}\n.user-info {\n  font-size: 0.7em;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  width: 35px;\n  border-radius: 5px;\n}\n.toggle-visible {\n  box-shadow: 0 0 3px 6px rgba(109, 76, 65, 0.5);\n  background: rgba(0, 0, 0, 0.4);\n}\n.c-pink {\n  background-color: #FFC0CB;\n}\n.c-mist {\n  background-color: #ffe4e1;\n}\n.background-blue {\n  background-color: #add8e6;\n}\n.background-pink {\n  background-color: #FFC0CB;\n}\n.c-01 {\n  background-color: #ECEFF1;\n}\n.c-50 {\n  background-color: #EFEBE9;\n}\n.c-100 {\n  background-color: #D7CCC8;\n}\n.c-200 {\n  background-color: #BCAAA4;\n}\n.c-300 {\n  background-color: #A1887F;\n}\n.color-blue {\n  color: blue;\n}\n.color-red {\n  color: red;\n}\n.color-green {\n  color: green;\n}\nbody {\n  background-color: #EFEBE9;\n  margin: 0;\n}\n.hide {\n  display: none !important;\n}\n.hidden {\n  visibility: hidden !important;\n}\n.overlay {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  overflow: auto;\n  justify-content: space-around;\n}\n.margin-t-b {\n  margin: 0.4em 0 0.4em 0;\n}\n.p-fx {\n  position: fixed;\n}\n.p-rel {\n  position: relative;\n}\n.p-abs {\n  position: absolute;\n}\n.login-outer-container.hidden {\n  position: absolute;\n  height: 1px;\n  width: 1px;\n  overflow: hidden;\n  opacity: 0;\n}\n.w-100p {\n  width: 100%;\n}\n.w-90p {\n  width: 90%;\n}\n.w-inh {\n  width: inherit;\n}\n.h-100p {\n  height: 100%;\n}\n.p-t-b {\n  padding-top: 0.5em;\n  padding-bottom: 0.5em;\n}\n.p-r-l-1em {\n  padding-right: 1em;\n  padding-left: 1em;\n}\n.p-r-l-04em {\n  padding-right: 0.4em;\n  padding-left: 0.4em;\n}\n.p-tb-03em-lr-1em {\n  padding: 0.3em 1em;\n}\n.p-b-1em {\n  padding-bottom: 1em;\n}\n.p-t {\n  padding-top: 0.1em;\n}\n.p-05em {\n  padding: 0.5em;\n}\n.padding-l-r {\n  padding: 0 1px 0 1px;\n}\n.width-40px {\n  width: 40px;\n  min-width: 40px;\n}\n.form-small {\n  background: linear-gradient(to top, #D7CCC8, #8D6E63);\n  margin: 20px 0;\n  padding: 5px;\n  max-width: 400px;\n}\n.waiter {\n  top: 0;\n  background-color: rgba(207, 207, 207, 0.5);\n  z-index: 200;\n}\n.pull-for-left-panel {\n  float: right;\n}\n.pull-for-right-panel {\n  float: left;\n}\n.overflow-a {\n  overflow: auto;\n}\n.opacity-05 {\n  opacity: 0.5;\n}\n.opacity-0 {\n  opacity: 0;\n}\n.check-box-size {\n  width: 17px;\n  height: 17px;\n}\n.description {\n  position: absolute;\n  border: 1px solid #A1887F;\n  box-shadow: 0 0 10px #8D6E63;\n  background-color: #EFEBE9;\n  word-break: break-all;\n  z-index: 200;\n}\n.min-width-350 {\n  min-width: 350px;\n}\n.min-width-4em {\n  min-width: 4em;\n}\n.cursor-not-allowed {\n  cursor: not-allowed;\n}\n.description_icon-position {\n  position: absolute;\n  top: -0.13em;\n  right: -0.1em;\n}\n.min-height-2-6em {\n  min-height: 2.6em;\n}\n.popup {\n  z-index: 100;\n  opacity: 0;\n  background-color: rgba(207, 207, 207, 0.7);\n  transform: scale(0);\n  transition: transform 0.2s 0s cubic-bezier(0.23, 1, 0.44, 0.91), opacity 0.2s 0s cubic-bezier(0.23, 1, 0.44, 0.91);\n}\n.popup.hidden-popup {\n  position: fixed;\n  height: 1px;\n  width: 1px;\n  top: -100px;\n  left: -100px;\n}\n.popup.in {\n  opacity: 1;\n  transform: scale(1);\n}\n.border-radius-05em {\n  border-radius: 0.5em;\n}\n.border-radius-04em {\n  border-radius: 0.4em;\n}\n.border-popup-footer {\n  border-top: 0.1em solid #BCAAA4;\n}\n.text-line-center {\n  margin: 1.2em 0 0;\n  position: relative;\n  padding: 1em 0.5em 0;\n}\n.text-line-center.succes {\n  border-top: 1px solid green;\n}\n.text-line-center.confirm {\n  border-top: 1px solid blue;\n}\n.text-line-center.error {\n  border-top: 1px solid red;\n}\n.title-popup {\n  position: relative;\n  height: 0.3em;\n  top: -1.7em;\n}\nimg {\n  vertical-align: text-top;\n  -webkit-user-drag: none;\n}\n.text-bold {\n  font-weight: bold;\n}\n.margin-b-em {\n  margin-bottom: 0.5em;\n}\n.modal-controls {\n  flex: 1 1 auto;\n}\n.container {\n  height: 90px;\n  flex: 0 1 auto;\n  overflow-y: scroll;\n  border: 2px solid #A7A7BB;\n  background-color: #F0F8FF;\n  word-break: break-all;\n}\n.onScroll {\n  min-height: 90px;\n  height: inherit;\n}\n.modal-main-btn {\n  display: flex;\n  justify-content: space-around;\n  flex-wrap: wrap;\n}\n.btnEditPanel {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n}\n.check:checked {\n  background-color: red;\n}\n.lblStyle {\n  width: 30px;\n  text-align: center;\n  background: #F0F8FF;\n  border: 1px solid grey;\n}\n.panel {\n  height: 100%;\n  max-width: 700px !important;\n}\n.panel.right-panel {\n  box-shadow: -4px 0px 10px 3px rgba(109, 76, 65, 0.7);\n}\n.panel.left-panel {\n  box-shadow: 4px 0px 10px 3px rgba(109, 76, 65, 0.7);\n}\n.clear {\n  clear: both;\n}\n.animate {\n  transition: left  0.2s ease, right  0.2s ease;\n}\n.max-height-0 {\n  overflow: hidden;\n  background: #EFEBE9;\n  transition: max-height 0.2s ease-out;\n}\n.max-height-0.max-height-auto {\n  transition: max-height 0.5s ease-in;\n}\n.transition-all {\n  transition: all  0.2s ease;\n}\n.transition-all.rotate-90 {\n  transform: rotate(90deg);\n}\n.flex {\n  display: flex;\n}\n.flex.wrap {\n  flex-wrap: wrap;\n}\n.flex.justContent {\n  justify-content: center;\n}\n.flex.justContSA {\n  justify-content: space-around;\n}\n.flex.justContSB {\n  justify-content: space-between;\n}\n.flex-item {\n  width: 100%;\n}\n.background {\n  background-color: #FFC0CB;\n}\n.elements {\n  padding: 0.15em;\n}\n.inputWidth {\n  width: 30px;\n}\n.title {\n  padding: 0.4em 0.3em;\n  position: absolute;\n  top: -1.1em;\n}\n.textbox {\n  border: 0.1em solid #8D6E63;\n  margin: 1em 0.3em;\n  position: relative;\n  padding: 1em 0.5em 0.5em;\n}\n.w100p {\n  width: 100%;\n}\n.flex-outer-container {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  width: 100%;\n  height: 100%;\n}\n.flex-inner-container {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n}\n.flex-item-w50p {\n  flex: 1 1 50%;\n}\n.flex-item-1-auto {\n  flex: 1 1 auto;\n}\n.flex-item-auto {\n  flex: 0 0 auto;\n}\n.flex-item-1-0p {\n  flex: 1 1 0%;\n}\n.flex-stretch {\n  display: flex;\n  align-content: stretch;\n  align-items: stretch;\n}\n.flex-sp-between {\n  display: flex;\n  justify-content: space-between;\n}\n.flex-sp-end {\n  display: flex;\n  justify-content: flex-end;\n}\n.flex-sp-around {\n  display: flex;\n  justify-content: space-around;\n}\n.flex-sp-start {\n  display: flex;\n  justify-content: flex-start;\n}\n.flex-just-center {\n  display: flex;\n  justify-content: center;\n}\n.flex-dir-col {\n  display: flex;\n  flex-direction: column;\n}\n.flex-wrap {\n  display: flex;\n  flex-wrap: wrap;\n}\n.flex-shrink-0 {\n  flex-shrink: 0;\n}\n.flex-align-c {\n  display: flex;\n  align-items: center;\n}\n.align-c {\n  align-items: center;\n}\n.align-start {\n  align-items: flex-start;\n}\n.flex {\n  display: flex;\n}\nbutton {\n  position: relative;\n  transition: background-color 0.2s ease;\n  cursor: pointer;\n  font-size: 1em;\n}\n.button-margin-height {\n  box-shadow: 0 15px 5px 2px rgba(253, 253, 253, 0.5) inset;\n  border-radius: 0.4em;\n  min-height: 1.6em;\n  margin: 0.2em;\n}\n.button-inset {\n  min-width: 180px;\n  padding: 2px 6px 2px;\n  border: none;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.75);\n  border-radius: 0.4em;\n  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.5) inset;\n}\n.button-inset:active {\n  top: -1px;\n}\n.button-inset:hover {\n  background-color: lightblue;\n}\n.button-convex {\n  border-radius: 0.4em;\n  box-shadow: 2px -1px 3px 1px rgba(0, 0, 0, 0.25);\n}\n.button-convex:active {\n  top: 1px;\n}\n.button-inset-square {\n  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.5) inset;\n}\n.button-inset-square:active {\n  top: 1px;\n}\n.button-inset-white {\n  box-shadow: 0px -2px 3px 1px rgba(255, 255, 255, 0.75) inset;\n  border-radius: 0.4em;\n}\n.button-inset-white:active {\n  top: 1px;\n}\n.button-small-not-padding {\n  width: 35px;\n  height: 35px;\n  padding: 0;\n  margin-top: 0.3em;\n}\n.button-margin {\n  box-shadow: 0 1px 5px 1px rgba(253, 253, 253, 0.5) inset;\n  border-radius: 0.4em;\n  margin: 0.2em;\n}\n.panel-button {\n  position: absolute;\n  height: 50px;\n  outline: none;\n}\n.panel-button.right-panel-button {\n  right: 100%;\n  margin: 0 0 0.2em 0.2em;\n  border-radius: 0.4em 0 0 0.4em;\n  box-shadow: -2px 0 10px 3px rgba(109, 76, 65, 0.7);\n  border: 2px buttonface;\n  border-style: solid solid outset inset;\n}\n.panel-button.right-panel-button:active {\n  border-style: inset;\n  border-bottom: none;\n  border-left: none;\n}\n.panel-button.left-panel-button {\n  left: 100%;\n  margin: 0 0.2em 0.2em 0;\n  border-radius: 0 0.4em 0.4em 0;\n  border-left: none;\n  box-shadow: 2px 0 10px 3px rgba(109, 76, 65, 0.7);\n}\n.activeTollbar {\n  border: 2px solid rgba(0, 0, 0, 0.2);\n  background-color: #D7CCC8;\n  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.2), inset 0px -2px 0 rgba(0, 0, 0, 0.1), inset 0 0 22px rgba(0, 0, 0, 0.1);\n}\nbutton:disabled {\n  cursor: not-allowed;\n}\n.border-c300 {\n  border: 2px solid #A1887F;\n}\n.chat-resize-container {\n  position: absolute;\n  cursor: e-resize;\n  z-index: 200;\n}\n.chat-resize-container.draggable {\n  width: 100%;\n  height: 100%;\n}\n.chat-resize-container.draggable .line {\n  width: 2px;\n  height: 100%;\n  background-color: #cccc00;\n  box-shadow: 0 3px 7px #cccc00;\n  position: absolute;\n}\n.chat-splitter-item {\n  position: absolute;\n  width: 20px;\n  height: 100%;\n  z-index: 20;\n  box-shadow: 0 0 3px 6px rgba(109, 76, 65, 0.5);\n  background-color: black;\n  opacity: 0.4;\n}\n.chat-splitter-item.right {\n  right: 0;\n}\n.chat-splitter-item:hover {\n  cursor: e-resize;\n}\n.icon-add_blog_icon {\n  background: url(" + __webpack_require__(175) + ");\n}\n.icon-add_chat_icon {\n  background: url(" + __webpack_require__(176) + ");\n}\n.icon-add_user_icon {\n  background: url(" + __webpack_require__(177) + ");\n}\n.icon-aling_center_icon {\n  background: url(" + __webpack_require__(178) + ");\n}\n.icon-aling_left_icon {\n  background: url(" + __webpack_require__(179) + ");\n}\n.icon-aling_right_icon {\n  background: url(" + __webpack_require__(180) + ");\n}\n.icon-back_arrow {\n  background: url(" + __webpack_require__(181) + ");\n}\n.icon-blogs_icon {\n  background: url(" + __webpack_require__(182) + ");\n}\n.icon-bold_icon {\n  background: url(" + __webpack_require__(183) + ");\n}\n.icon-cancel_icon {\n  background: url(" + __webpack_require__(184) + ");\n}\n.icon-change_message_icon {\n  background: url(" + __webpack_require__(185) + ");\n}\n.icon-change_user_info_icon {\n  background: url(" + __webpack_require__(186) + ");\n}\n.icon-chats_icon {\n  background: url(" + __webpack_require__(187) + ");\n}\n.icon-color_text_icon {\n  background: url(" + __webpack_require__(188) + ");\n}\n.icon-connections_icon {\n  background: url(" + __webpack_require__(189) + ");\n}\n.icon-description_icon {\n  background: url(" + __webpack_require__(190) + ");\n}\n.icon-exit_icon {\n  background: url(" + __webpack_require__(191) + ");\n}\n.icon-filter_chats_icon {\n  background: url(" + __webpack_require__(192) + ");\n}\n.icon-filter_log_messages_icon {\n  background: url(" + __webpack_require__(193) + ");\n}\n.icon-filter_messages_icon {\n  background: url(" + __webpack_require__(194) + ");\n}\n.icon-filter_users_icon {\n  background: url(" + __webpack_require__(195) + ");\n}\n.icon-folder_icon {\n  background: url(" + __webpack_require__(196) + ");\n}\n.icon-forward_arrow {\n  background: url(" + __webpack_require__(197) + ");\n}\n.icon-italic_icon {\n  background: url(" + __webpack_require__(198) + ");\n}\n.icon-messages_icon {\n  background: url(" + __webpack_require__(199) + ");\n}\n.icon-new_blog_icon {\n  background: url(" + __webpack_require__(200) + ");\n}\n.icon-new_chat_icon {\n  background: url(" + __webpack_require__(201) + ");\n}\n.icon-notepad_icon {\n  background: url(" + __webpack_require__(202) + ");\n}\n.icon-ok_icon {\n  background: url(" + __webpack_require__(203) + ");\n}\n.icon-open_icon {\n  background: url(" + __webpack_require__(204) + ");\n}\n.icon-pointer_icon {\n  background: url(" + __webpack_require__(205) + ");\n}\n.icon-save_exit_icon {\n  background: url(" + __webpack_require__(206) + ");\n}\n.icon-save_not_exit_icon {\n  background: url(" + __webpack_require__(207) + ");\n}\n.icon-save_open_icon {\n  background: url(" + __webpack_require__(208) + ");\n}\n.icon-send_icon {\n  background: url(" + __webpack_require__(209) + ");\n}\n.icon-settings_chat_icon {\n  background: url(" + __webpack_require__(210) + ");\n}\n.icon-settings_panel {\n  background: url(" + __webpack_require__(211) + ");\n}\n.icon-user_icon {\n  background: url(" + __webpack_require__(212) + ");\n}\n.icon-users_icon {\n  background: url(" + __webpack_require__(213) + ");\n}\n", ""]);
-
-	// exports
-
-
-/***/ },
-/* 174 */
+/***/ 172:
 /***/ function(module, exports) {
 
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
+	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 175 */
-/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__.p + "svg/add_blog_icon.svg?960a4f847b4dbcea0802d118c986bb68";
-
-/***/ },
-/* 176 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/add_chat_icon.svg?74e9d7091b6685cd7da432419fb0302c";
-
-/***/ },
-/* 177 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/add_user_icon.svg?230fd06091ae9c70da7014d6d6fd016a";
-
-/***/ },
-/* 178 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/aling_center_icon.svg?ed965e2e3f471317bf11d267f64af39e";
-
-/***/ },
-/* 179 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/aling_left_icon.svg?89cf3e6b5c156bf68e32b55c7611781d";
-
-/***/ },
-/* 180 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/aling_right_icon.svg?dabb277903efafdbe9f88927e88b8ba3";
-
-/***/ },
-/* 181 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/back_arrow.svg?8084672c85420334f8f8c417308faf1e";
-
-/***/ },
-/* 182 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/blogs_icon.svg?08e39e3812fc2da08875f71078596740";
-
-/***/ },
-/* 183 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/bold_icon.svg?91701684a6f23eb0691c6d59f1d9ea59";
-
-/***/ },
-/* 184 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/cancel_icon.svg?6f14d7b8429cb63d79c27c4f0c53909d";
-
-/***/ },
-/* 185 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/change_message_icon.svg?3fb56167966dd1f784f892b21f36ea1b";
-
-/***/ },
-/* 186 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/change_user_info_icon.svg?956f1c04346ed325e69d1647bda51c37";
-
-/***/ },
-/* 187 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/chats_icon.svg?0fe7558469e36b64a99063624559dbb7";
-
-/***/ },
-/* 188 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/color_text_icon.svg?e96723b09004d771428d23b3cf9f3318";
-
-/***/ },
-/* 189 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/connections_icon.svg?639cea09ad5d32759b6ff95d4a3f7720";
-
-/***/ },
-/* 190 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/description_icon.svg?ff21c74d9f5753b3a89be3ef090a60eb";
-
-/***/ },
-/* 191 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/exit_icon.svg?5ac4684cf781dccd3a093cd469c2dc97";
-
-/***/ },
-/* 192 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/filter_chats_icon.svg?4f0f4f7e430cd54a03e16f89e501d8f7";
-
-/***/ },
-/* 193 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/filter_log_messages_icon.svg?c6d83e7dcf30b456a73859a7237bd6d3";
-
-/***/ },
-/* 194 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/filter_messages_icon.svg?3daaed316d78fa0eeb6297289a67c2ba";
-
-/***/ },
-/* 195 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/filter_users_icon.svg?1d686fd48ac0bba1ea4aa11ac3907c8f";
-
-/***/ },
-/* 196 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/folder_icon.svg?9f7e8d46595372f4c9eaa60b0e3aed58";
-
-/***/ },
-/* 197 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/forward_arrow.svg?2768d90f7371f040af156f491e307074";
-
-/***/ },
-/* 198 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/italic_icon.svg?9cf3597fa64578434bf194674269db2c";
-
-/***/ },
-/* 199 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/messages_icon.svg?103065eab50b81318d4fb9ce42b98472";
-
-/***/ },
-/* 200 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/new_blog_icon.svg?818473a8e21b03afa50381ce946eafe7";
-
-/***/ },
-/* 201 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/new_chat_icon.svg?9c1d539edee19dd87eda948155c70389";
-
-/***/ },
-/* 202 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/notepad_icon.svg?190428fddb9fd675b2a64a03c66f5edd";
-
-/***/ },
-/* 203 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/ok_icon.svg?6accc883bbeff9dbf6a61bb199b90f71";
-
-/***/ },
-/* 204 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/open_icon.svg?815f105a7ae52fdfabf6f8151699a546";
-
-/***/ },
-/* 205 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/pointer_icon.svg?2ae509a26bedc1e8e7ea848245a8b9a6";
-
-/***/ },
-/* 206 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/save_exit_icon.svg?b992d50d75f115100e6cee5175e3e691";
-
-/***/ },
-/* 207 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/save_not_exit_icon.svg?b1c4a085496c47b20c2cb7246aa9d391";
-
-/***/ },
-/* 208 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/save_open_icon.svg?3edb4732cc0fffee5191fd22ba4c2ee9";
-
-/***/ },
-/* 209 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/send_icon.svg?9e8ad5e05ac92abe22d6f35d5aa68baa";
-
-/***/ },
-/* 210 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/settings_chat_icon.svg?6873550f380ad5d451a77ef21a4c7d20";
-
-/***/ },
-/* 211 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/settings_panel.svg?878f902b59028e71a583574e1babaf1b";
-
-/***/ },
-/* 212 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/user_icon.svg?172f0102e1eb7eece1d6d3e2bb62da74";
-
-/***/ },
-/* 213 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "svg/users_icon.svg?cc7ffe57b283805d4ac86f9d4b20bbb8";
-
-/***/ },
-/* 214 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-
-		update(obj);
-
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-
-	var replaceText = (function () {
-		var textStore = [];
-
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-
-		var blob = new Blob([css], { type: "text/css" });
-
-		var oldSrc = linkElement.href;
-
-		linkElement.href = URL.createObjectURL(blob);
-
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 215 */
+/***/ 215:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -867,64 +123,8 @@ webpackJsonp([0],[
 	exports.default = Index;
 
 /***/ },
-/* 216 */,
-/* 217 */,
-/* 218 */,
-/* 219 */,
-/* 220 */,
-/* 221 */,
-/* 222 */,
-/* 223 */,
-/* 224 */,
-/* 225 */,
-/* 226 */,
-/* 227 */,
-/* 228 */,
-/* 229 */,
-/* 230 */,
-/* 231 */,
-/* 232 */,
-/* 233 */,
-/* 234 */,
-/* 235 */,
-/* 236 */,
-/* 237 */,
-/* 238 */,
-/* 239 */,
-/* 240 */,
-/* 241 */,
-/* 242 */,
-/* 243 */,
-/* 244 */,
-/* 245 */,
-/* 246 */,
-/* 247 */,
-/* 248 */,
-/* 249 */,
-/* 250 */,
-/* 251 */,
-/* 252 */,
-/* 253 */,
-/* 254 */,
-/* 255 */,
-/* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */,
-/* 260 */,
-/* 261 */,
-/* 262 */,
-/* 263 */,
-/* 264 */,
-/* 265 */,
-/* 266 */,
-/* 267 */,
-/* 268 */,
-/* 269 */,
-/* 270 */,
-/* 271 */,
-/* 272 */,
-/* 273 */
+
+/***/ 273:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -971,7 +171,8 @@ webpackJsonp([0],[
 	exports.default = new Localization("en");
 
 /***/ },
-/* 274 */
+
+/***/ 274:
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -1553,7 +754,8 @@ webpackJsonp([0],[
 	];
 
 /***/ },
-/* 275 */
+
+/***/ 275:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1808,7 +1010,8 @@ webpackJsonp([0],[
 	exports.default = new Users_bus();
 
 /***/ },
-/* 276 */
+
+/***/ 276:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1854,7 +1057,8 @@ webpackJsonp([0],[
 	exports.default = extend_core;
 
 /***/ },
-/* 277 */
+
+/***/ 277:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1912,7 +1116,8 @@ webpackJsonp([0],[
 	exports.default = cookie_core;
 
 /***/ },
-/* 278 */
+
+/***/ 278:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2463,7 +1668,8 @@ webpackJsonp([0],[
 	exports.default = new indexeddb();
 
 /***/ },
-/* 279 */
+
+/***/ 279:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2551,7 +1757,8 @@ webpackJsonp([0],[
 	exports.default = async_core;
 
 /***/ },
-/* 280 */
+
+/***/ 280:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2588,7 +1795,8 @@ webpackJsonp([0],[
 	exports.default = new Event_bus();
 
 /***/ },
-/* 281 */
+
+/***/ 281:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2661,7 +1869,8 @@ webpackJsonp([0],[
 	exports.default = Event_core;
 
 /***/ },
-/* 282 */
+
+/***/ 282:
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2677,7 +1886,8 @@ webpackJsonp([0],[
 	};
 
 /***/ },
-/* 283 */
+
+/***/ 283:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2854,7 +2064,8 @@ webpackJsonp([0],[
 	exports.default = new Websocket();
 
 /***/ },
-/* 284 */
+
+/***/ 284:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2905,7 +2116,8 @@ webpackJsonp([0],[
 	exports.default = id_core;
 
 /***/ },
-/* 285 */
+
+/***/ 285:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3192,7 +2404,8 @@ webpackJsonp([0],[
 	exports.default = Popup;
 
 /***/ },
-/* 286 */
+
+/***/ 286:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3263,7 +2476,8 @@ webpackJsonp([0],[
 	exports.default = Dom_core;
 
 /***/ },
-/* 287 */
+
+/***/ 287:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3294,7 +2508,8 @@ webpackJsonp([0],[
 	exports.default = new Utils();
 
 /***/ },
-/* 288 */
+
+/***/ 288:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3424,7 +2639,8 @@ webpackJsonp([0],[
 	exports.default = Location_Wrapper;
 
 /***/ },
-/* 289 */
+
+/***/ 289:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3515,7 +2731,8 @@ webpackJsonp([0],[
 	exports.default = TripleElement;
 
 /***/ },
-/* 290 */
+
+/***/ 290:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3648,7 +2865,8 @@ webpackJsonp([0],[
 	exports.default = Button;
 
 /***/ },
-/* 291 */
+
+/***/ 291:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3765,7 +2983,8 @@ webpackJsonp([0],[
 	exports.default = LinkButton;
 
 /***/ },
-/* 292 */
+
+/***/ 292:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3890,7 +3109,8 @@ webpackJsonp([0],[
 	exports.default = Input;
 
 /***/ },
-/* 293 */
+
+/***/ 293:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3991,7 +3211,8 @@ webpackJsonp([0],[
 	exports.default = Label;
 
 /***/ },
-/* 294 */
+
+/***/ 294:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4081,7 +3302,8 @@ webpackJsonp([0],[
 	exports.default = Select;
 
 /***/ },
-/* 295 */
+
+/***/ 295:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4135,7 +3357,8 @@ webpackJsonp([0],[
 	exports.default = Textarea;
 
 /***/ },
-/* 296 */
+
+/***/ 296:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4166,7 +3389,8 @@ webpackJsonp([0],[
 	exports.default = Svg;
 
 /***/ },
-/* 297 */
+
+/***/ 297:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4499,7 +3723,8 @@ webpackJsonp([0],[
 	exports.default = Login;
 
 /***/ },
-/* 298 */
+
+/***/ 298:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4832,7 +4057,8 @@ webpackJsonp([0],[
 	exports.default = Description;
 
 /***/ },
-/* 299 */
+
+/***/ 299:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4863,7 +4089,8 @@ webpackJsonp([0],[
 	exports.default = overlay_core;
 
 /***/ },
-/* 300 */
+
+/***/ 300:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5071,7 +4298,8 @@ webpackJsonp([0],[
 	exports.default = ChatApp;
 
 /***/ },
-/* 301 */
+
+/***/ 301:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6537,7 +5765,8 @@ webpackJsonp([0],[
 	exports.default = Panel;
 
 /***/ },
-/* 302 */
+
+/***/ 302:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6680,7 +5909,8 @@ webpackJsonp([0],[
 	exports.default = new Chats_bus();
 
 /***/ },
-/* 303 */
+
+/***/ 303:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6804,7 +6034,8 @@ webpackJsonp([0],[
 	exports.default = Switcher_core;
 
 /***/ },
-/* 304 */
+
+/***/ 304:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7529,7 +6760,8 @@ webpackJsonp([0],[
 	exports.default = new WebRTC();
 
 /***/ },
-/* 305 */
+
+/***/ 305:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7693,7 +6925,8 @@ webpackJsonp([0],[
 	exports.default = Connection;
 
 /***/ },
-/* 306 */
+
+/***/ 306:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7883,7 +7116,8 @@ webpackJsonp([0],[
 	exports.default = ChatResize;
 
 /***/ },
-/* 307 */
+
+/***/ 307:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8056,7 +7290,8 @@ webpackJsonp([0],[
 	exports.default = ExtraToolbar;
 
 /***/ },
-/* 308 */
+
+/***/ 308:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8570,7 +7805,8 @@ webpackJsonp([0],[
 	exports.default = Filter;
 
 /***/ },
-/* 309 */
+
+/***/ 309:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8797,7 +8033,8 @@ webpackJsonp([0],[
 	exports.default = PanelToolbar;
 
 /***/ },
-/* 310 */
+
+/***/ 310:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9867,7 +9104,8 @@ webpackJsonp([0],[
 	exports.default = Body;
 
 /***/ },
-/* 311 */
+
+/***/ 311:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9933,7 +9171,8 @@ webpackJsonp([0],[
 	exports.default = PanelUsers;
 
 /***/ },
-/* 312 */
+
+/***/ 312:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10032,7 +9271,8 @@ webpackJsonp([0],[
 	exports.default = PanelChats;
 
 /***/ },
-/* 313 */
+
+/***/ 313:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10187,7 +9427,8 @@ webpackJsonp([0],[
 	exports.default = Messages;
 
 /***/ },
-/* 314 */
+
+/***/ 314:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10258,7 +9499,8 @@ webpackJsonp([0],[
 	exports.default = HTML_message;
 
 /***/ },
-/* 315 */
+
+/***/ 315:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10324,7 +9566,8 @@ webpackJsonp([0],[
 	exports.default = Model_core;
 
 /***/ },
-/* 316 */
+
+/***/ 316:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10476,7 +9719,8 @@ webpackJsonp([0],[
 	exports.default = Messages;
 
 /***/ },
-/* 317 */
+
+/***/ 317:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10522,7 +9766,8 @@ webpackJsonp([0],[
 	exports.default = HTML_log_message;
 
 /***/ },
-/* 318 */
+
+/***/ 318:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11082,7 +10327,8 @@ webpackJsonp([0],[
 	exports.default = Settings;
 
 /***/ },
-/* 319 */
+
+/***/ 319:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11248,7 +10494,8 @@ webpackJsonp([0],[
 	exports.default = ContactList;
 
 /***/ },
-/* 320 */
+
+/***/ 320:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11407,7 +10654,8 @@ webpackJsonp([0],[
 	exports.default = Connections;
 
 /***/ },
-/* 321 */
+
+/***/ 321:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11797,7 +11045,8 @@ webpackJsonp([0],[
 	exports.default = Pagination;
 
 /***/ },
-/* 322 */
+
+/***/ 322:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11961,7 +11210,8 @@ webpackJsonp([0],[
 	exports.default = GoTo;
 
 /***/ },
-/* 323 */
+
+/***/ 323:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12533,7 +11783,8 @@ webpackJsonp([0],[
 	exports.default = ChatsManager;
 
 /***/ },
-/* 324 */
+
+/***/ 324:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12609,7 +11860,8 @@ webpackJsonp([0],[
 	exports.default = ajax_core;
 
 /***/ },
-/* 325 */
+
+/***/ 325:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13529,7 +12781,8 @@ webpackJsonp([0],[
 	exports.default = Chat;
 
 /***/ },
-/* 326 */
+
+/***/ 326:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13756,7 +13009,8 @@ webpackJsonp([0],[
 	exports.default = Header;
 
 /***/ },
-/* 327 */
+
+/***/ 327:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14012,7 +13266,8 @@ webpackJsonp([0],[
 	exports.default = Editor;
 
 /***/ },
-/* 328 */
+
+/***/ 328:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14147,7 +13402,8 @@ webpackJsonp([0],[
 	exports.default = FormatPanel;
 
 /***/ },
-/* 329 */
+
+/***/ 329:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14380,7 +13636,8 @@ webpackJsonp([0],[
 	exports.default = ToggleVisibleChatPart;
 
 /***/ },
-/* 330 */
+
+/***/ 330:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -14426,7 +13683,8 @@ webpackJsonp([0],[
 	module.exports = new ID_Generator();
 
 /***/ },
-/* 331 */
+
+/***/ 331:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14783,4 +14041,5 @@ webpackJsonp([0],[
 	exports.default = Register;
 
 /***/ }
-]);
+
+});
