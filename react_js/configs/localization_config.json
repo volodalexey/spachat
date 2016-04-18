@@ -573,5 +573,20 @@
     "id": 115,
     "en": "Target connection is not found or not ready!",
     "ru": "Соединение с указанным пользователем не найдено или не готово!"
+  },
+  {
+    "id": 116,
+    "en": "Downloadable image is too large. Select another image.",
+    "ru": "Загружаемое изображение превышает допустимый размер. Выберите другое изображение."
+  },
+  {
+    "id": 117,
+    "en": "Avatar",
+    "ru": "Аватар"
+  },
+  {
+    "id": 118,
+    "en": "No data to save.",
+    "ru": "Данных для сохранения нет."
   }
 ]

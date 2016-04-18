@@ -11,6 +11,7 @@ import Messages from './message'
 import Setting from './setting'
 import ContactList from './contact_list'
 import Connections from './connections'
+import UserAvatar from './user_avarat'
 
 const Body = React.createClass({
   MODE: {
@@ -1063,7 +1064,8 @@ const Body = React.createClass({
         break;
       case this.MODE.USER_INFO_SHOW:
         data = this.props.userInfo;
-        items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}/>);
+        items.push(<Location_Wrapper key={'info'} events={this.props.events} configs={configs} data={data}/>);
+        items.push(<UserAvatar key={'avatar'} events={this.props.events} configs={configs} data={data}/>);
         return items;
         break;
       case this.MODE.USER_INFO_EDIT:
