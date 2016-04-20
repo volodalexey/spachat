@@ -108,7 +108,7 @@ const UserAvatar = React.createClass({
 
   saveAvatar(){
     let self = this, newState;
-    if (this._change_avatar){
+    if (this._change_avatar) {
       if (this.img.src !== '') {
         users_bus.getMyInfo(null, function(err, options, userInfo) {
           if (err) return console.error(err);
@@ -127,6 +127,7 @@ const UserAvatar = React.createClass({
                     self.setState({mode: mode.SHOW});
                     self._change_avatar = false;
                     self.form.reset();
+                    event_bus.trigger('updateUserAvatar');
                     break;
                 }
               }
@@ -183,29 +184,28 @@ const UserAvatar = React.createClass({
             <p><input type="file" name="avatar" accept="image/jpeg,image/png"/></p>
           </form>
           {(() => {
-            if (self.state.mode === mode.SHOW) {
-              return (
-                <div className="w-100p p-t-b flex-sp-around c-200">
+              if (self.state.mode === mode.SHOW) {
+                return (
+                  <div className="w-100p p-t-b flex-sp-around c-200">
 
-                <button data-action="changeAvatar" className="button-convex" onClick={this.handleClick}>
-                  {Localization.getLocText(37)}
-                </button>
+                    <button data-action="changeAvatar" className="button-convex" onClick={this.handleClick}>
+                      {Localization.getLocText(37)}
+                    </button>
                   </div>
-              )
-            } else if (self.state.mode === mode.EDIT) {
-              return (
-                <div className="w-100p p-t-b flex-sp-around c-200">
-                  <button data-action="closeChangeAvatar" className="button-convex" onClick={this.handleClick} >
-                    {Localization.getLocText(42)}
-                  </button>
-                  <button data-action="saveAvatar" className="button-convex" onClick={this.handleClick}>
-                    {Localization.getLocText(43)}
-                  </button>
-                </div>
-              )
-            }
-          }
-          )()}
+                )
+              } else if (self.state.mode === mode.EDIT) {
+                return (
+                  <div className="w-100p p-t-b flex-sp-around c-200">
+                    <button data-action="closeChangeAvatar" className="button-convex" onClick={this.handleClick}>
+                      {Localization.getLocText(42)}
+                    </button>
+                    <button data-action="saveAvatar" className="button-convex" onClick={this.handleClick}>
+                      {Localization.getLocText(43)}
+                    </button>
+                  </div>
+                )
+              }
+            })()}
         </div>
       </div>
     )

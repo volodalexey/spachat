@@ -146,7 +146,8 @@ Users_bus.prototype = {
       if (callback) {
         callback(null, {
           user_id: userInfo.user_id,
-          userName: userInfo.userName
+          userName: userInfo.userName,
+          avatar_data: userInfo.avatar_data
         });
       }
     });

@@ -249,6 +249,7 @@ const Chat = React.createClass({
             });
         }
       }
+      this.updateUserAvatar();
     }
   },
 
@@ -327,6 +328,7 @@ const Chat = React.createClass({
       event_bus.on('chat_message', this.onChatMessage, this);
       event_bus.on('chat_toggled_ready', this.onChatToggledReady, this);
       event_bus.on('srv_chat_join_request', this.onChatJoinRequest, this);
+      event_bus.on('updateUserAvatar', this.updateUserAvatar, this);
 
       this.splitter_left.addEventListener('mousedown', this.startResize);
       this.splitter_left.addEventListener('touchstart', this.startResize);
@@ -350,6 +352,7 @@ const Chat = React.createClass({
       event_bus.off('chat_message', this.onChatMessage, this);
       event_bus.off('chat_toggled_ready', this.onChatToggledReady, this);
       event_bus.off('srv_chat_join_request', this.onChatJoinRequest, this);
+      event_bus.off('updateUserAvatar', this.updateUserAvatar, this);
 
       this.splitter_left.removeEventListener('mousedown', this.startResize);
       this.splitter_left.removeEventListener('touchstart', this.startResize);
@@ -365,6 +368,13 @@ const Chat = React.createClass({
       this.splitter_left = null;
       this.splitter_right = null;
     }
+  },
+
+  updateUserAvatar(){
+    let self = this;
+    users_bus.getMyInfo(null, function(_err, options, userInfo) {
+      self.setState({userInfo: userInfo});
+    })
   },
 
   getLogMessage: function(chat_id, message) {

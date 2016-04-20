@@ -74,6 +74,7 @@ const ContactList = React.createClass({
       items.push(
         <div key={_user.user_id} className="flex-sp-start margin-t-b">
           <div className="width-40px flex-just-center">
+            <img src={_user.avatar_data} width="35px" height="35px" className="border-radius-5"></img>
           </div>
           <div className="message flex-item-1-auto flex-dir-col flex-sp-between">
             <div className="text-bold">{_user.userName}</div>

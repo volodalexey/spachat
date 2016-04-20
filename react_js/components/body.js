@@ -7,7 +7,7 @@ import utils from '../js/utils'
 import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
 import PanelChats from './panel_chats'
-import Messages from './message'
+import Message from './message'
 import Setting from './setting'
 import ContactList from './contact_list'
 import Connections from './connections'
@@ -1065,7 +1065,8 @@ const Body = React.createClass({
       case this.MODE.USER_INFO_SHOW:
         data = this.props.userInfo;
         items.push(<Location_Wrapper key={'info'} events={this.props.events} configs={configs} data={data}/>);
-        items.push(<UserAvatar key={'avatar'} events={this.props.events} configs={configs} data={data}/>);
+        items.push(<UserAvatar key={'avatar'} events={this.props.events} configs={configs} data={data} 
+                               handleEvent={this.props.handleEvent}/>);
         return items;
         break;
       case this.MODE.USER_INFO_EDIT:
@@ -1075,7 +1076,7 @@ const Body = React.createClass({
         break;
 
       case this.MODE.MESSAGES:
-        return <Messages data={this.props.data} handleEvent={this.props.handleEvent}/>;
+        return <Message data={this.props.data} handleEvent={this.props.handleEvent}/>;
         break;
       case this.MODE.SETTINGS:
         return <Setting data={this.props.data} handleEvent={this.props.handleEvent}/>;

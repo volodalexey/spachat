@@ -424,6 +424,7 @@ const Panel = React.createClass({
     if (this.props.location === "right") {
       event_bus.on('changeConnection', this.changeConnection, this);
       event_bus.on('changeUsersConnections', this.changeConnection, this);
+      event_bus.on('updateUserAvatar', this.updateUserAvatar, this);
       this.outerContainer = document.querySelector('[data-role="right_panel_outer_container"]');
       this.inner_container = document.querySelector('[data-role="right_panel_inner_container"]');
       this.outerContainer.style.left = '100vw';
@@ -459,6 +460,7 @@ const Panel = React.createClass({
     } else if (this.props.location === "right") {
       event_bus.off('changeConnection', this.changeConnection, this);
       event_bus.off('changeUsersConnections', this.changeConnection, this);
+      event_bus.off('updateUserAvatar', this.updateUserAvatar, this);
     }
 
     this.outerContainer = null;
@@ -1011,6 +1013,13 @@ const Panel = React.createClass({
       users_bus.saveMyInfo(userInfo, callback);
     });
   },
+  
+  updateUserAvatar(){
+    let self = this;
+    users_bus.getMyInfo(null, function(_err, options, userInfo) {
+      self.setState({userInfo: userInfo});
+    })
+  },
 
   getPanelDescription: function(callback) {
     if (callback) {
@@ -1123,6 +1132,7 @@ const Panel = React.createClass({
       websocket.sendMessage({
         type: "user_add",
         from_user_id: users_bus.getUserId(),
+        avatar_data: this.state.userInfo.avatar_data,
         to_user_id: user_id_input.value,
         request_body: {
           message: user_message_input.value
@@ -1349,7 +1359,7 @@ const Panel = React.createClass({
             </div>
             <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
               <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
-                    userInfo={this.state.userInfo? this.state.userInfo : this.props.userInfo}/>
+                    userInfo={this.state.userInfo? this.state.userInfo : this.props.userInfo} handleEvent={handleEvent}/>
             </div>
             <footer className="flex-item-auto">
               <div data-role={location + '_go_to_container'} className="c-200">
