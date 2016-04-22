@@ -577,10 +577,6 @@ const Panel = React.createClass({
           if (this.props.location !== "left") return;
           this.requestFriendByUserId(element);
           break;
-        case 'readyForFriendRequest':
-          if (this.props.location !== "left") return;
-          this.readyForFriendRequest(element);
-          break;
       }
     }
   },
@@ -635,6 +631,10 @@ const Panel = React.createClass({
           if (this.props.location !== "right") return;
           event_bus.trigger('changeScrollEachChat', element);
           this.setState({scrollEachChat: element.checked});
+          break;
+        case 'readyForFriendRequest':
+          if (this.props.location !== "left") return;
+          this.readyForFriendRequest(element);
           break;
       }
     }

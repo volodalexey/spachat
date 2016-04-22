@@ -12,6 +12,7 @@ import id_core from '../js/id_core.js'
 import users_bus from '../js/users_bus.js'
 import Localization from '../js/localization.js'
 import overlay_core from '../js/overlay_core.js'
+import Jdenticon from '../jdenticon-1.3.2'
 
 const Register = React.createClass({
 
@@ -282,20 +283,23 @@ const Register = React.createClass({
         return;
       }
 
-      users_bus.storeNewUser(
-        res.uuid,
-        options.userName,
-        options.userPassword,
-        function(err, account) {
-          if (err) {
-            callback(err);
-            return;
-          }
+      Jdenticon.jdenticon(res.uuid, function(avatar_data) {
+        users_bus.storeNewUser(
+          res.uuid,
+          options.userName,
+          options.userPassword,
+          avatar_data,
+          function(err, account) {
+            if (err) {
+              callback(err);
+              return;
+            }
 
-          // successful register
-          callback(null, account);
-        }
-      );
+            // successful register
+            callback(null, account);
+          }
+        );
+      });
     });
   },
 

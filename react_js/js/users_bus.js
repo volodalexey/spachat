@@ -220,7 +220,7 @@ Users_bus.prototype = {
     );
   },
 
-  storeNewUser: function(user_id, userName, userPassword, callback) {
+  storeNewUser: function(user_id, userName, userPassword, avatar_data, callback) {
     var self = this;
     indexeddb.addGlobalUser(user_id, userName, userPassword, function(err) {
       if (err) {
@@ -233,6 +233,7 @@ Users_bus.prototype = {
         user_id: user_id,
         userName: userName,
         userPassword: userPassword,
+        avatar_data: avatar_data,
         user_ids: [],
         chat_ids: []
       };

@@ -95,17 +95,12 @@ const ChatApp = React.createClass({
   savePanelStates: function(panelDescription, callback) {
     let self = this;
     users_bus.getMyInfo(null, function(error, options, userInfo) {
-      if (error) {
-        callback(error);
-        return;
-      }
-
+      if (error) return callback(error);
+      
+      panelDescription.left.joinUser_ListOptions.readyForRequest = false;
       self.extend(userInfo, panelDescription);
       users_bus.saveMyInfo(userInfo, function(err) {
-        if (err) {
-          callback(err);
-          return;
-        }
+        if (err) return callback(err);
 
         callback();
       });

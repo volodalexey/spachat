@@ -5,6 +5,7 @@ import extend_core from '../js/extend_core'
 import dom_core from '../js/dom_core'
 import users_bus from '../js/users_bus'
 import Localization from '../js/localization'
+import Jdenticon from '../jdenticon-1.3.2'
 
 import Popup from '../components/popup'
 
@@ -95,6 +96,9 @@ const UserAvatar = React.createClass({
         case 'closeChangeAvatar':
           this.closeChangeAvatar(element);
           break;
+        case 'resetAvatar':
+          this.resetAvatar(element);
+          break;
       }
     }
   },
@@ -102,10 +106,21 @@ const UserAvatar = React.createClass({
   updateAvatar(){
     if (!this.canvas_elem_ctx) return;
     if (this.img.src && this.img.src !== '') {
+      this.form.reset();
+      this.canvas_elem.width = this.canvas_elem.width;
       this.canvas_elem_ctx.drawImage(this.img, 0, 0, 300, 225);
     }
   },
 
+  resetAvatar(){
+    let self = this;
+    Jdenticon.jdenticon(users_bus.getUserId(), function(avatar_data) {
+      self._change_avatar = true;
+      self.img.src = avatar_data;
+      self.updateAvatar();
+    })
+  },
+  
   saveAvatar(){
     let self = this, newState;
     if (this._change_avatar) {
@@ -163,6 +178,7 @@ const UserAvatar = React.createClass({
   closeChangeAvatar(){
     if (this._change_avatar) {
       this.img.src = this.previous_src;
+      this.canvas_elem.width = this.canvas_elem.width;
       this.canvas_elem_ctx.drawImage(this.img, 0, 0, 300, 225);
     }
     this.form.reset();
@@ -187,7 +203,6 @@ const UserAvatar = React.createClass({
               if (self.state.mode === mode.SHOW) {
                 return (
                   <div className="w-100p p-t-b flex-sp-around c-200">
-
                     <button data-action="changeAvatar" className="button-convex" onClick={this.handleClick}>
                       {Localization.getLocText(37)}
                     </button>
@@ -196,6 +211,9 @@ const UserAvatar = React.createClass({
               } else if (self.state.mode === mode.EDIT) {
                 return (
                   <div className="w-100p p-t-b flex-sp-around c-200">
+                    <button data-action="resetAvatar" className="button-convex" onClick={this.handleClick}>
+                      {Localization.getLocText(119)}
+                    </button>
                     <button data-action="closeChangeAvatar" className="button-convex" onClick={this.handleClick}>
                       {Localization.getLocText(42)}
                     </button>

@@ -48,7 +48,6 @@ const Messages = React.createClass({
     });
     let ids = Object.keys(usersId);
     users_bus.getContactsInfo(null, Object.keys(usersId), function(_error, userInfo) {
-      console.log("!!!", userInfo);
       if (_error) return console.error(_error);
       self.setState({"userInfo": userInfo});
     });
