@@ -16,12 +16,6 @@ var size_file = 2000000,
   };
 const UserAvatar = React.createClass({
 
-  getInitialState(){
-    return {
-      mode: mode.SHOW
-    }
-  },
-
   componentWillMount(){
     let self = this;
     this.img = new Image();
@@ -29,6 +23,14 @@ const UserAvatar = React.createClass({
       if (err) return console.error(err);
       if (userInfo.avatar_data) {
         self.img.src = userInfo.avatar_data;
+        if (self.props.data.avatarData !== '' && self.props.data.avatarData !== undefined){
+          self.img.src = self.props.data.avatarData;
+          if (self.props.data.avatarPrevious !== ''){
+            self._change_avatar = true;
+            self.previous_src = self.props.data.avatarPrevious;
+          }
+          self.props.handleEvent.changeState({avatarData: '', avatarPrevious: ''});
+        }
         self.updateAvatar();
       }
     });
@@ -45,6 +47,9 @@ const UserAvatar = React.createClass({
   },
 
   componentWillUnmount: function() {
+    if (this.img.src !== '') {
+      this.props.handleEvent.changeState({avatarData: this.img.src, avatarPrevious: this.previous_src});
+    }
     this.input_file_elem.removeEventListener('change', this.previewFile);
   },
 
@@ -139,7 +144,7 @@ const UserAvatar = React.createClass({
                   case 'confirmCancel':
                     newState = Popup.prototype.handleClose(this.state);
                     this.setState(newState);
-                    self.setState({mode: mode.SHOW});
+                    self.props.handleEvent.changeState({avatarMode: mode.SHOW});
                     self._change_avatar = false;
                     self.form.reset();
                     event_bus.trigger('updateUserAvatar');
@@ -160,7 +165,7 @@ const UserAvatar = React.createClass({
             case 'confirmCancel':
               newState = Popup.prototype.handleClose(this.state);
               this.setState(newState);
-              self.setState({mode: mode.SHOW});
+              self.props.handleEvent.changeState({avatarMode: mode.SHOW});
               self._change_avatar = false;
               break;
           }
@@ -170,7 +175,7 @@ const UserAvatar = React.createClass({
   },
 
   changeAvatar(){
-    this.setState({mode: mode.EDIT});
+    this.props.handleEvent.changeState({avatarMode: mode.EDIT});
     this._change_avatar = false;
     this.previous_src = this.img.src;
   },
@@ -182,7 +187,7 @@ const UserAvatar = React.createClass({
       this.canvas_elem_ctx.drawImage(this.img, 0, 0, 300, 225);
     }
     this.form.reset();
-    this.setState({mode: mode.SHOW});
+    this.props.handleEvent.changeState({avatarMode: mode.SHOW});
   },
 
   render() {
@@ -196,11 +201,11 @@ const UserAvatar = React.createClass({
         </div>
         <div className="flex-item flex-wrap flex-align-c flex-item-auto flex-dir-col">
           <canvas data-role="preview_avatar" width="300" height="225" className="margin-b-em"></canvas>
-          <form enctype="multipart/form-data" method="post" className={(self.state.mode === mode.SHOW) ? 'hide' : ''}>
+          <form enctype="multipart/form-data" method="post" className={(self.props.data.avatarMode === mode.SHOW) ? 'hide' : ''}>
             <p><input type="file" name="avatar" accept="image/jpeg,image/png"/></p>
           </form>
           {(() => {
-              if (self.state.mode === mode.SHOW) {
+              if (self.props.data.avatarMode === mode.SHOW) {
                 return (
                   <div className="w-100p p-t-b flex-sp-around c-200">
                     <button data-action="changeAvatar" className="button-convex" onClick={this.handleClick}>
@@ -208,7 +213,7 @@ const UserAvatar = React.createClass({
                     </button>
                   </div>
                 )
-              } else if (self.state.mode === mode.EDIT) {
+              } else if (self.props.data.avatarMode === mode.EDIT) {
                 return (
                   <div className="w-100p p-t-b flex-sp-around c-200">
                     <button data-action="resetAvatar" className="button-convex" onClick={this.handleClick}>

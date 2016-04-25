@@ -1065,7 +1065,7 @@ const Body = React.createClass({
       case this.MODE.USER_INFO_SHOW:
         data = this.props.userInfo;
         items.push(<Location_Wrapper key={'info'} events={this.props.events} configs={configs} data={data}/>);
-        items.push(<UserAvatar key={'avatar'} events={this.props.events} configs={configs} data={data} 
+        items.push(<UserAvatar key={'avatar'} events={this.props.events} configs={configs} data={this.props.data} 
                                handleEvent={this.props.handleEvent}/>);
         return items;
         break;

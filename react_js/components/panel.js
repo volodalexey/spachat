@@ -93,6 +93,9 @@ const Panel = React.createClass({
         toggleElemHide: false,
         toggleToolbarElemHide: true,
         bodyMode: "CREATE_CHAT",
+        avatarMode: "SHOW",
+        avatarData: '',
+        avatarPrevious: '',
 
         popupOptions: {
           messagePopupShow: false,
@@ -327,6 +330,7 @@ const Panel = React.createClass({
         toggleElemHide: false,
         toggleToolbarElemHide: true,
         bodyMode: "USER_INFO_SHOW",
+        avatarMode: "SHOW",
         scrollEachChat: true,
 
         popupOptions: {
@@ -752,7 +756,7 @@ const Panel = React.createClass({
 
   switchPanelMode: function(element, options) {
     if (element.dataset.mode_to === MODE.USER_INFO_SHOW && this.previous_UserInfo_Mode) {
-      this.setState({bodyMode: this.previous_UserInfo_Mode});
+        this.setState({bodyMode: this.previous_UserInfo_Mode});
     } else {
       this.setState({bodyMode: element.dataset.mode_to});
     }
@@ -1023,7 +1027,9 @@ const Panel = React.createClass({
 
   getPanelDescription: function(callback) {
     if (callback) {
-      this.setState({"chat_ids": [], "openChats": []});
+      this.state.chat_ids = [];
+      this.state.openChats = [];
+      this.state.avatarMode = "SHOW";
       callback(this.state, this.props.location);
     }
   },
