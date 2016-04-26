@@ -134,7 +134,12 @@ const UserAvatar = React.createClass({
           if (err) return console.error(err);
 
           userInfo.avatar_data = self.img.src;
+          userInfo.lastModifyDatetime = Date.now();
           users_bus.saveMyInfo(userInfo, function() {
+            self.props.handleEvent.changeState({avatarMode: mode.SHOW});
+            event_bus.trigger('updateUserAvatar');
+            self._change_avatar = false;
+            self.form.reset();
             event_bus.trigger('changeStatePopup', {
               show: true,
               type: 'success',
@@ -144,10 +149,6 @@ const UserAvatar = React.createClass({
                   case 'confirmCancel':
                     newState = Popup.prototype.handleClose(this.state);
                     this.setState(newState);
-                    self.props.handleEvent.changeState({avatarMode: mode.SHOW});
-                    self._change_avatar = false;
-                    self.form.reset();
-                    event_bus.trigger('updateUserAvatar');
                     break;
                 }
               }

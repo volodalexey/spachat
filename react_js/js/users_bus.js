@@ -100,7 +100,7 @@ Users_bus.prototype = {
           }
 
           if (_callback) {
-            _callback(null, contactsInfo);
+            _callback(null, contactsInfo, options);
           }
         }
       );
@@ -220,7 +220,7 @@ Users_bus.prototype = {
     );
   },
 
-  storeNewUser: function(user_id, userName, userPassword, avatar_data, callback) {
+  storeNewUser: function(user_id, userName, userPassword, avatar_data, lastModifyDatetime, callback) {
     var self = this;
     indexeddb.addGlobalUser(user_id, userName, userPassword, function(err) {
       if (err) {
@@ -234,6 +234,7 @@ Users_bus.prototype = {
         userName: userName,
         userPassword: userPassword,
         avatar_data: avatar_data,
+        lastChangeDatetime: lastModifyDatetime,
         user_ids: [],
         chat_ids: []
       };

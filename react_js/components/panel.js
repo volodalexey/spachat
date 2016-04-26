@@ -419,6 +419,7 @@ const Panel = React.createClass({
     if (this.props.location === "left") {
       event_bus.on('AddedNewChat', this.toggleListOptions);
       event_bus.on('changeOpenChats', this.getInfoForBody);
+      event_bus.on('changeMyUsers', this.changeMyUsers);
       event_bus.on('web_socket_message', this.onPanelMessageRouter);
       event_bus.on('makeFriends', this.onForceMakeFriends);
       this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
@@ -460,6 +461,7 @@ const Panel = React.createClass({
     if (this.props.location === "left") {
       event_bus.off('AddedNewChat', this.toggleListOptions);
       event_bus.off('changeOpenChats', this.getInfoForBody);
+      event_bus.off('changeMyUsers', this.changeMyUsers);
       event_bus.off('web_socket_message', this.onPanelMessageRouter);
     } else if (this.props.location === "right") {
       event_bus.off('changeConnection', this.changeConnection, this);
@@ -594,6 +596,10 @@ const Panel = React.createClass({
       this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
     }
     this.resizePanel();
+  },
+
+  changeMyUsers(){
+    this.getInfoForBody();
   },
 
   onInput: function() {

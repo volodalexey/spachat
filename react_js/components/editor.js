@@ -133,6 +133,7 @@ const Editor = React.createClass({
       message = this.messageInnerContainer.innerHTML;
     if (pattern.test(message)) {
       messages.prototype.addMessage(this.props.data.bodyOptions.mode, message, this.props.data.chat_id,
+        this.props.data.userInfo.lastModifyDatetime,
         function(err) {
           if (err) {
             console.error(err);

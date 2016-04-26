@@ -39,6 +39,7 @@ const ChatsManager = React.createClass({
     event_bus.on('getOpenChats', this.getOpenChats, this);
     event_bus.on('toCloseChat', this.toCloseChat, this);
     event_bus.on('chatsDestroy', this.destroyChats);
+    event_bus.on('changeMyUsers', this.changeMyUsers);
     event_bus.on('chatJoinApproved', this.chatCreateApproved);
     event_bus.on('web_socket_message', this.onChatMessageRouter);
     event_bus.on('notifyChat', this.onChatMessageRouter);
@@ -53,6 +54,7 @@ const ChatsManager = React.createClass({
     event_bus.off('getOpenChats', this.getOpenChats);
     event_bus.off('toCloseChat', this.toCloseChat);
     event_bus.off('chatsDestroy', this.destroyChats);
+    event_bus.off('changeMyUsers', this.changeMyUsers);
     event_bus.off('chatJoinApproved', this.chatCreateApproved);
     event_bus.off('web_socket_message', this.onChatMessageRouter);
     event_bus.off('notifyChat', this.onChatMessageRouter);
@@ -105,6 +107,14 @@ const ChatsManager = React.createClass({
     }
 
     this.createNewChat(null, true, restoreOption, chatId);
+  },
+
+  changeMyUsers(userId){
+    Chat.prototype.chatsArray.forEach(function(_chat) {
+      if (_chat.chat_description.user_ids.indexOf(userId) !== -1){
+        event_bus.trigger('changeMyUserInfo', userId, _chat.chat_description.chat_id);
+      }
+    });
   },
 
   /**

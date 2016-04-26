@@ -407,7 +407,7 @@ WebRTC.prototype = {
     curConnection.log('log', {message: 'try: createRTCPeerConnection'});
     try {
       var _peerConnection = window.webkitPeerConnection00 || window.webkitRTCPeerConnection || window.mozRTCPeerConnection ||
-      window.RTCPeerConnection || window.PeerConnection;
+        window.RTCPeerConnection || window.PeerConnection;
       var peerConnection = new _peerConnection(_this.configuration.RTC, _this.configuration.constraints);
     } catch (error) {
       if (callback) {
@@ -455,6 +455,24 @@ WebRTC.prototype = {
       console.error(e);
       return;
     }
+    let self = this;
+
+    if (messageData.lastModifyDatetime) {
+      users_bus.getContactsInfo(messageData, [messageData.message.createdByUserId], function(_err, contactsInfo, messageData) {
+        if (_err) return console.error(_err);
+        contactsInfo = contactsInfo[0];
+        if (!contactsInfo.lastModifyDatetime || contactsInfo.lastModifyDatetime < messageData.lastModifyDatetime) {
+          var messageData = {
+            type: 'getUserDescription',
+            userId: contactsInfo.user_id,
+            chat_description: {
+              chat_id: messageData.chat_description.chat_id
+            }
+          };
+          self.broadcastChatMessage(messageData.chat_description.chat_id, JSON.stringify(messageData));
+        }
+      })
+    }
 
     if (messageData.type === 'notifyChat') {
       event_bus.trigger('notifyChat', messageData);
@@ -462,6 +480,18 @@ WebRTC.prototype = {
       event_bus.trigger('notifyUser', messageData);
     } else if (messageData.type === 'chatJoinApproved') {
       event_bus.trigger('chatJoinApproved', messageData);
+    } else if (messageData.type === 'getUserDescription') {
+      this.requestUserInfo(messageData);
+    } else if (messageData.type === 'setUserDescription') {
+      users_bus.getContactsInfo(messageData, [messageData.userId], function(_err, userInfo, messageData) {
+        if (_err) return console.error(_err);
+        userInfo[0].lastModifyDatetime = messageData.updateInfo.lastModifyDatetime;
+        userInfo[0].avatar_data = messageData.updateInfo.avatar_data;
+        users_bus.addNewUserToIndexedDB(userInfo[0], function(_err, user_description) {
+          if (_err) return console.error(_err);
+          event_bus.trigger('changeMyUsers', messageData.userId);
+        });
+      });
     }
   },
 
@@ -499,6 +529,21 @@ WebRTC.prototype = {
     dataChannel.onmessage = null;
     dataChannel.onclose = null;
     dataChannel.onerror = null;
+  },
+
+  requestUserInfo(messageData){
+    let self = this;
+    users_bus.getMyInfo(messageData, function(_err, options, userInfo) {
+      var messageData = {
+        type: 'setUserDescription',
+        userId: userInfo.user_id,
+        updateInfo: {
+          avatar_data: userInfo.avatar_data,
+          lastModifyDatetime: userInfo.lastModifyDatetime
+        }
+      };
+      self.broadcastChatMessage(options.chat_description.chat_id, JSON.stringify(messageData));
+    })
   },
 
   /**

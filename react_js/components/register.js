@@ -289,6 +289,7 @@ const Register = React.createClass({
           options.userName,
           options.userPassword,
           avatar_data,
+          Date.now(),
           function(err, account) {
             if (err) {
               callback(err);

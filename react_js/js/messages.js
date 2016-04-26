@@ -64,7 +64,7 @@ Messages.prototype = {
   /**
    * add message to the database
    */
-  addMessage(mode, message, chatId, callback) {
+  addMessage(mode, message, chatId, lastModifyDatetime, callback) {
     let self = this,  Message = this.getMessageConstructor(mode),
      _message = (new Message({innerHTML: message})).toJSON();
     indexeddb.addOrPutAll(
@@ -90,7 +90,8 @@ Messages.prototype = {
           message: _message,
           chat_description: {
             chat_id: chatId
-          }
+          },
+          lastModifyDatetime: lastModifyDatetime
         };
         webrtc.broadcastChatMessage(chatId, JSON.stringify(messageData));
 

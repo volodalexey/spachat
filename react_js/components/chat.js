@@ -64,7 +64,7 @@ const Chat = React.createClass({
       formatOptions: {
         show: false,
         offScroll: false,
-        sendEnter: false,
+        sendEnter: true,
         iSender: true
       },
       messages_GoToOptions: {
