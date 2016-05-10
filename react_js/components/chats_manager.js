@@ -43,7 +43,9 @@ const ChatsManager = React.createClass({
     event_bus.on('chatJoinApproved', this.chatCreateApproved);
     event_bus.on('web_socket_message', this.onChatMessageRouter);
     event_bus.on('notifyChat', this.onChatMessageRouter);
+    event_bus.on('replySynchronizeChatMessages', this.onChatMessageRouter);
     event_bus.on('requestChatByChatId', this.requestChatByChatId);
+    event_bus.on('getSynchronizeChatMessages', this.getSynchronizeChatMessages);
 
     this.mainConteiner = document.querySelector('[data-role="main_container"]');
   },
@@ -58,7 +60,9 @@ const ChatsManager = React.createClass({
     event_bus.off('chatJoinApproved', this.chatCreateApproved);
     event_bus.off('web_socket_message', this.onChatMessageRouter);
     event_bus.off('notifyChat', this.onChatMessageRouter);
+    event_bus.off('replySynchronizeChatMessages', this.onChatMessageRouter);
     event_bus.off('requestChatByChatId', this.requestChatByChatId);
+    event_bus.off('getSynchronizeChatMessages', this.getSynchronizeChatMessages);
 
     this.mainConteiner = null;
   },
@@ -74,7 +78,7 @@ const ChatsManager = React.createClass({
 
   showChat: function(element, chat_id) {
     let self = this, newState, restoreOption, parentElement;
-    if(element){
+    if (element) {
       parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
       restoreOption = element.dataset.restore_chat_state;
     }
@@ -111,10 +115,14 @@ const ChatsManager = React.createClass({
 
   changeMyUsers(userId){
     Chat.prototype.chatsArray.forEach(function(_chat) {
-      if (_chat.chat_description.user_ids.indexOf(userId) !== -1){
+      if (_chat.chat_description.user_ids.indexOf(userId) !== -1) {
         event_bus.trigger('changeMyUserInfo', userId, _chat.chat_description.chat_id);
       }
     });
+  },
+
+  getSynchronizeChatMessages(messageData){
+    messages.prototype.getSynchronizeChatMessages(messageData);
   },
 
   /**
@@ -179,7 +187,7 @@ const ChatsManager = React.createClass({
         newRawChat.restoreOption = restoreOption;
       }
     }
-    if (message_request && chatId){
+    if (message_request && chatId) {
       newRawChat.chat_id = chatId;
       newRawChat.message_request = message_request;
     }
@@ -193,6 +201,13 @@ const ChatsManager = React.createClass({
       case 'chat_joined':
         this.chatJoinApproved(messageData);
         break;
+      case 'replySynchronizeChatMessages':
+        Chat.prototype.chatsArray.forEach(function(_chat) {
+          if (_chat.chat_description && messageData.chat_description.chat_id === _chat.chat_description.chat_id) {
+            event_bus.trigger('workflowSynchronizeMessages', messageData);
+          }
+        });
+        break;
       case 'notifyChat':
         Chat.prototype.chatsArray.forEach(function(_chat) {
           if (_chat.chat_description && messageData.chat_description.chat_id === _chat.chat_description.chat_id) {
@@ -201,9 +216,9 @@ const ChatsManager = React.createClass({
         });
         break;
       case 'error':
-        switch (messageData.request_type){
+        switch (messageData.request_type) {
           case 'notifyChat':
-            if (messageData.chat_description && messageData.chat_description.temp_chat_id){
+            if (messageData.chat_description && messageData.chat_description.temp_chat_id) {
               event_bus.trigger('send_log_message', messageData.chat_description.temp_chat_id,
                 {text: messageData.message, type: 'error'});
             }
@@ -218,7 +233,7 @@ const ChatsManager = React.createClass({
       event_bus.set_ws_device_id(event.from_ws_device_id);
     }
     event_bus.trigger('send_log_message', event.chat_description.chat_id,
-      {text: 'Adding chat to IndexedDB.', type: 'information'} );
+      {text: 'Adding chat to IndexedDB.', type: 'information'});
     this.addNewChatToIndexedDB(event.chat_description, function(err, chat) {
       if (err) {
         console.error(err);
@@ -226,7 +241,7 @@ const ChatsManager = React.createClass({
         return;
       }
       event_bus.trigger('send_log_message', chat.chat_id,
-        {text: 'Added chat to IndexedDB. Saving chat in List Chats users.', type: 'information'} );
+        {text: 'Added chat to IndexedDB. Saving chat in List Chats users.', type: 'information'});
       users_bus.putChatIdAndSave(chat.chat_id, function(err, userInfo) {
         if (err) {
           console.error(err);
@@ -284,14 +299,20 @@ const ChatsManager = React.createClass({
           return;
         }
 
-        event_bus.trigger('send_log_message', chat_description.chat_id, {text: 'Get chat description.', type: 'information'});
+        event_bus.trigger('send_log_message', chat_description.chat_id, {
+          text: 'Get chat description.',
+          type: 'information'
+        });
         index = self.getIndexCurrentChat(chat_description.chat_id);
         if (index === undefined) return;
 
         if (Chat.prototype.chatsArray[index].mode !== 'ready') {
-          event_bus.trigger('send_log_message', chat_description.chat_id, {text: 'Upgrade to chat "ready".', type: 'information'});
+          event_bus.trigger('send_log_message', chat_description.chat_id, {
+            text: 'Upgrade to chat "ready".',
+            type: 'information'
+          });
           Chat.prototype.chatsArray[index].mode = 'ready';
-          if(!event.chat_description.restoreOption){
+          if (!event.chat_description.restoreOption) {
             Chat.prototype.chatsArray[index].chat_description = {};
             self.extend(Chat.prototype.chatsArray[index].chat_description,
               {
@@ -300,6 +321,7 @@ const ChatsManager = React.createClass({
                 createdDatetime: chat_description.createdDatetime,
                 user_ids: chat_description.user_ids
               });
+            Chat.prototype.chatsArray[index].chat_description.user_ids = chat_description.user_ids;
           } else {
             Chat.prototype.chatsArray[index].chat_description = chat_description;
           }
@@ -325,7 +347,7 @@ const ChatsManager = React.createClass({
 
   toCloseChat: function(saveStates, chatId, temp_chat_id) {
     let self = this;
-    if (!chatId && temp_chat_id){
+    if (!chatId && temp_chat_id) {
       self.closeChat(null, temp_chat_id);
       return;
     }
@@ -358,7 +380,7 @@ const ChatsManager = React.createClass({
 
         if (!chat_description) {
           self.createNewChat(null, null, null, chatId, requestMessage);
-        } else  {
+        } else {
           if (self.isChatOpened(chatId)) {
             event_bus.trigger('changeStatePopup', {
               show: true,
@@ -422,7 +444,7 @@ const ChatsManager = React.createClass({
 
   destroyChat: function(description, temp_chat_id) {
     let position = this.getDestroyChatPosition((!description && temp_chat_id) ? temp_chat_id : description.chat_id);
-    if (description && !temp_chat_id){
+    if (description && !temp_chat_id) {
       event_bus.trigger("chatDestroyed", description.chat_id);
       event_bus.trigger("changeOpenChats");
     }

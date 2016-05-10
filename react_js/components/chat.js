@@ -256,7 +256,7 @@ const Chat = React.createClass({
   componentDidMount: function() {
     if (this.props.data.mode === 'raw') {
       let self = this;
-      this.state.logMessages.push({text: 'Create raw chat.', type: 'information'});
+      self.state.logMessages.push({text: 'Create raw chat.', type: 'information'});
       this.setState({
         logMessages: this.state.logMessages,
         chat_mode: this.props.data.mode
@@ -264,7 +264,7 @@ const Chat = React.createClass({
       event_bus.on('web_socket_message', this.onChatMessageRouter);
       event_bus.on('send_log_message', this.getLogMessage);
       if (this.props.data.show && this.props.data.chat_id) {
-        this.state.logMessages.push({text: 'Getting chat description.', type: 'information'});
+        self.state.logMessages.push({text: 'Getting chat description.', type: 'information'});
         this.setState({logMessages: this.state.logMessages});
         indexeddb.getByKeyPath(
           chats_bus.collectionDescription,
@@ -292,8 +292,8 @@ const Chat = React.createClass({
           }
         );
       } else if (this.props.data.message_request && this.props.data.chat_id) {
-        this.state.logMessages.push({text: 'Websocket sendMessage "Chat join request".', type: 'information'});
-        this.setState({logMessages: this.state.logMessages});
+        self.state.logMessages.push({text: 'Websocket sendMessage "Chat join request".', type: 'information'});
+        this.setState({logMessages: self.state.logMessages});
         websocket.sendMessage({
           type: "chat_join_request",
           from_user_id: users_bus.getUserId(),
@@ -306,8 +306,8 @@ const Chat = React.createClass({
           }
         });
       } else {
-        this.state.logMessages.push({text: 'Websocket sendMessage "Chat create".', type: 'information'});
-        this.setState({logMessages: this.state.logMessages});
+        self.state.logMessages.push({text: 'Websocket sendMessage "Chat create".', type: 'information'});
+        this.setState({logMessages: self.state.logMessages});
         websocket.sendMessage({
           type: "chat_create",
           from_user_id: users_bus.getUserId(),
@@ -329,6 +329,7 @@ const Chat = React.createClass({
       event_bus.on('chat_toggled_ready', this.onChatToggledReady, this);
       event_bus.on('srv_chat_join_request', this.onChatJoinRequest, this);
       event_bus.on('updateUserAvatar', this.updateUserAvatar, this);
+      event_bus.on('workflowSynchronizeMessages', this.workflowSynchronizeMessages, this);
 
       this.splitter_left.addEventListener('mousedown', this.startResize);
       this.splitter_left.addEventListener('touchstart', this.startResize);
@@ -353,6 +354,7 @@ const Chat = React.createClass({
       event_bus.off('chat_toggled_ready', this.onChatToggledReady, this);
       event_bus.off('srv_chat_join_request', this.onChatJoinRequest, this);
       event_bus.off('updateUserAvatar', this.updateUserAvatar, this);
+      event_bus.off('workflowSynchronizeMessages', this.workflowSynchronizeMessages, this);
 
       this.splitter_left.removeEventListener('mousedown', this.startResize);
       this.splitter_left.removeEventListener('touchstart', this.startResize);
@@ -476,6 +478,9 @@ const Chat = React.createClass({
         case 'hideBottomPart':
           this.setState({hideBottomPart: !this.state.hideBottomPart});
           break;
+        case 'synchronizeMessages':
+          this.synchronizeMessages();
+          break;
       }
     }
   },
@@ -593,6 +598,38 @@ const Chat = React.createClass({
         }
       }
     );
+  },
+
+  synchronizeMessages(){
+    let self = this, index = self.state.user_ids.indexOf(users_bus.getUserId()),
+      messageData, newState;
+    if (index !== -1 && self.state.user_ids.length > 1 ||
+      index === -1 && self.state.user_ids.length > 0) {
+      messageData = {
+        type: "requestSynchronizeChatMessages",
+        chat_description: {
+          chat_id: self.state.chat_id
+        }
+      };
+      let active_connections = webrtc.getChatConnections(webrtc.connections, self.state.chat_id);
+      if (active_connections.length) {
+        webrtc.broadcastChatMessage(self.state.chat_id, JSON.stringify(messageData));
+      } else {
+        event_bus.trigger('changeStatePopup', {
+          show: true,
+          type: 'error',
+          message: 121,
+          onDataActionClick: function(action) {
+            switch (action) {
+              case 'confirmCancel':
+                newState = Popup.prototype.handleClose(this.state);
+                this.setState(newState);
+                break;
+            }
+          }
+        });
+      }
+    }
   },
 
   onChatMessageRouter: function(messageData) {
@@ -722,7 +759,7 @@ const Chat = React.createClass({
     if (this.state.chat_id !== eventData.chat_description.chat_id)
       return;
     let self = this, newState = this.state;
-    messages.prototype.addRemoteMessage(eventData, this.state.bodyOptions.mode, this.state.chat_id,
+    messages.prototype.addRemoteMessage(eventData.message, this.state.bodyOptions.mode, this.state.chat_id,
       function(err) {
         if (err) {
           console.error(err);
@@ -739,6 +776,31 @@ const Chat = React.createClass({
           self.setState({messages_PaginationOptions: newState.messages_PaginationOptions});
         }
       });
+  },
+
+  workflowSynchronizeMessages(messageData){
+    if (messageData.messages.length) {
+      let self = this, newState = this.state;
+      messageData.messages.forEach(function(_syncMessage) {
+        messages.prototype.addRemoteMessage(_syncMessage, self.state.bodyOptions.mode, self.state.chat_id,
+          function(err) {
+            if (err) {
+              console.error(err);
+              return;
+            }
+
+            if (newState.messages_PaginationOptions.showEnablePagination) {
+              newState.messages_PaginationOptions.currentPage = null;
+              Pagination.prototype.countPagination(null, newState, newState.bodyOptions.mode,
+                {"chat_id": newState.chat_id}, function(_newState) {
+                  self.setState(_newState);
+                });
+            } else {
+              self.setState({messages_PaginationOptions: newState.messages_PaginationOptions});
+            }
+          })
+      });
+    }
   },
 
   render: function() {

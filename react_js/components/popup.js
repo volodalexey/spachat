@@ -117,7 +117,7 @@ const Popup = React.createClass({
             "text": 20,
             "data": {
               "action": "confirmCancel",
-              "description": 21
+              "description": ''
             }
           }]
       },

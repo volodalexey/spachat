@@ -480,6 +480,10 @@ WebRTC.prototype = {
       event_bus.trigger('notifyUser', messageData);
     } else if (messageData.type === 'chatJoinApproved') {
       event_bus.trigger('chatJoinApproved', messageData);
+    } else  if (messageData.type === 'requestSynchronizeChatMessages') {
+      event_bus.trigger('getSynchronizeChatMessages', messageData);
+    }else  if (messageData.type === 'replySynchronizeChatMessages') {
+      event_bus.trigger('replySynchronizeChatMessages', messageData);
     } else if (messageData.type === 'getUserDescription') {
       this.requestUserInfo(messageData);
     } else if (messageData.type === 'setUserDescription') {

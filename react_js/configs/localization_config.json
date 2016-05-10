@@ -593,5 +593,15 @@
     "id": 119,
     "en": "Default avatar",
     "ru": "Аватар по умолчанию"
+  },
+  {
+    "id": 120,
+    "en": "Synchronize messages",
+    "ru": "Синхронизировать сообщения"
+  },
+  {
+    "id": 121,
+    "en": "There are no active contacts",
+    "ru": "Нет активных контактов"
   }
 ]

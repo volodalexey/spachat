@@ -1,5 +1,7 @@
 import React from 'react'
 
+import users_bus from '../js/users_bus.js'
+
 import Triple_Element from '../components/triple_element'
 
 const ExtraToolbar = React.createClass({
@@ -47,7 +49,6 @@ const ExtraToolbar = React.createClass({
           "text": 26,
           "class": "button-inset-square",
           "data": {
-            "throw": "true",
             "action": "changeMode",
             "role": "btn_Filter",
             "toggle": true,
@@ -55,6 +56,17 @@ const ExtraToolbar = React.createClass({
             "mode_to": "MESSAGES_FILTER"
           },
           "name": "",
+          "disabled": false
+        },
+        {
+          "element": "button",
+          "icon": "",
+          "text": 120,
+          "class": "button-inset-square",
+          "data": {
+            "action": "synchronizeMessages",
+            "role": "synchronizeMessages"
+          },
           "disabled": false
         }
       ],
@@ -140,6 +152,15 @@ const ExtraToolbar = React.createClass({
     }
   },
 
+  calcDisplay(_config){
+    if (!_config.data) return true;
+    if(_config.data.role === 'synchronizeMessages'){
+      let index = this.props.data.user_ids.indexOf(users_bus.getUserId());
+      return (index !== -1 && this.props.data.user_ids.length > 1 ||
+      index === -1 && this.props.data.user_ids.length > 0)
+    }
+  },
+
   render: function() {
     let options = this.defineOptions(this.props.mode);
     if (options && options.show) {
@@ -151,7 +172,7 @@ const ExtraToolbar = React.createClass({
       return <div>
         {
           configs.map(function(config, i) {
-            return <Triple_Element key={i} events={this.props.events} config={config}/>
+            return <Triple_Element key={i} events={this.props.events} config={config} calcDisplay={this.calcDisplay}/>
           }, this)
         }
       </div>
