@@ -79,27 +79,17 @@ Messages.prototype = {
    */
   addMessage(mode, message, chatId, lastModifyDatetime, callback) {
     let self = this,  Message = this.getMessageConstructor(mode),
-     _message = (new Message({innerHTML: message})).toJSON();
-    this.getLastMessage(chatId, mode, function(_err, message) {
+     newMessage = (new Message({innerHTML: message})).toJSON();
+    this.getLastMessage(chatId, mode, function(_err, lastMessage) {
       if(_err) return console.log(_err);
-      
-      if (message === null){
-        _message.followed_by = {
-          user_id: null,
-          message_id: null
-        };
-      } else {
-        _message.followed_by = {
-          user_id: message.createdByUserId,
-          message_id: message.messageId
-        };
-      }
+
+      newMessage = self.addMessageData(lastMessage, [newMessage], false)[0];
       indexeddb.addOrPutAll(
         'put',
         self.setCollectionDescription(chatId),
         self.tableDefinition(mode),
         [
-          _message
+          newMessage
         ],
         function(error) {
           if (error) {
@@ -114,7 +104,7 @@ Messages.prototype = {
           var messageData = {
             type: "notifyChat",
             chat_type: "chat_message",
-            message: _message,
+            message: newMessage,
             chat_description: {
               chat_id: chatId
             },
@@ -122,35 +112,24 @@ Messages.prototype = {
           };
           webrtc.broadcastChatMessage(chatId, JSON.stringify(messageData));
 
-          callback && callback(error, message);
+          callback && callback(error, lastMessage);
         }
       );
     });
   },
 
   addRemoteMessage: function(remoteMessage, mode, chatId, callback) {
-    var self = this;
-    var _message = (new html_message(remoteMessage)).toJSON();
-    this.getLastMessage(chatId, mode, function(_err, message) {
+    let self = this;
+    this.getLastMessage(chatId, mode, function(_err, lastMessage) {
       if(_err) return console.log(_err);
 
-      if (message === null) {
-        _message.followed_by = {
-          user_id: null,
-          message_id: null
-        };
-      } else {
-        _message.followed_by = {
-          user_id: message.createdByUserId,
-          message_id: message.messageId
-        };
-      }
+      remoteMessage = self.addMessageData(lastMessage, [remoteMessage], true)[0];
       indexeddb.addOrPutAll(
         'add',
         self.setCollectionDescription(chatId),
         self.tableDefinition(mode),
         [
-          _message
+          remoteMessage
         ],
         function(error) {
           if (error) {
@@ -170,10 +149,56 @@ Messages.prototype = {
     });
   },
 
+  addAllRemoteMessages: function(remoteMessages, mode, chatId, callback) {
+    indexeddb.addOrPutAll(
+      'add',
+      this.setCollectionDescription(chatId),
+      this.tableDefinition(mode),
+      remoteMessages,
+      function(error) {
+        if (error) {
+          if (callback) {
+            callback(error);
+          } else {
+            console.error(error);
+          }
+          return;
+        }
+
+        if (callback) {
+          callback(error);
+        }
+      }
+    );
+  },
+
+  addMessageData(lastMessage, newMessages, remote){
+    let messagesArray = [];
+    newMessages.forEach(function(_newMessage) {
+      if (remote){
+        _newMessage = (new html_message(_newMessage)).toJSON();
+      }
+      if (lastMessage === null){
+        _newMessage.followed_by = {
+          user_id: null,
+          message_id: null
+        };
+      } else {
+        _newMessage.followed_by = {
+          user_id: lastMessage.createdByUserId,
+          message_id: lastMessage.messageId
+        };
+      }
+      messagesArray.push(_newMessage);
+    });
+    
+    return messagesArray;
+  },
+
   getSynchronizeChatMessages: function(_messageData){
     this.getAllMessages(_messageData.chat_description.chat_id, "MESSAGES", function(_err, messages) {
       let messageData = {
-        type: 'replySynchronizeChatMessages',
+        type: 'syncResponseChatMessages',
         from_user_id: users_bus.getUserId(),
         chat_description: {
           chat_id: _messageData.chat_description.chat_id

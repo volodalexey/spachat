@@ -43,7 +43,7 @@ const ChatsManager = React.createClass({
     event_bus.on('chatJoinApproved', this.chatCreateApproved);
     event_bus.on('web_socket_message', this.onChatMessageRouter);
     event_bus.on('notifyChat', this.onChatMessageRouter);
-    event_bus.on('replySynchronizeChatMessages', this.onChatMessageRouter);
+    event_bus.on('syncResponseChatMessages', this.onChatMessageRouter);
     event_bus.on('requestChatByChatId', this.requestChatByChatId);
     event_bus.on('getSynchronizeChatMessages', this.getSynchronizeChatMessages);
 
@@ -60,7 +60,7 @@ const ChatsManager = React.createClass({
     event_bus.off('chatJoinApproved', this.chatCreateApproved);
     event_bus.off('web_socket_message', this.onChatMessageRouter);
     event_bus.off('notifyChat', this.onChatMessageRouter);
-    event_bus.off('replySynchronizeChatMessages', this.onChatMessageRouter);
+    event_bus.off('syncResponseChatMessages', this.onChatMessageRouter);
     event_bus.off('requestChatByChatId', this.requestChatByChatId);
     event_bus.off('getSynchronizeChatMessages', this.getSynchronizeChatMessages);
 
@@ -201,7 +201,7 @@ const ChatsManager = React.createClass({
       case 'chat_joined':
         this.chatJoinApproved(messageData);
         break;
-      case 'replySynchronizeChatMessages':
+      case 'syncResponseChatMessages':
         Chat.prototype.chatsArray.forEach(function(_chat) {
           if (_chat.chat_description && messageData.chat_description.chat_id === _chat.chat_description.chat_id) {
             event_bus.trigger('workflowSynchronizeMessages', messageData);

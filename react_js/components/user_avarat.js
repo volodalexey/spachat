@@ -15,6 +15,8 @@ var size_file = 2000000,
     EDIT: "EDIT"
   };
 const UserAvatar = React.createClass({
+  canvas_elem_width: 225,
+  canvas_elem_height: 225,
 
   componentWillMount(){
     let self = this;
@@ -57,7 +59,7 @@ const UserAvatar = React.createClass({
     let self = this, reader = new FileReader();
     reader.onloadend = function(event) {
       self.img.src = reader.result;
-      self.canvas_elem_ctx.drawImage(self.img, 0, 0, 300, 225);
+      self.canvas_elem_ctx.drawImage(self.img, 0, 0, self.canvas_elem_width, self.canvas_elem_height);
       self._change_avatar = true;
     };
 
@@ -113,7 +115,7 @@ const UserAvatar = React.createClass({
     if (this.img.src && this.img.src !== '') {
       this.form.reset();
       this.canvas_elem.width = this.canvas_elem.width;
-      this.canvas_elem_ctx.drawImage(this.img, 0, 0, 300, 225);
+      this.canvas_elem_ctx.drawImage(this.img, 0, 0, this.canvas_elem_width, this.canvas_elem_height);
     }
   },
 
@@ -185,7 +187,7 @@ const UserAvatar = React.createClass({
     if (this._change_avatar) {
       this.img.src = this.previous_src;
       this.canvas_elem.width = this.canvas_elem.width;
-      this.canvas_elem_ctx.drawImage(this.img, 0, 0, 300, 225);
+      this.canvas_elem_ctx.drawImage(this.img, 0, 0, this.canvas_elem_width, this.canvas_elem_height);
     }
     this.form.reset();
     this.props.handleEvent.changeState({avatarMode: mode.SHOW});
@@ -201,7 +203,7 @@ const UserAvatar = React.createClass({
           </div>
         </div>
         <div className="flex-item flex-wrap flex-align-c flex-item-auto flex-dir-col">
-          <canvas data-role="preview_avatar" width="300" height="225" className="margin-b-em"></canvas>
+          <canvas data-role="preview_avatar" width={this.canvas_elem_width} height={this.canvas_elem_height} className="margin-b-em"></canvas>
           <form enctype="multipart/form-data" method="post" className={(self.props.data.avatarMode === mode.SHOW) ? 'hide' : ''}>
             <p><input type="file" name="avatar" accept="image/jpeg,image/png"/></p>
           </form>

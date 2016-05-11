@@ -25,6 +25,8 @@ import ToggleVisibleChatPart from '../components/toggle_visible_chat_part'
 
 const Chat = React.createClass({
   chatsArray: [],
+  syncMessageDataArray: [],
+  syncMessageDataFlag: false,
 
   getDefaultProps: function() {
     return {
@@ -479,7 +481,7 @@ const Chat = React.createClass({
           this.setState({hideBottomPart: !this.state.hideBottomPart});
           break;
         case 'synchronizeMessages':
-          this.synchronizeMessages();
+          this.onSynchronizeMessages();
           break;
       }
     }
@@ -600,13 +602,13 @@ const Chat = React.createClass({
     );
   },
 
-  synchronizeMessages(){
+  onSynchronizeMessages(){
     let self = this, index = self.state.user_ids.indexOf(users_bus.getUserId()),
       messageData, newState;
     if (index !== -1 && self.state.user_ids.length > 1 ||
       index === -1 && self.state.user_ids.length > 0) {
       messageData = {
-        type: "requestSynchronizeChatMessages",
+        type: "syncRequestChatMessages",
         chat_description: {
           chat_id: self.state.chat_id
         }
@@ -779,16 +781,39 @@ const Chat = React.createClass({
   },
 
   workflowSynchronizeMessages(messageData){
-    if (messageData.messages.length) {
-      let self = this, newState = this.state;
-      messageData.messages.forEach(function(_syncMessage) {
-        messages.prototype.addRemoteMessage(_syncMessage, self.state.bodyOptions.mode, self.state.chat_id,
-          function(err) {
-            if (err) {
-              console.error(err);
-              return;
-            }
+    if (!messageData.messages.length) return;
+    let self = this, newState = this.state, lastMessage;
+    if (self.syncMessageDataFlag) {
+      self.syncMessageDataArray.push(messageData);
+    } else {
+      self.syncMessageDataFlag = true;
+      messages.prototype.getAllMessages(self.state.chat_id, self.state.bodyOptions.mode, function(_err, _messages) {
+        if (_err) {
+          self.syncMessageDataFlag = false;
+          return console.error(_err);
+        } 
 
+        let store = {}, remoteMessages = [];
+        if (_messages.length) {
+          for (let message of _messages) {
+            store[message.messageId] = true;
+          }
+          for (let _syncMessage of messageData.messages) {
+            if (!store[_syncMessage.messageId]) {
+              remoteMessages.push(_syncMessage);
+            }
+          }
+          lastMessage = _messages[_messages.length - 1];
+        } else {
+          remoteMessages = messageData.messages;
+          lastMessage = null;
+        }
+        let _workflow = function() {
+          self.syncMessageDataFlag = false;
+          if (self.syncMessageDataArray.length) {
+            let _messageData = self.syncMessageDataArray.shift();
+            self.workflowSynchronizeMessages(_messageData);
+          } else {
             if (newState.messages_PaginationOptions.showEnablePagination) {
               newState.messages_PaginationOptions.currentPage = null;
               Pagination.prototype.countPagination(null, newState, newState.bodyOptions.mode,
@@ -798,7 +823,17 @@ const Chat = React.createClass({
             } else {
               self.setState({messages_PaginationOptions: newState.messages_PaginationOptions});
             }
-          })
+          }
+        };
+        if (remoteMessages.length) {
+          remoteMessages = messages.prototype.addMessageData(lastMessage, remoteMessages, true);
+          messages.prototype.addAllRemoteMessages(remoteMessages, self.state.bodyOptions.mode, self.state.chat_id, function(_err) {
+            if (_err) return console.error(_err);
+            _workflow();
+          });
+        } else {
+          _workflow();
+        }
       });
     }
   },

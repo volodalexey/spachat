@@ -459,17 +459,19 @@ WebRTC.prototype = {
 
     if (messageData.lastModifyDatetime) {
       users_bus.getContactsInfo(messageData, [messageData.message.createdByUserId], function(_err, contactsInfo, messageData) {
+
         if (_err) return console.error(_err);
+
         contactsInfo = contactsInfo[0];
         if (!contactsInfo.lastModifyDatetime || contactsInfo.lastModifyDatetime < messageData.lastModifyDatetime) {
-          var messageData = {
-            type: 'getUserDescription',
+          var _messageData = {
+            type: 'syncRequestUserData',
             userId: contactsInfo.user_id,
             chat_description: {
               chat_id: messageData.chat_description.chat_id
             }
           };
-          self.broadcastChatMessage(messageData.chat_description.chat_id, JSON.stringify(messageData));
+          self.broadcastChatMessage(messageData.chat_description.chat_id, JSON.stringify(_messageData));
         }
       })
     }
@@ -480,13 +482,13 @@ WebRTC.prototype = {
       event_bus.trigger('notifyUser', messageData);
     } else if (messageData.type === 'chatJoinApproved') {
       event_bus.trigger('chatJoinApproved', messageData);
-    } else  if (messageData.type === 'requestSynchronizeChatMessages') {
+    } else  if (messageData.type === 'syncRequestChatMessages') {
       event_bus.trigger('getSynchronizeChatMessages', messageData);
-    }else  if (messageData.type === 'replySynchronizeChatMessages') {
-      event_bus.trigger('replySynchronizeChatMessages', messageData);
-    } else if (messageData.type === 'getUserDescription') {
+    }else  if (messageData.type === 'syncResponseChatMessages') {
+      event_bus.trigger('syncResponseChatMessages', messageData);
+    } else if (messageData.type === 'syncRequestUserData') {
       this.requestUserInfo(messageData);
-    } else if (messageData.type === 'setUserDescription') {
+    } else if (messageData.type === 'syncResponseUserData') {
       users_bus.getContactsInfo(messageData, [messageData.userId], function(_err, userInfo, messageData) {
         if (_err) return console.error(_err);
         userInfo[0].lastModifyDatetime = messageData.updateInfo.lastModifyDatetime;
@@ -539,7 +541,7 @@ WebRTC.prototype = {
     let self = this;
     users_bus.getMyInfo(messageData, function(_err, options, userInfo) {
       var messageData = {
-        type: 'setUserDescription',
+        type: 'syncResponseUserData',
         userId: userInfo.user_id,
         updateInfo: {
           avatar_data: userInfo.avatar_data,
