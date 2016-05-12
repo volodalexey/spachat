@@ -10,6 +10,7 @@ import event_bus from '../js/event_bus'
 import Body from '../components/body'
 
 const Messages = React.createClass({
+  avatar_url: '',
 
   getInitialState: function() {
     return {
@@ -21,6 +22,9 @@ const Messages = React.createClass({
   },
 
   componentDidMount() {
+    if (!this.props.data.userInfo) return;
+    let user = this.renderAvatarUrl([this.props.data.userInfo])[0];
+    this.setState({amICreator: user});
     event_bus.on('changeMyUserInfo', this.changeMyUserInfo, this);
   },
 
@@ -28,14 +32,24 @@ const Messages = React.createClass({
     event_bus.off('changeMyUserInfo', this.changeMyUserInfo, this);
   },
 
+  componentDidUpdate: function(prevProps) {
+    if (prevProps.data.userInfo !== this.props.data.userInfo) {
+      if (!this.props.data.userInfo) return;
+      let user = this.renderAvatarUrl([this.props.data.userInfo])[0];
+      this.setState({amICreator: user});
+    }
+  },
+
   changeMyUserInfo(userId, chatId){
-    if(chatId === this.props.data.chat_id){
+    if (chatId === this.props.data.chat_id) {
       let self = this;
       users_bus.getContactsInfo(null, [userId], function(_err, userInfo) {
         if (_err) return console.error(_err);
         self.state.userInfo.forEach(function(_user) {
-          if (_user.user_id === userInfo.user_id){
+          if (_user.user_id === userInfo.user_id) {
             _user.avatar_data = userInfo.avatar_data;
+            _user = self.renderAvatarUrl([_user])[0];
+
           }
         });
         self.setState({userInfo: self.state.userInfo});
@@ -64,6 +78,36 @@ const Messages = React.createClass({
     });
   },
 
+  b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+    let byteCharacters = window.atob(b64Data), byteArrays = [];
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      let slice = byteCharacters.slice(offset, offset + sliceSize),
+        byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      let byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    return new Blob(byteArrays, {type: contentType});
+  },
+
+  base64MimeType(encoded) {
+    let result = null;
+    if (typeof encoded !== 'string') {
+      return result;
+    }
+    let mime = encoded.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+    if (mime && mime.length) {
+      result = mime[1];
+    }
+
+    return result;
+  },
+
   getDataUsers(messages){
     let usersId = {}, self = this;
     usersId[users_bus.getUserId()] = true;
@@ -73,8 +117,26 @@ const Messages = React.createClass({
     let ids = Object.keys(usersId);
     users_bus.getContactsInfo(null, Object.keys(usersId), function(_error, userInfo) {
       if (_error) return console.error(_error);
-      self.setState({"userInfo": userInfo});
+
+      userInfo = self.renderAvatarUrl(userInfo);
+      self.setState({userInfo: userInfo});
     });
+  },
+
+  renderAvatarUrl(usersInfo){
+    let URL = window.URL || window.webkitURL, self = this;
+    usersInfo.forEach(function(_user) {
+      if (URL && _user.avatar_data) {
+        let contentType = self.base64MimeType(_user.avatar_data);
+        if (!contentType) return;
+
+        let b64Data = _user.avatar_data.split(',')[1],
+          blob = self.b64toBlob(b64Data, contentType);
+        _user.avatar_url = URL.createObjectURL(blob);
+      }
+    });
+
+    return usersInfo;
   },
 
   getUserParam(_userId, attribut){
@@ -114,9 +176,9 @@ const Messages = React.createClass({
             </div>
           </div>
           <div className="width-40px flex-just-center flex-dir-col">
-            <img src={this.props.data.userInfo.avatar_data} width="35px" height="35px"
+            <img src={this.state.amICreator.avatar_url} width="35px" height="35px"
                  className="border-radius-5 flex-item-auto"/>
-            <div className="user-info flex-item-1-auto c-01">{this.props.data.userInfo.userName}</div>
+            <div className="user-info flex-item-1-auto c-01">{this.state.amICreator.userName}</div>
           </div>
         </div>
       )
@@ -128,7 +190,7 @@ const Messages = React.createClass({
       return (
         <div className="flex-sp-start margin-t-b" key={message.messageId}>
           <div className="width-40px flex-just-center flex-dir-col">
-            <img src={this.getUserParam(message.createdByUserId, 'avatar_data')} width="35px" height="35px"
+            <img src={this.getUserParam(message.createdByUserId, 'avatar_url')} width="35px" height="35px"
                  className="border-radius-5 flex-item-auto"/>
             <div className="user-info c-50">{this.getUserParam(message.createdByUserId, 'userName')}</div>
           </div>
