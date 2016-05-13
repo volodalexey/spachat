@@ -203,6 +203,7 @@ Messages.prototype = {
         chat_description: {
           chat_id: _messageData.chat_description.chat_id
         },
+        owner_request: _messageData.owner_request,
         messages: messages
       };
       webrtc.broadcastChatMessage(messageData.chat_description.chat_id, JSON.stringify(messageData));

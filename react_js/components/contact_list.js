@@ -30,9 +30,16 @@ const ContactList = React.createClass({
     event_bus.off('changeMyUsers', this.getContacts, this);
   },
 
+  componentWillReceiveProps(nextProps){
+    if(nextProps.data.user_ids !== this.initialUsers_ids){
+      this.getContacts();
+    }
+  },
+
   getContacts(){
     let self = this;
     chats_bus.getChatContacts(this.props.data.chat_id, function(error, contactsInfo) {
+      self.initialUsers_ids = self.props.data.user_ids;
       if (error) {
         console.error(error);
         return;

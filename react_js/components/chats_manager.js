@@ -203,7 +203,8 @@ const ChatsManager = React.createClass({
         break;
       case 'syncResponseChatMessages':
         Chat.prototype.chatsArray.forEach(function(_chat) {
-          if (_chat.chat_description && messageData.chat_description.chat_id === _chat.chat_description.chat_id) {
+          if (_chat.chat_description && messageData.chat_description.chat_id === _chat.chat_description.chat_id &&
+            messageData.owner_request === users_bus.getUserId()) {
             event_bus.trigger('workflowSynchronizeMessages', messageData);
           }
         });

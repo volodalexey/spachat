@@ -611,7 +611,8 @@ const Chat = React.createClass({
         type: "syncRequestChatMessages",
         chat_description: {
           chat_id: self.state.chat_id
-        }
+        },
+        owner_request: users_bus.getUserId()
       };
       let active_connections = webrtc.getChatConnections(webrtc.connections, self.state.chat_id);
       if (active_connections.length) {
@@ -761,6 +762,7 @@ const Chat = React.createClass({
     if (this.state.chat_id !== eventData.chat_description.chat_id)
       return;
     let self = this, newState = this.state;
+    this.checkingUserInChat([eventData.message.createdByUserId], this.state.user_ids);
     messages.prototype.addRemoteMessage(eventData.message, this.state.bodyOptions.mode, this.state.chat_id,
       function(err) {
         if (err) {
@@ -791,9 +793,9 @@ const Chat = React.createClass({
         if (_err) {
           self.syncMessageDataFlag = false;
           return console.error(_err);
-        } 
+        }
 
-        let store = {}, remoteMessages = [];
+        let store = {}, remoteMessages = [], usersToChecking = [];
         if (_messages.length) {
           for (let message of _messages) {
             store[message.messageId] = true;
@@ -801,6 +803,9 @@ const Chat = React.createClass({
           for (let _syncMessage of messageData.messages) {
             if (!store[_syncMessage.messageId]) {
               remoteMessages.push(_syncMessage);
+              if (usersToChecking.indexOf(_syncMessage.createdByUserId) === -1) {
+                usersToChecking.push(_syncMessage.createdByUserId);
+              }
             }
           }
           lastMessage = _messages[_messages.length - 1];
@@ -826,6 +831,7 @@ const Chat = React.createClass({
           }
         };
         if (remoteMessages.length) {
+          self.checkingUserInChat(usersToChecking, self.state.user_ids);
           remoteMessages = messages.prototype.addMessageData(lastMessage, remoteMessages, true);
           messages.prototype.addAllRemoteMessages(remoteMessages, self.state.bodyOptions.mode, self.state.chat_id, function(_err) {
             if (_err) return console.error(_err);
@@ -834,6 +840,24 @@ const Chat = React.createClass({
         } else {
           _workflow();
         }
+      });
+    }
+  },
+
+  checkingUserInChat(usersToChecking, user_ids){
+    let newUsers = [], self = this;
+    usersToChecking.forEach(function(_user) {
+      if (user_ids.indexOf(_user) === -1) {
+        newUsers.push(_user);
+      }
+    });
+
+    if (newUsers.length) {
+      let usersArray = newUsers.concat(user_ids);
+      chats_bus.updateChatField(self.state.chat_id, 'user_ids', usersArray, function(error) {
+        if (error) return console.error(error);
+        
+        self.setState({user_ids: usersArray});
       });
     }
   },
