@@ -26,14 +26,6 @@ const Select = React.createClass({
     return params;
   },
 
-  handleChange: function(event) {
-    switch (event.target.dataset.action) {
-      case "changeLanguage":
-        Localization.changeLanguage(event.target.value);
-        break;
-    }
-  },
-
   renderHandlers: function() {
     var handlers = {};
     if (this.props.events) {

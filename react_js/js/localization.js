@@ -7,9 +7,17 @@ var Localization = function(lang) {
 
 Localization.prototype = {
 
-  changeLanguage(lang) {
+  changeLanguage(lang, component) {
     this.lang = lang;
-    this.mainComponent.forceUpdate();
+    let language = localStorage.getItem('language');
+    if (!language || language !== lang) {
+      localStorage.setItem('language', lang);
+    }
+    component.forceUpdate();
+  },
+  
+  setLanguage(lang){
+    this.lang = lang;
   },
 
   getLocText(id) {
@@ -23,10 +31,6 @@ Localization.prototype = {
       }
     );
     return text;
-  },
-
-  setMainComponent(mainComponent) {
-    this.mainComponent = mainComponent;
   }
 };
 

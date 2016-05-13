@@ -169,11 +169,7 @@ const Login = React.createClass({
   handleChange: function(event) {
     switch (event.target.dataset.action) {
       case "changeLanguage":
-        Localization.changeLanguage(event.target.value);
-        var language = localStorage.getItem('language');
-        if (!language || language !== event.target.value) {
-          localStorage.setItem('language', event.target.value);
-        }
+        Localization.changeLanguage(event.target.value, this);
         break;
     }
   },

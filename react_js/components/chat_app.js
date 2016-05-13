@@ -4,6 +4,7 @@ import users_bus from '../js/users_bus.js'
 import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
 import event_bus from '../js/event_bus.js'
+import Localization from '../js/localization.js'
 
 import Panel from '../components/panel'
 import Popup from '../components/popup'
@@ -66,6 +67,10 @@ const ChatApp = React.createClass({
     }
   },
 
+  changeLanguage(lang){
+    Localization.changeLanguage(lang, this);
+  },
+
   handleChangePopup: function(options) {
     let newState;
     newState = Popup.prototype.handleChangeState(this.state, options.show, options.type,
@@ -117,6 +122,9 @@ const ChatApp = React.createClass({
 
   render: function() {
     if (this.state.userInfo && this.state.userInfo.hasOwnProperty('user_id')) {
+      let handleEvent = {
+        changeLanguage: this.changeLanguage
+      };
       return (
         <div onMouseDown={this.handleEvents}
              onMouseMove={this.handleEvents}
@@ -130,7 +138,7 @@ const ChatApp = React.createClass({
                className={this.state.scrollEachChat ? "w-100p h-100p p-abs" : "w-100p p-abs"}>
             <ChatsManager scrollEachChat={this.state.scrollEachChat}/>
           </div>
-          <Panel location={this.props.RIGHT} userInfo={this.state.userInfo} data={this.state}/>
+          <Panel location={this.props.RIGHT} userInfo={this.state.userInfo} data={this.state} handleEvent={handleEvent}/>
           <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
           <Description ref={(obj) => this.descriptionContext = obj} />
           <ChatResize />

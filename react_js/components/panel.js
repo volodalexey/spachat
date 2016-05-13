@@ -1088,15 +1088,7 @@ const Panel = React.createClass({
   },
 
   onChangeLanguage: function(event) {
-    this.changeLanguage(event);
-  },
-
-  changeLanguage: function(event) {
-    localization.changeLanguage(event.target.value);
-    let language = localStorage.getItem('language');
-    if (!language || language !== event.target.value) {
-      localStorage.setItem('language', event.target.value);
-    }
+    this.props.handleEvent.changeLanguage(event.target.value);
   },
 
   toggleListOptions: function(chatsLength) {

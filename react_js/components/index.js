@@ -31,11 +31,10 @@ const requireAuth = function(nextState, replace) {
       replace('/login');
   },
   Index = React.createClass({
-    componentDidMount: function() {
-      Localization.setMainComponent(this);
+    componentWillMount(){
       var language = localStorage.getItem('language');
       if (language && Localization.lang !== language) {
-        Localization.changeLanguage(language);
+        Localization.setLanguage(language);
       }
     },
 
