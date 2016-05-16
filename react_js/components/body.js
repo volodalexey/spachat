@@ -572,28 +572,30 @@ const Body = React.createClass({
         },
         {
           "element": "button",
-          "icon": "open_icon",
-          "text": 10,
-          "class": "button-convex",
-          "location": "navbar",
-          "data": {
-            "throw": "true",
-            "action": "showChat",
-            "mode": "DETAIL_VIEW"
-          },
-          "disable": false
-        },
-        {
-          "element": "button",
           "icon": "save_open_icon",
-          "text": 58,
+          "text": 10,
           "class": "button-convex",
           "location": "navbar",
           "data": {
             "throw": "true",
             "restore_chat_state": true,
             "action": "showChat",
-            "mode": "DETAIL_VIEW"
+            "mode": "DETAIL_VIEW",
+            "description": 123
+          },
+          "disable": false
+        },
+        {
+          "element": "button",
+          "icon": "open_icon",
+          "text": 58,
+          "class": "button-convex",
+          "location": "navbar",
+          "data": {
+            "throw": "true",
+            "action": "showChat",
+            "mode": "DETAIL_VIEW",
+            "description": 122
           },
           "disable": false
         },

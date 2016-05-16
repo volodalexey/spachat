@@ -286,8 +286,8 @@
   },
   {
     "id": 58,
-    "en": "Restore and show chat",
-    "ru": "Восстановить и показать чат"
+    "en": "Restore chat",
+    "ru": "Восстановить чат"
   },
   {
     "id": 59,
@@ -603,5 +603,15 @@
     "id": 121,
     "en": "There are no active contacts",
     "ru": "Нет активных контактов"
+  },
+  {
+    "id": 122,
+    "en": "Open chat with the original settings",
+    "ru": "Открыть чат с первоначальными настройками"
+  },
+  {
+    "id": 123,
+    "en": "Open chat with the stored user settings",
+    "ru": "Открыть чат с сохраненными пользовательскими настройками"
   }
 ]
