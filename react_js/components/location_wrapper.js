@@ -1,5 +1,5 @@
 import React from 'react'
-
+import {element} from './element'
 import TripleElement from './triple_element'
 
 const Location_Wrapper = React.createClass({
@@ -25,19 +25,8 @@ const Location_Wrapper = React.createClass({
     return rawConfig;
   },
 
-  render_att: function(config) {
-    let params = {};
-    if (config.classList) {
-      params['className'] = config.classList;
-    }
-    if (config.role) {
-      params['role'] = config.role;
-    }
-    return params;
-  },
-
   wrapper: function(wrapperConfig, wrapperItems) {
-    return (<div key={wrapperConfig.location} {...this.render_att(wrapperConfig)}>
+    return (<div key={wrapperConfig.location} {...element.renderAttributes({config: wrapperConfig})}>
       {this.wrapperItems(wrapperItems)}
     </div>)
   },
@@ -56,21 +45,6 @@ const Location_Wrapper = React.createClass({
     return items;
   },
 
-  renderAttMainContainer: function() {
-    var params = {};
-    if (this.props.mainContainer.class) {
-      params["className"] = this.props.mainContainer.class;
-    }
-    if (this.props.mainContainer.data) {
-      for (var dataKey in this.props.mainContainer.data) {
-        if (this.props.mainContainer.data[dataKey] !== "") {
-          params['data-' + dataKey] = this.props.mainContainer.data[dataKey];
-        }
-      }
-    }
-    return params;
-  },
-
   render: function() {
     let rawConfig = this.prepareConfig(), elements = [];
     if (Object.keys(rawConfig.byDataLocation).length === 0) {
@@ -83,7 +57,7 @@ const Location_Wrapper = React.createClass({
       }
     }
     if (this.props.mainContainer) {
-      return <div {...this.renderAttMainContainer()}>{elements}</div>
+      return <div {...element.renderAttributes(this.props.mainContainer)}>{elements}</div>
     } else {
       return <div>{elements}</div>
     }

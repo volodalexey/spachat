@@ -20,7 +20,9 @@ const Register = React.createClass({
     return {
       mainContainer: {
         "element": "div",
-        "class": "flex-inner-container"
+        "config": {
+          "class": "flex-inner-container"
+        }
       },
       configs: [
         {

@@ -20,7 +20,9 @@ const Editor = React.createClass({
     return {
       mainContainer: {
         "element": "div",
-        "class": "modal-main-btn"
+        "config": {
+          "class": "modal-main-btn"
+        }
       },
       configs: [
         {

@@ -1,28 +1,23 @@
 import React from 'react'
-import Localization from '../js/localization.js'
+import {element} from './element'
 
 const Textarea = React.createClass({
-  render_att: function() {
-    let params = {};
-    if (this.props.config.data) {
-      for (var configDataKey in this.props.config.data) {
-        if (this.props.config.data[configDataKey] !== "") {
-          params['data-' + configDataKey] = this.props.config.data[configDataKey];
-        }
-      }
+
+  renderExtraAttributes(){
+    let options = {}, config = this.props.config;
+    if (config.rows) {
+      options.rows = config.rows;
     }
-    if (this.props.config.rows) {
-      params['rows'] = this.props.config.rows;
+    if (config.value !== "") {
+      options.value = config.value;
     }
-    if (this.props.config.value !== "") {
-      params['value'] = this.props.config.value;
-    }
-    return params;
+
+    return options;
   },
 
   render: function() {
     return (
-      <textarea className={this.props.config.class ? this.props.config.class : ''} {...this.render_att()}>
+      <textarea {...element.renderAttributes(this.props, this.renderExtraAttributes())}>
         {this.props.config.text}
       </textarea>
     )

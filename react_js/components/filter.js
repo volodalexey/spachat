@@ -516,7 +516,9 @@ const Filter = React.createClass({
       configs = this.prepareConfig(configs, options.paginationOptions.mode_change);
       let mainContainer = {
         "element": "div",
-        "class": "flex-item flex-wrap"
+        "config": {
+          "class": "flex-item flex-wrap"
+        }
       };
       let data = {
         "perPageValue": options.paginationOptions.perPageValueShow,

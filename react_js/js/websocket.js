@@ -29,7 +29,8 @@ Websocket.prototype = {
 
   create: function() {
     var url;
-    if (window.location.hostname.indexOf('localhost') >= 0) {
+    if (window.location.hostname.indexOf('localhost') >= 0 ||
+      window.location.hostname.indexOf('192.168.') >= 0) {
       url = this.protocol + window.location.host;
     } else {
       url = this.protocol + window.location.hostname + this.port;

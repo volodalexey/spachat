@@ -173,7 +173,9 @@ const Popup = React.createClass({
       },
       mainContainer: {
         "element": "div",
-        "class": "c-50 border-radius-05em min-width-350"
+        "config": {
+          "class": "c-50 border-radius-05em min-width-350"
+        }
       }
     }
   },

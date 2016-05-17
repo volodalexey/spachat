@@ -1,7 +1,6 @@
 import React from 'react'
 
 import Button from './button'
-import LinkButton from './link_button'
 import Input from './input'
 import Label from './label'
 import Select from './select'
@@ -12,13 +11,8 @@ const TripleElement = React.createClass({
   definingElement: function() {
     switch (this.props.config.element) {
       case "button":
-        if (this.props.config.link) {
-          return <LinkButton mode={this.props.mode} events={this.props.events} config={this.props.config}
-                             data={this.props.data}/>;
-        } else {
-          return <Button mode={this.props.mode} events={this.props.events} config={this.props.config}
-                         hide={this.props.hide} data={this.props.data} calcDisplay={this.props.calcDisplay}/>;
-        }
+        return <Button mode={this.props.mode} events={this.props.events} config={this.props.config}
+                       hide={this.props.hide} data={this.props.data} calcDisplay={this.props.calcDisplay}/>;
         break;
       case "label":
         return <Label events={this.props.events} events={this.props.events} config={this.props.config}

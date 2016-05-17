@@ -7,9 +7,11 @@ const FormatPanel = React.createClass({
     return {
       mainContainer: {
         "element": "div",
-        "class": "btnEditPanel flex-align-c ",
-        "data": {
-          "role": 'btnEditPanel'
+        "config":{
+          "class": "btnEditPanel flex-align-c ",
+          "data": {
+            "role": 'btnEditPanel'
+          }
         }
       },
       configs: [

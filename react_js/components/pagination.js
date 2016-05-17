@@ -22,7 +22,9 @@ const Pagination = React.createClass({
     return {
       mainContainer: {
         "element": "div",
-        "class": "flex "
+        "config":{
+          "class": "flex ",
+        }
       },
       configs: [
         {

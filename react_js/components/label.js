@@ -1,77 +1,35 @@
 import React from 'react'
-
-import Localization from '../js/localization.js'
+import {element} from './element'
+import localization from '../js/localization'
 
 const Label = React.createClass({
-  renderAtt: function() {
-    let params = {};
-    if (this.props.config.class) {
-      params["className"] = this.props.config.class;
-    }
-    if (this.props.config.name) {
-      params["name"] = this.props.config.name;
-    }
-    if (this.props.config.for) {
-      params["for"] = this.props.config.for;
-    }
-
-    let display;
-    if (this.props.calcDisplay) {
-      display = this.props.calcDisplay(this.props.config);
-    }
-    if (display !== undefined && display !== true) {
-      params['style'] = {display: 'none'};
-    }
-
-    if (this.props.config.data) {
-      for (var configDataKey in this.props.config.data) {
-        if (this.props.config.data[configDataKey] !== "") {
-          params['data-' + configDataKey] = this.props.config.data[configDataKey];
-        }
-      }
-    }
-    if (this.props.config.data && this.props.config.key) {
-      params['data-' + this.props.config.key] = this.props.data[this.props.config.key];
-    }
-    return params;
-  },
-
-  renderHandlers: function() {
-    var handlers = {};
-    if (this.props.events) {
-      for (var dataKey in this.props.events) {
-        handlers[dataKey] = this.props.events[dataKey];
-      }
-    }
-    return handlers;
-  },
 
   renderContent: function() {
-    let text;
-    if (this.props.config.text) {
-      text = typeof this.props.config.text === "number" ? Localization.getLocText(this.props.config.text) : this.props.config.text
+    let text, config = this.props.config, data = this.props.data;
+    if (config.text) {
+      text = typeof config.text === "number" ? localization.getLocText(config.text) : config.text;
     } else {
       text = '';
     }
 
-    if (this.props.data && this.props.data.description) {
-      if (typeof this.props.data.description === 'number') {
-        text = Localization.getLocText(this.props.data.description);
+    if (data && data.description) {
+      if (typeof data.description === 'number') {
+        text = localization.getLocText(data.description);
       } else {
-        text = this.props.data.description;
+        text = data.description;
       }
     }
 
-    if (this.props.config.data && this.props.config.data.key) {
-      text = this.props.data[this.props.config.data.key];
+    if (config.data && config.data.key) {
+      text = data[config.data.key];
     }
     return text;
   },
 
   render: function() {
     return (
-      <label {...this.renderAtt()} {...this.renderHandlers()}>
-        {this.renderContent() }
+      <label {...element.renderAttributes(this.props)} {...element.renderHandlers(this.props)}>
+        {this.renderContent(this.props) }
       </label>
     )
   }

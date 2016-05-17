@@ -16,8 +16,10 @@ const Header = React.createClass({
     return {
       mainContainer: {
         "element": "div",
-        "data": {
-          "role": 'tabs_container'
+        "config":{
+          "data": {
+            "role": 'tabs_container'
+          }
         }
       },
       configs: [
