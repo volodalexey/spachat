@@ -42,7 +42,7 @@ const Body = React.createClass({
     FILTER: 'FILTER'
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       user_info_edit_config: [
         {
@@ -965,7 +965,7 @@ const Body = React.createClass({
     }
   },
 
-  defineConfigs: function(mode) {
+  defineConfigs(mode) {
     switch (mode) {
       case this.MODE.CHATS:
         return {
@@ -1016,7 +1016,7 @@ const Body = React.createClass({
     }
   },
 
-  defineComponents: function(mode, configs) {
+  defineComponents(mode, configs) {
     let items = [], data, self = this;
     switch (mode) {
       case this.MODE.USERS:
@@ -1103,7 +1103,7 @@ const Body = React.createClass({
     return transform_value;
   },
 
-  limitationQuantityRecords: function(data, state, mode) {
+  limitationQuantityRecords(data, state, mode) {
     if (data && data.length) {
       let currentOptions = this.optionsDefinition(state, mode);
       if (currentOptions.listOptions.final > data.length || !currentOptions.listOptions.final) {
@@ -1114,7 +1114,7 @@ const Body = React.createClass({
     return data;
   },
 
-  render: function() {
+  render() {
     let configs = this.defineConfigs(this.props.mode);
     if (!configs) {
       return <div></div>

@@ -1,11 +1,11 @@
 import React from 'react'
-import { browserHistory } from 'react-router'
+import {browserHistory} from 'react-router'
 
 import Location_Wrapper from './location_wrapper'
-import Popup from '../components/popup'
 import Description from '../components/description'
+import DialogError from './dialogError'
 
-import Localization from '../js/localization.js'
+import localization from '../js/localization.js'
 import users_bus from '../js/users_bus.js'
 import indexeddb from '../js/indexeddb.js'
 import overlay_core from '../js/overlay_core.js'
@@ -13,11 +13,11 @@ import extend_core from '../js/extend_core.js'
 
 const Login = React.createClass({
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       mainContainer: {
         "element": "div",
-        "config":{
+        "config": {
           "class": "flex-inner-container"
         }
       },
@@ -140,46 +140,45 @@ const Login = React.createClass({
     }
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
-      lang: Localization.lang,
-      popupOptions: {
-        messagePopupShow: false,
-        type: '',
-        options: {},
-        onDataActionClick: null
-      }
+      lang: localization.lang,
+      errorMessage: null
     }
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.loginForm = document.querySelector('[data-role="loginForm"]');
     this.loginForm.addEventListener('click', this.handleClick, true);
     this.toggleWaiter();
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.loginForm = null;
   },
 
-  handleClick: function(event) {
+  handleClick(event) {
     if (event.currentTarget.dataset.action === 'clickRedirectToRegister') {
       this.clickRedirectToRegister(event);
     }
   },
 
-  handleChange: function(event) {
+  handleDialogError(){
+    this.setState({errorMessage: null});
+  },
+
+  handleChange(event) {
     switch (event.target.dataset.action) {
       case "changeLanguage":
-        Localization.changeLanguage(event.target.value, this);
+        localization.changeLanguage(event.target.value, this);
         break;
     }
   },
 
-  handleSubmit: function(event) {
+  handleSubmit(event) {
     event.preventDefault();
 
-    let self = this, newState,
+    let self = this,
       userName = this.loginForm.elements.userName.value,
       userPassword = this.loginForm.elements.userPassword.value;
     if (userName && userPassword) {
@@ -187,17 +186,7 @@ const Login = React.createClass({
       indexeddb.getGlobalUserCredentials(userName, userPassword, function(err, userCredentials) {
         if (err) {
           self.toggleWaiter();
-          newState = Popup.prototype.handleChangeState(self.state, true, 'error', err,
-            function(action) {
-              switch (action) {
-                case 'confirmCancel':
-                  newState = Popup.prototype.handleClose(self.state);
-                  self.setState(newState);
-                  break;
-              }
-            }
-          );
-          self.setState(newState);
+          self.setState({errorMessage: err});
           return;
         }
 
@@ -206,7 +195,7 @@ const Login = React.createClass({
           users_bus.getMyInfo(null, function(err, options, userInfo) {
             if (userPassword === userInfo.userPassword) {
               users_bus.checkLoginState();
-              if (browserHistory.desired_path && browserHistory.desired_search){
+              if (browserHistory.desired_path && browserHistory.desired_search) {
                 browserHistory.push(browserHistory.desired_path + browserHistory.desired_search);
                 browserHistory.desired_path = null;
                 browserHistory.desired_search = null;
@@ -215,49 +204,21 @@ const Login = React.createClass({
               }
             } else {
               self.toggleWaiter();
-              newState = Popup.prototype.handleChangeState(self.state, true, 'error', 104,
-                function(action) {
-                  switch (action) {
-                    case 'confirmCancel':
-                      newState = Popup.prototype.handleClose(self.state);
-                      self.setState(newState);
-                      break;
-                  }
-                }
-              );
-              self.setState(newState);
+              self.setState({errorMessage: 104});
             }
           });
         } else {
           self.toggleWaiter();
           users_bus.setUserId(null);
-          newState = Popup.prototype.handleChangeState(self.state, true, 'error', 87,
-            function(action) {
-              switch (action) {
-                case 'confirmCancel':
-                  newState = Popup.prototype.handleClose(self.state);
-                  self.setState(newState);
-                  break;
-              }
-            });
-          self.setState(newState);
+          self.setState({errorMessage: 87});
         }
       });
     } else {
-      newState = Popup.prototype.handleChangeState(this.state, true, 'error', 88,
-        function(action) {
-          switch (action) {
-            case 'confirmCancel':
-              newState = Popup.prototype.handleClose(self.state);
-              self.setState(newState);
-              break;
-          }
-        });
-      this.setState(newState);
+      this.setState({errorMessage: 88});
     }
   },
 
-  clickRedirectToRegister: function(event) {
+  clickRedirectToRegister(event) {
     event.preventDefault();
     event.stopPropagation();
     if (browserHistory.desired_path && browserHistory.desired_search) {
@@ -268,11 +229,11 @@ const Login = React.createClass({
     }
   },
 
-  handleEvents: function(event) {
+  handleEvents(event) {
     this.descriptionContext.showDescription(event);
   },
 
-  render: function() {
+  render() {
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange
@@ -292,8 +253,9 @@ const Login = React.createClass({
             </form>
           </div>
         </div>
-        <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
-        <Description ref={(obj) => this.descriptionContext = obj} />
+        <DialogError show={this.state.errorMessage} message={this.state.errorMessage}
+                     handleClick={this.handleDialogError}/>
+        <Description ref={(obj) => this.descriptionContext = obj}/>
       </div>
     )
   }

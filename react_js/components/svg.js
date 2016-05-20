@@ -1,7 +1,8 @@
 import React from 'react'
 
 const Svg = React.createClass({
-  render: function() {
+  
+  render() {
     var className = 'transition-all ';
     if (this.props.data && this.props.data.pointerRotate !== -1) {
       className = className + 'rotate-90';

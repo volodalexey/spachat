@@ -13,12 +13,14 @@ import webrtc from '../js/webrtc.js'
 import model_core from '../js/model_core.js'
 
 import Chat from '../components/chat'
-import Popup from '../components/popup'
+import DialogConfirm from './dialogConfirm'
+import DialogError from './dialogError'
 
 var id_Generator = require('../server_js/id_generator');
 
 const ChatsManager = React.createClass({
-  getDefaultProps: function() {
+  
+  getDefaultProps() {
     return {
       minChatsWidth: 350,
       minMove: 5,
@@ -27,13 +29,21 @@ const ChatsManager = React.createClass({
     }
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
-      chatsArray: []
+      chatsArray: [],
+      errorMessage: null,
+      confirmMessageRequestChatByChatId: null,
+      confirmDialog_chatId: null,
+      confirmMessageCloseChat: null,
+      confirmDialog_description: null,
+      confirmDialog_tempChatId: null,
+      confirmMessageSaveChat: null,
+      confirmMessageSaveCloseChat: null
     }
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     event_bus.on('showChat', this.showChat, this);
     event_bus.on('addNewChatAuto', this.createNewChat, this);
     event_bus.on('getOpenChats', this.getOpenChats, this);
@@ -46,11 +56,9 @@ const ChatsManager = React.createClass({
     event_bus.on('syncResponseChatMessages', this.onChatMessageRouter);
     event_bus.on('requestChatByChatId', this.requestChatByChatId);
     event_bus.on('getSynchronizeChatMessages', this.getSynchronizeChatMessages);
-
-    this.mainConteiner = document.querySelector('[data-role="main_container"]');
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     event_bus.off('showChat', this.showChat);
     event_bus.off('addNewChatAuto', this.createNewChat);
     event_bus.off('getOpenChats', this.getOpenChats);
@@ -63,11 +71,9 @@ const ChatsManager = React.createClass({
     event_bus.off('syncResponseChatMessages', this.onChatMessageRouter);
     event_bus.off('requestChatByChatId', this.requestChatByChatId);
     event_bus.off('getSynchronizeChatMessages', this.getSynchronizeChatMessages);
-
-    this.mainConteiner = null;
   },
 
-  getOpenChats: function(callback) {
+  getOpenChats(callback) {
     let openChats = {};
     Chat.prototype.chatsArray.forEach(function(chat) {
       if (!chat.chat_description) return;
@@ -76,8 +82,8 @@ const ChatsManager = React.createClass({
     callback(openChats);
   },
 
-  showChat: function(element, chat_id) {
-    let self = this, newState, restoreOption, parentElement;
+  showChat(element, chat_id) {
+    let restoreOption, parentElement;
     if (element) {
       parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
       restoreOption = element.dataset.restore_chat_state;
@@ -94,19 +100,7 @@ const ChatsManager = React.createClass({
 
     let chatId = parentElement ? parentElement.dataset.chat_id : chat_id;
     if (this.isChatOpened(chatId)) {
-      event_bus.trigger('changeStatePopup', {
-        show: true,
-        type: 'error',
-        message: 93,
-        onDataActionClick: function(action) {
-          switch (action) {
-            case 'confirmCancel':
-              newState = Popup.prototype.handleClose(this.state);
-              this.setState(newState);
-              break;
-          }
-        }
-      });
+      this.setState({errorMessage: 93});
       return;
     }
 
@@ -128,7 +122,7 @@ const ChatsManager = React.createClass({
   /**
    * chat whether requested chat by its id is opened or not
    */
-  isChatOpened: function(chatId) {
+  isChatOpened(chatId) {
     let openedChat;
     Chat.prototype.chatsArray.every(function(_chat) {
       if (_chat.chat_description && _chat.chat_description.chat_id === chatId || _chat.temp_chat_id === chatId) {
@@ -140,7 +134,7 @@ const ChatsManager = React.createClass({
     return openedChat;
   },
 
-  getIndexCurrentChat: function(chatId) {
+  getIndexCurrentChat(chatId) {
     let _indexCurrentChat;
     Chat.prototype.chatsArray.every(function(_chat, index) {
       if (_chat.chat_description && _chat.chat_description.chat_id === chatId ||
@@ -153,7 +147,7 @@ const ChatsManager = React.createClass({
     return _indexCurrentChat;
   },
 
-  handleChat: function(messageData, chat_description) {
+  handleChat(messageData, chat_description) {
     event_bus.trigger("changeOpenChats", "CHATS");
     if (messageData.chat_wscs_descrs) {
       webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
@@ -172,7 +166,7 @@ const ChatsManager = React.createClass({
     this.forceUpdate();
   },
 
-  createNewChat: function(event, show, restoreOption, chatId, message_request) {
+  createNewChat(event, show, restoreOption, chatId, message_request) {
     if (!websocket)  return;
 
     let newRawChat = {};
@@ -196,7 +190,7 @@ const ChatsManager = React.createClass({
     this.forceUpdate();
   },
 
-  onChatMessageRouter: function(messageData) {
+  onChatMessageRouter(messageData) {
     switch (messageData.type) {
       case 'chat_joined':
         this.chatJoinApproved(messageData);
@@ -229,7 +223,7 @@ const ChatsManager = React.createClass({
     }
   },
 
-  chatCreateApproved: function(event) {
+  chatCreateApproved(event) {
     if (event.from_ws_device_id) {
       event_bus.set_ws_device_id(event.from_ws_device_id);
     }
@@ -267,8 +261,8 @@ const ChatsManager = React.createClass({
    * join request for this chat was approved by the server
    * make offer for each device for this chat
    */
-  chatJoinApproved: function(event) {
-    let self = this, newState, index;
+  chatJoinApproved(event) {
+    let self = this, index;
     event_bus.set_ws_device_id(event.target_ws_device_id);
     event_bus.trigger('send_log_message', event.chat_description.chat_id,
       {text: 'Chat join approved. Getting chat description.', type: 'information'});
@@ -284,19 +278,7 @@ const ChatsManager = React.createClass({
         }
 
         if (!chat_description) {
-          event_bus.trigger('changeStatePopup', {
-            show: true,
-            type: 'error',
-            message: 86,
-            onDataActionClick: function(action) {
-              switch (action) {
-                case 'confirmCancel':
-                  newState = Popup.prototype.handleClose(this.state);
-                  this.setState(newState);
-                  break;
-              }
-            }
-          });
+          this.setState({errorMessage: 86});
           return;
         }
 
@@ -336,7 +318,7 @@ const ChatsManager = React.createClass({
     );
   },
 
-  addNewChatToIndexedDB: function(chat_description, callback) {
+  addNewChatToIndexedDB(chat_description, callback) {
     let newChat = Chat.prototype.getInitialState();
     if (chat_description) {
       this.extend(newChat, chat_description)
@@ -346,7 +328,7 @@ const ChatsManager = React.createClass({
     chats_bus.putChatToIndexedDB(newChat, callback);
   },
 
-  toCloseChat: function(saveStates, chatId, temp_chat_id) {
+  toCloseChat(saveStates, chatId, temp_chat_id) {
     let self = this;
     if (!chatId && temp_chat_id) {
       self.closeChat(null, temp_chat_id);
@@ -368,7 +350,7 @@ const ChatsManager = React.createClass({
   },
 
   requestChatByChatId(chatId, requestMessage){
-    let self = this, newState;
+    let self = this;
     indexeddb.getByKeyPath(
       chats_bus.collectionDescription,
       null,
@@ -383,67 +365,22 @@ const ChatsManager = React.createClass({
           self.createNewChat(null, null, null, chatId, requestMessage);
         } else {
           if (self.isChatOpened(chatId)) {
-            event_bus.trigger('changeStatePopup', {
-              show: true,
-              type: 'error',
-              message: 93,
-              onDataActionClick: function(action) {
-                switch (action) {
-                  case 'confirmCancel':
-                    newState = Popup.prototype.handleClose(this.state);
-                    this.setState(newState);
-                    break;
-                }
-              }
-            });
+            this.setState({errorMessage: 93});
           } else {
-            event_bus.trigger('changeStatePopup', {
-              show: true,
-              type: 'confirm',
-              message: 114,
-              onDataActionClick: function(action) {
-                switch (action) {
-                  case 'confirmCancel':
-                    newState = Popup.prototype.handleClose(this.state);
-                    this.setState(newState);
-                    break;
-                  case 'confirmOk':
-                    newState = Popup.prototype.handleClose(this.state);
-                    this.setState(newState);
-                    self.showChat(null, chatId);
-                    break;
-                }
-              }
-            });
+            self.setState({confirmMessageRequestChatByChatId: 114, confirmDialog_chatId: chatId});
           }
         }
       }
     );
   },
 
-  closeChat: function(description, temp_chat_id) {
-    let newState, self = this;
-    event_bus.trigger('changeStatePopup', {
-      show: true,
-      type: 'confirm',
-      message: 83,
-      onDataActionClick: function(action) {
-        switch (action) {
-          case 'confirmCancel':
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            break;
-          case 'confirmOk':
-            self.destroyChat(description, temp_chat_id);
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            break;
-        }
-      }
-    });
+  closeChat(description, temp_chat_id) {
+    this.setState({confirmMessageCloseChat: 83,
+      confirmDialog_description: description,
+      confirmDialog_tempChatId: temp_chat_id});
   },
 
-  destroyChat: function(description, temp_chat_id) {
+  destroyChat(description, temp_chat_id) {
     let position = this.getDestroyChatPosition((!description && temp_chat_id) ? temp_chat_id : description.chat_id);
     if (description && !temp_chat_id) {
       event_bus.trigger("chatDestroyed", description.chat_id);
@@ -453,11 +390,11 @@ const ChatsManager = React.createClass({
     this.forceUpdate();
   },
 
-  destroyChats: function() {
+  destroyChats() {
     Chat.prototype.chatsArray = [];
   },
 
-  getDestroyChatPosition: function(chat_id) {
+  getDestroyChatPosition(chat_id) {
     let destroyChatPosition;
     Chat.prototype.chatsArray.every(function(_chat, index) {
       if (_chat.chat_description && _chat.chat_description.chat_id === chat_id || _chat.temp_chat_id === chat_id) {
@@ -469,73 +406,110 @@ const ChatsManager = React.createClass({
     return destroyChatPosition;
   },
 
-  saveStatesChat: function(description) {
-    let newState, self = this;
-    event_bus.trigger('changeStatePopup', {
-      show: true,
-      type: 'confirm',
-      message: 81,
-      onDataActionClick: function(action) {
-        switch (action) {
-          case 'confirmCancel':
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            break;
-          case 'confirmOk':
-            self.addNewChatToIndexedDB(description, function(err) {
-              if (err) {
-                console.error(err);
-              }
-            });
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            break;
-        }
-      }
-    });
+  saveStatesChat(description) {
+    this.setState({confirmMessageSaveChat: 81, confirmDialog_description: description});
   },
 
-  saveAndCloseChat: function(description) {
-    let newState, self = this;
-    event_bus.trigger('changeStatePopup', {
-      show: true,
-      type: 'confirm',
-      message: 82,
-      onDataActionClick: function(action) {
-        switch (action) {
-          case 'confirmCancel':
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            break;
-          case 'confirmOk':
-            self.addNewChatToIndexedDB(description, function(err) {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              self.destroyChat(description);
-            });
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            break;
-        }
-      }
-    });
+  saveAndCloseChat(description) {
+    this.setState({confirmMessageSaveCloseChat: 82, confirmDialog_description: description});
   },
 
-  render: function() {
-    let self = this;
-    if (!Chat.prototype.chatsArray.length) {
-      return <div className="flex-outer-container align-start" data-role="chat_wrapper"></div>
-    } else {
-      let items = [];
+  handleDialogError(){
+    this.setState({errorMessage: null});
+  },
+
+  handleDialogRequestChatByChatId(event){
+    let element = this.getDataParameter(event.target, 'action');
+    if (element) {
+      switch (element.dataset.action) {
+        case 'confirmCancel':
+          break;
+        case 'confirmOk':
+          this.showChat(null, this.state.confirmDialog_chatId);
+          break;
+      }
+      this.setState({confirmMessageRequestChatByChatId: null, confirmDialog_chatId: null});
+    }
+  },
+
+  handleDialogCloseChat(event){
+    let element = this.getDataParameter(event.target, 'action');
+    if (element) {
+      switch (element.dataset.action) {
+        case 'confirmCancel':
+          break;
+        case 'confirmOk':
+          this.destroyChat(this.state.confirmDialog_description, this.state.confirmDialog_tempChatId);
+          break;
+      }
+      this.setState({confirmMessageCloseChat: null,
+        confirmDialog_description: null,
+        confirmDialog_tempChatId: null});
+    }
+  },
+
+  handleDialogSaveChat(event){
+    let element = this.getDataParameter(event.target, 'action');
+    if (element) {
+      switch (element.dataset.action) {
+        case 'confirmCancel':
+          break;
+        case 'confirmOk':
+          this.addNewChatToIndexedDB(this.state.confirmDialog_description, function(err) {
+            if (err) console.error(err);
+          });
+          break;
+      }
+      this.setState({confirmMessageSaveChat: null, confirmDialog_description: null});
+    }
+  },
+
+  handleDialogSaveCloseChat(event){
+    let element = this.getDataParameter(event.target, 'action'), self = this;
+    if (element) {
+      switch (element.dataset.action) {
+        case 'confirmCancel':
+          this.setState({confirmMessageSaveCloseChat: null, confirmDialog_description: null});
+          break;
+        case 'confirmOk':
+          this.addNewChatToIndexedDB(this.state.confirmDialog_description, function(err) {
+            if (err) return console.error(err);
+            
+            self.destroyChat(self.state.confirmDialog_description);
+            self.setState({confirmMessageSaveCloseChat: null, confirmDialog_description: null});
+          });
+          break;
+      }
+    }
+  },
+
+  render() {
+    let self = this, items = [];
+    if (Chat.prototype.chatsArray.length) {
       Chat.prototype.chatsArray.forEach(function(_chat, index) {
         items.push(<Chat data={_chat}
-                         key={_chat.chat_description && _chat.chat_description.chat_id ? _chat.chat_description.chat_id : _chat.temp_chat_id}
+                         key={_chat.chat_description && _chat.chat_description.chat_id ? 
+                         _chat.chat_description.chat_id : _chat.temp_chat_id}
                          mode={_chat.mode} index={index} scrollEachChat={self.props.scrollEachChat}/>);
       });
-      return <div className="flex-outer-container align-start" data-role="chat_wrapper">{items}</div>;
     }
+    return <div className="h-100p">
+      <DialogError show={this.state.errorMessage} message={this.state.errorMessage}
+                   handleClick={this.handleDialogError}/>
+      <DialogConfirm show={this.state.confirmMessageRequestChatByChatId} 
+                     message={this.state.confirmMessageRequestChatByChatId} 
+                     handleClick={this.handleDialogRequestChatByChatId}/>
+      <DialogConfirm show={this.state.confirmMessageCloseChat}
+                     message={this.state.confirmMessageCloseChat}
+                     handleClick={this.handleDialogCloseChat}/>
+      <DialogConfirm show={this.state.confirmMessageSaveChat}
+                     message={this.state.confirmMessageSaveChat}
+                     handleClick={this.handleDialogSaveChat}/>
+      <DialogConfirm show={this.state.confirmMessageSaveCloseChat}
+                     message={this.state.confirmMessageSaveCloseChat}
+                     handleClick={this.handleDialogSaveCloseChat}/>
+      <div className="flex-outer-container align-start" data-role="chat_wrapper">{items}</div>
+    </div>;
   }
 });
 

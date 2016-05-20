@@ -4,32 +4,30 @@ import webrtc from '../js/webrtc.js'
 import users_bus from '../js/users_bus.js'
 import event_bus from '../js/event_bus.js'
 
-import Location_Wrapper from './location_wrapper'
-
 const Connections = React.createClass({
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       connections: [],
       contactsInfo: []
     }
   },
 
-  componentWillMount: function() {
+  componentWillMount() {
     this.getConnections();
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     event_bus.on('changeConnectionList', this.getConnections, this);
     event_bus.on('changeMyUsers', this.getConnections, this);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     event_bus.off('changeConnectionList', this.getConnections, this);
     event_bus.off('changeMyUsers', this.getConnections, this);
   },
 
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps){
     if (!this.props.data.openedState && !nextProps.data.openedState){
       return false;
     } else {
@@ -37,7 +35,7 @@ const Connections = React.createClass({
     }
   },
 
-  getConnections: function() {
+  getConnections() {
     let connections = webrtc.getAllConnections(), self = this, user_ids = [];
     connections.forEach(function(_connection) {
       if (_connection.users_ids.length) {
@@ -59,7 +57,7 @@ const Connections = React.createClass({
     }
   },
 
-  getUserName: function(_user_id) {
+  getUserName(_user_id) {
     let user_name;
     this.state.contactsInfo.every(function(_contactInfo) {
       if (_contactInfo.user_id === _user_id) {
@@ -71,7 +69,7 @@ const Connections = React.createClass({
     return user_name;
   },
 
-  renderItems: function(configs) {
+  renderItems() {
     let items = [], self = this;
 
     this.state.connections.forEach(function(_connection) {
@@ -103,7 +101,7 @@ const Connections = React.createClass({
     return items;
   },
 
-  render: function() {
+  render() {
     let items = this.renderItems();
     return (
       <div>

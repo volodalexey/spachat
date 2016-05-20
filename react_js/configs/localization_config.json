@@ -556,8 +556,8 @@
   },
   {
     "id": 112,
-    "en": "Copy this line and send the user to whom you want to add to chat.  {url}",
-    "ru": "Скопируйте данную строку и отошлите пользователю, которого Вы хотите добавить в чат.  {url}"
+    "en": "Copy this line and send the user to whom you want to add to chat. ",
+    "ru": "Скопируйте данную строку и отошлите пользователю, которого Вы хотите добавить в чат. "
   },
   {
     "id": 113,
@@ -613,5 +613,10 @@
     "id": 123,
     "en": "Open chat with the stored user settings",
     "ru": "Открыть чат с сохраненными пользовательскими настройками"
+  },
+  {
+    "id": 124,
+    "en": "Reconnect",
+    "ru": "Переподключение"
   }
 ]

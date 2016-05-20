@@ -1,7 +1,8 @@
 import React from 'react'
 
 const PanelUsers = React.createClass({
-  renderItems: function(){
+  
+  renderItems(){
     let items =[];
     this.props.data.forEach(function(user){
       items.push(
@@ -19,7 +20,7 @@ const PanelUsers = React.createClass({
     return items;
   },
 
-  render: function() {
+  render() {
     if (this.props.data && this.props.data.length){
       return <div>{this.renderItems()}</div>
     } else  {

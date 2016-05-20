@@ -3,7 +3,8 @@ import React from 'react'
 import Location_Wrapper from './location_wrapper'
 
 const PanelChats = React.createClass({
-  renderItems: function() {
+  
+  renderItems() {
     let items = [], self = this;
     this.props.data.chat_ids.forEach(function(chat) {
       var result = this.props.data.openChatsInfoArray.indexOf(chat.chat_id);

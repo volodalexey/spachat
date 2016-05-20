@@ -3,7 +3,7 @@ import React from 'react'
 import Location_Wrapper from './location_wrapper'
 
 const PanelToolbar = React.createClass({
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       panelLeftToolbarConfig: [
         {
@@ -203,7 +203,7 @@ const PanelToolbar = React.createClass({
     }
   },
 
-  defineConfig: function(location) {
+  defineConfig(location) {
     switch (location) {
       case 'left':
         return this.props.panelLeftToolbarConfig;
@@ -214,7 +214,7 @@ const PanelToolbar = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     let configs = this.defineConfig(this.props.location), mode = this.props.mode;
     if (!configs) {
       return <div></div>

@@ -1,4 +1,5 @@
 import React from 'react'
+
 import {element} from './element'
 
 const Textarea = React.createClass({
@@ -15,7 +16,7 @@ const Textarea = React.createClass({
     return options;
   },
 
-  render: function() {
+  render() {
     return (
       <textarea {...element.renderAttributes(this.props, this.renderExtraAttributes())}>
         {this.props.config.text}

@@ -1,17 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import event_bus from '../js/event_bus.js'
 import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
 import websocket from '../js/websocket.js'
 import users_bus from '../js/users_bus.js'
+import localization from '../js/localization'
 
 import Location_Wrapper from './location_wrapper'
-import Popup from './popup'
+import DialogConfirm from './dialogConfirm'
 
 const Settings = React.createClass({
-  getDefaultProps: function() {
+  
+  getDefaultProps() {
     return {
       size_container_config: [
 
@@ -317,7 +318,14 @@ const Settings = React.createClass({
     }
   },
 
-  componentWillMount: function() {
+  getInitialState(){
+    return {
+      confirmMessage: null,
+      inviteByUrl: null
+    }
+  },
+
+  componentWillMount() {
     this.props.data.settings_ListOptions.current_data_key = this.defineDefaultSizeConfig(
       this.props.size_config,
       this.props.data.settings_ListOptions.current_data_key).data.key;
@@ -329,7 +337,7 @@ const Settings = React.createClass({
     this.chatId = this.body.querySelector('[data-role="chat_id"]');
   },
 
-  handleClick: function(event) {
+  handleClick(event) {
     let element = this.getDataParameter(event.currentTarget, 'action');
     if (element) {
       switch (element.dataset.action) {
@@ -361,10 +369,10 @@ const Settings = React.createClass({
     }
   },
 
-  handleChange: function() {
+  handleChange() {
   },
 
-  changeSendEnter: function(element) {
+  changeSendEnter(element) {
     if (!element) return;
     this.props.data.formatOptions.sendEnter = element.checked;
     this.props.handleEvent.changeState({formatOptions: this.props.data.formatOptions});
@@ -384,7 +392,7 @@ const Settings = React.createClass({
       let successful = document.execCommand('copy'),
         msg = successful ? 'successful' : 'unsuccessful';
       console.log('Copy chatId was ' + msg);
-    } catch(err) {
+    } catch (err) {
       console.log('Oops, unable to copy');
     }
     this.chatId.disabled = true;
@@ -394,30 +402,26 @@ const Settings = React.createClass({
     let newState, self = this,
       url = window.location.protocol + "//" + window.location.host + "/chat?join_chat_id=" + this.props.data.chat_id;
     console.log(url);
-    event_bus.trigger('changeStatePopup', {
-      show: true,
-      type: 'confirm',
-      message: 112,
-      onDataActionClick: function(action) {
-        switch (action) {
-          case 'confirmCancel':
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            break;
-          case 'confirmOk':
-            if(!self.props.data.toggleChatUsersFriendship){
-              self.toggleChatUsersFriendship(null, true);
-            }
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            break;
-        }
-      },
-    data: {"url": url}
-    });
+    this.setState({confirmMessage: 112, inviteByUrl: url});
   },
 
-  toggleChatUsersFriendship: function(element, forceChecked) {
+  handleDialogInviteByUrl(event){
+    let element = this.getDataParameter(event.target, 'action');
+    if (element) {
+      switch (element.dataset.action) {
+        case 'confirmCancel':
+          break;
+        case 'confirmOk':
+          if (!this.props.data.toggleChatUsersFriendship) {
+            this.toggleChatUsersFriendship(null, true);
+          }
+          break;
+      }
+      this.setState({confirmMessage: null, inviteByUrl: null});
+    }
+  },
+
+  toggleChatUsersFriendship(element, forceChecked) {
     let self = this;
     if (!element) {
       element = this.body.querySelector('[data-action="toggleChatUsersFriendship"]');
@@ -435,7 +439,7 @@ const Settings = React.createClass({
     });
   },
 
-  changeChatSize: function(element) {
+  changeChatSize(element) {
     if (element.dataset.value) {
       this.props.data.settings_ListOptions.size_current = element.dataset.value + 'px';
     }
@@ -449,17 +453,17 @@ const Settings = React.createClass({
     }
   },
 
-  saveAsCustomWidth: function() {
+  saveAsCustomWidth() {
     this.props.data.settings_ListOptions.size_custom_value = this.props.data.settings_ListOptions.size_current;
     this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
   },
 
-  changeAdjustWidth: function(element) {
+  changeAdjustWidth(element) {
     this.props.data.settings_ListOptions.adjust_width = element.checked;
     this.props.handleEvent.changeState({settings_ListOptions: this.props.data.settings_ListOptions});
   },
 
-  defineDefaultSizeConfig: function(all_size_configs, current_data_key) {
+  defineDefaultSizeConfig(all_size_configs, current_data_key) {
     let current_size_config = null;
     if (current_data_key) {
       all_size_configs.every(function(size_config) {
@@ -480,7 +484,7 @@ const Settings = React.createClass({
     return current_size_config;
   },
 
-  getSizeData: function(all_size_configs, current_data_key) {
+  getSizeData(all_size_configs, current_data_key) {
     let returnObj = {},
       current_size_config = this.defineDefaultSizeConfig(all_size_configs, current_data_key);
     all_size_configs.forEach(function(size_config) {
@@ -492,7 +496,7 @@ const Settings = React.createClass({
     return returnObj;
   },
 
-  calcDisplay: function(_config) {
+  calcDisplay(_config) {
     if (!_config.data) return true;
     if (this.props.data.settings_ListOptions.current_data_key === "custom_size") {
       if (_config.data.role === 'adjust_width' || _config.data.role === 'adjust_width_label') {
@@ -511,7 +515,7 @@ const Settings = React.createClass({
     }
   },
 
-  renderItems: function(configs) {
+  renderItems(configs) {
     let items = [],
       data = {
         "chat_id": this.props.data.chat_id,
@@ -535,10 +539,18 @@ const Settings = React.createClass({
     return items;
   },
 
-  render: function() {
+  render() {
     let config = this.props.data.createdByUserId === users_bus.getUserId() ? this.props.setting_config_creator :
       this.props.setting_config;
     return <div >
+      <DialogConfirm show={this.state.confirmMessage} message={this.state.confirmMessage}
+                     handleClick={this.handleDialogInviteByUrl}
+                     body={{content: <div className="w-100p p-t-b flex-sp-between">
+      <div className="p-b-1em p-r-l-1em">
+      {localization.transferText(112)} <br/>
+      <a href={this.state.inviteByUrl}>{this.state.inviteByUrl}</a>
+      </div>
+      </div>}}/>
       {this.renderItems(config)}
       <div className="textbox">
         <div className="title c-100">

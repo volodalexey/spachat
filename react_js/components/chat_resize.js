@@ -6,14 +6,15 @@ import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
 
 const ChatResize = React.createClass({
-  getDefaultProps: function() {
+  
+  getDefaultProps() {
     return {
       min_chats_width: 350,
       min_move: 5
     }
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       visible_resize_container: false,
       left_position_line_resize: 0,
@@ -26,19 +27,19 @@ const ChatResize = React.createClass({
       chatResize: null
     };
   },
-  componentDidMount: function() {
+  componentDidMount() {
     this.chat_resize_container = ReactDOM.findDOMNode(this);
     this.line_resize = this.chat_resize_container.querySelector('[data-role="resize_line"]');
     event_bus.on('transformToResizeState', this.transformToResizeState, this);
     event_bus.on('redirectResize', this.handleResize, this);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     event_bus.off('transformToResizeState', this.transformToResizeState);
     event_bus.off('redirectResize', this.handleResize);
   },
 
-  transformToResizeState: function(event, _chat) {
+  transformToResizeState(event, _chat) {
     let left_line_resize;
     if (event.type === 'touchstart' && event.changedTouches) {
       left_line_resize = event.changedTouches[0].clientX + 'px';
@@ -58,7 +59,7 @@ const ChatResize = React.createClass({
     });
   },
 
-  handleResize: function(event) {
+  handleResize(event) {
     switch (event.type) {
       case 'mousemove':
       case 'touchmove':
@@ -142,7 +143,7 @@ const ChatResize = React.createClass({
     }
   },
 
-  defineClass: function(className) {
+  defineClass(className) {
     if (this.state.visible_resize_container) {
       className = className + " draggable";
     }
@@ -150,7 +151,7 @@ const ChatResize = React.createClass({
     return className;
   },
 
-  render: function() {
+  render() {
     return (
       <div data-role="chat_resize_container"
            className={this.defineClass("clear chat-resize-container ")}

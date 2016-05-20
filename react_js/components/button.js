@@ -15,7 +15,7 @@ const Button = React.createClass({
     return options;
   },
 
-  renderContent: function() {
+  renderContent() {
     let content = [], flag, config = this.props.config, data = this.props.config.data;
     if (config.icon) {
       if (this.props.data && data && this.props.data[data.key_disable]) {

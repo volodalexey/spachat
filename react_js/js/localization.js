@@ -20,6 +20,10 @@ Localization.prototype = {
     this.lang = lang;
   },
 
+  transferText(_text){
+    return typeof _text === 'number' ? this.getLocText(_text) : _text;
+  },
+
   getLocText(id) {
     var text;
     localization_config.every(

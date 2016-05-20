@@ -4,7 +4,8 @@ import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
 
 const Description = React.createClass({
-  getInitialState: function() {
+  
+  getInitialState() {
     return {
       left: '0px',
       top: '0px',
@@ -13,15 +14,15 @@ const Description = React.createClass({
     }
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.descriptionContainer = document.querySelector('[data-role="description"]');
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.descriptionContainer = null;
   },
 
-  showDescription: function(event) {
+  showDescription(event) {
     let description = this.descriptionContainer, element, target;
     switch (event.type) {
       case 'mousedown':
@@ -274,7 +275,7 @@ const Description = React.createClass({
     }
   },
 
-  releaseDescription: function(event, description, prevent) {
+  releaseDescription(event, description, prevent) {
     if (this.descriptionShow) {
       if (prevent) {
         if (event.cancelable) {
@@ -293,7 +294,7 @@ const Description = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     let className = this.state.opacity_0 ? "description opacity-0" : "description";
     return (
       <div data-role="description" className={className}

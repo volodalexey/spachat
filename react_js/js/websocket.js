@@ -2,8 +2,6 @@ import extend_core from '../js/extend_core.js'
 import id_core from '../js/id_core.js'
 import event_bus from '../js/event_bus.js'
 
-import Popup from '../components/popup'
-
 var Websocket = function() {
   this.bindContexts();
   this.responseCallbacks = [];
@@ -78,19 +76,7 @@ Websocket.prototype = {
     if (event.wasClean) {
       console.warn('WebSocket connection closed');
     } else {
-      event_bus.trigger('changeStatePopup', {
-        show: true,
-        type: 'error',
-        message: 103,
-        onDataActionClick: function(action) {
-          switch (action) {
-            case 'confirmCancel':
-              newState = Popup.prototype.handleClose(this.state);
-              this.setState(newState);
-              break;
-          }
-        }
-      });
+      event_bus.trigger("websocket_abortConnection", 103);
     }
     console.warn('Code: ' + event.code + ' reason: ' + event.reason);
   },

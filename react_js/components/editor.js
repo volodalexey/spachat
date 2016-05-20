@@ -11,12 +11,13 @@ import FormatPanel from './format_panel'
 import Pagination from './pagination'
 
 const Editor = React.createClass({
+  
   MODE: {
     "MAIN_PANEL": 'MAIN_PANEL',
     "FORMAT_PANEL": 'FORMAT_PANEL'
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       mainContainer: {
         "element": "div",
@@ -66,22 +67,22 @@ const Editor = React.createClass({
     }
   },
 
-  componentWillMount: function() {
+  componentWillMount() {
     this.__keyInnerHtml = Date.now();
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.editorContainer = ReactDOM.findDOMNode(this);
     if (this.editorContainer) {
       this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
     }
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.messageInnerContainer = null;
   },
 
-  handleClick: function(event) {
+  handleClick(event) {
     let element = this.getDataParameter(event.currentTarget, 'action');
     if (element) {
       switch (element.dataset.action) {
@@ -101,7 +102,7 @@ const Editor = React.createClass({
     }
   },
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     this.editorContainer = ReactDOM.findDOMNode(this);
     if (this.editorContainer) {
       this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
@@ -109,23 +110,22 @@ const Editor = React.createClass({
     }
   },
 
-  workflowInnerHtml: function(save) {
+  workflowInnerHtml(save) {
     this.__keyInnerHtml = Date.now();
     (save && this.messageInnerContainer) ? this.__innerHtml = this.messageInnerContainer.innerHTML : this.__innerHtml = "";
   },
 
-  handleChange(){
-  },
+  handleChange(){},
 
-  sendEnter: function(event) {
-    if (event.keyCode === 13) {
+  sendEnter(event) {
+    if (event.keyCode === 13 && !event.shiftKey) {
       if (this.props.data.formatOptions.sendEnter) {
         this.sendMessage();
       }
     }
   },
 
-  sendMessage: function() {
+  sendMessage() {
     let self = this, newState = this.props.data;
     if (!this.messageInnerContainer) {
       return;
@@ -156,7 +156,7 @@ const Editor = React.createClass({
     }
   },
 
-  addEdit: function(element) {
+  addEdit(element) {
     let self = this,
       command = element.dataset.name,
       param = element.dataset.param;
@@ -168,7 +168,7 @@ const Editor = React.createClass({
     }
   },
 
-  changeEdit: function() {
+  changeEdit() {
     let newState = this.props.data;
     if (this.messageInnerContainer.classList.contains("onScroll")) {
       this.messageInnerContainer.classList.remove("onScroll");
@@ -181,7 +181,7 @@ const Editor = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange

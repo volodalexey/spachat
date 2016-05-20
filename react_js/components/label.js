@@ -1,10 +1,11 @@
 import React from 'react'
+
 import {element} from './element'
 import localization from '../js/localization'
 
 const Label = React.createClass({
 
-  renderContent: function() {
+  renderContent() {
     let text, config = this.props.config, data = this.props.data;
     if (config.text) {
       text = typeof config.text === "number" ? localization.getLocText(config.text) : config.text;
@@ -26,7 +27,7 @@ const Label = React.createClass({
     return text;
   },
 
-  render: function() {
+  render() {
     return (
       <label {...element.renderAttributes(this.props)} {...element.renderHandlers(this.props)}>
         {this.renderContent(this.props) }

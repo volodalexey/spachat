@@ -8,7 +8,8 @@ import Textarea from './textarea'
 import Svg from './svg'
 
 const TripleElement = React.createClass({
-  definingElement: function() {
+  
+  definingElement() {
     switch (this.props.config.element) {
       case "button":
         return <Button mode={this.props.mode} events={this.props.events} config={this.props.config}
@@ -37,7 +38,7 @@ const TripleElement = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     return this.definingElement();
   }
 });

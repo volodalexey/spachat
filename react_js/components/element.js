@@ -103,14 +103,6 @@ Element.prototype = {
     return handlers;
   },
 
-  renderContent(props) {
-    let content = [], config = props.config ? props.config : props;
-    if (config.text) {
-      content.push(localization.getLocText(config.text));
-    }
-    return content;
-  },
-
   renderClassName(classList, props, options) {
     let _class = '';
     _class = classList ? classList : '';

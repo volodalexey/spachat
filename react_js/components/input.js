@@ -1,4 +1,5 @@
 import React from 'react'
+
 import {element} from './element'
 import localization from '../js/localization'
 
@@ -26,7 +27,7 @@ const Input = React.createClass({
     return options;
   },
 
-  renderContent: function() {
+  renderContent() {
     let content;
     if (typeof this.props.config.text === "number") {
       content = localization.getLocText(this.props.config.text);
@@ -36,7 +37,7 @@ const Input = React.createClass({
     return {__html: content};
   },
 
-  render: function() {
+  render() {
     let pureInput = (
       <input  {...element.renderAttributes(this.props, this.renderExtraAttributes())}
         {...element.renderHandlers(this.props)} />

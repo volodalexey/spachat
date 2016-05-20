@@ -5,7 +5,8 @@ import users_bus from '../js/users_bus.js'
 import Triple_Element from '../components/triple_element'
 
 const ExtraToolbar = React.createClass({
-  getDefaultProps: function() {
+  
+  getDefaultProps() {
     return {
       usersExtraToolbarConfig: [
         {
@@ -109,7 +110,7 @@ const ExtraToolbar = React.createClass({
     }
   },
 
-  defineConfig: function(mode) {
+  defineConfig(mode) {
     switch (mode) {
       case 'CHATS':
         return this.props.chatsExtraToolbarConfig;
@@ -129,7 +130,7 @@ const ExtraToolbar = React.createClass({
     }
   },
 
-  defineOptions: function(mode) {
+  defineOptions(mode) {
     switch (mode) {
       case 'CREATE_CHAT':
         return this.props.data.createChat_ExtraToolbarOptions;
@@ -161,7 +162,7 @@ const ExtraToolbar = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     let options = this.defineOptions(this.props.mode);
     if (options && options.show) {
       var configs = this.defineConfig(this.props.mode);

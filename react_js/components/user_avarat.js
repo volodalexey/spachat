@@ -7,7 +7,8 @@ import users_bus from '../js/users_bus'
 import Localization from '../js/localization'
 import Jdenticon from '../jdenticon-1.3.2'
 
-import Popup from '../components/popup'
+import DialogSuccess from './dialogSuccess'
+import DialogError from './dialogError'
 
 var size_file = 2000000,
   mode = {
@@ -15,8 +16,16 @@ var size_file = 2000000,
     EDIT: "EDIT"
   };
 const UserAvatar = React.createClass({
+  
   canvas_elem_width: 225,
   canvas_elem_height: 225,
+
+  getInitialState(){
+    return {
+      errorMessage: null,
+      successMessage: null
+    }
+  },
 
   componentWillMount(){
     let self = this;
@@ -38,7 +47,7 @@ const UserAvatar = React.createClass({
     });
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.avatarContainer = ReactDOM.findDOMNode(this);
     this.form = this.avatarContainer.querySelector('form');
     this.input_file_elem = this.avatarContainer.querySelector('[name="avatar"]');
@@ -48,7 +57,7 @@ const UserAvatar = React.createClass({
     this.input_file_elem.addEventListener('change', this.previewFile);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     if (this.img.src !== '') {
       this.props.handleEvent.changeState({avatarData: this.img.src, avatarPrevious: this.previous_src});
     }
@@ -68,20 +77,7 @@ const UserAvatar = React.createClass({
         reader.readAsDataURL(this.input_file_elem.files[0]);
       } else {
         this.form.reset();
-        let newState;
-        event_bus.trigger('changeStatePopup', {
-          show: true,
-          type: 'error',
-          message: 116,
-          onDataActionClick: function(action) {
-            switch (action) {
-              case 'confirmCancel':
-                newState = Popup.prototype.handleClose(this.state);
-                this.setState(newState);
-                break;
-            }
-          }
-        });
+        this.setState({errorMessage: 116});
       }
     } else {
       this.form.reset();
@@ -110,6 +106,14 @@ const UserAvatar = React.createClass({
     }
   },
 
+  handleDialogError(){
+    this.setState({errorMessage: null});
+  },
+
+  handleDialogConfirm(){
+    this.setState({confirmMessage: null});
+  },
+
   updateAvatar(){
     if (!this.canvas_elem_ctx) return;
     if (this.img.src && this.img.src !== '') {
@@ -129,7 +133,7 @@ const UserAvatar = React.createClass({
   },
   
   saveAvatar(){
-    let self = this, newState;
+    let self = this;
     if (this._change_avatar) {
       if (this.img.src !== '') {
         users_bus.getMyInfo(null, function(err, options, userInfo) {
@@ -142,38 +146,14 @@ const UserAvatar = React.createClass({
             event_bus.trigger('updateUserAvatar');
             self._change_avatar = false;
             self.form.reset();
-            event_bus.trigger('changeStatePopup', {
-              show: true,
-              type: 'success',
-              message: 105,
-              onDataActionClick: function(action) {
-                switch (action) {
-                  case 'confirmCancel':
-                    newState = Popup.prototype.handleClose(this.state);
-                    this.setState(newState);
-                    break;
-                }
-              }
-            });
+            self.setState({confirmMessage: 105});
           });
         });
       }
     } else {
-      event_bus.trigger('changeStatePopup', {
-        show: true,
-        type: 'success',
-        message: 118,
-        onDataActionClick: function(action) {
-          switch (action) {
-            case 'confirmCancel':
-              newState = Popup.prototype.handleClose(this.state);
-              this.setState(newState);
-              self.props.handleEvent.changeState({avatarMode: mode.SHOW});
-              self._change_avatar = false;
-              break;
-          }
-        }
-      });
+      self.props.handleEvent.changeState({avatarMode: mode.SHOW});
+      self._change_avatar = false;
+      self.setState({confirmMessage: 118});
     }
   },
 
@@ -192,11 +172,15 @@ const UserAvatar = React.createClass({
     this.form.reset();
     this.props.handleEvent.changeState({avatarMode: mode.SHOW});
   },
-
+  
   render() {
     let self = this;
     return (
       <div className="textbox">
+        <DialogError show={this.state.errorMessage} message={this.state.errorMessage}
+                     handleClick={this.handleDialogError}/>
+        <DialogSuccess show={this.state.confirmMessage} message={this.state.confirmMessage}
+                       handleClick={this.handleDialogConfirm}/>
         <div className="title c-100">
           <div className="flex-item flex-wrap flex-align-c flex-item-auto">
             <label>{Localization.getLocText(117)}</label>

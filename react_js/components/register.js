@@ -2,21 +2,21 @@ import React from 'react'
 import { browserHistory } from 'react-router'
 
 import Location_Wrapper from './location_wrapper'
-import Popup from '../components/popup'
+import DialogError from './dialogError'
+import DialogSuccess from './dialogSuccess'
 import Description from '../components/description'
 
 import ajax_core from '../js/ajax_core.js'
 import extend_core from '../js/extend_core.js'
-
 import id_core from '../js/id_core.js'
 import users_bus from '../js/users_bus.js'
-import Localization from '../js/localization.js'
+import localization from '../js/localization.js'
 import overlay_core from '../js/overlay_core.js'
 import Jdenticon from '../jdenticon-1.3.2'
 
 const Register = React.createClass({
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       mainContainer: {
         "element": "div",
@@ -170,40 +170,45 @@ const Register = React.createClass({
     }
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
-      popupOptions: {
-        messagePopupShow: false,
-        type: '',
-        options: {},
-        onDataActionClick: null
-      }
+      errorMessage: null,
+      successMessage: null
     }
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.registerForm = document.querySelector('[data-role="registerForm"]');
     this.toggleWaiter();
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.registerForm = null;
   },
 
-  handleClick: function() {
+  handleClick() {
   },
 
-  handleChange: function(event) {
+  handleDialogError(){
+    this.setState({errorMessage: null});
+  }, 
+  
+  handleDialogRegisterUser(){
+    browserHistory.push(this.props.location.search.slice(1));
+    this.setState({successMessage: null});
+  },
+
+  handleChange(event) {
     switch (event.target.dataset.action) {
       case "changeLanguage":
-        Localization.changeLanguage(event.target.value, this);
+        localization.changeLanguage(event.target.value, this);
         break;
     }
   },
 
-  handleSubmit: function(event) {
+  handleSubmit(event) {
     event.preventDefault();
-    let self = this, newState,
+    let self = this,
       userName = this.registerForm.elements.userName.value,
       userPassword = this.registerForm.elements.userPassword.value,
       userPasswordConfirm = this.registerForm.elements.userPasswordConfirm.value;
@@ -218,63 +223,22 @@ const Register = React.createClass({
           function(regErr, account) {
             self.toggleWaiter();
             if (regErr) {
-              newState = Popup.prototype.handleChangeState(self.state, true, 'error', regErr,
-                function(action) {
-                  switch (action) {
-                    case 'confirmCancel':
-                      newState = Popup.prototype.handleClose(self.state);
-                      self.setState(newState);
-                      break;
-                  }
-                }
-              );
-              self.setState(newState);
+              self.setState({errorMessage: regErr});
               return;
             }
             users_bus.setUserId(account.user_id);
-            newState = Popup.prototype.handleChangeState(self.state, true, 'success', 96,
-              function(action) {
-                switch (action) {
-                  case 'confirmCancel':
-                    newState = Popup.prototype.handleClose(self.state);
-                    self.setState(newState);
-                    browserHistory.push(self.props.location.search.slice(1));
-                    break;
-                }
-              }
-            );
-            self.setState(newState);
+            self.setState({successMessage: 96});
           }
         );
       } else {
-        newState = Popup.prototype.handleChangeState(this.state, true, 'error', 91,
-          function(action) {
-            switch (action) {
-              case 'confirmCancel':
-                newState = Popup.prototype.handleClose(self.state);
-                self.setState(newState);
-                break;
-            }
-          }
-        );
-        this.setState(newState);
+        self.setState({errorMessage: 91});
       }
     } else {
-      newState = Popup.prototype.handleChangeState(this.state, true, 'error', 88,
-        function(action) {
-          switch (action) {
-            case 'confirmCancel':
-              newState = Popup.prototype.handleClose(self.state);
-              self.setState(newState);
-              break;
-          }
-        }
-      );
-      this.setState(newState);
+      self.setState({errorMessage: 88});
     }
   },
 
-  registerNewUser: function(options, callback) {
+  registerNewUser(options, callback) {
     this.get_JSON_res('/api/uuid', function(err, res) {
       if (err) {
         callback(err);
@@ -302,11 +266,11 @@ const Register = React.createClass({
     });
   },
 
-  handleEvents: function(event) {
+  handleEvents(event) {
     this.descriptionContext.showDescription(event);
   },
 
-  render: function() {
+  render() {
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange
@@ -330,7 +294,10 @@ const Register = React.createClass({
             </form>
           </div>
         </div>
-        <Popup show={this.state.popupOptions.messagePopupShow} options={this.state.popupOptions}/>
+        <DialogSuccess show={this.state.successMessageSaveChangeUserInfo} message={this.state.successMessageSaveChangeUserInfo}
+                       handleClick={this.handleDialogRegisterUser}/>
+        <DialogError show={this.state.errorMessage} message={this.state.errorMessage}
+                     handleClick={this.handleDialogError}/>
         <Description ref={(obj) => this.descriptionContext = obj} />
       </div>
     )

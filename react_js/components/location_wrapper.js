@@ -1,9 +1,11 @@
 import React from 'react'
+
 import {element} from './element'
 import TripleElement from './triple_element'
 
 const Location_Wrapper = React.createClass({
-  prepareConfig: function() {
+  
+  prepareConfig() {
     let rawConfig = this.props.configs, byDataLocation = {};
     if (!rawConfig) return rawConfig;
     rawConfig.forEach(function(_config) {
@@ -25,13 +27,13 @@ const Location_Wrapper = React.createClass({
     return rawConfig;
   },
 
-  wrapper: function(wrapperConfig, wrapperItems) {
+  wrapper(wrapperConfig, wrapperItems) {
     return (<div key={wrapperConfig.location} {...element.renderAttributes({config: wrapperConfig})}>
       {this.wrapperItems(wrapperItems)}
     </div>)
   },
 
-  wrapperItems: function(wrapperItems) {
+  wrapperItems(wrapperItems) {
     let items = [], hide, self = this;
     wrapperItems.map((element_config, idx) => {
       if (element_config.data && element_config.data.action === "togglePanel" && self.props.hide) {
@@ -45,7 +47,7 @@ const Location_Wrapper = React.createClass({
     return items;
   },
 
-  render: function() {
+  render() {
     let rawConfig = this.prepareConfig(), elements = [];
     if (Object.keys(rawConfig.byDataLocation).length === 0) {
       elements.push(this.wrapperItems(rawConfig));

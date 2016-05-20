@@ -6,7 +6,8 @@ import switcher_core from '../js/switcher_core.js'
 import Location_Wrapper from './location_wrapper'
 
 const GoTo = React.createClass({
-  getDefaultProps: function() {
+  
+  getDefaultProps() {
     return {
       configs: [
         {
@@ -98,7 +99,7 @@ const GoTo = React.createClass({
     }
   },
 
-  prepareConfig: function(config, mode) {
+  prepareConfig(config, mode) {
     config = config.filter(function(obj) {
       if (!obj.redraw_mode) {
         return obj;
@@ -109,7 +110,7 @@ const GoTo = React.createClass({
     return config;
   },
 
-  changeRTE: function(element, currentOptions) {
+  changeRTE(element, currentOptions) {
     let gto = currentOptions.goToOptions;
     if (element.checked) {
       gto.mode_change = "rte";
@@ -123,7 +124,7 @@ const GoTo = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     let currentOptions = this.optionsDefinition(this.props.data, this.props.mode),
       gto = currentOptions.goToOptions;
     if (gto && gto.show && currentOptions.paginationOptions && currentOptions.paginationOptions.show) {

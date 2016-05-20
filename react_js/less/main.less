@@ -176,6 +176,9 @@ body {
   z-index: 100;
   opacity: 0;
   background-color: rgba(207, 207, 207, 0.7);
+  left: 0;
+  top: 0;
+  z-index: 100;
   transform: scale(0);
   transition:  transform 0.2s 0s cubic-bezier(.23,1,.44,.91), opacity 0.2s 0s cubic-bezier(.23,1,.44,.91);
   &.hidden-popup{
@@ -207,7 +210,7 @@ body {
   margin: 1.2em 0 0;
   position: relative;
   padding: 1em 0.5em 0;
-  &.succes {
+  &.success {
     border-top: 1px solid green;
   }
   &.confirm {
@@ -216,6 +219,18 @@ body {
   &.error {
     border-top: 1px solid red;
   }
+}
+
+.error .color {
+  color: red;
+}
+
+.confirm .color{
+  color: blue;
+}
+
+.success .color{
+  color: green;
 }
 
 .title-popup {

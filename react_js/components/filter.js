@@ -6,6 +6,7 @@ import extend_core from '../js/extend_core'
 import Location_Wrapper from './location_wrapper'
 
 const Filter = React.createClass({
+  
   MODE: {
     BLOGS_FILTER: 'BLOGS_FILTER',
     CHATS_FILTER: 'CHATS_FILTER',
@@ -16,7 +17,7 @@ const Filter = React.createClass({
     CONNECTIONS_FILTER: 'CONNECTIONS_FILTER'
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       usersFilterConfig: [
         {
@@ -416,7 +417,7 @@ const Filter = React.createClass({
     }
   },
 
-  defineConfig: function(mode) {
+  defineConfig(mode) {
     switch (mode) {
       case 'CHATS':
         return this.props.chatsFilterConfig;
@@ -433,7 +434,7 @@ const Filter = React.createClass({
     }
   },
 
-  prepareConfig: function(config, mode) {
+  prepareConfig(config, mode) {
     config = config.filter(function(obj) {
       if (!obj.redraw_mode) {
         return obj;
@@ -444,7 +445,7 @@ const Filter = React.createClass({
     return config;
   },
 
-  defineOptions: function(mode) {
+  defineOptions(mode) {
     let options = {};
     switch (mode) {
       case 'CREATE_CHAT':
@@ -478,7 +479,7 @@ const Filter = React.createClass({
     return options;
   },
 
-  changeRTE: function(element, currentOptions) {
+  changeRTE(element, currentOptions) {
       let po = currentOptions.paginationOptions;
     if (element.checked) {
       po.mode_change = "rte";
@@ -491,7 +492,7 @@ const Filter = React.createClass({
     return currentOptions;
   },
 
-  changePerPage: function(element, currentOptions) {
+  changePerPage(element, currentOptions) {
     let value = parseInt(element.value, 10),
       po = currentOptions.paginationOptions;
     po.perPageValueShow = element.value;
@@ -505,7 +506,7 @@ const Filter = React.createClass({
     return currentOptions;
   },
 
-  render: function() {
+  render() {
     var options = this.defineOptions(this.props.mode);
     if (options && options.filterOptions.show) {
       var configs = this.defineConfig(this.props.mode);

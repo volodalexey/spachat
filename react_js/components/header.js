@@ -3,6 +3,7 @@ import React from 'react'
 import Location_Wrapper from './location_wrapper'
 
 const Header = React.createClass({
+  
   MODE: {
     FILTER: 'FILTER',
     TAB: 'TAB'
@@ -12,7 +13,7 @@ const Header = React.createClass({
     TAB: 59
   },
 
-  getDefaultProps: function(){
+  getDefaultProps(){
     return {
       mainContainer: {
         "element": "div",
@@ -177,7 +178,7 @@ const Header = React.createClass({
     }
   },
 
-  defineOptions: function(chat_mode){
+  defineOptions(chat_mode){
     if(chat_mode !== "ready") return;
     if (this.props.data.headerOptions.show) {
       let options = {}, newState = this.props.data;
@@ -207,7 +208,7 @@ const Header = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     let options = this.defineOptions(this.props.chat_mode),
       config = this.defineConfig(this.props.chat_mode);
     return (

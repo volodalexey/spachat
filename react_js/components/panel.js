@@ -1,7 +1,5 @@
 import React from 'react'
-import { render } from 'react-dom'
 
-import localization from '../js/localization.js'
 import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
@@ -13,15 +11,15 @@ import websocket from '../js/websocket.js'
 import webrtc from '../js/webrtc.js'
 
 import Triple_Element from '../components/triple_element'
-import Popup from '../components/popup'
-import Decription from '../components/description'
-import ChatResize from '../components/chat_resize'
 import ExtraToolbar from '../components/extra_toolbar'
 import Filter from '../components/filter'
 import PanelToolbar from '../components/panel_toolbar'
 import Body from '../components/body'
 import Pagination from '../components/pagination'
 import GoTo from '../components/go_to'
+import DialogConfirm from './dialogConfirm'
+import DialogError from './dialogError'
+import DialogSuccess from './dialogSuccess'
 
 var z_index = 80;
 
@@ -49,7 +47,8 @@ const MODE = {
 };
 
 const Panel = React.createClass({
-  getDefaultProps: function() {
+  
+  getDefaultProps() {
     return {
       mainContainer: {
         "element": "div",
@@ -83,7 +82,7 @@ const Panel = React.createClass({
     }
   },
 
-  getInitialState: function() {
+  getInitialState() {
     if (this.props.location === 'left') {
       return {
         openChatsInfoArray: [],
@@ -99,12 +98,9 @@ const Panel = React.createClass({
         avatarData: '',
         avatarPrevious: '',
 
-        popupOptions: {
-          messagePopupShow: false,
-          type: '',
-          options: {},
-          onDataActionClick: null
-        },
+        errorMessage: null,
+        confirmMessageShowRemoteFriendshipRequest: null,
+        confirmDialog_messageData: null,
 
         chats_GoToOptions: {
           text: "chats_GoToOptions",
@@ -334,13 +330,13 @@ const Panel = React.createClass({
         bodyMode: "USER_INFO_SHOW",
         avatarMode: "SHOW",
         scrollEachChat: true,
-
-        popupOptions: {
-          messagePopupShow: false,
-          type: '',
-          options: {},
-          onDataActionClick: null
-        },
+        
+        errorMessage: null,
+        errorMessageWrongOldPassword: null,
+        errorMessagePasswordsNotMatch: null,
+        successMessageSaveChangeUserInfo: null,
+        confirmMessageLogout: null,
+        confirmDialog_messageData: null,
 
         connections_ExtraToolbarOptions: {
           show: false
@@ -399,7 +395,7 @@ const Panel = React.createClass({
     }
   },
 
-  componentWillMount: function() {
+  componentWillMount() {
     if (this.props.userInfo[this.props.location]) {
       this.setState(this.props.userInfo[this.props.location]);
       if (this.props.location === "left") {
@@ -414,7 +410,7 @@ const Panel = React.createClass({
     }
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     document.addEventListener('load', this.handleLoad, true);
     window.addEventListener('resize', this.resizePanel, false);
     event_bus.on('getPanelDescription', this.getPanelDescription);
@@ -456,7 +452,7 @@ const Panel = React.createClass({
     }
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     document.removeEventListener('load', this.handleLoad);
     window.removeEventListener('resize', this.resizePanel);
     event_bus.off('getPanelDescription', this.getPanelDescription);
@@ -482,7 +478,7 @@ const Panel = React.createClass({
     this.confirmPassword = null;
   },
 
-  componentDidUpdate: function(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     this.resizePanel();
     if (this.state.bodyMode === MODE.USER_INFO_EDIT) {
       this.userName = this.panelBody.querySelector('[data-main="user_name_input"]');
@@ -495,7 +491,7 @@ const Panel = React.createClass({
     }
   },
 
-  handleClick: function(event) {
+  handleClick(event) {
     let element = this.getDataParameter(event.currentTarget, 'action'),
       currentOptions, gto, po,
       self = this;
@@ -589,7 +585,7 @@ const Panel = React.createClass({
     }
   },
 
-  handleLoad: function(event) {
+  handleLoad(event) {
     if (!this.togglePanelElement) return;
     if (this.props.location === "left" && event.target.dataset.onload && event.target.dataset.role === 'mainButtonLeftPanel') {
       this.togglePanelElement_clientWidth = this.togglePanelElement.clientWidth;
@@ -604,10 +600,10 @@ const Panel = React.createClass({
     this.getInfoForBody();
   },
 
-  onInput: function() {
+  onInput() {
   },
 
-  handleChange: function(event) {
+  handleChange(event) {
     let currentOptions, self = this;
     switch (event.target.dataset.role) {
       case 'selectLanguage':
@@ -652,7 +648,69 @@ const Panel = React.createClass({
     }
   },
 
-  handleTransitionEnd: function(event) {
+  handleDialogError(){
+    this.setState({errorMessage: null});
+  },
+
+  handleDialogWrongOldPassword(){
+    this.oldPassword.value = '';
+    this.newPassword.value = '';
+    this.confirmPassword.value = '';
+    this.setState({errorMessageWrongOldPassword: null});
+  },
+
+  handleDialogPasswordsNotMatch(){
+    this.newPassword.value = '';
+    this.confirmPassword.value = '';
+    this.setState({errorMessagePasswordsNotMatch: null});
+  },
+
+  handleDialogSaveChangeUserInfo(){
+    this.setState({bodyMode: MODE.USER_INFO_SHOW, successMessageSaveChangeUserInfo: null});
+    this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
+    this.user = null;
+  },
+
+  handleDialogLogout(event){
+    let element = this.getDataParameter(event.target, 'action');
+    if (element) {
+      switch (element.dataset.action) {
+        case 'confirmCancel':
+          break;
+        case 'confirmOk':
+          users_bus.setUserId(null);
+          event_bus.trigger("chatsDestroy");
+          break;
+      }
+      this.setState({confirmMessageLogout: null});
+    }
+  },
+
+  handleDialogShowRemoteFriendshipRequest(event){
+    let element = this.getDataParameter(event.target, 'action');
+    if (element) {
+      switch (element.dataset.action) {
+        case 'confirmCancel':
+          break;
+        case 'confirmOk':
+          let messageData = this.state.confirmDialog_messageData;
+          this.listenWebRTCConnection(messageData.from_user_id);
+          this.listenNotifyUser(messageData.from_user_id);
+          websocket.sendMessage({
+            type: "friendship_confirmed",
+            from_user_id: users_bus.getUserId(),
+            to_user_id: messageData.from_user_id,
+            request_body: messageData.request_body
+          });
+          console.log('handleConnectedDevices', messageData.user_wscs_descrs);
+          webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
+          break;
+      }
+      this.setState({confirmMessageShowRemoteFriendshipRequest: null, confirmDialog_messageData: null});
+    }
+  },
+
+  handleTransitionEnd(event) {
     if (event.target.dataset && event.target.dataset.role === 'detail_view_container') {
       let chatIdValue = event.target.dataset.chat_id;
       var resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
@@ -665,7 +723,7 @@ const Panel = React.createClass({
     }
   },
 
-  closeChat: function(element) {
+  closeChat(element) {
     if (this.props.location === "left") {
       let parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
       let chatId = parentElement.dataset.chat_id;
@@ -673,30 +731,11 @@ const Panel = React.createClass({
     }
   },
 
-  logout: function() {
-    let newState;
-    event_bus.trigger('changeStatePopup', {
-      show: true,
-      type: 'confirm',
-      message: 106,
-      onDataActionClick: function(action) {
-        switch (action) {
-          case 'confirmOk':
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            users_bus.setUserId(null);
-            event_bus.trigger("chatsDestroy");
-            break;
-          case 'confirmCancel':
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            break;
-        }
-      }
-    });
+  logout() {
+    this.setState({confirmMessageLogout: 106});
   },
 
-  requestChatByChatId: function() {
+  requestChatByChatId() {
     let chat_id_input = this.inner_container.querySelector('[data-role="chat_id_input"]'),
       chat_message_input = this.inner_container.querySelector('[data-role="chat_message_input"]'),
       requestButton = this.inner_container.querySelector('[data-action="requestChatByChatId"]'), newState;
@@ -704,28 +743,16 @@ const Panel = React.createClass({
     if (requestButton && chat_id_input && chat_id_input.value && chat_message_input && chat_message_input.value) {
       event_bus.trigger('requestChatByChatId', chat_id_input.value, chat_message_input.value);
     } else {
-      event_bus.trigger('changeStatePopup', {
-        show: true,
-        type: 'error',
-        message: 90,
-        onDataActionClick: function(action) {
-          switch (action) {
-            case 'confirmCancel':
-              newState = Popup.prototype.handleClose(this.state);
-              this.setState(newState);
-              break;
-          }
-        }
-      });
+      this.setState({errorMessage: 90});
     }
   },
 
-  togglePanel: function(forceClose, options) {
+  togglePanel(forceClose, options) {
     this.openOrClosePanel(this.outerContainer.clientWidth + this.togglePanelElement.clientWidth >
       document.body.clientWidth, forceClose, options);
   },
 
-  openOrClosePanel: function(bigMode, forceClose, options) {
+  openOrClosePanel(bigMode, forceClose, options) {
     if (this.props.location === 'left' && this.outerContainer.style.right === '100vw') {
       this.outerContainer.style.right = '';
     }
@@ -762,7 +789,7 @@ const Panel = React.createClass({
     }
   },
 
-  switchPanelMode: function(element, options) {
+  switchPanelMode(element, options) {
     if (element.dataset.mode_to === MODE.USER_INFO_SHOW && this.previous_UserInfo_Mode) {
         this.setState({bodyMode: this.previous_UserInfo_Mode});
     } else {
@@ -777,7 +804,7 @@ const Panel = React.createClass({
     this.getInfoForBody(element.dataset.mode_to, options);
   },
 
-  getInfoForBody: function(mode, options) {
+  getInfoForBody(mode, options) {
     let self = this, currentOptions;
     if (options && options.bodyMode){
       mode = options.bodyMode;
@@ -851,15 +878,15 @@ const Panel = React.createClass({
     }
   },
 
-  setUserInfo: function(userInfo) {
+  setUserInfo(userInfo) {
     this.setState({userInfo: userInfo});
   },
 
-  calcMaxWidth: function() {
+  calcMaxWidth() {
     return document.body.offsetWidth + 'px';
   },
 
-  showMoreInfo: function(element) {
+  showMoreInfo(element) {
     let chatIdValue = element.dataset.chat_id,
       detailView = element.querySelector('[data-role="detail_view_container"]'),
       pointer = element.querySelector('[data-role="pointer"]'),
@@ -883,7 +910,7 @@ const Panel = React.createClass({
     }
   },
 
-  changeMode: function(element) {
+  changeMode(element) {
     if (!element || !element.dataset) return;
     let chat_part = element.dataset.chat_part,
       newMode = element.dataset.mode_to,
@@ -931,93 +958,38 @@ const Panel = React.createClass({
     }
   },
 
-  changeUserInfo: function() {
+  changeUserInfo() {
     this.setState({bodyMode: MODE.USER_INFO_EDIT});
     this.previous_UserInfo_Mode = MODE.USER_INFO_EDIT;
   },
 
-  cancelChangeUserInfo: function() {
+  cancelChangeUserInfo() {
     this.setState({bodyMode: MODE.USER_INFO_SHOW});
     this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
   },
 
-  saveChangeUserInfo: function() {
-    let self = this, newState;
+  saveChangeUserInfo() {
+    let self = this;
     if (this.userName.value && this.oldPassword.value && this.newPassword.value &&
       this.confirmPassword.value) {
       if (this.oldPassword.value === this.state.userInfo.userPassword) {
         if (this.newPassword.value === this.confirmPassword.value) {
           this.updateUserInfo(function() {
-            event_bus.trigger('changeStatePopup', {
-              show: true,
-              type: 'success',
-              message: 105,
-              onDataActionClick: function(action) {
-                switch (action) {
-                  case 'confirmCancel':
-                    newState = Popup.prototype.handleClose(this.state);
-                    this.setState(newState);
-                    self.setState({bodyMode: MODE.USER_INFO_SHOW});
-                    self.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
-                    self.user = null;
-                    break;
-                }
-              }
-            });
+            self.setState({successMessageSaveChangeUserInfo: 105});
           })
         } else {
-          event_bus.trigger('changeStatePopup', {
-            show: true,
-            type: 'error',
-            message: 94,
-            onDataActionClick: function(action) {
-              switch (action) {
-                case 'confirmCancel':
-                  newState = Popup.prototype.handleClose(this.state);
-                  this.setState(newState);
-                  self.newPassword.value = '';
-                  self.confirmPassword.value = '';
-                  break;
-              }
-            }
-          });
+          this.setState({errorMessagePasswordsNotMatch: 94});
         }
       } else {
-        event_bus.trigger('changeStatePopup', {
-          show: true,
-          type: 'error',
-          message: 95,
-          onDataActionClick: function(action) {
-            switch (action) {
-              case 'confirmCancel':
-                newState = Popup.prototype.handleClose(this.state);
-                this.setState(newState);
-                self.oldPassword.value = '';
-                self.newPassword.value = '';
-                self.confirmPassword.value = '';
-                break;
-            }
-          }
-        });
+        
+        this.setState({errorMessageWrongOldPassword: 95});
       }
     } else {
-      event_bus.trigger('changeStatePopup', {
-        show: true,
-        type: 'error',
-        message: 88,
-        onDataActionClick: function(action) {
-          switch (action) {
-            case 'confirmCancel':
-              newState = Popup.prototype.handleClose(this.state);
-              this.setState(newState);
-              break;
-          }
-        }
-      });
+      this.setState({errorMessage: 88});
     }
   },
 
-  updateUserInfo: function(callback) {
+  updateUserInfo(callback) {
     let self = this;
     users_bus.getMyInfo(null, function(err, options, userInfo) {
       userInfo.userPassword = self.newPassword.value;
@@ -1033,11 +1005,12 @@ const Panel = React.createClass({
     })
   },
 
-  getPanelDescription: function(callback) {
+  getPanelDescription(callback) {
     if (callback) {
       this.state.chat_ids = [];
       this.state.openChats = [];
       this.state.avatarMode = "SHOW";
+      this.state.confirmMessageLogout = null;
       callback(this.state, this.props.location);
     }
   },
@@ -1048,7 +1021,7 @@ const Panel = React.createClass({
     }
   },
 
-  resizePanel: function() {
+  resizePanel() {
     if (this.state.openedState && this.outerContainer) {
       if (this.outerContainer.clientWidth + this.togglePanelElement_clientWidth > document.body.clientWidth) {
         this.inner_container.style.maxWidth = this.calcMaxWidth();
@@ -1089,22 +1062,22 @@ const Panel = React.createClass({
     }
   },
 
-  onChangeLanguage: function(event) {
+  onChangeLanguage(event) {
     this.props.handleEvent.changeLanguage(event.target.value);
   },
 
-  toggleListOptions: function(chatsLength) {
+  toggleListOptions(chatsLength) {
     if (this.props.location === "left") {
       this.state.chats_ListOptions.final = chatsLength;
       this.setState({chats_ListOptions: this.state.chats_ListOptions});
     }
   },
 
-  changeState: function(newState) {
+  changeState(newState) {
     this.setState(newState);
   },
 
-  renderHandlers: function(events) {
+  renderHandlers(events) {
     let handlers = {};
     if (events) {
       for (var dataKey in events) {
@@ -1128,9 +1101,8 @@ const Panel = React.createClass({
     }
   },
 
-  requestFriendByUserId: function() {
-    let newState,
-      user_id_input = this.inner_container.querySelector('[data-role="user_id_input"]'),
+  requestFriendByUserId() {
+    let user_id_input = this.inner_container.querySelector('[data-role="user_id_input"]'),
       user_message_input = this.inner_container.querySelector('[data-role="user_message_input"]'),
       requestButton = this.inner_container.querySelector('[data-action="requestFriendByUserId"]');
 
@@ -1145,23 +1117,11 @@ const Panel = React.createClass({
         }
       });
     } else {
-      event_bus.trigger('changeStatePopup', {
-        show: true,
-        type: 'error',
-        message: 89,
-        onDataActionClick: function(action) {
-          switch (action) {
-            case 'confirmCancel':
-              newState = Popup.prototype.handleClose(this.state);
-              this.setState(newState);
-              break;
-          }
-        }
-      });
+      this.setState({errorMessage: 89});
     }
   },
 
-  readyForFriendRequest: function(element) {
+  readyForFriendRequest(element) {
     this.state.joinUser_ListOptions.readyForRequest = element.checked;
     this.setState({joinUser_ListOptions: this.state.joinUser_ListOptions});
     websocket.sendMessage({
@@ -1174,7 +1134,7 @@ const Panel = React.createClass({
   /**
    * handle message from web-socket (if it is connected with chats some how)
    */
-  onPanelMessageRouter: function(messageData) {
+  onPanelMessageRouter(messageData) {
     if (this.props.location !== "left") {
       return;
     }
@@ -1203,26 +1163,14 @@ const Panel = React.createClass({
       case 'error':
         switch (messageData.request_type){
           case 'user_add_sent':
-            event_bus.trigger('changeStatePopup', {
-              show: true,
-              type: 'error',
-              message: 115,
-              onDataActionClick: function(action) {
-                switch (action) {
-                  case 'confirmCancel':
-                    let newState = Popup.prototype.handleClose(this.state);
-                    this.setState(newState);
-                    break;
-                }
-              }
-            });
+            this.setState({errorMessage: 115});
             break;
         }
         break;
     }
   },
 
-  onNotifyUser: function(user_id, messageData) {
+  onNotifyUser(user_id, messageData) {
     var self = this;
     console.log('onNotifyUser', user_id);
     users_bus.addNewUserToIndexedDB(messageData.user_description, function(error, user_description) {
@@ -1246,7 +1194,7 @@ const Panel = React.createClass({
     });
   },
 
-  webRTCConnectionReady: function(user_id, triggerConnection) {
+  webRTCConnectionReady(user_id, triggerConnection) {
     var _this = this;
     console.log('webRTCConnectionReady', triggerConnection.hasUserId(user_id), user_id);
     if (triggerConnection.hasUserId(user_id)) {
@@ -1270,68 +1218,42 @@ const Panel = React.createClass({
     }
   },
 
-  notListenWebRTCConnection: function() {
+  notListenWebRTCConnection() {
     if (this.bindedWebRTCConnectionReady) {
       webrtc.off('webrtc_connection_established', this.bindedWebRTCConnectionReady);
     }
   },
 
-  listenWebRTCConnection: function(user_id) {
+  listenWebRTCConnection(user_id) {
     this.notListenWebRTCConnection();
     this.bindedWebRTCConnectionReady = this.webRTCConnectionReady.bind(this, user_id);
     webrtc.on('webrtc_connection_established', this.bindedWebRTCConnectionReady);
   },
 
-  notListenNotifyUser: function() {
+  notListenNotifyUser() {
     if (this.bindedOnNotifyUser) {
       event_bus.off('notifyUser', this.bindedOnNotifyUser);
     }
   },
 
-  listenNotifyUser: function(user_id) {
+  listenNotifyUser(user_id) {
     console.log('listenNotifyUser', user_id);
     this.notListenNotifyUser();
     this.bindedOnNotifyUser = this.onNotifyUser.bind(this, user_id);
     event_bus.on('notifyUser', this.bindedOnNotifyUser);
   },
 
-  showRemoteFriendshipRequest: function(messageData) {
-    let self = this, newState;
+  showRemoteFriendshipRequest(messageData) {
     event_bus.set_ws_device_id(messageData.target_ws_device_id);
     if (!messageData.user_wscs_descrs) {
       return;
     }
-    event_bus.trigger('changeStatePopup', {
-      show: true,
-      type: 'confirm',
-      message: messageData.request_body.message,
-      onDataActionClick: function(action) {
-        switch (action) {
-          case 'confirmCancel':
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            break;
-          case 'confirmOk':
-            self.listenWebRTCConnection(messageData.from_user_id);
-            self.listenNotifyUser(messageData.from_user_id);
-            websocket.sendMessage({
-              type: "friendship_confirmed",
-              from_user_id: users_bus.getUserId(),
-              to_user_id: messageData.from_user_id,
-              request_body: messageData.request_body
-            });
-            console.log('handleConnectedDevices', messageData.user_wscs_descrs);
-            webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
 
-            newState = Popup.prototype.handleClose(this.state);
-            this.setState(newState);
-            break;
-        }
-      }
-    });
+    this.setState({confirmMessageShowRemoteFriendshipRequest: messageData.request_body.message,
+      confirmDialog_messageData: messageData});
   },
 
-  render: function() {
+  render() {
     let handleEvent = {
       changeState: this.changeState
     };
@@ -1348,6 +1270,25 @@ const Panel = React.createClass({
     return (
       <section style={style} data-role={location + '_panel_outer_container'}
                className={location + '-panel hide p-fx panel animate c-100'}>
+        
+        <DialogError show={this.state.errorMessage} message={this.state.errorMessage}
+                     handleClick={this.handleDialogError}/>
+        <DialogError show={this.state.errorMessageWrongOldPassword} 
+                     message={this.state.errorMessageWrongOldPassword}
+                     handleClick={this.handleDialogWrongOldPassword}/>
+        <DialogError show={this.state.errorMessagePasswordsNotMatch} 
+                     message={this.state.errorMessagePasswordsNotMatch}
+                     handleClick={this.handleDialogPasswordsNotMatch}/>
+        <DialogSuccess show={this.state.successMessageSaveChangeUserInfo} 
+                       message={this.state.successMessageSaveChangeUserInfo}
+        handleClick={this.handleDialogSaveChangeUserInfo}/>
+        <DialogConfirm show={this.state.confirmMessageLogout}
+                       message={this.state.confirmMessageLogout}
+                       handleClick={this.handleDialogLogout}/>
+        <DialogConfirm show={this.state.confirmMessageShowRemoteFriendshipRequest}
+                       message={this.state.confirmMessageShowRemoteFriendshipRequest}
+                       handleClick={this.handleDialogShowRemoteFriendshipRequest}/>
+
         <div className="p-rel h-100p flex-dir-col">
           <Triple_Element events={onEvent} config={btnConfig} hide={this.state.toggleElemHide}/>
           <div data-role={location + '_panel_inner_container'}

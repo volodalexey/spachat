@@ -1,31 +1,31 @@
 import React from 'react'
-import Localization from '../js/localization.js'
+
+import localization from '../js/localization.js'
 import chats_bus from '../js/chats_bus.js'
 import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
 import event_bus from '../js/event_bus.js'
 
 import Body from '../components/body'
-import Location_Wrapper from './location_wrapper'
 
 const ContactList = React.createClass({
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       users: []
     }
   },
 
-  componentWillMount: function() {
+  componentWillMount() {
     this.getContacts();
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     event_bus.on('changeUsersConnections', this.getContacts, this);
     event_bus.on('changeMyUsers', this.getContacts, this);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     event_bus.off('changeUsersConnections', this.getContacts, this);
     event_bus.off('changeMyUsers', this.getContacts, this);
   },
@@ -55,7 +55,7 @@ const ContactList = React.createClass({
     });
   },
 
-  handleClick: function(event) {
+  handleClick(event) {
     let element = this.getDataParameter(event.currentTarget, 'action');
     if (element) {
       switch (element.dataset.action) {
@@ -75,8 +75,8 @@ const ContactList = React.createClass({
     }
   },
 
-  renderItems: function(configs) {
-    let items = [], self = this, control_btn;
+  renderItems() {
+    let items = [], self = this;
     this.state.users.forEach(function(_user) {
       items.push(
         <div key={_user.user_id} className="flex-sp-start margin-t-b">
@@ -91,7 +91,7 @@ const ContactList = React.createClass({
                 return (
                   <div className="flex-just-center">
                     <button data-key={_user.user_id} data-action="makeFriends" onClick={self.handleClick}>
-                      {Localization.getLocText(66)}
+                      {localization.getLocText(66)}
                     </button>
                   </div>
                 )
@@ -104,7 +104,7 @@ const ContactList = React.createClass({
     return items;
   },
 
-  render: function() {
+  render() {
     if (this.state.users.length) {
       let items = this.renderItems();
       return (

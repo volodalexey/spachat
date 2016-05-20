@@ -12,7 +12,7 @@ import Body from '../components/body'
 const Messages = React.createClass({
   avatar_url: '',
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       messages: [],
       userInfo: [],
@@ -32,7 +32,7 @@ const Messages = React.createClass({
     event_bus.off('changeMyUserInfo', this.changeMyUserInfo, this);
   },
 
-  componentDidUpdate: function(prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.data.userInfo !== this.props.data.userInfo) {
       if (!this.props.data.userInfo) return;
       let user = this.renderAvatarUrl([this.props.data.userInfo])[0];
@@ -152,7 +152,7 @@ const Messages = React.createClass({
     return value;
   },
 
-  renderItems: function() {
+  renderItems() {
     let self = this, items = [];
     self.state.messages.forEach(function(_message) {
       items.push(self.renderItem(_message));
@@ -204,7 +204,7 @@ const Messages = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     this.getMessages();
     return <div>{this.renderItems(this.state.messages)}</div>
   }

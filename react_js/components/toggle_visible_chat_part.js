@@ -6,14 +6,15 @@ import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
 
 const ToggleVisibleChatPart = React.createClass({
-  getDefaultProps: function() {
+  
+  getDefaultProps() {
     return {
       min_move: 5,
       padding: 4
     }
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       position_btn: 0,
       resizeMouseDown: false,
@@ -21,7 +22,7 @@ const ToggleVisibleChatPart = React.createClass({
     };
   },
 
-  componentWillMount: function() {
+  componentWillMount() {
     if (this.props.location === 'TOP') {
       this.setState({left: this.props.data.toggleTopButtonLeft});
     } else if (this.props.location === 'BOTTOM') {
@@ -29,17 +30,17 @@ const ToggleVisibleChatPart = React.createClass({
     }
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.toggle_container = ReactDOM.findDOMNode(this);
     this.toggleButton = this.toggle_container.querySelector('[data-role="toggleButton"]');
     event_bus.on('onMouseUp', this.handleResize, this);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     event_bus.off('onMouseUp', this.handleResize, this);
   },
 
-  startResize: function(event) {
+  startResize(event) {
     switch (event.type) {
       case 'mousedown':
       case 'touchstart':
@@ -52,7 +53,7 @@ const ToggleVisibleChatPart = React.createClass({
     }
   },
 
-  transformToResizeState: function(event) {
+  transformToResizeState(event) {
     let toggle_btn;
     if (event.type === 'touchstart' && event.changedTouches) {
       toggle_btn = event.changedTouches[0].clientX + 'px';
@@ -66,7 +67,7 @@ const ToggleVisibleChatPart = React.createClass({
     });
   },
 
-  handleResize: function(event) {
+  handleResize(event) {
     switch (event.type) {
       case 'mousemove':
       case 'touchmove':
@@ -157,7 +158,7 @@ const ToggleVisibleChatPart = React.createClass({
     return className;
   },
 
-  render: function() {
+  render() {
     let location = this.props.location, bodyMode = this.props.data.bodyOptions.mode;
     if (location === 'TOP') {
       return (
