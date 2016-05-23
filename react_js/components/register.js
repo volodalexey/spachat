@@ -294,7 +294,7 @@ const Register = React.createClass({
             </form>
           </div>
         </div>
-        <DialogSuccess show={this.state.successMessageSaveChangeUserInfo} message={this.state.successMessageSaveChangeUserInfo}
+        <DialogSuccess show={this.state.successMessage} message={this.state.successMessage}
                        handleClick={this.handleDialogRegisterUser}/>
         <DialogError show={this.state.errorMessage} message={this.state.errorMessage}
                      handleClick={this.handleDialogError}/>

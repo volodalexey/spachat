@@ -153,6 +153,18 @@ Users_bus.prototype = {
     });
   },
 
+  getUserName(_user_id, user_ids) {
+    let user_name;
+    user_ids.every(function(_contactInfo) {
+      if (_contactInfo.user_id === _user_id) {
+        user_name = _contactInfo.userName;
+      }
+      return !user_name;
+    });
+
+    return user_name;
+  },
+
   hasInArray: function(_array, item) {
     var found;
     _array.every(function(_item) {

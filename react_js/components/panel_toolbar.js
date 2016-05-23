@@ -51,7 +51,7 @@ const PanelToolbar = React.createClass({
           "class": "flex-item-1-0p c-50 border-c300 min-height-2-6em "
         },
 
-        {
+/*        {
           "role": "locationWrapper",
           "classList": "flex",
           "location": "blogs"
@@ -94,7 +94,7 @@ const PanelToolbar = React.createClass({
             "mode_to": "BLOGS"
           },
           "disable": false
-        },
+        },*/
 
         {
           "role": "locationWrapper",

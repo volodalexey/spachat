@@ -538,35 +538,6 @@ const Body = React.createClass({
       detail_view_config: [
         {
           "role": "locationWrapper",
-          "classList": "w-100p flex-sp-between",
-          "location": "user_id"
-        },
-        {
-          "element": "label",
-          "type": "text",
-          "text": 9,
-          "location": "user_id",
-          "data": {
-            "role": "user_id_label",
-            "mode": "DETAIL_VIEW"
-          },
-          "disabled": false
-        },
-        {
-          "element": "label",
-          "type": "text",
-          "class": "flex-item-w50p",
-          "location": "user_id",
-          "data": {
-            "role": "user_id",
-            "key": "user_ids",
-            "mode": "DETAIL_VIEW"
-          },
-          "disabled": false
-        },
-
-        {
-          "role": "locationWrapper",
           "classList": "w-100p flex-sp-around",
           "location": "navbar"
         },
@@ -1048,7 +1019,9 @@ const Body = React.createClass({
           "chat_ids": chat_ids,
           "openChatsInfoArray": this.props.data.openChatsInfoArray,
           "closingChatsInfoArray": this.props.data.closingChatsInfoArray,
-          "openChats": this.props.data.openChats
+          "openChats": this.props.data.openChats,
+          "myId": this.props.userInfo.user_id,
+          "myName": this.props.userInfo.userName
         };
         return <PanelChats events={this.props.events} data={data} configs={configs}/>;
         break;

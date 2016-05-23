@@ -249,7 +249,7 @@ const Filter = React.createClass({
         }
       ],
       messagesFilterConfig: [
-        {
+/*        {
           "role": "locationWrapper",
           "classList": "flex-item flex-wrap elements",
           "location": "date_filter"
@@ -291,7 +291,7 @@ const Filter = React.createClass({
           "class": "button-inset-white",
           "location": "date_filter",
           "sort": 4
-        },
+        },*/
 
         {
           "role": "locationWrapper",

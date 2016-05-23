@@ -57,18 +57,6 @@ const Connections = React.createClass({
     }
   },
 
-  getUserName(_user_id) {
-    let user_name;
-    this.state.contactsInfo.every(function(_contactInfo) {
-      if (_contactInfo.user_id === _user_id) {
-        user_name = _contactInfo.userName;
-      }
-      return !user_name;
-    });
-
-    return user_name;
-  },
-
   renderItems() {
     let items = [], self = this;
 
@@ -79,7 +67,7 @@ const Connections = React.createClass({
           <ol style={{'listStyleType': 'circle'}} key={_user_id}>
             <li>
               <div>
-                {self.getUserName(_user_id)}
+                {users_bus.getUserName(_user_id, this.state.contactsInfo)}
               </div>
               <div>
                 {_user_id}

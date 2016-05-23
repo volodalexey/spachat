@@ -47,12 +47,12 @@ const MODE = {
 };
 
 const Panel = React.createClass({
-  
+
   getDefaultProps() {
     return {
       mainContainer: {
         "element": "div",
-        "config":{
+        "config": {
           "class": "flex-inner-container",
         }
       },
@@ -330,7 +330,7 @@ const Panel = React.createClass({
         bodyMode: "USER_INFO_SHOW",
         avatarMode: "SHOW",
         scrollEachChat: true,
-        
+
         errorMessage: null,
         errorMessageWrongOldPassword: null,
         errorMessagePasswordsNotMatch: null,
@@ -441,7 +441,7 @@ const Panel = React.createClass({
     this.outerContainer.style.zIndex = this.props.z_index;
 
     this.outerContainer.addEventListener('transitionend', this.handleTransitionEnd);
-    if(this.props.location === "left" && this.props.locationQuery && this.props.locationQuery.join_chat_id){
+    if (this.props.location === "left" && this.props.locationQuery && this.props.locationQuery.join_chat_id) {
       let options = {
         chatId: this.props.locationQuery.join_chat_id,
         bodyMode: MODE.JOIN_CHAT,
@@ -791,7 +791,7 @@ const Panel = React.createClass({
 
   switchPanelMode(element, options) {
     if (element.dataset.mode_to === MODE.USER_INFO_SHOW && this.previous_UserInfo_Mode) {
-        this.setState({bodyMode: this.previous_UserInfo_Mode});
+      this.setState({bodyMode: this.previous_UserInfo_Mode});
     } else {
       this.setState({bodyMode: element.dataset.mode_to});
     }
@@ -806,7 +806,7 @@ const Panel = React.createClass({
 
   getInfoForBody(mode, options) {
     let self = this, currentOptions;
-    if (options && options.bodyMode){
+    if (options && options.bodyMode) {
       mode = options.bodyMode;
     }
     if (!mode) {
@@ -848,29 +848,33 @@ const Panel = React.createClass({
         });
       });
     }
-    if ((mode === MODE.JOIN_USER) && (this.props.location === 'left')){
-      if (options && options.userId){
-        if (options.force){
+    if ((mode === MODE.JOIN_USER) && (this.props.location === 'left')) {
+      if (options && options.userId) {
+        if (options.force) {
           this.state.joinUser_ListOptions.userId = options.userId;
           this.state.joinUser_ListOptions.messageRequest = options.messageRequest;
-          this.setState({joinUser_ListOptions: this.state.joinUser_ListOptions,
-            bodyMode: options.bodyMode});
+          this.setState({
+            joinUser_ListOptions: this.state.joinUser_ListOptions,
+            bodyMode: options.bodyMode
+          });
         }
-      }else {
+      } else {
         this.state.joinUser_ListOptions.userId = null;
         this.state.joinUser_ListOptions.messageRequest = null;
         this.setState({joinUser_ListOptions: this.state.joinUser_ListOptions});
       }
     }
-    if ((mode === MODE.JOIN_CHAT) && (this.props.location === 'left')){
-      if (options && options.chatId){
-        if (options.force){
+    if ((mode === MODE.JOIN_CHAT) && (this.props.location === 'left')) {
+      if (options && options.chatId) {
+        if (options.force) {
           this.state.joinChat_ListOptions.chatId = options.chatId;
           this.state.joinChat_ListOptions.messageRequest = options.messageRequest;
-          this.setState({joinChat_ListOptions: this.state.joinChat_ListOptions,
-            bodyMode: options.bodyMode});
+          this.setState({
+            joinChat_ListOptions: this.state.joinChat_ListOptions,
+            bodyMode: options.bodyMode
+          });
         }
-      }else {
+      } else {
         this.state.joinChat_ListOptions.chatId = null;
         this.state.joinChat_ListOptions.messageRequest = null;
         this.setState({joinChat_ListOptions: this.state.joinChat_ListOptions});
@@ -981,7 +985,7 @@ const Panel = React.createClass({
           this.setState({errorMessagePasswordsNotMatch: 94});
         }
       } else {
-        
+
         this.setState({errorMessageWrongOldPassword: 95});
       }
     } else {
@@ -997,7 +1001,7 @@ const Panel = React.createClass({
       users_bus.saveMyInfo(userInfo, callback);
     });
   },
-  
+
   updateUserAvatar(){
     let self = this;
     users_bus.getMyInfo(null, function(_err, options, userInfo) {
@@ -1016,7 +1020,7 @@ const Panel = React.createClass({
   },
 
   changeConnection(){
-    if (this.state.openedState){
+    if (this.state.openedState) {
       event_bus.trigger('changeConnectionList');
     }
   },
@@ -1094,7 +1098,7 @@ const Panel = React.createClass({
       messageRequest: 110,
       force: true
     };
-    if (this.state.openedState){
+    if (this.state.openedState) {
       this.switchPanelMode(element, options);
     } else {
       this.togglePanel(null, options);
@@ -1161,7 +1165,7 @@ const Panel = React.createClass({
         event_bus.set_ws_device_id(messageData.from_ws_device_id);
         break;
       case 'error':
-        switch (messageData.request_type){
+        switch (messageData.request_type) {
           case 'user_add_sent':
             this.setState({errorMessage: 115});
             break;
@@ -1179,13 +1183,13 @@ const Panel = React.createClass({
         return;
       }
 
-      users_bus.putUserIdAndSave(user_id, function (_err){
-        if (_err){
+      users_bus.putUserIdAndSave(user_id, function(_err) {
+        if (_err) {
           return console.error(_err);
         }
 
         event_bus.trigger('changeMyUsers');
-        if (self.state.bodyMode === MODE.USERS){
+        if (self.state.bodyMode === MODE.USERS) {
           self.getInfoForBody(self.state.bodyMode);
         }
       });
@@ -1249,8 +1253,10 @@ const Panel = React.createClass({
       return;
     }
 
-    this.setState({confirmMessageShowRemoteFriendshipRequest: messageData.request_body.message,
-      confirmDialog_messageData: messageData});
+    this.setState({
+      confirmMessageShowRemoteFriendshipRequest: messageData.request_body.message,
+      confirmDialog_messageData: messageData
+    });
   },
 
   render() {
@@ -1268,59 +1274,60 @@ const Panel = React.createClass({
     let panel_toolbar_class = (location === 'left') ? 'w-100p flex-dir-col flex-item-auto c-200' : 'w-100p flex-dir-col c-200';
     var style = {[location]: this.state[location]};
     return (
-      <section style={style} data-role={location + '_panel_outer_container'}
-               className={location + '-panel hide p-fx panel animate c-100'}>
-        
+      <div data-role={location + '_panel'}>
         <DialogError show={this.state.errorMessage} message={this.state.errorMessage}
                      handleClick={this.handleDialogError}/>
-        <DialogError show={this.state.errorMessageWrongOldPassword} 
+        <DialogError show={this.state.errorMessageWrongOldPassword}
                      message={this.state.errorMessageWrongOldPassword}
                      handleClick={this.handleDialogWrongOldPassword}/>
-        <DialogError show={this.state.errorMessagePasswordsNotMatch} 
+        <DialogError show={this.state.errorMessagePasswordsNotMatch}
                      message={this.state.errorMessagePasswordsNotMatch}
                      handleClick={this.handleDialogPasswordsNotMatch}/>
-        <DialogSuccess show={this.state.successMessageSaveChangeUserInfo} 
+        <DialogSuccess show={this.state.successMessageSaveChangeUserInfo}
                        message={this.state.successMessageSaveChangeUserInfo}
-        handleClick={this.handleDialogSaveChangeUserInfo}/>
+                       handleClick={this.handleDialogSaveChangeUserInfo}/>
         <DialogConfirm show={this.state.confirmMessageLogout}
                        message={this.state.confirmMessageLogout}
                        handleClick={this.handleDialogLogout}/>
         <DialogConfirm show={this.state.confirmMessageShowRemoteFriendshipRequest}
                        message={this.state.confirmMessageShowRemoteFriendshipRequest}
                        handleClick={this.handleDialogShowRemoteFriendshipRequest}/>
-
-        <div className="p-rel h-100p flex-dir-col">
-          <Triple_Element events={onEvent} config={btnConfig} hide={this.state.toggleElemHide}/>
-          <div data-role={location + '_panel_inner_container'}
-               className="min-width-350 flex-item-1-auto clear flex-dir-col h-100p">
-            <header id={location} data-role={location + '_panel_toolbar'} className={panel_toolbar_class}>
-              <PanelToolbar location={location} mode={this.state.bodyMode} events={onEvent}
-                            hide={this.state.toggleToolbarElemHide}/>
-            </header>
-            <div data-role={location + '_extra_toolbar_container'}
-                 className="flex-sp-around flex-item-auto c-200">
-              <ExtraToolbar mode={this.state.bodyMode} data={this.state} events={onEvent}/>
-            </div>
-            <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
-              <Filter mode={this.state.bodyMode} data={this.state} events={onEvent}/>
-            </div>
-            <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
-              <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
-                    userInfo={this.state.userInfo? this.state.userInfo : this.props.userInfo} handleEvent={handleEvent}/>
-            </div>
-            <footer className="flex-item-auto">
-              <div data-role={location + '_go_to_container'} className="c-200">
-                <GoTo mode={this.state.bodyMode} data={this.state} events={onEvent}/>
+        <section style={style} data-role={location + '_panel_outer_container'}
+                 className={location + '-panel hide p-fx panel animate c-100'}>
+          <div className="p-rel h-100p flex-dir-col">
+            <Triple_Element events={onEvent} config={btnConfig} hide={this.state.toggleElemHide}/>
+            <div data-role={location + '_panel_inner_container'}
+                 className="min-width-350 flex-item-1-auto clear flex-dir-col h-100p">
+              <header id={location} data-role={location + '_panel_toolbar'} className={panel_toolbar_class}>
+                <PanelToolbar location={location} mode={this.state.bodyMode} events={onEvent}
+                              hide={this.state.toggleToolbarElemHide}/>
+              </header>
+              <div data-role={location + '_extra_toolbar_container'}
+                   className="flex-sp-around flex-item-auto c-200">
+                <ExtraToolbar mode={this.state.bodyMode} data={this.state} events={onEvent}/>
               </div>
-              <div data-role={location + '_pagination_containe'}
-                   className="flex filter_container justContent c-200">
-                <Pagination mode={this.state.bodyMode} data={this.state} events={onEvent}
-                            handleEvent={handleEvent}/>
+              <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
+                <Filter mode={this.state.bodyMode} data={this.state} events={onEvent}/>
               </div>
-            </footer>
+              <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
+                <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
+                      userInfo={this.state.userInfo? this.state.userInfo : this.props.userInfo}
+                      handleEvent={handleEvent}/>
+              </div>
+              <footer className="flex-item-auto">
+                <div data-role={location + '_go_to_container'} className="c-200">
+                  <GoTo mode={this.state.bodyMode} data={this.state} events={onEvent}/>
+                </div>
+                <div data-role={location + '_pagination_containe'}
+                     className="flex filter_container justContent c-200">
+                  <Pagination mode={this.state.bodyMode} data={this.state} events={onEvent}
+                              handleEvent={handleEvent}/>
+                </div>
+              </footer>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     )
   }
 });
