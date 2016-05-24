@@ -581,6 +581,9 @@ const Panel = React.createClass({
           if (this.props.location !== "left") return;
           this.requestFriendByUserId(element);
           break;
+        case 'copyUserId':
+          this.copyUserId();
+          break;
       }
     }
   },
@@ -598,6 +601,21 @@ const Panel = React.createClass({
 
   changeMyUsers(){
     this.getInfoForBody();
+  },
+  
+  copyUserId(){
+    let input = this.inner_container.querySelector('[data-role="user_id"]');
+    input.disabled = false;
+    input.focus();
+    input.select();
+    try {
+      let successful = document.execCommand('copy'),
+        msg = successful ? 'successful' : 'unsuccessful';
+      console.log('Copy userId was ' + msg);
+    } catch (err) {
+      console.log('Oops, unable to copy');
+    }
+    input.disabled = true;
   },
 
   onInput() {
@@ -1309,7 +1327,7 @@ const Panel = React.createClass({
               <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
                 <Filter mode={this.state.bodyMode} data={this.state} events={onEvent}/>
               </div>
-              <div data-role="panel_body" className="overflow-a flex-item-1-auto" onTransitionend={this.transitionEnd}>
+              <div data-role="panel_body" className="overflow-a flex-item-1-auto p-t" onTransitionend={this.transitionEnd}>
                 <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
                       userInfo={this.state.userInfo? this.state.userInfo : this.props.userInfo}
                       handleEvent={handleEvent}/>

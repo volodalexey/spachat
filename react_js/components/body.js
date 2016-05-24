@@ -237,7 +237,7 @@ const Body = React.createClass({
       user_info_show_config: [
         {
           "role": "locationWrapper",
-          "classList": "w-100p p-t-b flex-sp-between",
+          "classList": "w-100p flex",
           "location": "user_id"
         },
         {
@@ -260,7 +260,7 @@ const Body = React.createClass({
           "type": "text",
           "icon": "",
           "text": "",
-          "class": "",
+          "class": "flex-grow_1",
           "location": "user_id",
           "data": {
             "role": "user_id",
@@ -272,10 +272,19 @@ const Body = React.createClass({
           "sort": 2,
           "mode": "USER_INFO_SHOW"
         },
+        {
+          "element": "button",
+          "text": 126,
+          "class": "button-convex",
+          "location": "user_id",
+          "data": {
+            "action": "copyUserId"
+          }
+        },
 
         {
           "role": "locationWrapper",
-          "classList": "w-100p p-t-b flex-sp-between",
+          "classList": "w-100p flex",
           "location": "user_name"
         },
         {
@@ -298,7 +307,7 @@ const Body = React.createClass({
           "type": "text",
           "icon": "",
           "text": "",
-          "class": "",
+          "class": "flex-grow_1",
           "location": "user_name",
           "data": {
             "key": "userName",
@@ -479,57 +488,6 @@ const Body = React.createClass({
           "data": {
             "throw": "true",
             "action": "requestChatByChatId",
-            "mode": "JOIN_CHAT"
-          },
-          "disable": false
-        },
-
-        {
-          "role": "locationWrapper",
-          "classList": "w-100p flex-sp-between",
-          "location": "remote_offer_label"
-        },
-        {
-          "element": "label",
-          "text": 7,
-          "location": "remote_offer_label",
-          "data": {
-            "role": "remote_offer_label",
-            "mode": "JOIN_CHAT"
-          },
-          "disable": false
-        },
-
-        {
-          "role": "locationWrapper",
-          "classList": "w-100p flex-sp-between",
-          "location": "remote_offer"
-        },
-        {
-          "element": "textarea",
-          "rows": "5",
-          "class": "w-100p",
-          "location": "remote_offer",
-          "data": {
-            "role": "remote_offer_textarea",
-            "mode": "JOIN_CHAT"
-          },
-          "disabled": false
-        },
-
-        {
-          "role": "locationWrapper",
-          "classList": "w-100p flex-sp-around",
-          "location": "remote_offer_btn"
-        },
-        {
-          "element": "button",
-          "text": 8,
-          "class": "button-inset-square",
-          "location": "remote_offer_btn",
-          "data": {
-            "throw": "true",
-            "action": "joinChatByChatSdp",
             "mode": "JOIN_CHAT"
           },
           "disable": false
