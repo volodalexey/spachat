@@ -223,9 +223,11 @@ body {
   min-height: 2.6em;
 }
 .popup {
-  z-index: 100;
   opacity: 0;
   background-color: rgba(207, 207, 207, 0.7);
+  left: 0;
+  top: 0;
+  z-index: 100;
   transform: scale(0);
   transition: transform 0.2s 0s cubic-bezier(0.23, 1, 0.44, 0.91), opacity 0.2s 0s cubic-bezier(0.23, 1, 0.44, 0.91);
 }
@@ -254,7 +256,7 @@ body {
   position: relative;
   padding: 1em 0.5em 0;
 }
-.text-line-center.succes {
+.text-line-center.success {
   border-top: 1px solid green;
 }
 .text-line-center.confirm {
@@ -262,6 +264,15 @@ body {
 }
 .text-line-center.error {
   border-top: 1px solid red;
+}
+.error .color {
+  color: red;
+}
+.confirm .color {
+  color: blue;
+}
+.success .color {
+  color: green;
 }
 .title-popup {
   position: relative;
@@ -456,6 +467,9 @@ img {
 }
 .flex {
   display: flex;
+}
+.flex-grow_1 {
+  flex-grow: 1;
 }
 button {
   position: relative;

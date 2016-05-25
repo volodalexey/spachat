@@ -9,15 +9,15 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(42);
+	var _reactDom = __webpack_require__(45);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _total = __webpack_require__(172);
+	var _total = __webpack_require__(175);
 
 	var _total2 = _interopRequireDefault(_total);
 
-	var _index = __webpack_require__(215);
+	var _index = __webpack_require__(218);
 
 	var _index2 = _interopRequireDefault(_index);
 
@@ -27,14 +27,14 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 172:
+/***/ 175:
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
 
-/***/ 215:
+/***/ 218:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47,25 +47,25 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(216);
+	var _reactRouter = __webpack_require__(219);
 
-	var _localization = __webpack_require__(273);
+	var _localization = __webpack_require__(280);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _login = __webpack_require__(297);
+	var _login = __webpack_require__(292);
 
 	var _login2 = _interopRequireDefault(_login);
 
-	var _chat_app = __webpack_require__(300);
+	var _chat_app = __webpack_require__(307);
 
 	var _chat_app2 = _interopRequireDefault(_chat_app);
 
-	var _register = __webpack_require__(331);
+	var _register = __webpack_require__(343);
 
 	var _register2 = _interopRequireDefault(_register);
 
@@ -94,15 +94,12 @@ webpackJsonp([0],{
 	},
 	    Index = _react2.default.createClass({
 	  displayName: 'Index',
-
-	  componentDidMount: function componentDidMount() {
-	    _localization2.default.setMainComponent(this);
+	  componentWillMount: function componentWillMount() {
 	    var language = localStorage.getItem('language');
 	    if (language && _localization2.default.lang !== language) {
-	      _localization2.default.changeLanguage(language);
+	      _localization2.default.setLanguage(language);
 	    }
 	  },
-
 	  render: function render() {
 	    return _react2.default.createElement(
 	      _reactRouter.Router,
@@ -124,7 +121,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 273:
+/***/ 280:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -139,7 +136,7 @@ webpackJsonp([0],{
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var localization_config = __webpack_require__(274);
+	var localization_config = __webpack_require__(281);
 
 
 	var Localization = function Localization(lang) {
@@ -147,9 +144,19 @@ webpackJsonp([0],{
 	};
 
 	Localization.prototype = {
-	  changeLanguage: function changeLanguage(lang) {
+	  changeLanguage: function changeLanguage(lang, component) {
 	    this.lang = lang;
-	    this.mainComponent.forceUpdate();
+	    var language = localStorage.getItem('language');
+	    if (!language || language !== lang) {
+	      localStorage.setItem('language', lang);
+	    }
+	    component.forceUpdate();
+	  },
+	  setLanguage: function setLanguage(lang) {
+	    this.lang = lang;
+	  },
+	  transferText: function transferText(_text) {
+	    return typeof _text === 'number' ? this.getLocText(_text) : _text;
 	  },
 	  getLocText: function getLocText(id) {
 	    var _this = this;
@@ -162,9 +169,6 @@ webpackJsonp([0],{
 	      return !text;
 	    });
 	    return text;
-	  },
-	  setMainComponent: function setMainComponent(mainComponent) {
-	    this.mainComponent = mainComponent;
 	  }
 	};
 
@@ -172,7 +176,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 274:
+/***/ 281:
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -218,8 +222,8 @@ webpackJsonp([0],{
 		},
 		{
 			"id": 9,
-			"en": "User id",
-			"ru": "Id контакта"
+			"en": "User id: ",
+			"ru": "Id контакта: "
 		},
 		{
 			"id": 10,
@@ -353,8 +357,8 @@ webpackJsonp([0],{
 		},
 		{
 			"id": 36,
-			"en": "User name",
-			"ru": "Имя контакта"
+			"en": "User name: ",
+			"ru": "Имя контакта: "
 		},
 		{
 			"id": 37,
@@ -463,8 +467,8 @@ webpackJsonp([0],{
 		},
 		{
 			"id": 58,
-			"en": "Restore and show chat",
-			"ru": "Восстановить и показать чат"
+			"en": "Restore chat",
+			"ru": "Восстановить чат"
 		},
 		{
 			"id": 59,
@@ -733,8 +737,8 @@ webpackJsonp([0],{
 		},
 		{
 			"id": 112,
-			"en": "Copy this line and send the user to whom you want to add to chat.  {url}",
-			"ru": "Скопируйте данную строку и отошлите пользователю, которого Вы хотите добавить в чат.  {url}"
+			"en": "Copy this line and send the user to whom you want to add to chat. ",
+			"ru": "Скопируйте данную строку и отошлите пользователю, которого Вы хотите добавить в чат. "
 		},
 		{
 			"id": 113,
@@ -750,12 +754,67 @@ webpackJsonp([0],{
 			"id": 115,
 			"en": "Target connection is not found or not ready!",
 			"ru": "Соединение с указанным пользователем не найдено или не готово!"
+		},
+		{
+			"id": 116,
+			"en": "Downloadable image is too large. Select another image.",
+			"ru": "Загружаемое изображение превышает допустимый размер. Выберите другое изображение."
+		},
+		{
+			"id": 117,
+			"en": "Avatar",
+			"ru": "Аватар"
+		},
+		{
+			"id": 118,
+			"en": "No data to save.",
+			"ru": "Данных для сохранения нет."
+		},
+		{
+			"id": 119,
+			"en": "Default avatar",
+			"ru": "Аватар по умолчанию"
+		},
+		{
+			"id": 120,
+			"en": "Synchronize messages",
+			"ru": "Синхронизировать сообщения"
+		},
+		{
+			"id": 121,
+			"en": "There are no active contacts",
+			"ru": "Нет активных контактов"
+		},
+		{
+			"id": 122,
+			"en": "Open chat with the original settings",
+			"ru": "Открыть чат с первоначальными настройками"
+		},
+		{
+			"id": 123,
+			"en": "Open chat with the stored user settings",
+			"ru": "Открыть чат с сохраненными пользовательскими настройками"
+		},
+		{
+			"id": 124,
+			"en": "Reconnect",
+			"ru": "Переподключение"
+		},
+		{
+			"id": 125,
+			"en": "Of participants: ",
+			"ru": "Участников: "
+		},
+		{
+			"id": 126,
+			"en": "Copy",
+			"ru": "Копировать"
 		}
 	];
 
 /***/ },
 
-/***/ 275:
+/***/ 282:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -764,23 +823,23 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _cookie_core = __webpack_require__(277);
+	var _cookie_core = __webpack_require__(284);
 
 	var _cookie_core2 = _interopRequireDefault(_cookie_core);
 
-	var _indexeddb = __webpack_require__(278);
+	var _indexeddb = __webpack_require__(285);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _websocket = __webpack_require__(283);
+	var _websocket = __webpack_require__(290);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
@@ -876,7 +935,7 @@ webpackJsonp([0],{
 	        }
 
 	        if (_callback) {
-	          _callback(null, contactsInfo);
+	          _callback(null, contactsInfo, options);
 	        }
 	      });
 	    } else {
@@ -916,11 +975,25 @@ webpackJsonp([0],{
 	      if (callback) {
 	        callback(null, {
 	          user_id: userInfo.user_id,
-	          userName: userInfo.userName
+	          userName: userInfo.userName,
+	          avatar_data: userInfo.avatar_data
 	        });
 	      }
 	    });
 	  },
+
+	  getUserName: function getUserName(_user_id, user_ids) {
+	    var user_name = void 0;
+	    user_ids.every(function (_contactInfo) {
+	      if (_contactInfo.user_id === _user_id) {
+	        user_name = _contactInfo.userName;
+	      }
+	      return !user_name;
+	    });
+
+	    return user_name;
+	  },
+
 
 	  hasInArray: function hasInArray(_array, item) {
 	    var found;
@@ -975,7 +1048,7 @@ webpackJsonp([0],{
 	    });
 	  },
 
-	  storeNewUser: function storeNewUser(user_id, userName, userPassword, callback) {
+	  storeNewUser: function storeNewUser(user_id, userName, userPassword, avatar_data, lastModifyDatetime, callback) {
 	    var self = this;
 	    _indexeddb2.default.addGlobalUser(user_id, userName, userPassword, function (err) {
 	      if (err) {
@@ -988,6 +1061,8 @@ webpackJsonp([0],{
 	        user_id: user_id,
 	        userName: userName,
 	        userPassword: userPassword,
+	        avatar_data: avatar_data,
+	        lastChangeDatetime: lastModifyDatetime,
 	        user_ids: [],
 	        chat_ids: []
 	      };
@@ -1011,7 +1086,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 276:
+/***/ 283:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1058,7 +1133,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 277:
+/***/ 284:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1117,7 +1192,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 278:
+/***/ 285:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1128,11 +1203,11 @@ webpackJsonp([0],{
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _async_core = __webpack_require__(279);
+	var _async_core = __webpack_require__(286);
 
 	var _async_core2 = _interopRequireDefault(_async_core);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
@@ -1144,7 +1219,7 @@ webpackJsonp([0],{
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var globalUsersDatabaseDescription = __webpack_require__(282);
+	var globalUsersDatabaseDescription = __webpack_require__(289);
 
 	var indexeddb = function (_AsyncCore) {
 	  _inherits(indexeddb, _AsyncCore);
@@ -1669,7 +1744,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 279:
+/***/ 286:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1758,7 +1833,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 280:
+/***/ 287:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1767,11 +1842,11 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _event_core = __webpack_require__(281);
+	var _event_core = __webpack_require__(288);
 
 	var _event_core2 = _interopRequireDefault(_event_core);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
@@ -1796,7 +1871,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 281:
+/***/ 288:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1870,7 +1945,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 282:
+/***/ 289:
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -1887,7 +1962,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 283:
+/***/ 290:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1896,21 +1971,17 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _id_core = __webpack_require__(284);
+	var _id_core = __webpack_require__(291);
 
 	var _id_core2 = _interopRequireDefault(_id_core);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
-
-	var _popup = __webpack_require__(285);
-
-	var _popup2 = _interopRequireDefault(_popup);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1939,7 +2010,7 @@ webpackJsonp([0],{
 
 	  create: function create() {
 	    var url;
-	    if (window.location.hostname.indexOf('localhost') >= 0) {
+	    if (window.location.hostname.indexOf('localhost') >= 0 || window.location.hostname.indexOf('192.168.') >= 0) {
 	      url = this.protocol + window.location.host;
 	    } else {
 	      url = this.protocol + window.location.hostname + this.port;
@@ -1987,19 +2058,7 @@ webpackJsonp([0],{
 	    if (event.wasClean) {
 	      console.warn('WebSocket connection closed');
 	    } else {
-	      _event_bus2.default.trigger('changeStatePopup', {
-	        show: true,
-	        type: 'error',
-	        message: 103,
-	        onDataActionClick: function onDataActionClick(action) {
-	          switch (action) {
-	            case 'confirmCancel':
-	              newState = _popup2.default.prototype.handleClose(this.state);
-	              this.setState(newState);
-	              break;
-	          }
-	        }
-	      });
+	      _event_bus2.default.trigger("websocket_abortConnection", 103);
 	    }
 	    console.warn('Code: ' + event.code + ' reason: ' + event.reason);
 	  },
@@ -2071,7 +2130,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 284:
+/***/ 291:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2123,873 +2182,6 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 285:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _localization = __webpack_require__(273);
-
-	var _localization2 = _interopRequireDefault(_localization);
-
-	var _dom_core = __webpack_require__(286);
-
-	var _dom_core2 = _interopRequireDefault(_dom_core);
-
-	var _extend_core = __webpack_require__(276);
-
-	var _extend_core2 = _interopRequireDefault(_extend_core);
-
-	var _utils = __webpack_require__(287);
-
-	var _utils2 = _interopRequireDefault(_utils);
-
-	var _location_wrapper = __webpack_require__(288);
-
-	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Popup = _react2.default.createClass({
-	  displayName: 'Popup',
-
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      confirmConfig: {
-	        header: [{
-	          "role": "locationWrapper",
-	          "classList": "p-r-l-04em color-blue title-popup",
-	          "location": "header"
-	        }, {
-	          "element": "label",
-	          "text": 80,
-	          "class": "c-50 p-r-l-04em",
-	          "location": "header",
-	          "data": {
-	            "role": ""
-	          }
-	        }],
-	        content: [{
-	          "role": "locationWrapper",
-	          "classList": "w-100p p-t-b flex-sp-between",
-	          "location": "body"
-	        }, {
-	          "element": "label",
-	          "text": "",
-	          "class": "p-b-1em p-r-l-1em",
-	          "location": "body",
-	          "data": {
-	            "role": "",
-	            "key": "body_text"
-	          }
-	        }, {
-	          "role": "locationWrapper",
-	          "classList": "flex-sp-around p-05em border-popap-footer",
-	          "location": "footer"
-	        }, {
-	          "element": "button",
-	          "location": "footer",
-	          "class": "border-radius-04em p-tb-03em-lr-1em",
-	          "text": 42,
-	          "data": {
-	            "action": "confirmCancel",
-	            "description": 98
-	          }
-	        }, {
-	          "element": "button",
-	          "location": "footer",
-	          "class": "border-radius-04em p-tb-03em-lr-1em",
-	          "text": 97,
-	          "data": {
-	            "action": "confirmOk",
-	            "description": 99
-	          }
-	        }]
-	      },
-	      errorConfig: {
-	        header: [{
-	          "role": "locationWrapper",
-	          "classList": "p-r-l-04em color-red title-popup",
-	          "location": "header"
-	        }, {
-	          "element": "label",
-	          "text": 84,
-	          "class": "c-50 p-r-l-04em",
-	          "location": "header",
-	          "data": {
-	            "role": ""
-	          }
-	        }],
-
-	        content: [{
-	          "role": "locationWrapper",
-	          "classList": "w-100p p-t-b flex-sp-between",
-	          "location": "body"
-	        }, {
-	          "element": "label",
-	          "text": "",
-	          "class": "p-b-1em p-r-l-1em",
-	          "location": "body",
-	          "data": {
-	            "role": "",
-	            "key": "body_text"
-	          }
-	        }, {
-	          "role": "locationWrapper",
-	          "classList": "flex-sp-around p-05em border-popup-footer",
-	          "location": "footer"
-	        }, {
-	          "element": "button",
-	          "location": "footer",
-	          "class": "border-radius-04em p-tb-03em-lr-1em",
-	          "text": 20,
-	          "data": {
-	            "action": "confirmCancel",
-	            "description": 21
-	          }
-	        }]
-	      },
-	      successConfig: {
-	        header: [{
-	          "role": "locationWrapper",
-	          "classList": "p-r-l-04em color-green title-popup",
-	          "location": "header"
-	        }, {
-	          "element": "label",
-	          "text": 85,
-	          "class": "c-50 p-r-l-04em",
-	          "location": "header",
-	          "data": {
-	            "role": ""
-	          }
-	        }],
-	        content: [{
-	          "role": "locationWrapper",
-	          "classList": "w-100p p-t-b flex-sp-between",
-	          "location": "body"
-	        }, {
-	          "element": "label",
-	          "text": "",
-	          "class": "p-b-1em p-r-l-1em",
-	          "location": "body",
-	          "data": {
-	            "role": "",
-	            "key": "body_text"
-	          }
-	        }, {
-	          "role": "locationWrapper",
-	          "classList": "flex-sp-around p-05em border-popup-footer",
-	          "location": "footer"
-	        }, {
-	          "element": "button",
-	          "location": "footer",
-	          "class": "border-radius-04em p-tb-03em-lr-1em",
-	          "text": 20,
-	          "data": {
-	            "action": "confirmCancel",
-	            "description": 21
-	          }
-	        }]
-	      },
-	      mainContainer: {
-	        "element": "div",
-	        "class": "c-50 border-radius-05em min-width-350"
-	      }
-	    };
-	  },
-
-	  handleClick: function handleClick(event) {
-	    if (this.onDataActionClick) {
-	      var element = this.getDataParameter(event.target, 'action');
-	      if (element) {
-	        this.onDataActionClick(element.dataset.action);
-	      }
-	    }
-	  },
-
-	  handleClose: function handleClose(state) {
-	    state.popupOptions.messagePopupShow = false;
-	    state.popupOptions.type = '';
-	    state.popupOptions.options = {};
-	    state.popupOptions.onDataActionClick = null;
-	    return { popupOptions: state.popupOptions };
-	  },
-
-	  handleChangeState: function handleChangeState(state, show, type, message, onDataActionClick, data) {
-	    state.popupOptions.messagePopupShow = show;
-	    state.popupOptions.type = type;
-	    state.popupOptions.options = { message: message };
-	    state.popupOptions.onDataActionClick = onDataActionClick;
-	    if (data) {
-	      state.popupOptions.data = data;
-	    }
-	    return { popupOptions: state.popupOptions };
-	  },
-
-	  defineParams: function defineParams(params) {
-	    var config = void 0,
-	        text = void 0;
-	    this.onDataActionClick = params.onDataActionClick;
-	    switch (params.type) {
-	      case 'confirm':
-	        config = this.props.confirmConfig;
-	        break;
-	      case 'error':
-	        config = this.props.errorConfig;
-	        console.warn(params.options);
-	        break;
-	      case 'success':
-	        config = this.props.successConfig;
-	        break;
-	    }
-	    text = typeof params.options.message === "number" ? _localization2.default.getLocText(params.options.message) : params.options.message;
-	    if (params.data) {
-	      text = _utils2.default.objectToUrl(params.data, text);
-	    }
-	    return {
-	      "body_text": text,
-	      "configs": config,
-	      "type": params.type
-	    };
-	  },
-
-	  defineClass: function defineClass() {
-	    var className = void 0;
-	    if (this.props.show) {
-	      className = "flex-outer-container p-fx popup in";
-	    } else {
-	      className = "flex-outer-container p-fx popup hidden-popup";
-	    }
-	    return className;
-	  },
-
-	  render: function render() {
-	    var className = this.defineClass();
-	    if (this.props.show && this.props.options) {
-	      var params = this.defineParams(this.props.options);
-	      return _react2.default.createElement(
-	        'div',
-	        { 'data-role': 'popup_outer_container', className: className },
-	        _react2.default.createElement(
-	          'div',
-	          { 'data-role': 'popup_inner_container', className: 'c-50 border-radius-05em min-width-350',
-	            onClick: this.handleClick },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'text-line-center flex-just-center ' + this.props.options.type },
-	            _react2.default.createElement(_location_wrapper2.default, { configs: params.configs.header, data: params })
-	          ),
-	          _react2.default.createElement(_location_wrapper2.default, { configs: params.configs.content, data: params })
-	        )
-	      );
-	    } else {
-	      return _react2.default.createElement(
-	        'div',
-	        { 'data-role': 'popup_outer_container', className: className },
-	        _react2.default.createElement(
-	          'div',
-	          { 'data-role': 'popup_inner_container', className: 'c-50 border-radius-05em min-width-350',
-	            onClick: this.handleClick },
-	          _react2.default.createElement('div', { className: 'text-line-center flex-just-center ' + this.props.options.type })
-	        )
-	      );
-	    }
-	  }
-	});
-
-	_extend_core2.default.prototype.inherit(Popup, _dom_core2.default);
-
-	exports.default = Popup;
-
-/***/ },
-
-/***/ 286:
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Dom_core = function Dom_core() {};
-
-	Dom_core.prototype = {
-
-	  __class_name: "dom_core",
-
-	  /**
-	   * find parent node with predefined dataset
-	   */
-	  traverseUpToDataset: function traverseUpToDataset(startElement, datasetKey, datasetValue) {
-	    var parentNode = startElement.parentNode;
-	    if (parentNode) {
-	      if (parentNode.dataset && parentNode.dataset[datasetKey] === datasetValue) {
-	        return parentNode;
-	      } else {
-	        return this.traverseUpToDataset(parentNode, datasetKey, datasetValue);
-	      }
-	    } else {
-	      return null;
-	    }
-	  },
-
-	  getDataParameter: function getDataParameter(element, param, _n) {
-	    if (!element) {
-	      return null;
-	    }
-	    if (element.disabled && param !== "description") {
-	      return null;
-	    }
-	    var n = !(_n === undefined || _n === null) ? _n : 5;
-	    if (n > 0) {
-	      if (!element.dataset || !element.dataset[param]) {
-	        return this.getDataParameter(element.parentNode, param, n - 1);
-	      } else if (element.dataset[param]) {
-	        return element;
-	      }
-	    }
-	    return null;
-	  },
-
-
-	  getOffset: function getOffset(element) {
-	    var offsetLeft = 0,
-	        offsetTop = 0;
-	    do {
-	      offsetLeft += element.offsetLeft;
-	      offsetTop += element.offsetTop;
-	    } while (element = element.offsetParent);
-	    return { offsetLeft: offsetLeft, offsetTop: offsetTop };
-	  }
-
-	};
-
-	exports.default = Dom_core;
-
-/***/ },
-
-/***/ 287:
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var Utils = function Utils() {};
-
-	Utils.prototype = {
-
-	  /**
-	   * prepare url by input object
-	   */
-
-	  objectToUrl: function objectToUrl(objectData, initial_url) {
-	    var url = initial_url;
-	    Object.keys(objectData).forEach(function (key) {
-	      var str_key = '{' + key + '}';
-	      if (url.indexOf(str_key) >= 0) {
-	        url = url.replace(str_key, objectData[key]);
-	      }
-	    });
-	    return url;
-	  }
-	};
-
-	exports.default = new Utils();
-
-/***/ },
-
-/***/ 288:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _triple_element = __webpack_require__(289);
-
-	var _triple_element2 = _interopRequireDefault(_triple_element);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Location_Wrapper = _react2.default.createClass({
-	  displayName: 'Location_Wrapper',
-
-	  prepareConfig: function prepareConfig() {
-	    var rawConfig = this.props.configs,
-	        byDataLocation = {};
-	    if (!rawConfig) return rawConfig;
-	    rawConfig.forEach(function (_config) {
-	      if (!_config.location) {
-	        return;
-	      }
-	      if (!byDataLocation[_config.location]) {
-	        byDataLocation[_config.location] = {
-	          configs: []
-	        };
-	      }
-	      if (!_config.role) {
-	        byDataLocation[_config.location].configs.push(_config);
-	      } else if (_config.role === 'locationWrapper') {
-	        byDataLocation[_config.location].wrapperConfig = _config;
-	      }
-	    });
-	    rawConfig.byDataLocation = byDataLocation;
-	    return rawConfig;
-	  },
-
-	  render_att: function render_att(config) {
-	    var params = {};
-	    if (config.classList) {
-	      params['className'] = config.classList;
-	    }
-	    if (config.role) {
-	      params['role'] = config.role;
-	    }
-	    return params;
-	  },
-
-	  wrapper: function wrapper(wrapperConfig, wrapperItems) {
-	    return _react2.default.createElement(
-	      'div',
-	      _extends({ key: wrapperConfig.location }, this.render_att(wrapperConfig)),
-	      this.wrapperItems(wrapperItems)
-	    );
-	  },
-
-	  wrapperItems: function wrapperItems(_wrapperItems) {
-	    var _this = this;
-
-	    var items = [],
-	        hide = void 0,
-	        self = this;
-	    _wrapperItems.map(function (element_config, idx) {
-	      if (element_config.data && element_config.data.action === "togglePanel" && self.props.hide) {
-	        hide = true;
-	      } else {
-	        hide = false;
-	      }
-	      items.push(_react2.default.createElement(_triple_element2.default, { mode: _this.props.mode, events: _this.props.events, key: idx, config: element_config,
-	        hide: hide, data: _this.props.data, calcDisplay: _this.props.calcDisplay }));
-	    });
-	    return items;
-	  },
-
-	  renderAttMainContainer: function renderAttMainContainer() {
-	    var params = {};
-	    if (this.props.mainContainer.class) {
-	      params["className"] = this.props.mainContainer.class;
-	    }
-	    if (this.props.mainContainer.data) {
-	      for (var dataKey in this.props.mainContainer.data) {
-	        if (this.props.mainContainer.data[dataKey] !== "") {
-	          params['data-' + dataKey] = this.props.mainContainer.data[dataKey];
-	        }
-	      }
-	    }
-	    return params;
-	  },
-
-	  render: function render() {
-	    var rawConfig = this.prepareConfig(),
-	        elements = [];
-	    if (Object.keys(rawConfig.byDataLocation).length === 0) {
-	      elements.push(this.wrapperItems(rawConfig));
-	    } else {
-	      for (var key in rawConfig.byDataLocation) {
-	        var wrapperConfig = rawConfig.byDataLocation[key].wrapperConfig;
-	        var wrapperItems = rawConfig.byDataLocation[key].configs;
-	        elements.push(this.wrapper(wrapperConfig, wrapperItems));
-	      }
-	    }
-	    if (this.props.mainContainer) {
-	      return _react2.default.createElement(
-	        'div',
-	        this.renderAttMainContainer(),
-	        elements
-	      );
-	    } else {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        elements
-	      );
-	    }
-	  }
-	});
-
-	exports.default = Location_Wrapper;
-
-/***/ },
-
-/***/ 289:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _button = __webpack_require__(290);
-
-	var _button2 = _interopRequireDefault(_button);
-
-	var _link_button = __webpack_require__(291);
-
-	var _link_button2 = _interopRequireDefault(_link_button);
-
-	var _input = __webpack_require__(292);
-
-	var _input2 = _interopRequireDefault(_input);
-
-	var _label = __webpack_require__(293);
-
-	var _label2 = _interopRequireDefault(_label);
-
-	var _select = __webpack_require__(294);
-
-	var _select2 = _interopRequireDefault(_select);
-
-	var _textarea = __webpack_require__(295);
-
-	var _textarea2 = _interopRequireDefault(_textarea);
-
-	var _svg = __webpack_require__(296);
-
-	var _svg2 = _interopRequireDefault(_svg);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	var TripleElement = _react2.default.createClass({
-	  displayName: 'TripleElement',
-
-	  definingElement: function definingElement() {
-	    var _React$createElement;
-
-	    switch (this.props.config.element) {
-	      case "button":
-	        if (this.props.config.link) {
-	          return _react2.default.createElement(_link_button2.default, { mode: this.props.mode, events: this.props.events, config: this.props.config,
-	            data: this.props.data });
-	        } else {
-	          return _react2.default.createElement(_button2.default, { mode: this.props.mode, events: this.props.events, config: this.props.config,
-	            hide: this.props.hide, data: this.props.data, calcDisplay: this.props.calcDisplay });
-	        }
-	        break;
-	      case "label":
-	        return _react2.default.createElement(_label2.default, (_React$createElement = { events: this.props.events }, _defineProperty(_React$createElement, 'events', this.props.events), _defineProperty(_React$createElement, 'config', this.props.config), _defineProperty(_React$createElement, 'data', this.props.data), _defineProperty(_React$createElement, 'calcDisplay', this.props.calcDisplay), _React$createElement));
-	        break;
-	      case "input":
-	        return _react2.default.createElement(_input2.default, { events: this.props.events, config: this.props.config, data: this.props.data,
-	          calcDisplay: this.props.calcDisplay });
-	        break;
-	      case "select":
-	        return _react2.default.createElement(_select2.default, { events: this.props.events, config: this.props.config, data: this.props.data });
-	        break;
-	      case "textarea":
-	        return _react2.default.createElement(_textarea2.default, { events: this.props.events, config: this.props.config, data: this.props.data });
-	        break;
-	      case "svg":
-	        return _react2.default.createElement(_svg2.default, { events: this.props.events, config: this.props.config, data: this.props.data });
-	        break;
-	      default:
-	        return _react2.default.createElement('div', null);
-	        break;
-	    }
-	  },
-
-	  render: function render() {
-	    return this.definingElement();
-	  }
-	});
-
-	exports.default = TripleElement;
-
-/***/ },
-
-/***/ 290:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _localization = __webpack_require__(273);
-
-	var _localization2 = _interopRequireDefault(_localization);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Button = _react2.default.createClass({
-	  displayName: 'Button',
-	  renderAtt: function renderAtt() {
-	    var params = {},
-	        display = void 0;
-	    if (this.props.config.data) {
-	      for (var dataKey in this.props.config.data) {
-	        if (this.props.config.data[dataKey] !== "" && dataKey !== "description") {
-	          params['data-' + dataKey] = this.props.config.data[dataKey];
-	        }
-	        if (dataKey === "description" && typeof this.props.config.data[dataKey] === 'number') {
-	          params['data-' + dataKey] = _localization2.default.getLocText(this.props.config.data[dataKey]);
-	        }
-	      }
-	    }
-
-	    if (this.props.config.disable === true) {
-	      params["disabled"] = 'true';
-	    }
-
-	    if (this.props.data && this.props.config.data && this.props.data[this.props.config.data.key_disable]) {
-	      params['disabled'] = this.props.data[this.props.config.data.key_disable];
-	      var flag = true;
-	      var src = "/__build__/svg/" + this.props.config.icon + ".svg";
-	    }
-
-	    if (this.props.calcDisplay) {
-	      display = this.props.calcDisplay(this.props.config);
-	    }
-	    if (display !== undefined && display !== true) {
-	      params['style'] = { display: 'none' };
-	    }
-
-	    if (this.props.config.type) {
-	      params['type'] = this.props.config.type;
-	    }
-	    if (this.props.config.data && this.props.config.data.key) {
-	      params['data-value'] = this.props.data[this.props.config.data.key];
-	    }
-	    return params;
-	  },
-
-	  renderHandlers: function renderHandlers() {
-	    var handlers = {};
-	    if (this.props.events) {
-	      for (var dataKey in this.props.events) {
-	        handlers[dataKey] = this.props.events[dataKey];
-	      }
-	    }
-	    return handlers;
-	  },
-
-	  renderContent: function renderContent() {
-	    var content = [];
-	    if (this.props.config.icon) {
-	      if (this.flag) {
-	        content.push(_react2.default.createElement(
-	          'div',
-	          null,
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'opacity-05 cursor-not-allowed' },
-	            _react2.default.createElement('img', { src: this.src })
-	          )
-	        ));
-	      } else {
-	        content.push(_react2.default.createElement('img', { key: this.props.config.icon, 'data-onload': this.props.config.onload ? 'true' : '',
-	          'data-role': this.props.config.data.role,
-	          src: "/__build__/svg/" + this.props.config.icon + ".svg" }));
-	      }
-	    }
-	    if (this.props.config.text) {
-	      content.push(typeof this.props.config.text === "number" ? _localization2.default.getLocText(this.props.config.text) : this.props.config.text);
-	    } else {
-	      content.push("");
-	    }
-	    if (this.props.config.data && this.props.config.data.key) {
-	      content.push(this.props.data[this.props.config.data.key]);
-	    }
-	    if (this.props.config.data && this.props.config.data.description) {
-	      content.push(_react2.default.createElement('img', { key: "description", src: '/__build__/svg/description_icon.svg',
-	        className: 'description_icon-position' }));
-	    }
-	    return content;
-	  },
-
-	  renderClassName: function renderClassName() {
-	    var className = void 0;
-	    if (this.props.hide) {
-	      className = this.props.config.class ? this.props.config.class + 'hide' : '';
-	    } else {
-	      className = this.props.config.class ? this.props.config.class : '';
-	    }
-
-	    if (this.props.config.data && this.props.config.data.mode_to && this.props.config.data.mode_to === this.props.mode) {
-	      className = className + ' activeTollbar';
-	    }
-	    return className;
-	  },
-
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'button',
-	      _extends({ className: this.renderClassName() }, this.renderAtt(), this.renderHandlers()),
-	      this.renderContent()
-	    );
-	  }
-	});
-
-	exports.default = Button;
-
-/***/ },
-
-/***/ 291:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRouter = __webpack_require__(216);
-
-	var _localization = __webpack_require__(273);
-
-	var _localization2 = _interopRequireDefault(_localization);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var LinkButton = _react2.default.createClass({
-	  displayName: 'LinkButton',
-	  renderAtt: function renderAtt() {
-	    var params = {};
-	    if (this.props.config.data) {
-	      for (var dataKey in this.props.config.data) {
-	        if (this.props.config.data[dataKey] !== "" && dataKey !== "description") {
-	          params['data-' + dataKey] = this.props.config.data[dataKey];
-	        }
-	        if (dataKey === "description" && typeof this.props.config.data[dataKey] === 'number') {
-	          params['data-' + dataKey] = _localization2.default.getLocText(this.props.config.data[dataKey]);
-	        }
-	      }
-	    }
-
-	    if (this.props.config.disable === true) {
-	      params["disabled"] = 'true';
-	    }
-
-	    if (this.props.data && this.props.config.data.key_disable && this.props.data[this.props.config.data.key_disable]) {
-	      params['disabled'] = this.props.data[this.props.config.data.key_disable];
-	      var flag = true;
-	      var src = "/__build__/svg/" + this.props.config.icon + ".svg";
-	    }
-
-	    if (this.props.config.type) {
-	      params['type'] = this.props.config.type;
-	    }
-	    if (this.props.config.data && this.props.config.data.key) {
-	      params['data-value'] = this.props.data[this.props.config.data.key];
-	    }
-
-	    return params;
-	  },
-
-	  renderHandlers: function renderHandlers() {
-	    var handlers = {};
-	    if (this.props.events) {
-	      for (var dataKey in this.props.events) {
-	        handlers[dataKey] = this.props.events[dataKey];
-	      }
-	    }
-	    return handlers;
-	  },
-
-	  renderContent: function renderContent() {
-	    var content = [];
-	    if (this.props.config.icon) {
-	      if (this.flag) {
-	        content.push(_react2.default.createElement(
-	          'div',
-	          null,
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'opacity-05 cursor-not-allowed' },
-	            _react2.default.createElement('img', { src: this.src })
-	          )
-	        ));
-	      } else {
-	        content.push(_react2.default.createElement('img', { key: this.props.config.icon, src: "/__build__/svg/" + this.props.config.icon + ".svg" }));
-	      }
-	    }
-	    if (this.props.config.text) {
-	      content.push(typeof this.props.config.text === "number" ? _localization2.default.getLocText(this.props.config.text) : this.props.config.text);
-	    } else {
-	      content.push("");
-	    }
-	    if (this.props.config.data && this.props.config.data.key) {
-	      content.push(this.props.data[this.props.config.data.key]);
-	    }
-	    if (this.props.config.data && this.props.config.data.description) {
-	      content.push(_react2.default.createElement('img', { key: "description", src: '/__build__/svg/description_icon.svg',
-	        className: 'description_icon-position' }));
-	    }
-	    return content;
-	  },
-
-	  render: function render() {
-	    return _react2.default.createElement(
-	      _reactRouter.Link,
-	      { to: this.props.config.link },
-	      _react2.default.createElement(
-	        'button',
-	        _extends({
-	          className: this.props.config.class ? this.props.config.class : '' }, this.renderAtt(), this.renderHandlers()),
-	        this.renderContent()
-	      )
-	    );
-	  }
-	});
-
-	exports.default = LinkButton;
-
-/***/ },
-
 /***/ 292:
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2999,447 +2191,41 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _react = __webpack_require__(12);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _localization = __webpack_require__(273);
+	var _reactRouter = __webpack_require__(219);
 
-	var _localization2 = _interopRequireDefault(_localization);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Input = _react2.default.createClass({
-	  displayName: 'Input',
-
-	  renderAtt: function renderAtt() {
-	    var params = {},
-	        display = void 0;
-	    if (this.props.config.autoComplete) {
-	      params["autoComplete"] = this.props.config.autoComplete;
-	    }
-	    if (this.props.config.class) {
-	      params["className"] = this.props.config.class;
-	    }
-	    if (this.props.config.data) {
-	      for (var dataKey in this.props.config.data) {
-	        if (this.props.config.data[dataKey] !== "") {
-	          params['data-' + dataKey] = this.props.config.data[dataKey];
-	        }
-	      }
-	    }
-	    if (this.props.calcDisplay) {
-	      display = this.props.calcDisplay(this.props.config);
-	    }
-	    if (display !== undefined && display !== true) {
-	      params['style'] = { display: 'none' };
-	    }
-
-	    if (this.props.id) {
-	      params['id'] = this.props.config.id;
-	    }
-	    if (this.props.config.disabled === true) {
-	      params["disabled"] = 'true';
-	    }
-	    if (this.props.config.onkeypress) {
-	      params["onkeypress"] = this.props.config.onkeypress;
-	    }
-	    if (this.props.config.type === "checkbox" || this.props.config.type === "radio") {
-	      if (this.props.config.data.key) {
-	        if (this.props.data[this.props.config.data.key]) {
-	          params["checked"] = 'true';
-	        }
-	      }
-	    }
-	    if (this.props.config.data && this.props.config.data.key === "page") {
-	      params["value"] = this.props.data[this.props.config.data.key];
-	    }
-	    if (this.props.config.name) {
-	      params['id'] = this.props.config.id;
-	      if (this.props.config.type === "radio" && this.props.data.index !== undefined) {
-	        params['name'] = this.props.config.name + '_' + this.props.data.index;
-	      } else {
-	        params['name'] = this.props.config.name;
-	      }
-	    }
-	    if (this.props.config.type === "text") {
-	      if (this.props.config.data && this.props.config.data.key && this.props.data) {
-	        if (this.props.data[this.props.config.data.key]) {
-	          params["value"] = this.props.data[this.props.config.data.key];
-	        }
-	      }
-	    }
-	    return params;
-	  },
-
-	  renderContent: function renderContent() {
-	    var content;
-	    if (typeof this.props.config.text === "number") {
-	      content = _localization2.default.getLocText(this.props.config.text);
-	    } else {
-	      content = this.props.config.text;
-	    }
-	    return { __html: content };
-	  },
-
-	  routerWillLeave: function routerWillLeave() {
-	    if (this.stateInfo.value) return 'You have unsaved information, are you sure you want to leave this page?';
-	  },
-
-	  renderHandlers: function renderHandlers() {
-	    var handlers = {};
-	    if (this.props.events) {
-	      for (var dataKey in this.props.events) {
-	        handlers[dataKey] = this.props.events[dataKey];
-	      }
-	    }
-	    return handlers;
-	  },
-
-	  render: function render() {
-	    if (this.props.config.text) {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'flex-item flex-wrap flex-align-c flex-item-auto' },
-	        _react2.default.createElement('input', _extends({ type: this.props.config.type }, this.renderAtt(), this.renderHandlers())),
-	        _react2.default.createElement('span', { dangerouslySetInnerHTML: this.renderContent() })
-	      );
-	    } else {
-	      return _react2.default.createElement('input', _extends({ type: this.props.config.type }, this.renderAtt(), this.renderHandlers()));
-	    }
-	  }
-	});
-
-	exports.default = Input;
-
-/***/ },
-
-/***/ 293:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _localization = __webpack_require__(273);
-
-	var _localization2 = _interopRequireDefault(_localization);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Label = _react2.default.createClass({
-	  displayName: 'Label',
-
-	  renderAtt: function renderAtt() {
-	    var params = {};
-	    if (this.props.config.class) {
-	      params["className"] = this.props.config.class;
-	    }
-	    if (this.props.config.name) {
-	      params["name"] = this.props.config.name;
-	    }
-	    if (this.props.config.for) {
-	      params["for"] = this.props.config.for;
-	    }
-
-	    var display = void 0;
-	    if (this.props.calcDisplay) {
-	      display = this.props.calcDisplay(this.props.config);
-	    }
-	    if (display !== undefined && display !== true) {
-	      params['style'] = { display: 'none' };
-	    }
-
-	    if (this.props.config.data) {
-	      for (var configDataKey in this.props.config.data) {
-	        if (this.props.config.data[configDataKey] !== "") {
-	          params['data-' + configDataKey] = this.props.config.data[configDataKey];
-	        }
-	      }
-	    }
-	    if (this.props.config.data && this.props.config.key) {
-	      params['data-' + this.props.config.key] = this.props.data[this.props.config.key];
-	    }
-	    return params;
-	  },
-
-	  renderHandlers: function renderHandlers() {
-	    var handlers = {};
-	    if (this.props.events) {
-	      for (var dataKey in this.props.events) {
-	        handlers[dataKey] = this.props.events[dataKey];
-	      }
-	    }
-	    return handlers;
-	  },
-
-	  renderContent: function renderContent() {
-	    var text = void 0;
-	    if (this.props.config.text) {
-	      text = typeof this.props.config.text === "number" ? _localization2.default.getLocText(this.props.config.text) : this.props.config.text;
-	    } else {
-	      text = '';
-	    }
-
-	    if (this.props.data && this.props.data.description) {
-	      if (typeof this.props.data.description === 'number') {
-	        text = _localization2.default.getLocText(this.props.data.description);
-	      } else {
-	        text = this.props.data.description;
-	      }
-	    }
-
-	    if (this.props.config.data && this.props.config.data.key) {
-	      text = this.props.data[this.props.config.data.key];
-	    }
-	    return text;
-	  },
-
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'label',
-	      _extends({}, this.renderAtt(), this.renderHandlers()),
-	      this.renderContent()
-	    );
-	  }
-	});
-
-	exports.default = Label;
-
-/***/ },
-
-/***/ 294:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _localization = __webpack_require__(273);
-
-	var _localization2 = _interopRequireDefault(_localization);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Select = _react2.default.createClass({
-	  displayName: 'Select',
-	  render_att: function render_att() {
-	    var params = {};
-	    if (this.props.config.class) {
-	      params["className"] = this.props.config.class;
-	    }
-	    if (this.props.config.name) {
-	      params["name"] = this.props.config.name;
-	    }
-	    if (this.props.config.for) {
-	      params["for"] = this.props.config.for;
-	    }
-	    if (this.props.config.data) {
-	      for (var configDataKey in this.props.config.data) {
-	        if (this.props.config.data[configDataKey] !== "") {
-	          params['data-' + configDataKey] = this.props.config.data[configDataKey];
-	        }
-	      }
-	    }
-
-	    return params;
-	  },
-
-	  handleChange: function handleChange(event) {
-	    switch (event.target.dataset.action) {
-	      case "changeLanguage":
-	        _localization2.default.changeLanguage(event.target.value);
-	        break;
-	    }
-	  },
-
-	  renderHandlers: function renderHandlers() {
-	    var handlers = {};
-	    if (this.props.events) {
-	      for (var dataKey in this.props.events) {
-	        handlers[dataKey] = this.props.events[dataKey];
-	      }
-	    }
-	    return handlers;
-	  },
-
-	  render: function render() {
-	    var defaultValue;
-	    var options = this.props.config.select_options.map(function (option, i) {
-	      if (_localization2.default.lang === option.value) {
-	        defaultValue = option.value;
-	      }
-	      return _react2.default.createElement(
-	        'option',
-	        { key: i, value: option.value },
-	        option.text
-	      );
-	    }, this);
-	    return _react2.default.createElement(
-	      'div',
-	      null,
-	      _react2.default.createElement(
-	        'select',
-	        _extends({ value: defaultValue }, this.render_att(), this.renderHandlers()),
-	        options
-	      )
-	    );
-	  }
-	});
-
-	exports.default = Select;
-
-/***/ },
-
-/***/ 295:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _localization = __webpack_require__(273);
-
-	var _localization2 = _interopRequireDefault(_localization);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Textarea = _react2.default.createClass({
-	  displayName: 'Textarea',
-
-	  render_att: function render_att() {
-	    var params = {};
-	    if (this.props.config.data) {
-	      for (var configDataKey in this.props.config.data) {
-	        if (this.props.config.data[configDataKey] !== "") {
-	          params['data-' + configDataKey] = this.props.config.data[configDataKey];
-	        }
-	      }
-	    }
-	    if (this.props.config.rows) {
-	      params['rows'] = this.props.config.rows;
-	    }
-	    if (this.props.config.value !== "") {
-	      params['value'] = this.props.config.value;
-	    }
-	    return params;
-	  },
-
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'textarea',
-	      _extends({ className: this.props.config.class ? this.props.config.class : '' }, this.render_att()),
-	      this.props.config.text
-	    );
-	  }
-	});
-
-	exports.default = Textarea;
-
-/***/ },
-
-/***/ 296:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Svg = _react2.default.createClass({
-	  displayName: 'Svg',
-
-	  render: function render() {
-	    var className = 'transition-all ';
-	    if (this.props.data && this.props.data.pointerRotate !== -1) {
-	      className = className + 'rotate-90';
-	    }
-	    return _react2.default.createElement('img', { src: "/__build__/svg/" + this.props.config.icon, className: className,
-	      'data-role': 'pointer' });
-	  }
-	});
-
-	exports.default = Svg;
-
-/***/ },
-
-/***/ 297:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRouter = __webpack_require__(216);
-
-	var _location_wrapper = __webpack_require__(288);
+	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _popup = __webpack_require__(285);
-
-	var _popup2 = _interopRequireDefault(_popup);
-
-	var _description = __webpack_require__(298);
+	var _description = __webpack_require__(302);
 
 	var _description2 = _interopRequireDefault(_description);
 
-	var _localization = __webpack_require__(273);
+	var _dialogError = __webpack_require__(304);
+
+	var _dialogError2 = _interopRequireDefault(_dialogError);
+
+	var _localization = __webpack_require__(280);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _indexeddb = __webpack_require__(278);
+	var _indexeddb = __webpack_require__(285);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _overlay_core = __webpack_require__(299);
+	var _overlay_core = __webpack_require__(306);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
@@ -3447,13 +2233,13 @@ webpackJsonp([0],{
 
 	var Login = _react2.default.createClass({
 	  displayName: 'Login',
-
-
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      mainContainer: {
 	        "element": "div",
-	        "class": "flex-inner-container"
+	        "config": {
+	          "class": "flex-inner-container"
+	        }
 	      },
 	      configs: [{
 	        "role": "locationWrapper",
@@ -3556,52 +2342,39 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
 	  getInitialState: function getInitialState() {
 	    return {
 	      lang: _localization2.default.lang,
-	      popupOptions: {
-	        messagePopupShow: false,
-	        type: '',
-	        options: {},
-	        onDataActionClick: null
-	      }
+	      errorMessage: null
 	    };
 	  },
-
 	  componentDidMount: function componentDidMount() {
 	    this.loginForm = document.querySelector('[data-role="loginForm"]');
 	    this.loginForm.addEventListener('click', this.handleClick, true);
 	    this.toggleWaiter();
 	  },
-
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.loginForm = null;
 	  },
-
 	  handleClick: function handleClick(event) {
 	    if (event.currentTarget.dataset.action === 'clickRedirectToRegister') {
 	      this.clickRedirectToRegister(event);
 	    }
 	  },
-
+	  handleDialogError: function handleDialogError() {
+	    this.setState({ errorMessage: null });
+	  },
 	  handleChange: function handleChange(event) {
 	    switch (event.target.dataset.action) {
 	      case "changeLanguage":
-	        _localization2.default.changeLanguage(event.target.value);
-	        var language = localStorage.getItem('language');
-	        if (!language || language !== event.target.value) {
-	          localStorage.setItem('language', event.target.value);
-	        }
+	        _localization2.default.changeLanguage(event.target.value, this);
 	        break;
 	    }
 	  },
-
 	  handleSubmit: function handleSubmit(event) {
 	    event.preventDefault();
 
 	    var self = this,
-	        newState = void 0,
 	        userName = this.loginForm.elements.userName.value,
 	        userPassword = this.loginForm.elements.userPassword.value;
 	    if (userName && userPassword) {
@@ -3609,15 +2382,7 @@ webpackJsonp([0],{
 	      _indexeddb2.default.getGlobalUserCredentials(userName, userPassword, function (err, userCredentials) {
 	        if (err) {
 	          self.toggleWaiter();
-	          newState = _popup2.default.prototype.handleChangeState(self.state, true, 'error', err, function (action) {
-	            switch (action) {
-	              case 'confirmCancel':
-	                newState = _popup2.default.prototype.handleClose(self.state);
-	                self.setState(newState);
-	                break;
-	            }
-	          });
-	          self.setState(newState);
+	          self.setState({ errorMessage: err });
 	          return;
 	        }
 
@@ -3635,44 +2400,19 @@ webpackJsonp([0],{
 	              }
 	            } else {
 	              self.toggleWaiter();
-	              newState = _popup2.default.prototype.handleChangeState(self.state, true, 'error', 104, function (action) {
-	                switch (action) {
-	                  case 'confirmCancel':
-	                    newState = _popup2.default.prototype.handleClose(self.state);
-	                    self.setState(newState);
-	                    break;
-	                }
-	              });
-	              self.setState(newState);
+	              self.setState({ errorMessage: 104 });
 	            }
 	          });
 	        } else {
 	          self.toggleWaiter();
 	          _users_bus2.default.setUserId(null);
-	          newState = _popup2.default.prototype.handleChangeState(self.state, true, 'error', 87, function (action) {
-	            switch (action) {
-	              case 'confirmCancel':
-	                newState = _popup2.default.prototype.handleClose(self.state);
-	                self.setState(newState);
-	                break;
-	            }
-	          });
-	          self.setState(newState);
+	          self.setState({ errorMessage: 87 });
 	        }
 	      });
 	    } else {
-	      newState = _popup2.default.prototype.handleChangeState(this.state, true, 'error', 88, function (action) {
-	        switch (action) {
-	          case 'confirmCancel':
-	            newState = _popup2.default.prototype.handleClose(self.state);
-	            self.setState(newState);
-	            break;
-	        }
-	      });
-	      this.setState(newState);
+	      this.setState({ errorMessage: 88 });
 	    }
 	  },
-
 	  clickRedirectToRegister: function clickRedirectToRegister(event) {
 	    event.preventDefault();
 	    event.stopPropagation();
@@ -3683,11 +2423,9 @@ webpackJsonp([0],{
 	      location.replace('register');
 	    }
 	  },
-
 	  handleEvents: function handleEvents(event) {
 	    this.descriptionContext.showDescription(event);
 	  },
-
 	  render: function render() {
 	    var _this = this;
 
@@ -3717,7 +2455,8 @@ webpackJsonp([0],{
 	          )
 	        )
 	      ),
-	      _react2.default.createElement(_popup2.default, { show: this.state.popupOptions.messagePopupShow, options: this.state.popupOptions }),
+	      _react2.default.createElement(_dialogError2.default, { show: this.state.errorMessage, message: this.state.errorMessage,
+	        handleClick: this.handleDialogError }),
 	      _react2.default.createElement(_description2.default, { ref: function ref(obj) {
 	          return _this.descriptionContext = obj;
 	        } })
@@ -3730,7 +2469,244 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 298:
+/***/ 293:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _element = __webpack_require__(294);
+
+	var _triple_element = __webpack_require__(295);
+
+	var _triple_element2 = _interopRequireDefault(_triple_element);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Location_Wrapper = _react2.default.createClass({
+	  displayName: 'Location_Wrapper',
+	  prepareConfig: function prepareConfig() {
+	    var rawConfig = this.props.configs,
+	        byDataLocation = {};
+	    if (!rawConfig) return rawConfig;
+	    rawConfig.forEach(function (_config) {
+	      if (!_config.location) {
+	        return;
+	      }
+	      if (!byDataLocation[_config.location]) {
+	        byDataLocation[_config.location] = {
+	          configs: []
+	        };
+	      }
+	      if (!_config.role) {
+	        byDataLocation[_config.location].configs.push(_config);
+	      } else if (_config.role === 'locationWrapper') {
+	        byDataLocation[_config.location].wrapperConfig = _config;
+	      }
+	    });
+	    rawConfig.byDataLocation = byDataLocation;
+	    return rawConfig;
+	  },
+	  wrapper: function wrapper(wrapperConfig, wrapperItems) {
+	    return _react2.default.createElement(
+	      'div',
+	      _extends({ key: wrapperConfig.location }, _element.element.renderAttributes({ config: wrapperConfig })),
+	      this.wrapperItems(wrapperItems)
+	    );
+	  },
+	  wrapperItems: function wrapperItems(_wrapperItems) {
+	    var _this = this;
+
+	    var items = [],
+	        hide = void 0,
+	        self = this;
+	    _wrapperItems.map(function (element_config, idx) {
+	      if (element_config.data && element_config.data.action === "togglePanel" && self.props.hide) {
+	        hide = true;
+	      } else {
+	        hide = false;
+	      }
+	      items.push(_react2.default.createElement(_triple_element2.default, { mode: _this.props.mode, events: _this.props.events, key: idx, config: element_config,
+	        hide: hide, data: _this.props.data, calcDisplay: _this.props.calcDisplay }));
+	    });
+	    return items;
+	  },
+	  render: function render() {
+	    var rawConfig = this.prepareConfig(),
+	        elements = [];
+	    if (Object.keys(rawConfig.byDataLocation).length === 0) {
+	      elements.push(this.wrapperItems(rawConfig));
+	    } else {
+	      for (var key in rawConfig.byDataLocation) {
+	        var wrapperConfig = rawConfig.byDataLocation[key].wrapperConfig;
+	        var wrapperItems = rawConfig.byDataLocation[key].configs;
+	        elements.push(this.wrapper(wrapperConfig, wrapperItems));
+	      }
+	    }
+	    if (this.props.mainContainer) {
+	      return _react2.default.createElement(
+	        'div',
+	        _element.element.renderAttributes(this.props.mainContainer),
+	        elements
+	      );
+	    } else {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        elements
+	      );
+	    }
+	  }
+	});
+
+	exports.default = Location_Wrapper;
+
+/***/ },
+
+/***/ 294:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.element = undefined;
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Element = function Element() {};
+
+	Element.prototype = {
+
+	  /**
+	   * prepare data attribute for each provided data object key
+	   */
+
+	  renderDataAttributes: function renderDataAttributes(data_config, result) {
+	    if (!result) {
+	      result = {};
+	    }
+	    if (data_config.data) {
+	      Object.keys(data_config.data).forEach(function (key) {
+	        if (key === 'description' && typeof data_config.data[key] === 'number') {
+	          result['data-' + key] = _localization2.default.getLocText(data_config.data[key]);
+	        } else {
+	          result['data-' + key] = data_config.data[key];
+	        }
+	      });
+	    }
+	    return result;
+	  },
+
+
+	  /**
+	   * prepare attributes object fro react
+	   */
+	  renderAttributes: function renderAttributes(props, options) {
+	    var params = {},
+	        config = props.config,
+	        display = void 0;
+	    if (config.role) {
+	      params['role'] = config.role;
+	    }
+	    if (config.autoComplete) {
+	      params["autoComplete"] = config.autoComplete;
+	    }
+	    if (config.name) {
+	      params["name"] = config.name;
+	    }
+	    if (config.type) {
+	      params['type'] = config.type;
+	    }
+	    if (config.class || config.classList) {
+	      params['className'] = this.renderClassName(config.class ? config.class : config.classList, props, options);
+	    }
+
+	    if (config.for) {
+	      params["for"] = config.for;
+	    }
+	    if (props.id) {
+	      params['id'] = config.id;
+	    }
+	    if (props.calcDisplay) {
+	      display = props.calcDisplay(config);
+	      if (display !== undefined && display !== true) {
+	        params['style'] = { display: 'none' };
+	      }
+	    }
+	    if (config.disabled === true) {
+	      params['disabled'] = 'true';
+	    }
+	    if (config.onkeypress) {
+	      params['onkeypress'] = config.onkeypress;
+	    }
+
+	    if (config.type === "checkbox" || config.type === "radio") {
+	      if (config.data.key) {
+	        if (props.data[props.config.data.key]) {
+	          params['checked'] = 'true';
+	        }
+	      }
+	    }
+
+	    this.renderDataAttributes(config, params);
+	    if (options) {
+	      this.renderOptionsAttributes(options, params);
+	    }
+	    return params;
+	  },
+	  renderOptionsAttributes: function renderOptionsAttributes(options_config, result) {
+	    if (!result) {
+	      result = {};
+	    }
+	    Object.keys(options_config).forEach(function (key) {
+	      if (key === 'classList') {
+	        result['className'] = result.className + options_config[key];
+	      } else {
+	        result[key] = options_config[key];
+	      }
+	    });
+	    return result;
+	  },
+	  renderHandlers: function renderHandlers(props) {
+	    var handlers = {};
+	    if (props.events) {
+	      Object.keys(props.events).forEach(function (key) {
+	        handlers[key] = props.events[key];
+	      });
+	    }
+	    return handlers;
+	  },
+	  renderClassName: function renderClassName(classList, props, options) {
+	    var _class = '';
+	    _class = classList ? classList : '';
+	    if (props.hide) {
+	      _class = _class + ' hide ';
+	    }
+	    return _class;
+	  }
+	};
+
+	var element = exports.element = new Element();
+	exports.default = Element;
+
+/***/ },
+
+/***/ 295:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3743,11 +2719,443 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _extend_core = __webpack_require__(276);
+	var _button = __webpack_require__(296);
+
+	var _button2 = _interopRequireDefault(_button);
+
+	var _input = __webpack_require__(297);
+
+	var _input2 = _interopRequireDefault(_input);
+
+	var _label = __webpack_require__(298);
+
+	var _label2 = _interopRequireDefault(_label);
+
+	var _select = __webpack_require__(299);
+
+	var _select2 = _interopRequireDefault(_select);
+
+	var _textarea = __webpack_require__(300);
+
+	var _textarea2 = _interopRequireDefault(_textarea);
+
+	var _svg = __webpack_require__(301);
+
+	var _svg2 = _interopRequireDefault(_svg);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	var TripleElement = _react2.default.createClass({
+	  displayName: 'TripleElement',
+	  definingElement: function definingElement() {
+	    var _React$createElement;
+
+	    switch (this.props.config.element) {
+	      case "button":
+	        return _react2.default.createElement(_button2.default, { mode: this.props.mode, events: this.props.events, config: this.props.config,
+	          hide: this.props.hide, data: this.props.data, calcDisplay: this.props.calcDisplay });
+	        break;
+	      case "label":
+	        return _react2.default.createElement(_label2.default, (_React$createElement = { events: this.props.events }, _defineProperty(_React$createElement, 'events', this.props.events), _defineProperty(_React$createElement, 'config', this.props.config), _defineProperty(_React$createElement, 'data', this.props.data), _defineProperty(_React$createElement, 'calcDisplay', this.props.calcDisplay), _React$createElement));
+	        break;
+	      case "input":
+	        return _react2.default.createElement(_input2.default, { events: this.props.events, config: this.props.config, data: this.props.data,
+	          calcDisplay: this.props.calcDisplay });
+	        break;
+	      case "select":
+	        return _react2.default.createElement(_select2.default, { events: this.props.events, config: this.props.config, data: this.props.data });
+	        break;
+	      case "textarea":
+	        return _react2.default.createElement(_textarea2.default, { events: this.props.events, config: this.props.config, data: this.props.data });
+	        break;
+	      case "svg":
+	        return _react2.default.createElement(_svg2.default, { events: this.props.events, config: this.props.config, data: this.props.data });
+	        break;
+	      default:
+	        return _react2.default.createElement('div', null);
+	        break;
+	    }
+	  },
+	  render: function render() {
+	    return this.definingElement();
+	  }
+	});
+
+	exports.default = TripleElement;
+
+/***/ },
+
+/***/ 296:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(219);
+
+	var _element = __webpack_require__(294);
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Button = _react2.default.createClass({
+	  displayName: 'Button',
+	  renderExtraAttributes: function renderExtraAttributes() {
+	    var options = {},
+	        config = this.props.config;
+	    if (config.data && config.data.mode_to && config.data.mode_to === this.props.mode) {
+	      options.classList = ' activeTollbar ';
+	    }
+
+	    return options;
+	  },
+	  renderContent: function renderContent() {
+	    var content = [],
+	        flag = void 0,
+	        config = this.props.config,
+	        data = this.props.config.data;
+	    if (config.icon) {
+	      if (this.props.data && data && this.props.data[data.key_disable]) {
+	        flag = true;
+	      }
+	      if (this.flag) {
+	        content.push(_react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'opacity-05 cursor-not-allowed' },
+	            _react2.default.createElement('img', { src: this.src })
+	          )
+	        ));
+	      } else {
+	        content.push(_react2.default.createElement('img', { key: config.icon, 'data-onload': config.onload ? 'true' : '',
+	          'data-role': config.data.role,
+	          src: "/__build__/svg/" + config.icon + ".svg" }));
+	      }
+	    }
+	    if (config.text) {
+	      content.push(typeof config.text === "number" ? _localization2.default.getLocText(config.text) : config.text);
+	    } else {
+	      content.push("");
+	    }
+	    if (data && data.key) {
+	      content.push(this.props.data[data.key]);
+	    }
+	    if (data && data.description) {
+	      content.push(_react2.default.createElement('img', { key: "description", src: '/__build__/svg/description_icon.svg',
+	        className: 'description_icon-position' }));
+	    }
+	    return content;
+	  },
+	  render: function render() {
+	    var pureButton = _react2.default.createElement(
+	      'button',
+	      _extends({}, _element.element.renderAttributes(this.props, this.renderExtraAttributes()), _element.element.renderHandlers(this.props)),
+	      this.renderContent(this.props)
+	    );
+	    return this.props.config.link ? _react2.default.createElement(
+	      _reactRouter.Link,
+	      { to: this.props.config.link },
+	      pureButton
+	    ) : pureButton;
+	  }
+	});
+
+	exports.default = Button;
+
+/***/ },
+
+/***/ 297:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _element = __webpack_require__(294);
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Input = _react2.default.createClass({
+	  displayName: 'Input',
+	  renderExtraAttributes: function renderExtraAttributes() {
+	    var options = {},
+	        config = this.props.config;
+	    if (config.data && config.data.key === "page") {
+	      options.value = this.props.data[config.data.key];
+	    }
+	    if (config.type === "text") {
+	      if (config.data && config.data.key && this.props.data) {
+	        if (this.props.data[config.data.key]) {
+	          options.value = this.props.data[config.data.key];
+	        }
+	      }
+	    }
+	    if (config.name) {
+	      options.id = this.props.config.id;
+	      if (this.props.config.type === "radio" && this.props.data.index !== undefined) {
+	        options.name = this.props.config.name + '_' + this.props.data.index;
+	      }
+	    }
+
+	    return options;
+	  },
+	  renderContent: function renderContent() {
+	    var content = void 0;
+	    if (typeof this.props.config.text === "number") {
+	      content = _localization2.default.getLocText(this.props.config.text);
+	    } else {
+	      content = this.props.config.text;
+	    }
+	    return { __html: content };
+	  },
+	  render: function render() {
+	    var pureInput = _react2.default.createElement('input', _extends({}, _element.element.renderAttributes(this.props, this.renderExtraAttributes()), _element.element.renderHandlers(this.props)));
+	    return this.props.config.text ? _react2.default.createElement(
+	      'div',
+	      { className: 'flex-item flex-wrap flex-align-c flex-item-auto' },
+	      pureInput,
+	      _react2.default.createElement('span', { dangerouslySetInnerHTML: this.renderContent() })
+	    ) : pureInput;
+	  }
+	});
+
+	exports.default = Input;
+
+/***/ },
+
+/***/ 298:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _element = __webpack_require__(294);
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Label = _react2.default.createClass({
+	  displayName: 'Label',
+	  renderContent: function renderContent() {
+	    var text = void 0,
+	        config = this.props.config,
+	        data = this.props.data;
+	    if (config.text) {
+	      text = typeof config.text === "number" ? _localization2.default.getLocText(config.text) : config.text;
+	    } else {
+	      text = '';
+	    }
+
+	    if (data && data.description) {
+	      if (typeof data.description === 'number') {
+	        text = _localization2.default.getLocText(data.description);
+	      } else {
+	        text = data.description;
+	      }
+	    }
+
+	    if (config.data && config.data.key) {
+	      text = data[config.data.key];
+	    }
+	    return text;
+	  },
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'label',
+	      _extends({}, _element.element.renderAttributes(this.props), _element.element.renderHandlers(this.props)),
+	      this.renderContent(this.props)
+	    );
+	  }
+	});
+
+	exports.default = Label;
+
+/***/ },
+
+/***/ 299:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _element = __webpack_require__(294);
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Select = _react2.default.createClass({
+	  displayName: 'Select',
+	  render: function render() {
+	    var defaultValue = void 0,
+	        options = this.props.config.select_options.map(function (option, i) {
+	      if (_localization2.default.lang === option.value) {
+	        defaultValue = option.value;
+	      }
+	      return _react2.default.createElement(
+	        'option',
+	        { key: i, value: option.value },
+	        option.text
+	      );
+	    });
+
+	    return _react2.default.createElement(
+	      'select',
+	      _extends({
+	        defaultValue: defaultValue }, _element.element.renderAttributes(this.props), _element.element.renderHandlers(this.props)),
+	      options
+	    );
+	  }
+	});
+
+	exports.default = Select;
+
+/***/ },
+
+/***/ 300:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _element = __webpack_require__(294);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Textarea = _react2.default.createClass({
+	  displayName: 'Textarea',
+	  renderExtraAttributes: function renderExtraAttributes() {
+	    var options = {},
+	        config = this.props.config;
+	    if (config.rows) {
+	      options.rows = config.rows;
+	    }
+	    if (config.value !== "") {
+	      options.value = config.value;
+	    }
+
+	    return options;
+	  },
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'textarea',
+	      _element.element.renderAttributes(this.props, this.renderExtraAttributes()),
+	      this.props.config.text
+	    );
+	  }
+	});
+
+	exports.default = Textarea;
+
+/***/ },
+
+/***/ 301:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Svg = _react2.default.createClass({
+	  displayName: 'Svg',
+	  render: function render() {
+	    var className = 'transition-all ';
+	    if (this.props.data && this.props.data.pointerRotate !== -1) {
+	      className = className + 'rotate-90';
+	    }
+	    return _react2.default.createElement('img', { src: "/__build__/svg/" + this.props.config.icon, className: className,
+	      'data-role': 'pointer' });
+	  }
+	});
+
+	exports.default = Svg;
+
+/***/ },
+
+/***/ 302:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(286);
+	var _dom_core = __webpack_require__(303);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
@@ -3755,7 +3163,6 @@ webpackJsonp([0],{
 
 	var Description = _react2.default.createClass({
 	  displayName: 'Description',
-
 	  getInitialState: function getInitialState() {
 	    return {
 	      left: '0px',
@@ -3764,15 +3171,12 @@ webpackJsonp([0],{
 	      content: ''
 	    };
 	  },
-
 	  componentDidMount: function componentDidMount() {
 	    this.descriptionContainer = document.querySelector('[data-role="description"]');
 	  },
-
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.descriptionContainer = null;
 	  },
-
 	  showDescription: function showDescription(event) {
 	    var description = this.descriptionContainer,
 	        element = void 0,
@@ -4029,7 +3433,6 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
 	  releaseDescription: function releaseDescription(event, description, prevent) {
 	    if (this.descriptionShow) {
 	      if (prevent) {
@@ -4047,7 +3450,6 @@ webpackJsonp([0],{
 	      });
 	    }
 	  },
-
 	  render: function render() {
 	    var className = this.state.opacity_0 ? "description opacity-0" : "description";
 	    return _react2.default.createElement(
@@ -4064,7 +3466,261 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 299:
+/***/ 303:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Dom_core = function Dom_core() {};
+
+	Dom_core.prototype = {
+
+	  __class_name: "dom_core",
+
+	  /**
+	   * find parent node with predefined dataset
+	   */
+	  traverseUpToDataset: function traverseUpToDataset(startElement, datasetKey, datasetValue) {
+	    var parentNode = startElement.parentNode;
+	    if (parentNode) {
+	      if (parentNode.dataset && parentNode.dataset[datasetKey] === datasetValue) {
+	        return parentNode;
+	      } else {
+	        return this.traverseUpToDataset(parentNode, datasetKey, datasetValue);
+	      }
+	    } else {
+	      return null;
+	    }
+	  },
+
+	  getDataParameter: function getDataParameter(element, param, _n) {
+	    if (!element) {
+	      return null;
+	    }
+	    if (element.disabled && param !== "description") {
+	      return null;
+	    }
+	    var n = !(_n === undefined || _n === null) ? _n : 5;
+	    if (n > 0) {
+	      if (!element.dataset || !element.dataset[param]) {
+	        return this.getDataParameter(element.parentNode, param, n - 1);
+	      } else if (element.dataset[param]) {
+	        return element;
+	      }
+	    }
+	    return null;
+	  },
+
+
+	  getOffset: function getOffset(element) {
+	    var offsetLeft = 0,
+	        offsetTop = 0;
+	    do {
+	      offsetLeft += element.offsetLeft;
+	      offsetTop += element.offsetTop;
+	    } while (element = element.offsetParent);
+	    return { offsetLeft: offsetLeft, offsetTop: offsetTop };
+	  }
+
+	};
+
+	exports.default = Dom_core;
+
+/***/ },
+
+/***/ 304:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	var _dialog = __webpack_require__(305);
+
+	var _dialog2 = _interopRequireDefault(_dialog);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var DialogError = _react2.default.createClass({
+	  displayName: 'DialogError',
+	  processingTitle: function processingTitle() {
+	    var title = void 0;
+	    if (this.props.title) {
+	      title = this.props.title;
+	      if (!title.textContent) {
+	        title.textContent = 84;
+	      }
+	      if (title.addClass) {
+	        title.addClass = ' error ' + title.addClass;
+	      } else {
+	        title.addClass = ' error ';
+	      }
+	    } else {
+	      title = { textContent: 84, addClass: ' error' };
+	    }
+
+	    return title;
+	  },
+	  processingBody: function processingBody() {
+	    var body = void 0;
+	    if (this.props.body) {
+	      body = this.props.body;
+	      if (!body.textContent) {
+	        body.textContent = this.props.message;
+	      }
+	    } else {
+	      body = { textContent: this.props.message };
+	    }
+
+	    return body;
+	  },
+	  processingFooter: function processingFooter() {
+	    var footer = void 0,
+	        _class = 'flex-sp-around p-05em border-popup-footer ';
+	    if (this.props.footer) {
+	      footer = this.props.footer;
+	      if (footer.content) {
+	        return footer.content;
+	      }
+	      if (footer.className) {
+	        _class = footer.className;
+	      } else {
+	        _class = footer.addClass ? _class + footer.addClass : _class;
+	      }
+	    }
+
+	    return _react2.default.createElement(
+	      'footer',
+	      { className: _class },
+	      _react2.default.createElement(
+	        'button',
+	        { className: 'border-radius-04em p-tb-03em-lr-1em', 'data-action': 'confirmCancel' },
+	        this.props.close ? _localization2.default.transferText(this.props.close) : _localization2.default.getLocText(20)
+	      )
+	    );
+	  },
+	  render: function render() {
+	    if (this.props.show) {
+	      var title = this.processingTitle(),
+	          body = this.processingBody(),
+	          footer = this.processingFooter();
+
+	      return _react2.default.createElement(_dialog2.default, { show: this.props.show, title: title, body: body, footer: footer,
+	        handleClick: this.props.handleClick });
+	    } else {
+	      return _react2.default.createElement(_dialog2.default, { show: this.props.show });
+	    }
+	  }
+	});
+
+	exports.default = DialogError;
+
+/***/ },
+
+/***/ 305:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Dialog = _react2.default.createClass({
+	  displayName: 'Dialog',
+	  renderTitle: function renderTitle() {
+	    var title = this.props.title;
+	    if (title.content) {
+	      return title.content;
+	    } else {
+	      var wrapperClass = void 0;
+	      wrapperClass = title.className ? title.className : title.addClass ? 'text-line-center flex-just-center ' + title.addClass : 'text-line-center flex-just-center ';
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: wrapperClass },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'p-r-l-04em color title-popup' },
+	          _react2.default.createElement(
+	            'label',
+	            { className: 'c-50 p-r-l-04em' },
+	            _localization2.default.transferText(title.textContent)
+	          )
+	        )
+	      );
+	    }
+	  },
+	  renderBody: function renderBody() {
+	    var body = this.props.body;
+	    if (body.content) {
+	      return body.content;
+	    } else {
+	      var wrapperClass = void 0;
+	      wrapperClass = body.className ? body.className : body.addClass ? 'w-100p p-t-b flex-sp-between ' + body.addClass : 'w-100p p-t-b flex-sp-between ';
+
+	      return _react2.default.createElement(
+	        'content',
+	        { className: wrapperClass },
+	        _react2.default.createElement(
+	          'label',
+	          { className: 'p-b-1em p-r-l-1em' },
+	          _localization2.default.transferText(body.textContent)
+	        )
+	      );
+	    }
+	  },
+	  render: function render() {
+	    return this.props.show ? _react2.default.createElement(
+	      'div',
+	      { 'data-role': 'popup_outer_container', className: 'flex-outer-container p-fx popup in' },
+	      _react2.default.createElement(
+	        'div',
+	        { 'data-role': 'popup_inner_container', className: 'c-50 border-radius-05em min-width-350',
+	          onClick: this.props.handleClick },
+	        this.renderTitle(),
+	        this.renderBody(),
+	        this.props.footer
+	      )
+	    ) : _react2.default.createElement('div', { 'data-role': 'popup_outer_container', className: 'flex-outer-container p-fx popup hidden-popup' });
+	  }
+	});
+
+	exports.default = Dialog;
+
+/***/ },
+
+/***/ 306:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4096,7 +3752,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 300:
+/***/ 307:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4109,89 +3765,89 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(216);
+	var _reactRouter = __webpack_require__(219);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _overlay_core = __webpack_require__(299);
+	var _overlay_core = __webpack_require__(306);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _panel = __webpack_require__(301);
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	var _dom_core = __webpack_require__(303);
+
+	var _dom_core2 = _interopRequireDefault(_dom_core);
+
+	var _websocket = __webpack_require__(290);
+
+	var _websocket2 = _interopRequireDefault(_websocket);
+
+	var _panel = __webpack_require__(308);
 
 	var _panel2 = _interopRequireDefault(_panel);
 
-	var _popup = __webpack_require__(285);
-
-	var _popup2 = _interopRequireDefault(_popup);
-
-	var _chats_manager = __webpack_require__(323);
+	var _chats_manager = __webpack_require__(334);
 
 	var _chats_manager2 = _interopRequireDefault(_chats_manager);
 
-	var _description = __webpack_require__(298);
+	var _description = __webpack_require__(302);
 
 	var _description2 = _interopRequireDefault(_description);
 
-	var _chat_resize = __webpack_require__(306);
+	var _chat_resize = __webpack_require__(342);
 
 	var _chat_resize2 = _interopRequireDefault(_chat_resize);
+
+	var _dialogError = __webpack_require__(304);
+
+	var _dialogError2 = _interopRequireDefault(_dialogError);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var ChatApp = _react2.default.createClass({
 	  displayName: 'ChatApp',
-
-
 	  getInitialState: function getInitialState() {
 	    return {
 	      windowWidth: window.innerWidth,
 	      userInfo: {},
-	      popupOptions: {
-	        messagePopupShow: false,
-	        type: '',
-	        options: {},
-	        onDataActionClick: null
-	      },
+	      errorMessageAbortConnection: null,
 	      scrollEachChat: true
 	    };
 	  },
-
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      LEFT: 'left',
 	      RIGHT: 'right'
 	    };
 	  },
-
 	  handleResize: function handleResize() {
 	    this.setState({ windowWidth: window.innerWidth });
 	  },
-
 	  componentDidMount: function componentDidMount() {
-	    _event_bus2.default.on('changeStatePopup', this.handleChangePopup, this);
+	    _event_bus2.default.on('websocket_abortConnection', this.abortConnection, this);
 	    _event_bus2.default.on('logout', this.logout, this);
 	    _event_bus2.default.on('setUserId', this.logout, this);
 	    _event_bus2.default.on('changeScrollEachChat', this.changeScrollEachChat, this);
 	  },
-
 	  componentWillUnmount: function componentWillUnmount() {
-	    _event_bus2.default.off('changeStatePopup', this.handleChangePopup, this);
+	    _event_bus2.default.off('websocket_abortConnection', this.abortConnection, this);
 	    _event_bus2.default.off('logout', this.logout, this);
 	    _event_bus2.default.off('setUserId', this.logout, this);
 	    _event_bus2.default.off('changeScrollEachChat', this.changeScrollEachChat, this);
 	  },
-
 	  componentWillMount: function componentWillMount() {
 	    var self = this,
 	        userId = _users_bus2.default.getUserId();
@@ -4204,13 +3860,26 @@ webpackJsonp([0],{
 	      });
 	    }
 	  },
-
-	  handleChangePopup: function handleChangePopup(options) {
-	    var newState = void 0;
-	    newState = _popup2.default.prototype.handleChangeState(this.state, options.show, options.type, options.message, options.onDataActionClick.bind(this), options.data);
-	    this.setState(newState);
+	  changeLanguage: function changeLanguage(lang) {
+	    _localization2.default.changeLanguage(lang, this);
 	  },
-
+	  abortConnection: function abortConnection(message) {
+	    this.setState({ errorMessageAbortConnection: message });
+	  },
+	  handleDialogAbortConnection: function handleDialogAbortConnection(event) {
+	    var element = this.getDataParameter(event.target, 'action');
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          this.setState({ errorMessageAbortConnection: null });
+	          break;
+	        case 'confirmOk':
+	          this.setState({ errorMessageAbortConnection: null });
+	          _websocket2.default.createAndListen();
+	          break;
+	      }
+	    }
+	  },
 	  changeScrollEachChat: function changeScrollEachChat(element) {
 	    this.setState({ scrollEachChat: element.checked });
 	  },
@@ -4232,28 +3901,20 @@ webpackJsonp([0],{
 	      })();
 	    }
 	  },
-
-
 	  savePanelStates: function savePanelStates(panelDescription, callback) {
 	    var self = this;
 	    _users_bus2.default.getMyInfo(null, function (error, options, userInfo) {
-	      if (error) {
-	        callback(error);
-	        return;
-	      }
+	      if (error) return callback(error);
 
+	      panelDescription.left.joinUser_ListOptions.readyForRequest = false;
 	      self.extend(userInfo, panelDescription);
 	      _users_bus2.default.saveMyInfo(userInfo, function (err) {
-	        if (err) {
-	          callback(err);
-	          return;
-	        }
+	        if (err) return callback(err);
 
 	        callback();
 	      });
 	    });
 	  },
-
 	  handleEvents: function handleEvents(event) {
 	    this.descriptionContext.showDescription(event);
 
@@ -4261,11 +3922,13 @@ webpackJsonp([0],{
 	      _event_bus2.default.trigger('onMouseUp', event);
 	    }
 	  },
-
 	  render: function render() {
 	    var _this2 = this;
 
 	    if (this.state.userInfo && this.state.userInfo.hasOwnProperty('user_id')) {
+	      var handleEvent = {
+	        changeLanguage: this.changeLanguage
+	      };
 	      return _react2.default.createElement(
 	        'div',
 	        { onMouseDown: this.handleEvents,
@@ -4282,30 +3945,43 @@ webpackJsonp([0],{
 	            className: this.state.scrollEachChat ? "w-100p h-100p p-abs" : "w-100p p-abs" },
 	          _react2.default.createElement(_chats_manager2.default, { scrollEachChat: this.state.scrollEachChat })
 	        ),
-	        _react2.default.createElement(_panel2.default, { location: this.props.RIGHT, userInfo: this.state.userInfo, data: this.state }),
-	        _react2.default.createElement(_popup2.default, { show: this.state.popupOptions.messagePopupShow, options: this.state.popupOptions }),
+	        _react2.default.createElement(_panel2.default, { location: this.props.RIGHT, userInfo: this.state.userInfo, data: this.state,
+	          handleEvent: handleEvent }),
+	        _react2.default.createElement(_dialogError2.default, { show: this.state.errorMessageAbortConnection, message: this.state.errorMessageAbortConnection,
+	          handleClick: this.handleDialogAbortConnection, footer: { content: _react2.default.createElement(
+	              'div',
+	              { className: 'flex-sp-around p-05em border-popup-footer' },
+	              _react2.default.createElement(
+	                'button',
+	                { className: 'border-radius-04em p-tb-03em-lr-1em', 'data-action': 'confirmCancel' },
+	                _localization2.default.getLocText(20)
+	              ),
+	              _react2.default.createElement(
+	                'button',
+	                { className: 'border-radius-04em p-tb-03em-lr-1em', 'data-action': 'confirmOk' },
+	                _localization2.default.getLocText(124)
+	              )
+	            ) } }),
 	        _react2.default.createElement(_description2.default, { ref: function ref(obj) {
 	            return _this2.descriptionContext = obj;
 	          } }),
 	        _react2.default.createElement(_chat_resize2.default, null)
 	      );
 	    } else {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(_popup2.default, { show: this.state.popupOptions.messagePopupShow, options: this.state.popupOptions })
-	      );
+	      return _react2.default.createElement('div', null);
 	    }
 	  }
 	});
+
 	_extend_core2.default.prototype.inherit(ChatApp, _overlay_core2.default);
 	_extend_core2.default.prototype.inherit(ChatApp, _extend_core2.default);
+	_extend_core2.default.prototype.inherit(ChatApp, _dom_core2.default);
 
 	exports.default = ChatApp;
 
 /***/ },
 
-/***/ 301:
+/***/ 308:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4318,87 +3994,81 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(42);
-
-	var _localization = __webpack_require__(273);
-
-	var _localization2 = _interopRequireDefault(_localization);
-
-	var _overlay_core = __webpack_require__(299);
+	var _overlay_core = __webpack_require__(306);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(286);
+	var _dom_core = __webpack_require__(303);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _chats_bus = __webpack_require__(302);
+	var _chats_bus = __webpack_require__(309);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _switcher_core = __webpack_require__(303);
+	var _switcher_core = __webpack_require__(310);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _websocket = __webpack_require__(283);
+	var _websocket = __webpack_require__(290);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _webrtc = __webpack_require__(304);
+	var _webrtc = __webpack_require__(311);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _triple_element = __webpack_require__(289);
+	var _triple_element = __webpack_require__(295);
 
 	var _triple_element2 = _interopRequireDefault(_triple_element);
 
-	var _popup = __webpack_require__(285);
-
-	var _popup2 = _interopRequireDefault(_popup);
-
-	var _description = __webpack_require__(298);
-
-	var _description2 = _interopRequireDefault(_description);
-
-	var _chat_resize = __webpack_require__(306);
-
-	var _chat_resize2 = _interopRequireDefault(_chat_resize);
-
-	var _extra_toolbar = __webpack_require__(307);
+	var _extra_toolbar = __webpack_require__(313);
 
 	var _extra_toolbar2 = _interopRequireDefault(_extra_toolbar);
 
-	var _filter = __webpack_require__(308);
+	var _filter = __webpack_require__(314);
 
 	var _filter2 = _interopRequireDefault(_filter);
 
-	var _panel_toolbar = __webpack_require__(309);
+	var _panel_toolbar = __webpack_require__(315);
 
 	var _panel_toolbar2 = _interopRequireDefault(_panel_toolbar);
 
-	var _body = __webpack_require__(310);
+	var _body = __webpack_require__(316);
 
 	var _body2 = _interopRequireDefault(_body);
 
-	var _pagination = __webpack_require__(321);
+	var _pagination = __webpack_require__(332);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
-	var _go_to = __webpack_require__(322);
+	var _go_to = __webpack_require__(333);
 
 	var _go_to2 = _interopRequireDefault(_go_to);
+
+	var _dialogConfirm = __webpack_require__(326);
+
+	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
+
+	var _dialogError = __webpack_require__(304);
+
+	var _dialogError2 = _interopRequireDefault(_dialogError);
+
+	var _dialogSuccess = __webpack_require__(331);
+
+	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4431,12 +4101,13 @@ webpackJsonp([0],{
 
 	var Panel = _react2.default.createClass({
 	  displayName: 'Panel',
-
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      mainContainer: {
 	        "element": "div",
-	        "class": "flex-inner-container"
+	        "config": {
+	          "class": "flex-inner-container"
+	        }
 	      },
 	      leftBtnConfig: {
 	        "element": "button",
@@ -4463,7 +4134,6 @@ webpackJsonp([0],{
 	      z_index: 80
 	    };
 	  },
-
 	  getInitialState: function getInitialState() {
 	    if (this.props.location === 'left') {
 	      return {
@@ -4476,13 +4146,13 @@ webpackJsonp([0],{
 	        toggleElemHide: false,
 	        toggleToolbarElemHide: true,
 	        bodyMode: "CREATE_CHAT",
+	        avatarMode: "SHOW",
+	        avatarData: '',
+	        avatarPrevious: '',
 
-	        popupOptions: {
-	          messagePopupShow: false,
-	          type: '',
-	          options: {},
-	          onDataActionClick: null
-	        },
+	        errorMessage: null,
+	        confirmMessageShowRemoteFriendshipRequest: null,
+	        confirmDialog_messageData: null,
 
 	        chats_GoToOptions: {
 	          text: "chats_GoToOptions",
@@ -4712,14 +4382,15 @@ webpackJsonp([0],{
 	        toggleElemHide: false,
 	        toggleToolbarElemHide: true,
 	        bodyMode: "USER_INFO_SHOW",
+	        avatarMode: "SHOW",
 	        scrollEachChat: true,
 
-	        popupOptions: {
-	          messagePopupShow: false,
-	          type: '',
-	          options: {},
-	          onDataActionClick: null
-	        },
+	        errorMessage: null,
+	        errorMessageWrongOldPassword: null,
+	        errorMessagePasswordsNotMatch: null,
+	        successMessageSaveChangeUserInfo: null,
+	        confirmMessageLogout: null,
+	        confirmDialog_messageData: null,
 
 	        connections_ExtraToolbarOptions: {
 	          show: false
@@ -4765,7 +4436,6 @@ webpackJsonp([0],{
 	      }), _ref;
 	    }
 	  },
-
 	  componentWillMount: function componentWillMount() {
 	    if (this.props.userInfo[this.props.location]) {
 	      this.setState(this.props.userInfo[this.props.location]);
@@ -4780,7 +4450,6 @@ webpackJsonp([0],{
 	      this.setState({ userInfo: this.props.userInfo });
 	    }
 	  },
-
 	  componentDidMount: function componentDidMount() {
 	    document.addEventListener('load', this.handleLoad, true);
 	    window.addEventListener('resize', this.resizePanel, false);
@@ -4788,6 +4457,7 @@ webpackJsonp([0],{
 	    if (this.props.location === "left") {
 	      _event_bus2.default.on('AddedNewChat', this.toggleListOptions);
 	      _event_bus2.default.on('changeOpenChats', this.getInfoForBody);
+	      _event_bus2.default.on('changeMyUsers', this.changeMyUsers);
 	      _event_bus2.default.on('web_socket_message', this.onPanelMessageRouter);
 	      _event_bus2.default.on('makeFriends', this.onForceMakeFriends);
 	      this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
@@ -4797,6 +4467,7 @@ webpackJsonp([0],{
 	    if (this.props.location === "right") {
 	      _event_bus2.default.on('changeConnection', this.changeConnection, this);
 	      _event_bus2.default.on('changeUsersConnections', this.changeConnection, this);
+	      _event_bus2.default.on('updateUserAvatar', this.updateUserAvatar, this);
 	      this.outerContainer = document.querySelector('[data-role="right_panel_outer_container"]');
 	      this.inner_container = document.querySelector('[data-role="right_panel_inner_container"]');
 	      this.outerContainer.style.left = '100vw';
@@ -4820,7 +4491,6 @@ webpackJsonp([0],{
 	      this.togglePanel(null, options);
 	    }
 	  },
-
 	  componentWillUnmount: function componentWillUnmount() {
 	    document.removeEventListener('load', this.handleLoad);
 	    window.removeEventListener('resize', this.resizePanel);
@@ -4828,10 +4498,12 @@ webpackJsonp([0],{
 	    if (this.props.location === "left") {
 	      _event_bus2.default.off('AddedNewChat', this.toggleListOptions);
 	      _event_bus2.default.off('changeOpenChats', this.getInfoForBody);
+	      _event_bus2.default.off('changeMyUsers', this.changeMyUsers);
 	      _event_bus2.default.off('web_socket_message', this.onPanelMessageRouter);
 	    } else if (this.props.location === "right") {
 	      _event_bus2.default.off('changeConnection', this.changeConnection, this);
 	      _event_bus2.default.off('changeUsersConnections', this.changeConnection, this);
+	      _event_bus2.default.off('updateUserAvatar', this.updateUserAvatar, this);
 	    }
 
 	    this.outerContainer = null;
@@ -4844,7 +4516,6 @@ webpackJsonp([0],{
 	    this.newPassword = null;
 	    this.confirmPassword = null;
 	  },
-
 	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
 	    this.resizePanel();
 	    if (this.state.bodyMode === MODE.USER_INFO_EDIT) {
@@ -4857,7 +4528,6 @@ webpackJsonp([0],{
 	      this.setState({ userInfo: this.props.userInfo });
 	    }
 	  },
-
 	  handleClick: function handleClick(event) {
 	    var element = this.getDataParameter(event.currentTarget, 'action'),
 	        currentOptions = void 0,
@@ -4950,14 +4620,12 @@ webpackJsonp([0],{
 	          if (this.props.location !== "left") return;
 	          this.requestFriendByUserId(element);
 	          break;
-	        case 'readyForFriendRequest':
-	          if (this.props.location !== "left") return;
-	          this.readyForFriendRequest(element);
+	        case 'copyUserId':
+	          this.copyUserId();
 	          break;
 	      }
 	    }
 	  },
-
 	  handleLoad: function handleLoad(event) {
 	    if (!this.togglePanelElement) return;
 	    if (this.props.location === "left" && event.target.dataset.onload && event.target.dataset.role === 'mainButtonLeftPanel') {
@@ -4968,9 +4636,24 @@ webpackJsonp([0],{
 	    }
 	    this.resizePanel();
 	  },
-
+	  changeMyUsers: function changeMyUsers() {
+	    this.getInfoForBody();
+	  },
+	  copyUserId: function copyUserId() {
+	    var input = this.inner_container.querySelector('[data-role="user_id"]');
+	    input.disabled = false;
+	    input.focus();
+	    input.select();
+	    try {
+	      var successful = document.execCommand('copy'),
+	          msg = successful ? 'successful' : 'unsuccessful';
+	      console.log('Copy userId was ' + msg);
+	    } catch (err) {
+	      console.log('Oops, unable to copy');
+	    }
+	    input.disabled = true;
+	  },
 	  onInput: function onInput() {},
-
 	  handleChange: function handleChange(event) {
 	    var currentOptions = void 0,
 	        self = this;
@@ -5009,10 +4692,69 @@ webpackJsonp([0],{
 	          _event_bus2.default.trigger('changeScrollEachChat', element);
 	          this.setState({ scrollEachChat: element.checked });
 	          break;
+	        case 'readyForFriendRequest':
+	          if (this.props.location !== "left") return;
+	          this.readyForFriendRequest(element);
+	          break;
 	      }
 	    }
 	  },
-
+	  handleDialogError: function handleDialogError() {
+	    this.setState({ errorMessage: null });
+	  },
+	  handleDialogWrongOldPassword: function handleDialogWrongOldPassword() {
+	    this.oldPassword.value = '';
+	    this.newPassword.value = '';
+	    this.confirmPassword.value = '';
+	    this.setState({ errorMessageWrongOldPassword: null });
+	  },
+	  handleDialogPasswordsNotMatch: function handleDialogPasswordsNotMatch() {
+	    this.newPassword.value = '';
+	    this.confirmPassword.value = '';
+	    this.setState({ errorMessagePasswordsNotMatch: null });
+	  },
+	  handleDialogSaveChangeUserInfo: function handleDialogSaveChangeUserInfo() {
+	    this.setState({ bodyMode: MODE.USER_INFO_SHOW, successMessageSaveChangeUserInfo: null });
+	    this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
+	    this.user = null;
+	  },
+	  handleDialogLogout: function handleDialogLogout(event) {
+	    var element = this.getDataParameter(event.target, 'action');
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          _users_bus2.default.setUserId(null);
+	          _event_bus2.default.trigger("chatsDestroy");
+	          break;
+	      }
+	      this.setState({ confirmMessageLogout: null });
+	    }
+	  },
+	  handleDialogShowRemoteFriendshipRequest: function handleDialogShowRemoteFriendshipRequest(event) {
+	    var element = this.getDataParameter(event.target, 'action');
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          var messageData = this.state.confirmDialog_messageData;
+	          this.listenWebRTCConnection(messageData.from_user_id);
+	          this.listenNotifyUser(messageData.from_user_id);
+	          _websocket2.default.sendMessage({
+	            type: "friendship_confirmed",
+	            from_user_id: _users_bus2.default.getUserId(),
+	            to_user_id: messageData.from_user_id,
+	            request_body: messageData.request_body
+	          });
+	          console.log('handleConnectedDevices', messageData.user_wscs_descrs);
+	          _webrtc2.default.handleConnectedDevices(messageData.user_wscs_descrs);
+	          break;
+	      }
+	      this.setState({ confirmMessageShowRemoteFriendshipRequest: null, confirmDialog_messageData: null });
+	    }
+	  },
 	  handleTransitionEnd: function handleTransitionEnd(event) {
 	    if (event.target.dataset && event.target.dataset.role === 'detail_view_container') {
 	      var chatIdValue = event.target.dataset.chat_id;
@@ -5025,7 +4767,6 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  closeChat: function closeChat(element) {
 	    if (this.props.location === "left") {
 	      var parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
@@ -5033,30 +4774,9 @@ webpackJsonp([0],{
 	      _event_bus2.default.trigger('toCloseChat', element.dataset.role, chatId);
 	    }
 	  },
-
 	  logout: function logout() {
-	    var newState = void 0;
-	    _event_bus2.default.trigger('changeStatePopup', {
-	      show: true,
-	      type: 'confirm',
-	      message: 106,
-	      onDataActionClick: function onDataActionClick(action) {
-	        switch (action) {
-	          case 'confirmOk':
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            _users_bus2.default.setUserId(null);
-	            _event_bus2.default.trigger("chatsDestroy");
-	            break;
-	          case 'confirmCancel':
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	        }
-	      }
-	    });
+	    this.setState({ confirmMessageLogout: 106 });
 	  },
-
 	  requestChatByChatId: function requestChatByChatId() {
 	    var chat_id_input = this.inner_container.querySelector('[data-role="chat_id_input"]'),
 	        chat_message_input = this.inner_container.querySelector('[data-role="chat_message_input"]'),
@@ -5066,26 +4786,12 @@ webpackJsonp([0],{
 	    if (requestButton && chat_id_input && chat_id_input.value && chat_message_input && chat_message_input.value) {
 	      _event_bus2.default.trigger('requestChatByChatId', chat_id_input.value, chat_message_input.value);
 	    } else {
-	      _event_bus2.default.trigger('changeStatePopup', {
-	        show: true,
-	        type: 'error',
-	        message: 90,
-	        onDataActionClick: function onDataActionClick(action) {
-	          switch (action) {
-	            case 'confirmCancel':
-	              newState = _popup2.default.prototype.handleClose(this.state);
-	              this.setState(newState);
-	              break;
-	          }
-	        }
-	      });
+	      this.setState({ errorMessage: 90 });
 	    }
 	  },
-
 	  togglePanel: function togglePanel(forceClose, options) {
 	    this.openOrClosePanel(this.outerContainer.clientWidth + this.togglePanelElement.clientWidth > document.body.clientWidth, forceClose, options);
 	  },
-
 	  openOrClosePanel: function openOrClosePanel(bigMode, forceClose, options) {
 	    if (this.props.location === 'left' && this.outerContainer.style.right === '100vw') {
 	      this.outerContainer.style.right = '';
@@ -5120,7 +4826,6 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  switchPanelMode: function switchPanelMode(element, options) {
 	    if (element.dataset.mode_to === MODE.USER_INFO_SHOW && this.previous_UserInfo_Mode) {
 	      this.setState({ bodyMode: this.previous_UserInfo_Mode });
@@ -5135,7 +4840,6 @@ webpackJsonp([0],{
 	    }
 	    this.getInfoForBody(element.dataset.mode_to, options);
 	  },
-
 	  getInfoForBody: function getInfoForBody(mode, options) {
 	    var self = this,
 	        currentOptions = void 0;
@@ -5186,8 +4890,10 @@ webpackJsonp([0],{
 	        if (options.force) {
 	          this.state.joinUser_ListOptions.userId = options.userId;
 	          this.state.joinUser_ListOptions.messageRequest = options.messageRequest;
-	          this.setState({ joinUser_ListOptions: this.state.joinUser_ListOptions,
-	            bodyMode: options.bodyMode });
+	          this.setState({
+	            joinUser_ListOptions: this.state.joinUser_ListOptions,
+	            bodyMode: options.bodyMode
+	          });
 	        }
 	      } else {
 	        this.state.joinUser_ListOptions.userId = null;
@@ -5200,8 +4906,10 @@ webpackJsonp([0],{
 	        if (options.force) {
 	          this.state.joinChat_ListOptions.chatId = options.chatId;
 	          this.state.joinChat_ListOptions.messageRequest = options.messageRequest;
-	          this.setState({ joinChat_ListOptions: this.state.joinChat_ListOptions,
-	            bodyMode: options.bodyMode });
+	          this.setState({
+	            joinChat_ListOptions: this.state.joinChat_ListOptions,
+	            bodyMode: options.bodyMode
+	          });
 	        }
 	      } else {
 	        this.state.joinChat_ListOptions.chatId = null;
@@ -5210,15 +4918,12 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  setUserInfo: function setUserInfo(userInfo) {
 	    this.setState({ userInfo: userInfo });
 	  },
-
 	  calcMaxWidth: function calcMaxWidth() {
 	    return document.body.offsetWidth + 'px';
 	  },
-
 	  showMoreInfo: function showMoreInfo(element) {
 	    var chatIdValue = element.dataset.chat_id,
 	        detailView = element.querySelector('[data-role="detail_view_container"]'),
@@ -5242,7 +4947,6 @@ webpackJsonp([0],{
 	      });
 	    }
 	  },
-
 	  changeMode: function changeMode(element) {
 	    if (!element || !element.dataset) return;
 	    var chat_part = element.dataset.chat_part,
@@ -5291,93 +4995,33 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
 	  changeUserInfo: function changeUserInfo() {
 	    this.setState({ bodyMode: MODE.USER_INFO_EDIT });
 	    this.previous_UserInfo_Mode = MODE.USER_INFO_EDIT;
 	  },
-
 	  cancelChangeUserInfo: function cancelChangeUserInfo() {
 	    this.setState({ bodyMode: MODE.USER_INFO_SHOW });
 	    this.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
 	  },
-
 	  saveChangeUserInfo: function saveChangeUserInfo() {
-	    var self = this,
-	        newState = void 0;
+	    var self = this;
 	    if (this.userName.value && this.oldPassword.value && this.newPassword.value && this.confirmPassword.value) {
 	      if (this.oldPassword.value === this.state.userInfo.userPassword) {
 	        if (this.newPassword.value === this.confirmPassword.value) {
 	          this.updateUserInfo(function () {
-	            _event_bus2.default.trigger('changeStatePopup', {
-	              show: true,
-	              type: 'success',
-	              message: 105,
-	              onDataActionClick: function onDataActionClick(action) {
-	                switch (action) {
-	                  case 'confirmCancel':
-	                    newState = _popup2.default.prototype.handleClose(this.state);
-	                    this.setState(newState);
-	                    self.setState({ bodyMode: MODE.USER_INFO_SHOW });
-	                    self.previous_UserInfo_Mode = MODE.USER_INFO_SHOW;
-	                    self.user = null;
-	                    break;
-	                }
-	              }
-	            });
+	            self.setState({ successMessageSaveChangeUserInfo: 105 });
 	          });
 	        } else {
-	          _event_bus2.default.trigger('changeStatePopup', {
-	            show: true,
-	            type: 'error',
-	            message: 94,
-	            onDataActionClick: function onDataActionClick(action) {
-	              switch (action) {
-	                case 'confirmCancel':
-	                  newState = _popup2.default.prototype.handleClose(this.state);
-	                  this.setState(newState);
-	                  self.newPassword.value = '';
-	                  self.confirmPassword.value = '';
-	                  break;
-	              }
-	            }
-	          });
+	          this.setState({ errorMessagePasswordsNotMatch: 94 });
 	        }
 	      } else {
-	        _event_bus2.default.trigger('changeStatePopup', {
-	          show: true,
-	          type: 'error',
-	          message: 95,
-	          onDataActionClick: function onDataActionClick(action) {
-	            switch (action) {
-	              case 'confirmCancel':
-	                newState = _popup2.default.prototype.handleClose(this.state);
-	                this.setState(newState);
-	                self.oldPassword.value = '';
-	                self.newPassword.value = '';
-	                self.confirmPassword.value = '';
-	                break;
-	            }
-	          }
-	        });
+
+	        this.setState({ errorMessageWrongOldPassword: 95 });
 	      }
 	    } else {
-	      _event_bus2.default.trigger('changeStatePopup', {
-	        show: true,
-	        type: 'error',
-	        message: 88,
-	        onDataActionClick: function onDataActionClick(action) {
-	          switch (action) {
-	            case 'confirmCancel':
-	              newState = _popup2.default.prototype.handleClose(this.state);
-	              this.setState(newState);
-	              break;
-	          }
-	        }
-	      });
+	      this.setState({ errorMessage: 88 });
 	    }
 	  },
-
 	  updateUserInfo: function updateUserInfo(callback) {
 	    var self = this;
 	    _users_bus2.default.getMyInfo(null, function (err, options, userInfo) {
@@ -5386,21 +5030,26 @@ webpackJsonp([0],{
 	      _users_bus2.default.saveMyInfo(userInfo, callback);
 	    });
 	  },
-
+	  updateUserAvatar: function updateUserAvatar() {
+	    var self = this;
+	    _users_bus2.default.getMyInfo(null, function (_err, options, userInfo) {
+	      self.setState({ userInfo: userInfo });
+	    });
+	  },
 	  getPanelDescription: function getPanelDescription(callback) {
 	    if (callback) {
-	      this.setState({ "chat_ids": [], "openChats": [] });
+	      this.state.chat_ids = [];
+	      this.state.openChats = [];
+	      this.state.avatarMode = "SHOW";
+	      this.state.confirmMessageLogout = null;
 	      callback(this.state, this.props.location);
 	    }
 	  },
-
 	  changeConnection: function changeConnection() {
 	    if (this.state.openedState) {
 	      _event_bus2.default.trigger('changeConnectionList');
 	    }
 	  },
-
-
 	  resizePanel: function resizePanel() {
 	    if (this.state.openedState && this.outerContainer) {
 	      if (this.outerContainer.clientWidth + this.togglePanelElement_clientWidth > document.body.clientWidth) {
@@ -5440,30 +5089,18 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  onChangeLanguage: function onChangeLanguage(event) {
-	    this.changeLanguage(event);
+	    this.props.handleEvent.changeLanguage(event.target.value);
 	  },
-
-	  changeLanguage: function changeLanguage(event) {
-	    _localization2.default.changeLanguage(event.target.value);
-	    var language = localStorage.getItem('language');
-	    if (!language || language !== event.target.value) {
-	      localStorage.setItem('language', event.target.value);
-	    }
-	  },
-
 	  toggleListOptions: function toggleListOptions(chatsLength) {
 	    if (this.props.location === "left") {
 	      this.state.chats_ListOptions.final = chatsLength;
 	      this.setState({ chats_ListOptions: this.state.chats_ListOptions });
 	    }
 	  },
-
 	  changeState: function changeState(newState) {
 	    this.setState(newState);
 	  },
-
 	  renderHandlers: function renderHandlers(events) {
 	    var handlers = {};
 	    if (events) {
@@ -5473,7 +5110,6 @@ webpackJsonp([0],{
 	    }
 	    return handlers;
 	  },
-
 	  onForceMakeFriends: function onForceMakeFriends(userId, element) {
 	    var options = {
 	      userId: userId,
@@ -5487,11 +5123,8 @@ webpackJsonp([0],{
 	      this.togglePanel(null, options);
 	    }
 	  },
-
-
 	  requestFriendByUserId: function requestFriendByUserId() {
-	    var newState = void 0,
-	        user_id_input = this.inner_container.querySelector('[data-role="user_id_input"]'),
+	    var user_id_input = this.inner_container.querySelector('[data-role="user_id_input"]'),
 	        user_message_input = this.inner_container.querySelector('[data-role="user_message_input"]'),
 	        requestButton = this.inner_container.querySelector('[data-action="requestFriendByUserId"]');
 
@@ -5499,28 +5132,16 @@ webpackJsonp([0],{
 	      _websocket2.default.sendMessage({
 	        type: "user_add",
 	        from_user_id: _users_bus2.default.getUserId(),
+	        avatar_data: this.state.userInfo.avatar_data,
 	        to_user_id: user_id_input.value,
 	        request_body: {
 	          message: user_message_input.value
 	        }
 	      });
 	    } else {
-	      _event_bus2.default.trigger('changeStatePopup', {
-	        show: true,
-	        type: 'error',
-	        message: 89,
-	        onDataActionClick: function onDataActionClick(action) {
-	          switch (action) {
-	            case 'confirmCancel':
-	              newState = _popup2.default.prototype.handleClose(this.state);
-	              this.setState(newState);
-	              break;
-	          }
-	        }
-	      });
+	      this.setState({ errorMessage: 89 });
 	    }
 	  },
-
 	  readyForFriendRequest: function readyForFriendRequest(element) {
 	    this.state.joinUser_ListOptions.readyForRequest = element.checked;
 	    this.setState({ joinUser_ListOptions: this.state.joinUser_ListOptions });
@@ -5530,6 +5151,7 @@ webpackJsonp([0],{
 	      ready_state: element.checked
 	    });
 	  },
+
 
 	  /**
 	   * handle message from web-socket (if it is connected with chats some how)
@@ -5563,25 +5185,12 @@ webpackJsonp([0],{
 	      case 'error':
 	        switch (messageData.request_type) {
 	          case 'user_add_sent':
-	            _event_bus2.default.trigger('changeStatePopup', {
-	              show: true,
-	              type: 'error',
-	              message: 115,
-	              onDataActionClick: function onDataActionClick(action) {
-	                switch (action) {
-	                  case 'confirmCancel':
-	                    var newState = _popup2.default.prototype.handleClose(this.state);
-	                    this.setState(newState);
-	                    break;
-	                }
-	              }
-	            });
+	            this.setState({ errorMessage: 115 });
 	            break;
 	        }
 	        break;
 	    }
 	  },
-
 	  onNotifyUser: function onNotifyUser(user_id, messageData) {
 	    var self = this;
 	    console.log('onNotifyUser', user_id);
@@ -5605,7 +5214,6 @@ webpackJsonp([0],{
 	      self.notListenNotifyUser();
 	    });
 	  },
-
 	  webRTCConnectionReady: function webRTCConnectionReady(user_id, triggerConnection) {
 	    var _this = this;
 	    console.log('webRTCConnectionReady', triggerConnection.hasUserId(user_id), user_id);
@@ -5629,69 +5237,38 @@ webpackJsonp([0],{
 	      });
 	    }
 	  },
-
 	  notListenWebRTCConnection: function notListenWebRTCConnection() {
 	    if (this.bindedWebRTCConnectionReady) {
 	      _webrtc2.default.off('webrtc_connection_established', this.bindedWebRTCConnectionReady);
 	    }
 	  },
-
 	  listenWebRTCConnection: function listenWebRTCConnection(user_id) {
 	    this.notListenWebRTCConnection();
 	    this.bindedWebRTCConnectionReady = this.webRTCConnectionReady.bind(this, user_id);
 	    _webrtc2.default.on('webrtc_connection_established', this.bindedWebRTCConnectionReady);
 	  },
-
 	  notListenNotifyUser: function notListenNotifyUser() {
 	    if (this.bindedOnNotifyUser) {
 	      _event_bus2.default.off('notifyUser', this.bindedOnNotifyUser);
 	    }
 	  },
-
 	  listenNotifyUser: function listenNotifyUser(user_id) {
 	    console.log('listenNotifyUser', user_id);
 	    this.notListenNotifyUser();
 	    this.bindedOnNotifyUser = this.onNotifyUser.bind(this, user_id);
 	    _event_bus2.default.on('notifyUser', this.bindedOnNotifyUser);
 	  },
-
 	  showRemoteFriendshipRequest: function showRemoteFriendshipRequest(messageData) {
-	    var self = this,
-	        newState = void 0;
 	    _event_bus2.default.set_ws_device_id(messageData.target_ws_device_id);
 	    if (!messageData.user_wscs_descrs) {
 	      return;
 	    }
-	    _event_bus2.default.trigger('changeStatePopup', {
-	      show: true,
-	      type: 'confirm',
-	      message: messageData.request_body.message,
-	      onDataActionClick: function onDataActionClick(action) {
-	        switch (action) {
-	          case 'confirmCancel':
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	          case 'confirmOk':
-	            self.listenWebRTCConnection(messageData.from_user_id);
-	            self.listenNotifyUser(messageData.from_user_id);
-	            _websocket2.default.sendMessage({
-	              type: "friendship_confirmed",
-	              from_user_id: _users_bus2.default.getUserId(),
-	              to_user_id: messageData.from_user_id,
-	              request_body: messageData.request_body
-	            });
-	            console.log('handleConnectedDevices', messageData.user_wscs_descrs);
-	            _webrtc2.default.handleConnectedDevices(messageData.user_wscs_descrs);
 
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	        }
-	      }
+	    this.setState({
+	      confirmMessageShowRemoteFriendshipRequest: messageData.request_body.message,
+	      confirmDialog_messageData: messageData
 	    });
 	  },
-
 	  render: function render() {
 	    var handleEvent = {
 	      changeState: this.changeState
@@ -5707,54 +5284,76 @@ webpackJsonp([0],{
 	    var panel_toolbar_class = location === 'left' ? 'w-100p flex-dir-col flex-item-auto c-200' : 'w-100p flex-dir-col c-200';
 	    var style = _defineProperty({}, location, this.state[location]);
 	    return _react2.default.createElement(
-	      'section',
-	      { style: style, 'data-role': location + '_panel_outer_container',
-	        className: location + '-panel hide p-fx panel animate c-100' },
+	      'div',
+	      { 'data-role': location + '_panel' },
+	      _react2.default.createElement(_dialogError2.default, { show: this.state.errorMessage, message: this.state.errorMessage,
+	        handleClick: this.handleDialogError }),
+	      _react2.default.createElement(_dialogError2.default, { show: this.state.errorMessageWrongOldPassword,
+	        message: this.state.errorMessageWrongOldPassword,
+	        handleClick: this.handleDialogWrongOldPassword }),
+	      _react2.default.createElement(_dialogError2.default, { show: this.state.errorMessagePasswordsNotMatch,
+	        message: this.state.errorMessagePasswordsNotMatch,
+	        handleClick: this.handleDialogPasswordsNotMatch }),
+	      _react2.default.createElement(_dialogSuccess2.default, { show: this.state.successMessageSaveChangeUserInfo,
+	        message: this.state.successMessageSaveChangeUserInfo,
+	        handleClick: this.handleDialogSaveChangeUserInfo }),
+	      _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageLogout,
+	        message: this.state.confirmMessageLogout,
+	        handleClick: this.handleDialogLogout }),
+	      _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageShowRemoteFriendshipRequest,
+	        message: this.state.confirmMessageShowRemoteFriendshipRequest,
+	        handleClick: this.handleDialogShowRemoteFriendshipRequest }),
 	      _react2.default.createElement(
-	        'div',
-	        { className: 'p-rel h-100p flex-dir-col' },
-	        _react2.default.createElement(_triple_element2.default, { events: onEvent, config: btnConfig, hide: this.state.toggleElemHide }),
+	        'section',
+	        { style: style, 'data-role': location + '_panel_outer_container',
+	          className: location + '-panel hide p-fx panel animate c-100' },
 	        _react2.default.createElement(
 	          'div',
-	          { 'data-role': location + '_panel_inner_container',
-	            className: 'min-width-350 flex-item-1-auto clear flex-dir-col h-100p' },
-	          _react2.default.createElement(
-	            'header',
-	            { id: location, 'data-role': location + '_panel_toolbar', className: panel_toolbar_class },
-	            _react2.default.createElement(_panel_toolbar2.default, { location: location, mode: this.state.bodyMode, events: onEvent,
-	              hide: this.state.toggleToolbarElemHide })
-	          ),
+	          { className: 'p-rel h-100p flex-dir-col' },
+	          _react2.default.createElement(_triple_element2.default, { events: onEvent, config: btnConfig, hide: this.state.toggleElemHide }),
 	          _react2.default.createElement(
 	            'div',
-	            { 'data-role': location + '_extra_toolbar_container',
-	              className: 'flex-sp-around flex-item-auto c-200' },
-	            _react2.default.createElement(_extra_toolbar2.default, { mode: this.state.bodyMode, data: this.state, events: onEvent })
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { 'data-role': location + '_filter_container', className: 'flex wrap flex-item-auto c-200' },
-	            _react2.default.createElement(_filter2.default, { mode: this.state.bodyMode, data: this.state, events: onEvent })
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { 'data-role': 'panel_body', className: 'overflow-a flex-item-1-auto', onTransitionend: this.transitionEnd },
-	            _react2.default.createElement(_body2.default, { mode: this.state.bodyMode, data: this.state, options: this.props.data, events: onEvent,
-	              userInfo: this.state.userInfo ? this.state.userInfo : this.props.userInfo })
-	          ),
-	          _react2.default.createElement(
-	            'footer',
-	            { className: 'flex-item-auto' },
+	            { 'data-role': location + '_panel_inner_container',
+	              className: 'min-width-350 flex-item-1-auto clear flex-dir-col h-100p' },
 	            _react2.default.createElement(
-	              'div',
-	              { 'data-role': location + '_go_to_container', className: 'c-200' },
-	              _react2.default.createElement(_go_to2.default, { mode: this.state.bodyMode, data: this.state, events: onEvent })
+	              'header',
+	              { id: location, 'data-role': location + '_panel_toolbar', className: panel_toolbar_class },
+	              _react2.default.createElement(_panel_toolbar2.default, { location: location, mode: this.state.bodyMode, events: onEvent,
+	                hide: this.state.toggleToolbarElemHide })
 	            ),
 	            _react2.default.createElement(
 	              'div',
-	              { 'data-role': location + '_pagination_containe',
-	                className: 'flex filter_container justContent c-200' },
-	              _react2.default.createElement(_pagination2.default, { mode: this.state.bodyMode, data: this.state, events: onEvent,
+	              { 'data-role': location + '_extra_toolbar_container',
+	                className: 'flex-sp-around flex-item-auto c-200' },
+	              _react2.default.createElement(_extra_toolbar2.default, { mode: this.state.bodyMode, data: this.state, events: onEvent })
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { 'data-role': location + '_filter_container', className: 'flex wrap flex-item-auto c-200' },
+	              _react2.default.createElement(_filter2.default, { mode: this.state.bodyMode, data: this.state, events: onEvent })
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { 'data-role': 'panel_body', className: 'overflow-a flex-item-1-auto p-t', onTransitionend: this.transitionEnd },
+	              _react2.default.createElement(_body2.default, { mode: this.state.bodyMode, data: this.state, options: this.props.data, events: onEvent,
+	                userInfo: this.state.userInfo ? this.state.userInfo : this.props.userInfo,
 	                handleEvent: handleEvent })
+	            ),
+	            _react2.default.createElement(
+	              'footer',
+	              { className: 'flex-item-auto' },
+	              _react2.default.createElement(
+	                'div',
+	                { 'data-role': location + '_go_to_container', className: 'c-200' },
+	                _react2.default.createElement(_go_to2.default, { mode: this.state.bodyMode, data: this.state, events: onEvent })
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { 'data-role': location + '_pagination_containe',
+	                  className: 'flex filter_container justContent c-200' },
+	                _react2.default.createElement(_pagination2.default, { mode: this.state.bodyMode, data: this.state, events: onEvent,
+	                  handleEvent: handleEvent })
+	              )
 	            )
 	          )
 	        )
@@ -5772,7 +5371,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 302:
+/***/ 309:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5781,15 +5380,15 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _indexeddb = __webpack_require__(278);
+	var _indexeddb = __webpack_require__(285);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
@@ -5916,7 +5515,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 303:
+/***/ 310:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6041,7 +5640,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 304:
+/***/ 311:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6050,27 +5649,27 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _websocket = __webpack_require__(283);
+	var _websocket = __webpack_require__(290);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _event_core = __webpack_require__(281);
+	var _event_core = __webpack_require__(288);
 
 	var _event_core2 = _interopRequireDefault(_event_core);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _connection2 = __webpack_require__(305);
+	var _connection2 = __webpack_require__(312);
 
 	var _connection3 = _interopRequireDefault(_connection2);
 
@@ -6501,6 +6100,26 @@ webpackJsonp([0],{
 	      console.error(e);
 	      return;
 	    }
+	    var self = this;
+
+	    if (messageData.lastModifyDatetime) {
+	      _users_bus2.default.getContactsInfo(messageData, [messageData.message.createdByUserId], function (_err, contactsInfo, messageData) {
+
+	        if (_err) return console.error(_err);
+
+	        contactsInfo = contactsInfo[0];
+	        if (!contactsInfo.lastModifyDatetime || contactsInfo.lastModifyDatetime < messageData.lastModifyDatetime) {
+	          var _messageData = {
+	            type: 'syncRequestUserData',
+	            userId: contactsInfo.user_id,
+	            chat_description: {
+	              chat_id: messageData.chat_description.chat_id
+	            }
+	          };
+	          self.broadcastChatMessage(messageData.chat_description.chat_id, JSON.stringify(_messageData));
+	        }
+	      });
+	    }
 
 	    if (messageData.type === 'notifyChat') {
 	      _event_bus2.default.trigger('notifyChat', messageData);
@@ -6508,6 +6127,22 @@ webpackJsonp([0],{
 	      _event_bus2.default.trigger('notifyUser', messageData);
 	    } else if (messageData.type === 'chatJoinApproved') {
 	      _event_bus2.default.trigger('chatJoinApproved', messageData);
+	    } else if (messageData.type === 'syncRequestChatMessages') {
+	      _event_bus2.default.trigger('getSynchronizeChatMessages', messageData);
+	    } else if (messageData.type === 'syncResponseChatMessages') {
+	      _event_bus2.default.trigger('syncResponseChatMessages', messageData);
+	    } else if (messageData.type === 'syncRequestUserData') {
+	      this.requestUserInfo(messageData);
+	    } else if (messageData.type === 'syncResponseUserData') {
+	      _users_bus2.default.getContactsInfo(messageData, [messageData.userId], function (_err, userInfo, messageData) {
+	        if (_err) return console.error(_err);
+	        userInfo[0].lastModifyDatetime = messageData.updateInfo.lastModifyDatetime;
+	        userInfo[0].avatar_data = messageData.updateInfo.avatar_data;
+	        _users_bus2.default.addNewUserToIndexedDB(userInfo[0], function (_err, user_description) {
+	          if (_err) return console.error(_err);
+	          _event_bus2.default.trigger('changeMyUsers', messageData.userId);
+	        });
+	      });
 	    }
 	  },
 
@@ -6546,6 +6181,22 @@ webpackJsonp([0],{
 	    dataChannel.onclose = null;
 	    dataChannel.onerror = null;
 	  },
+
+	  requestUserInfo: function requestUserInfo(messageData) {
+	    var self = this;
+	    _users_bus2.default.getMyInfo(messageData, function (_err, options, userInfo) {
+	      var messageData = {
+	        type: 'syncResponseUserData',
+	        userId: userInfo.user_id,
+	        updateInfo: {
+	          avatar_data: userInfo.avatar_data,
+	          lastModifyDatetime: userInfo.lastModifyDatetime
+	        }
+	      };
+	      self.broadcastChatMessage(options.chat_description.chat_id, JSON.stringify(messageData));
+	    });
+	  },
+
 
 	  /**
 	   * create data channel with channel id equal to chat id
@@ -6767,7 +6418,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 305:
+/***/ 312:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6776,11 +6427,11 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _websocket = __webpack_require__(283);
+	var _websocket = __webpack_require__(290);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
@@ -6932,7 +6583,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 306:
+/***/ 313:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6945,198 +6596,11 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(42);
+	var _users_bus = __webpack_require__(282);
 
-	var _reactDom2 = _interopRequireDefault(_reactDom);
+	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _event_bus = __webpack_require__(280);
-
-	var _event_bus2 = _interopRequireDefault(_event_bus);
-
-	var _extend_core = __webpack_require__(276);
-
-	var _extend_core2 = _interopRequireDefault(_extend_core);
-
-	var _dom_core = __webpack_require__(286);
-
-	var _dom_core2 = _interopRequireDefault(_dom_core);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var ChatResize = _react2.default.createClass({
-	  displayName: 'ChatResize',
-
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      min_chats_width: 350,
-	      min_move: 5
-	    };
-	  },
-
-	  getInitialState: function getInitialState() {
-	    return {
-	      visible_resize_container: false,
-	      left_position_line_resize: 0,
-	      resizeMouseDown: false,
-	      positionSplitterItem: '',
-	      splitterWidth: null,
-	      offsetLeft_splitter_left: null,
-	      offsetLeft_splitter_right: null,
-	      chatResizeWidth: null,
-	      chatResize: null
-	    };
-	  },
-	  componentDidMount: function componentDidMount() {
-	    this.chat_resize_container = _reactDom2.default.findDOMNode(this);
-	    this.line_resize = this.chat_resize_container.querySelector('[data-role="resize_line"]');
-	    _event_bus2.default.on('transformToResizeState', this.transformToResizeState, this);
-	    _event_bus2.default.on('redirectResize', this.handleResize, this);
-	  },
-
-	  componentWillUnmount: function componentWillUnmount() {
-	    _event_bus2.default.off('transformToResizeState', this.transformToResizeState);
-	    _event_bus2.default.off('redirectResize', this.handleResize);
-	  },
-
-	  transformToResizeState: function transformToResizeState(event, _chat) {
-	    var left_line_resize = void 0;
-	    if (event.type === 'touchstart' && event.changedTouches) {
-	      left_line_resize = event.changedTouches[0].clientX + 'px';
-	    } else {
-	      left_line_resize = event.clientX + 'px';
-	    }
-	    this.setState({
-	      visible_resize_container: true,
-	      resizeMouseDown: true,
-	      left_position_line_resize: left_line_resize,
-	      positionSplitterItem: event.currentTarget.dataset.splitteritem,
-	      splitterWidth: _chat.splitter_left.clientWidth,
-	      offsetLeft_splitter_left: this.getOffset(_chat.splitter_left).offsetLeft,
-	      offsetLeft_splitter_right: this.getOffset(_chat.splitter_right).offsetLeft,
-	      chatResizeWidth: _chat.chat.clientWidth,
-	      chatResize: _chat
-	    });
-	  },
-
-	  handleResize: function handleResize(event) {
-	    switch (event.type) {
-	      case 'mousemove':
-	      case 'touchmove':
-	        if (this.state.resizeMouseDown) {
-	          var clientX = event.clientX,
-	              left_line_resize = void 0;
-	          if (event.type === 'touchmove' && event.changedTouches) {
-	            clientX = event.changedTouches[0].clientX;
-	          }
-	          if (!this.resizeClientX_absolue) {
-	            this.resizeClientX_absolue = clientX;
-	          }
-	          if (!this.resizeClientX) {
-	            this.resizeClientX = clientX;
-	          } else {
-	            var deltaX = clientX - this.resizeClientX;
-	            this.absoluteDeltaX = this.resizeClientX_absolue - clientX;
-	            this.redraw_chat = false;
-	            if (Math.abs(this.absoluteDeltaX - deltaX) > this.props.min_move) {
-	              this.redraw_chat = true;
-	              if (this.state.positionSplitterItem === 'left' && this.state.offsetLeft_splitter_right - clientX + this.state.splitterWidth > this.props.min_chats_width || this.state.positionSplitterItem === 'right' && clientX - this.state.offsetLeft_splitter_left > this.props.min_chats_width) {
-	                left_line_resize = this.line_resize.offsetLeft + deltaX + 'px';
-	                this.resizeClientX = clientX;
-	              } else {
-	                if (this.state.positionSplitterItem === 'left') {
-	                  left_line_resize = this.state.offsetLeft_splitter_right - this.props.min_chats_width + this.state.splitterWidth + 'px';
-	                }
-	                if (this.state.positionSplitterItem === 'right') {
-	                  left_line_resize = this.state.offsetLeft_splitter_left + this.props.min_chats_width + 'px';
-	                }
-	                this.resizeClientX = clientX;
-	              }
-	              this.setState({ left_position_line_resize: left_line_resize });
-	            }
-	          }
-	        }
-	        break;
-	      case 'mouseup':
-	      case 'touchend':
-	        if (this.redraw_chat) {
-	          if (this.state.positionSplitterItem === 'left') {
-	            if (this.state.chatResizeWidth + this.absoluteDeltaX >= this.props.min_chats_width) {
-	              this.state.chatResize.state.settings_ListOptions.size_current = this.state.chatResizeWidth + this.absoluteDeltaX + 'px';
-	            } else {
-	              this.state.chatResize.state.settings_ListOptions.size_current = this.props.min_chats_width + 'px';
-	            }
-	          }
-	          if (this.state.positionSplitterItem === 'right') {
-	            if (this.state.chatResizeWidth - this.absoluteDeltaX >= this.props.min_chats_width) {
-	              this.state.chatResize.state.settings_ListOptions.size_current = this.state.chatResizeWidth - this.absoluteDeltaX + 'px';
-	            } else {
-	              this.state.chatResize.state.settings_ListOptions.size_current = this.props.min_chats_width + 'px';
-	            }
-	          }
-	          this.state.chatResize.state.settings_ListOptions.size_custom_value = this.state.chatResize.state.settings_ListOptions.size_current;
-	          this.state.chatResize.changeState({
-	            settings_ListOptions: this.state.chatResize.state.settings_ListOptions
-	          });
-	        }
-
-	        this.setState({
-	          resizeMouseDown: false,
-	          visible_resize_container: false,
-	          left_position_line_resize: 0,
-	          positionSplitterItem: '',
-	          splitterWidth: null,
-	          offsetLeft_splitter_left: null,
-	          offsetLeft_splitter_right: null,
-	          chatResizeWidth: null,
-	          chatResize: null
-	        });
-
-	        delete this.resizeClientX;
-	        delete this.resizeClientX_absolue;
-	        delete this.redraw_chat;
-	    }
-	  },
-
-	  defineClass: function defineClass(className) {
-	    if (this.state.visible_resize_container) {
-	      className = className + " draggable";
-	    }
-
-	    return className;
-	  },
-
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'div',
-	      { 'data-role': 'chat_resize_container',
-	        className: this.defineClass("clear chat-resize-container "),
-	        onMouseUp: this.handleResize, onMouseMove: this.handleResize,
-	        onTouchEnd: this.handleResize, onTouchMove: this.handleResize },
-	      _react2.default.createElement('div', { className: 'line', style: { left: this.state.left_position_line_resize },
-	        'data-role': 'resize_line' })
-	    );
-	  }
-	});
-	_extend_core2.default.prototype.inherit(ChatResize, _dom_core2.default);
-
-	exports.default = ChatResize;
-
-/***/ },
-
-/***/ 307:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _triple_element = __webpack_require__(289);
+	var _triple_element = __webpack_require__(295);
 
 	var _triple_element2 = _interopRequireDefault(_triple_element);
 
@@ -7144,7 +6608,6 @@ webpackJsonp([0],{
 
 	var ExtraToolbar = _react2.default.createClass({
 	  displayName: 'ExtraToolbar',
-
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      usersExtraToolbarConfig: [{
@@ -7184,7 +6647,6 @@ webpackJsonp([0],{
 	        "text": 26,
 	        "class": "button-inset-square",
 	        "data": {
-	          "throw": "true",
 	          "action": "changeMode",
 	          "role": "btn_Filter",
 	          "toggle": true,
@@ -7192,6 +6654,16 @@ webpackJsonp([0],{
 	          "mode_to": "MESSAGES_FILTER"
 	        },
 	        "name": "",
+	        "disabled": false
+	      }, {
+	        "element": "button",
+	        "icon": "",
+	        "text": 120,
+	        "class": "button-inset-square",
+	        "data": {
+	          "action": "synchronizeMessages",
+	          "role": "synchronizeMessages"
+	        },
 	        "disabled": false
 	      }],
 	      contactListExtraToolbarConfig: [{
@@ -7228,7 +6700,6 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
 	  defineConfig: function defineConfig(mode) {
 	    switch (mode) {
 	      case 'CHATS':
@@ -7248,7 +6719,6 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
 	  defineOptions: function defineOptions(mode) {
 	    switch (mode) {
 	      case 'CREATE_CHAT':
@@ -7271,7 +6741,13 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
+	  calcDisplay: function calcDisplay(_config) {
+	    if (!_config.data) return true;
+	    if (_config.data.role === 'synchronizeMessages') {
+	      var index = this.props.data.user_ids.indexOf(_users_bus2.default.getUserId());
+	      return index !== -1 && this.props.data.user_ids.length > 1 || index === -1 && this.props.data.user_ids.length > 0;
+	    }
+	  },
 	  render: function render() {
 	    var options = this.defineOptions(this.props.mode);
 	    if (options && options.show) {
@@ -7284,7 +6760,7 @@ webpackJsonp([0],{
 	        'div',
 	        null,
 	        configs.map(function (config, i) {
-	          return _react2.default.createElement(_triple_element2.default, { key: i, events: this.props.events, config: config });
+	          return _react2.default.createElement(_triple_element2.default, { key: i, events: this.props.events, config: config, calcDisplay: this.calcDisplay });
 	        }, this)
 	      );
 	    } else {
@@ -7297,7 +6773,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 308:
+/***/ 314:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7310,15 +6786,15 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _switcher_core = __webpack_require__(303);
+	var _switcher_core = __webpack_require__(310);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _location_wrapper = __webpack_require__(288);
+	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -7326,6 +6802,7 @@ webpackJsonp([0],{
 
 	var Filter = _react2.default.createClass({
 	  displayName: 'Filter',
+
 
 	  MODE: {
 	    BLOGS_FILTER: 'BLOGS_FILTER',
@@ -7540,43 +7017,52 @@ webpackJsonp([0],{
 	        "location": "per_page",
 	        "redraw_mode": "nrte"
 	      }],
-	      messagesFilterConfig: [{
-	        "role": "locationWrapper",
-	        "classList": "flex-item flex-wrap elements",
-	        "location": "date_filter"
-	      }, {
-	        "element": "label",
-	        "text": 44,
-	        "location": "date_filter",
-	        "sort": 2
-	      }, {
-	        "element": "input",
-	        "class": "inputWidth",
-	        "location": "date_filter",
-	        "sort": 3
-	      }, {
-	        "element": "button",
-	        "text": 18,
-	        "class": "button-inset-white",
-	        "location": "date_filter",
-	        "sort": 4
-	      }, {
-	        "element": "label",
-	        "text": 45,
-	        "location": "date_filter",
-	        "sort": 2
-	      }, {
-	        "element": "input",
-	        "class": "inputWidth",
-	        "location": "date_filter",
-	        "sort": 3
-	      }, {
-	        "element": "button",
-	        "text": 18,
-	        "class": "button-inset-white",
-	        "location": "date_filter",
-	        "sort": 4
-	      }, {
+	      messagesFilterConfig: [
+	      /*        {
+	                "role": "locationWrapper",
+	                "classList": "flex-item flex-wrap elements",
+	                "location": "date_filter"
+	              },
+	              {
+	                "element": "label",
+	                "text": 44,
+	                "location": "date_filter",
+	                "sort": 2
+	              },
+	              {
+	                "element": "input",
+	                "class": "inputWidth",
+	                "location": "date_filter",
+	                "sort": 3
+	              },
+	              {
+	                "element": "button",
+	                "text": 18,
+	                "class": "button-inset-white",
+	                "location": "date_filter",
+	                "sort": 4
+	              },
+	              {
+	                "element": "label",
+	                "text": 45,
+	                "location": "date_filter",
+	                "sort": 2
+	              },
+	              {
+	                "element": "input",
+	                "class": "inputWidth",
+	                "location": "date_filter",
+	                "sort": 3
+	              },
+	              {
+	                "element": "button",
+	                "text": 18,
+	                "class": "button-inset-white",
+	                "location": "date_filter",
+	                "sort": 4
+	              },*/
+
+	      {
 	        "role": "locationWrapper",
 	        "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
 	        "location": "pagination"
@@ -7686,7 +7172,6 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
 	  defineConfig: function defineConfig(mode) {
 	    switch (mode) {
 	      case 'CHATS':
@@ -7703,7 +7188,6 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
 	  prepareConfig: function prepareConfig(config, mode) {
 	    config = config.filter(function (obj) {
 	      if (!obj.redraw_mode) {
@@ -7714,7 +7198,6 @@ webpackJsonp([0],{
 	    });
 	    return config;
 	  },
-
 	  defineOptions: function defineOptions(mode) {
 	    var options = {};
 	    switch (mode) {
@@ -7748,7 +7231,6 @@ webpackJsonp([0],{
 	    }
 	    return options;
 	  },
-
 	  changeRTE: function changeRTE(element, currentOptions) {
 	    var po = currentOptions.paginationOptions;
 	    if (element.checked) {
@@ -7761,7 +7243,6 @@ webpackJsonp([0],{
 	    }
 	    return currentOptions;
 	  },
-
 	  changePerPage: function changePerPage(element, currentOptions) {
 	    var value = parseInt(element.value, 10),
 	        po = currentOptions.paginationOptions;
@@ -7775,7 +7256,6 @@ webpackJsonp([0],{
 
 	    return currentOptions;
 	  },
-
 	  render: function render() {
 	    var options = this.defineOptions(this.props.mode);
 	    if (options && options.filterOptions.show) {
@@ -7787,7 +7267,9 @@ webpackJsonp([0],{
 	      configs = this.prepareConfig(configs, options.paginationOptions.mode_change);
 	      var mainContainer = {
 	        "element": "div",
-	        "class": "flex-item flex-wrap"
+	        "config": {
+	          "class": "flex-item flex-wrap"
+	        }
 	      };
 	      var data = {
 	        "perPageValue": options.paginationOptions.perPageValueShow,
@@ -7812,7 +7294,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 309:
+/***/ 315:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7825,7 +7307,7 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _location_wrapper = __webpack_require__(288);
+	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -7833,7 +7315,6 @@ webpackJsonp([0],{
 
 	var PanelToolbar = _react2.default.createClass({
 	  displayName: 'PanelToolbar',
-
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      panelLeftToolbarConfig: [{
@@ -7874,47 +7355,54 @@ webpackJsonp([0],{
 	        },
 	        "location": "users",
 	        "class": "flex-item-1-0p c-50 border-c300 min-height-2-6em "
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "flex",
-	        "location": "blogs"
-	      }, {
-	        "element": "button",
-	        "icon": "new_blog_icon",
-	        "text": 63,
-	        "class": "flex-item-1-0p",
-	        "location": "blogs",
-	        "data": {
-	          "role": "btnToolbar",
-	          "action": "switchPanelMode",
-	          "mode_to": "CREATE_BLOG"
-	        },
-	        "disable": false
-	      }, {
-	        "element": "button",
-	        "icon": "add_blog_icon",
-	        "text": 64,
-	        "class": "flex-item-1-0p",
-	        "location": "blogs",
-	        "data": {
-	          "role": "btnToolbar",
-	          "action": "switchPanelMode",
-	          "mode_to": "JOIN_BLOG"
-	        },
-	        "disable": false
-	      }, {
-	        "element": "button",
-	        "icon": "blogs_icon",
-	        "text": 65,
-	        "class": "flex-item-1-0p",
-	        "location": "blogs",
-	        "data": {
-	          "role": "btnToolbar",
-	          "action": "switchPanelMode",
-	          "mode_to": "BLOGS"
-	        },
-	        "disable": false
-	      }, {
+	      },
+
+	      /*        {
+	                "role": "locationWrapper",
+	                "classList": "flex",
+	                "location": "blogs"
+	              },
+	              {
+	                "element": "button",
+	                "icon": "new_blog_icon",
+	                "text": 63,
+	                "class": "flex-item-1-0p",
+	                "location": "blogs",
+	                "data": {
+	                  "role": "btnToolbar",
+	                  "action": "switchPanelMode",
+	                  "mode_to": "CREATE_BLOG"
+	                },
+	                "disable": false
+	              },
+	              {
+	                "element": "button",
+	                "icon": "add_blog_icon",
+	                "text": 64,
+	                "class": "flex-item-1-0p",
+	                "location": "blogs",
+	                "data": {
+	                  "role": "btnToolbar",
+	                  "action": "switchPanelMode",
+	                  "mode_to": "JOIN_BLOG"
+	                },
+	                "disable": false
+	              },
+	              {
+	                "element": "button",
+	                "icon": "blogs_icon",
+	                "text": 65,
+	                "class": "flex-item-1-0p",
+	                "location": "blogs",
+	                "data": {
+	                  "role": "btnToolbar",
+	                  "action": "switchPanelMode",
+	                  "mode_to": "BLOGS"
+	                },
+	                "disable": false
+	              },*/
+
+	      {
 	        "role": "locationWrapper",
 	        "classList": "flex",
 	        "location": "chats"
@@ -8010,7 +7498,6 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
 	  defineConfig: function defineConfig(location) {
 	    switch (location) {
 	      case 'left':
@@ -8021,7 +7508,6 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
 	  render: function render() {
 	    var configs = this.defineConfig(this.props.location),
 	        mode = this.props.mode;
@@ -8040,7 +7526,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 310:
+/***/ 316:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8053,49 +7539,53 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _switcher_core = __webpack_require__(303);
+	var _switcher_core = __webpack_require__(310);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _localization = __webpack_require__(273);
+	var _localization = __webpack_require__(280);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _utils = __webpack_require__(287);
+	var _utils = __webpack_require__(317);
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _location_wrapper = __webpack_require__(288);
+	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _panel_users = __webpack_require__(311);
+	var _panel_users = __webpack_require__(318);
 
 	var _panel_users2 = _interopRequireDefault(_panel_users);
 
-	var _panel_chats = __webpack_require__(312);
+	var _panel_chats = __webpack_require__(319);
 
 	var _panel_chats2 = _interopRequireDefault(_panel_chats);
 
-	var _message = __webpack_require__(313);
+	var _message = __webpack_require__(320);
 
 	var _message2 = _interopRequireDefault(_message);
 
-	var _setting = __webpack_require__(318);
+	var _setting = __webpack_require__(325);
 
 	var _setting2 = _interopRequireDefault(_setting);
 
-	var _contact_list = __webpack_require__(319);
+	var _contact_list = __webpack_require__(327);
 
 	var _contact_list2 = _interopRequireDefault(_contact_list);
 
-	var _connections = __webpack_require__(320);
+	var _connections = __webpack_require__(328);
 
 	var _connections2 = _interopRequireDefault(_connections);
+
+	var _user_avarat = __webpack_require__(329);
+
+	var _user_avarat2 = _interopRequireDefault(_user_avarat);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8308,7 +7798,7 @@ webpackJsonp([0],{
 	      }],
 	      user_info_show_config: [{
 	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-sp-between",
+	        "classList": "w-100p flex",
 	        "location": "user_id"
 	      }, {
 	        "element": "label",
@@ -8329,7 +7819,7 @@ webpackJsonp([0],{
 	        "type": "text",
 	        "icon": "",
 	        "text": "",
-	        "class": "",
+	        "class": "flex-grow_1",
 	        "location": "user_id",
 	        "data": {
 	          "role": "user_id",
@@ -8341,8 +7831,16 @@ webpackJsonp([0],{
 	        "sort": 2,
 	        "mode": "USER_INFO_SHOW"
 	      }, {
+	        "element": "button",
+	        "text": 126,
+	        "class": "button-convex",
+	        "location": "user_id",
+	        "data": {
+	          "action": "copyUserId"
+	        }
+	      }, {
 	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-sp-between",
+	        "classList": "w-100p flex",
 	        "location": "user_name"
 	      }, {
 	        "element": "label",
@@ -8363,7 +7861,7 @@ webpackJsonp([0],{
 	        "type": "text",
 	        "icon": "",
 	        "text": "",
-	        "class": "",
+	        "class": "flex-grow_1",
 	        "location": "user_name",
 	        "data": {
 	          "key": "userName",
@@ -8519,101 +8017,36 @@ webpackJsonp([0],{
 	          "mode": "JOIN_CHAT"
 	        },
 	        "disable": false
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "w-100p flex-sp-between",
-	        "location": "remote_offer_label"
-	      }, {
-	        "element": "label",
-	        "text": 7,
-	        "location": "remote_offer_label",
-	        "data": {
-	          "role": "remote_offer_label",
-	          "mode": "JOIN_CHAT"
-	        },
-	        "disable": false
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "w-100p flex-sp-between",
-	        "location": "remote_offer"
-	      }, {
-	        "element": "textarea",
-	        "rows": "5",
-	        "class": "w-100p",
-	        "location": "remote_offer",
-	        "data": {
-	          "role": "remote_offer_textarea",
-	          "mode": "JOIN_CHAT"
-	        },
-	        "disabled": false
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "w-100p flex-sp-around",
-	        "location": "remote_offer_btn"
-	      }, {
-	        "element": "button",
-	        "text": 8,
-	        "class": "button-inset-square",
-	        "location": "remote_offer_btn",
-	        "data": {
-	          "throw": "true",
-	          "action": "joinChatByChatSdp",
-	          "mode": "JOIN_CHAT"
-	        },
-	        "disable": false
 	      }],
 	      detail_view_config: [{
-	        "role": "locationWrapper",
-	        "classList": "w-100p flex-sp-between",
-	        "location": "user_id"
-	      }, {
-	        "element": "label",
-	        "type": "text",
-	        "text": 9,
-	        "location": "user_id",
-	        "data": {
-	          "role": "user_id_label",
-	          "mode": "DETAIL_VIEW"
-	        },
-	        "disabled": false
-	      }, {
-	        "element": "label",
-	        "type": "text",
-	        "class": "flex-item-w50p",
-	        "location": "user_id",
-	        "data": {
-	          "role": "user_id",
-	          "key": "user_ids",
-	          "mode": "DETAIL_VIEW"
-	        },
-	        "disabled": false
-	      }, {
 	        "role": "locationWrapper",
 	        "classList": "w-100p flex-sp-around",
 	        "location": "navbar"
 	      }, {
 	        "element": "button",
-	        "icon": "open_icon",
-	        "text": 10,
-	        "class": "button-convex",
-	        "location": "navbar",
-	        "data": {
-	          "throw": "true",
-	          "action": "showChat",
-	          "mode": "DETAIL_VIEW"
-	        },
-	        "disable": false
-	      }, {
-	        "element": "button",
 	        "icon": "save_open_icon",
-	        "text": 58,
+	        "text": 10,
 	        "class": "button-convex",
 	        "location": "navbar",
 	        "data": {
 	          "throw": "true",
 	          "restore_chat_state": true,
 	          "action": "showChat",
-	          "mode": "DETAIL_VIEW"
+	          "mode": "DETAIL_VIEW",
+	          "description": 123
+	        },
+	        "disable": false
+	      }, {
+	        "element": "button",
+	        "icon": "open_icon",
+	        "text": 58,
+	        "class": "button-convex",
+	        "location": "navbar",
+	        "data": {
+	          "throw": "true",
+	          "action": "showChat",
+	          "mode": "DETAIL_VIEW",
+	          "description": 122
 	        },
 	        "disable": false
 	      }, {
@@ -8941,7 +8374,6 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
 	  defineConfigs: function defineConfigs(mode) {
 	    switch (mode) {
 	      case this.MODE.CHATS:
@@ -8992,7 +8424,6 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
 	  defineComponents: function defineComponents(mode, configs) {
 	    var items = [],
 	        data = void 0,
@@ -9027,7 +8458,9 @@ webpackJsonp([0],{
 	          "chat_ids": chat_ids,
 	          "openChatsInfoArray": this.props.data.openChatsInfoArray,
 	          "closingChatsInfoArray": this.props.data.closingChatsInfoArray,
-	          "openChats": this.props.data.openChats
+	          "openChats": this.props.data.openChats,
+	          "myId": this.props.userInfo.user_id,
+	          "myName": this.props.userInfo.userName
 	        };
 	        return _react2.default.createElement(_panel_chats2.default, { events: this.props.events, data: data, configs: configs });
 	        break;
@@ -9045,7 +8478,9 @@ webpackJsonp([0],{
 	        break;
 	      case this.MODE.USER_INFO_SHOW:
 	        data = this.props.userInfo;
-	        items.push(_react2.default.createElement(_location_wrapper2.default, { key: 1, events: this.props.events, configs: configs, data: data }));
+	        items.push(_react2.default.createElement(_location_wrapper2.default, { key: 'info', events: this.props.events, configs: configs, data: data }));
+	        items.push(_react2.default.createElement(_user_avarat2.default, { key: 'avatar', events: this.props.events, configs: configs, data: this.props.data,
+	          handleEvent: this.props.handleEvent }));
 	        return items;
 	        break;
 	      case this.MODE.USER_INFO_EDIT:
@@ -9073,14 +8508,11 @@ webpackJsonp([0],{
 	    }
 	    return items;
 	  },
-
 	  transformationData: function transformationData(_data, _transform_value) {
 	    var transform_value = _localization2.default.getLocText(_transform_value);
 	    transform_value = _utils2.default.objectToUrl(_data, transform_value);
 	    return transform_value;
 	  },
-
-
 	  limitationQuantityRecords: function limitationQuantityRecords(data, state, mode) {
 	    if (data && data.length) {
 	      var currentOptions = this.optionsDefinition(state, mode);
@@ -9091,7 +8523,6 @@ webpackJsonp([0],{
 	    }
 	    return data;
 	  },
-
 	  render: function render() {
 	    var configs = this.defineConfigs(this.props.mode);
 	    if (!configs) {
@@ -9111,7 +8542,39 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 311:
+/***/ 317:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var Utils = function Utils() {};
+
+	Utils.prototype = {
+
+	  /**
+	   * prepare url by input object
+	   */
+
+	  objectToUrl: function objectToUrl(objectData, initial_url) {
+	    var url = initial_url;
+	    Object.keys(objectData).forEach(function (key) {
+	      var str_key = '{' + key + '}';
+	      if (url.indexOf(str_key) >= 0) {
+	        url = url.replace(str_key, objectData[key]);
+	      }
+	    });
+	    return url;
+	  }
+	};
+
+	exports.default = new Utils();
+
+/***/ },
+
+/***/ 318:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9128,7 +8591,6 @@ webpackJsonp([0],{
 
 	var PanelUsers = _react2.default.createClass({
 	  displayName: "PanelUsers",
-
 	  renderItems: function renderItems() {
 	    var items = [];
 	    this.props.data.forEach(function (user) {
@@ -9138,7 +8600,7 @@ webpackJsonp([0],{
 	        _react2.default.createElement(
 	          "div",
 	          { className: "width-40px flex-just-center" },
-	          _react2.default.createElement("img", { src: "img\\app\\3.ico", width: "35px", height: "35px", className: "border-radius-5" })
+	          _react2.default.createElement("img", { src: user.avatar_data, width: "35px", height: "35px", className: "border-radius-5" })
 	        ),
 	        _react2.default.createElement(
 	          "div",
@@ -9160,7 +8622,6 @@ webpackJsonp([0],{
 	    });
 	    return items;
 	  },
-
 	  render: function render() {
 	    if (this.props.data && this.props.data.length) {
 	      return _react2.default.createElement(
@@ -9178,7 +8639,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 312:
+/***/ 319:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9191,7 +8652,15 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _location_wrapper = __webpack_require__(288);
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	var _users_bus = __webpack_require__(282);
+
+	var _users_bus2 = _interopRequireDefault(_users_bus);
+
+	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -9199,10 +8668,19 @@ webpackJsonp([0],{
 
 	var PanelChats = _react2.default.createClass({
 	  displayName: 'PanelChats',
-
+	  getInitialState: function getInitialState() {
+	    return {
+	      usersInfo: {}
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.state.usersInfo[this.props.data.myId] = this.props.data.myName;
+	    this.setState({ usersInfo: this.state.usersInfo });
+	  },
 	  renderItems: function renderItems() {
 	    var items = [],
-	        self = this;
+	        self = this,
+	        usersList = void 0;
 	    this.props.data.chat_ids.forEach(function (chat) {
 	      var _this = this;
 
@@ -9222,19 +8700,61 @@ webpackJsonp([0],{
 	        }
 	        return true;
 	      };
+	      var usersNameList = [],
+	          newUserName = [];
+	      if (result !== -1) {
+	        chat.user_ids.forEach(function (user, index, array) {
+	          if (self.state.usersInfo[user]) {
+	            usersNameList.push(self.state.usersInfo[user]);
+	            if (index !== array.length - 1) {
+	              usersNameList.push(', ');
+	            }
+	          } else {
+	            newUserName.push(user);
+	          }
+	        });
+	        if (newUserName.length) {
+	          _users_bus2.default.getContactsInfo(null, newUserName, function (_error, usersInfo) {
+	            if (_error) {
+	              console.error(_error);
+	              return;
+	            }
+	            usersInfo.forEach(function (_user) {
+	              if (!self.state.usersInfo[_user.user_id]) {
+	                self.state.usersInfo[_user.user_id] = _user.userName;
+	                self.setState({ usersInfo: self.state.usersInfo });
+	              }
+	            });
+	          });
+	        }
+	      }
+
+	      usersList = _react2.default.createElement(
+	        'div',
+	        null,
+	        usersNameList
+	      );
 	      items.push(_react2.default.createElement(
 	        'div',
 	        { 'data-action': 'show_more_info', 'data-role': 'chatWrapper',
 	          'data-chat_id': chat.chat_id, key: chat.chat_id, className: 'margin-b-em' },
 	        _react2.default.createElement(_location_wrapper2.default, { key: 1, data: chat, events: this.props.events,
 	          configs: this.props.configs.chats_info_config }),
+	        _react2.default.createElement(
+	          'label',
+	          null,
+	          _localization2.default.getLocText(125),
+	          ' ',
+	          chat.user_ids.length
+	        ),
 	        function () {
-	          var resultClosing = self.props.data.closingChatsInfoArray.indexOf(chat.chat_id);
+	          var resultClosing = _this.props.data.closingChatsInfoArray.indexOf(chat.chat_id);
 	          if (resultClosing !== -1) {
 	            return _react2.default.createElement(
 	              'div',
 	              { 'data-role': 'detail_view_container', style: { maxHeight: '0em' },
 	                className: 'max-height-0', 'data-state': 'expanded', 'data-chat_id': chat.chat_id },
+	              usersList,
 	              _react2.default.createElement(_location_wrapper2.default, { key: chat.chat_id, data: chat, events: _this.props.events,
 	                configs: _this.props.configs.detail_view_config,
 	                calcDisplay: calcDisplay })
@@ -9246,6 +8766,7 @@ webpackJsonp([0],{
 	                { 'data-role': 'detail_view_container', style: { maxHeight: '15em' },
 	                  className: 'max-height-auto max-height-0',
 	                  'data-state': 'expanded', 'data-chat_id': chat.chat_id },
+	                usersList,
 	                _react2.default.createElement(_location_wrapper2.default, { key: chat.chat_id, data: chat, events: _this.props.events,
 	                  configs: _this.props.configs.detail_view_config,
 	                  calcDisplay: calcDisplay })
@@ -9260,7 +8781,6 @@ webpackJsonp([0],{
 	    }, this);
 	    return items;
 	  },
-
 	  render: function render() {
 	    if (this.props.data && this.props.data.chat_ids) {
 	      return _react2.default.createElement(
@@ -9278,7 +8798,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 313:
+/***/ 320:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9291,23 +8811,31 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _html_message = __webpack_require__(314);
+	var _html_message = __webpack_require__(321);
 
 	var _html_message2 = _interopRequireDefault(_html_message);
 
-	var _messages = __webpack_require__(316);
+	var _messages = __webpack_require__(323);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(303);
+	var _switcher_core = __webpack_require__(310);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _body = __webpack_require__(310);
+	var _users_bus = __webpack_require__(282);
+
+	var _users_bus2 = _interopRequireDefault(_users_bus);
+
+	var _event_bus = __webpack_require__(287);
+
+	var _event_bus2 = _interopRequireDefault(_event_bus);
+
+	var _body = __webpack_require__(316);
 
 	var _body2 = _interopRequireDefault(_body);
 
@@ -9316,15 +8844,51 @@ webpackJsonp([0],{
 	var Messages = _react2.default.createClass({
 	  displayName: 'Messages',
 
+	  avatar_url: '',
 
 	  getInitialState: function getInitialState() {
 	    return {
 	      messages: [],
+	      userInfo: [],
 	      previousStart: 0,
 	      previousFinal: 0
 	    };
 	  },
+	  componentDidMount: function componentDidMount() {
+	    if (!this.props.data.userInfo) return;
+	    var user = this.renderAvatarUrl([this.props.data.userInfo])[0];
+	    this.setState({ amICreator: user });
+	    _event_bus2.default.on('changeMyUserInfo', this.changeMyUserInfo, this);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    _event_bus2.default.off('changeMyUserInfo', this.changeMyUserInfo, this);
+	  },
+	  componentDidUpdate: function componentDidUpdate(prevProps) {
+	    if (prevProps.data.userInfo !== this.props.data.userInfo) {
+	      if (!this.props.data.userInfo) return;
+	      var user = this.renderAvatarUrl([this.props.data.userInfo])[0];
+	      this.setState({ amICreator: user });
+	    }
+	  },
+	  changeMyUserInfo: function changeMyUserInfo(userId, chatId) {
+	    var _this = this;
 
+	    if (chatId === this.props.data.chat_id) {
+	      (function () {
+	        var self = _this;
+	        _users_bus2.default.getContactsInfo(null, [userId], function (_err, userInfo) {
+	          if (_err) return console.error(_err);
+	          self.state.userInfo.forEach(function (_user) {
+	            if (_user.user_id === userInfo.user_id) {
+	              _user.avatar_data = userInfo.avatar_data;
+	              _user = self.renderAvatarUrl([_user])[0];
+	            }
+	          });
+	          self.setState({ userInfo: self.state.userInfo });
+	        });
+	      })();
+	    }
+	  },
 	  getMessages: function getMessages() {
 	    var self = this;
 	    _messages2.default.prototype.getAllMessages(this.props.data.chat_id, this.props.data.bodyOptions.mode, function (err, messages) {
@@ -9335,25 +8899,100 @@ webpackJsonp([0],{
 	        messages = _body2.default.prototype.limitationQuantityRecords(messages, self.props.data, self.props.data.bodyOptions.mode);
 	        if (lo.start !== self.state.previousStart || lo.final !== self.state.previousFinal) {
 	          self.setState({ messages: messages, previousStart: lo.start, previousFinal: lo.final });
+	          self.getDataUsers(messages);
 	        }
 	      } else {
 	        if (messages && messages.length !== self.state.messages.length) {
+	          self.getDataUsers(messages);
 	          self.setState({ messages: messages, previousStart: 0, previousFinal: 0 });
 	        }
 	      }
 	    });
 	  },
+	  b64toBlob: function b64toBlob(b64Data, contentType, sliceSize) {
+	    contentType = contentType || '';
+	    sliceSize = sliceSize || 512;
+	    var byteCharacters = window.atob(b64Data),
+	        byteArrays = [];
+	    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+	      var slice = byteCharacters.slice(offset, offset + sliceSize),
+	          byteNumbers = new Array(slice.length);
+	      for (var i = 0; i < slice.length; i++) {
+	        byteNumbers[i] = slice.charCodeAt(i);
+	      }
+	      var byteArray = new Uint8Array(byteNumbers);
+	      byteArrays.push(byteArray);
+	    }
 
+	    return new Blob(byteArrays, { type: contentType });
+	  },
+	  base64MimeType: function base64MimeType(encoded) {
+	    var result = null;
+	    if (typeof encoded !== 'string') {
+	      return result;
+	    }
+	    var mime = encoded.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+	    if (mime && mime.length) {
+	      result = mime[1];
+	    }
+
+	    return result;
+	  },
+	  getDataUsers: function getDataUsers(messages) {
+	    var usersId = {},
+	        self = this;
+	    usersId[_users_bus2.default.getUserId()] = true;
+	    messages.forEach(function (_message) {
+	      usersId[_message.createdByUserId] = true;
+	    });
+	    var ids = Object.keys(usersId);
+	    _users_bus2.default.getContactsInfo(null, Object.keys(usersId), function (_error, userInfo) {
+	      if (_error) return console.error(_error);
+
+	      userInfo = self.renderAvatarUrl(userInfo);
+	      self.setState({ userInfo: userInfo });
+	    });
+	  },
+	  renderAvatarUrl: function renderAvatarUrl(usersInfo) {
+	    var URL = window.URL || window.webkitURL,
+	        self = this;
+	    usersInfo.forEach(function (_user) {
+	      if (URL && _user.avatar_data) {
+	        var contentType = self.base64MimeType(_user.avatar_data);
+	        if (!contentType) return;
+
+	        var b64Data = _user.avatar_data.split(',')[1],
+	            blob = self.b64toBlob(b64Data, contentType);
+	        _user.avatar_url = URL.createObjectURL(blob);
+	      }
+	    });
+
+	    return usersInfo;
+	  },
+	  getUserParam: function getUserParam(_userId, attribut) {
+	    var value = void 0;
+	    if (!this.state.userInfo.length) return;
+	    this.state.userInfo.every(function (_userInfo) {
+	      if (_userInfo.user_id === _userId) {
+	        value = _userInfo[attribut];
+	      }
+	      return !value;
+	    });
+
+	    return value;
+	  },
 	  renderItems: function renderItems() {
 	    var self = this,
 	        items = [];
-	    this.state.messages.forEach(function (_message) {
+	    self.state.messages.forEach(function (_message) {
 	      items.push(self.renderItem(_message));
 	    });
 	    return items;
 	  },
 
+
 	  renderItem: function renderItem(message) {
+	    var self = this;
 	    if (message.createdDatetime) {
 	      var timeCreated = new Date(message.createdDatetime);
 	      timeCreated = timeCreated.toISOString();
@@ -9375,10 +9014,12 @@ webpackJsonp([0],{
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'width-40px flex-just-center flex-dir-col' },
+	          _react2.default.createElement('img', { src: this.state.amICreator.avatar_url, width: '35px', height: '35px',
+	            className: 'border-radius-5 flex-item-auto' }),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'user-info flex-item-1-auto c-01' },
-	            message.createdByUserId
+	            this.state.amICreator.userName
 	          )
 	        )
 	      );
@@ -9393,10 +9034,12 @@ webpackJsonp([0],{
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'width-40px flex-just-center flex-dir-col' },
+	          _react2.default.createElement('img', { src: this.getUserParam(message.createdByUserId, 'avatar_url'), width: '35px', height: '35px',
+	            className: 'border-radius-5 flex-item-auto' }),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'user-info c-50' },
-	            message.createdByUserId
+	            this.getUserParam(message.createdByUserId, 'userName')
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -9434,7 +9077,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 314:
+/***/ 321:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9443,23 +9086,23 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _id_core = __webpack_require__(284);
+	var _id_core = __webpack_require__(291);
 
 	var _id_core2 = _interopRequireDefault(_id_core);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _model_core = __webpack_require__(315);
+	var _model_core = __webpack_require__(322);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
@@ -9506,7 +9149,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 315:
+/***/ 322:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9515,7 +9158,7 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
@@ -9573,7 +9216,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 316:
+/***/ 323:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9582,39 +9225,35 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _indexeddb = __webpack_require__(278);
+	var _indexeddb = __webpack_require__(285);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _id_core = __webpack_require__(284);
+	var _id_core = __webpack_require__(291);
 
 	var _id_core2 = _interopRequireDefault(_id_core);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _event_bus = __webpack_require__(280);
-
-	var _event_bus2 = _interopRequireDefault(_event_bus);
-
-	var _switcher_core = __webpack_require__(303);
+	var _switcher_core = __webpack_require__(310);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _html_log_message = __webpack_require__(317);
+	var _html_log_message = __webpack_require__(324);
 
 	var _html_log_message2 = _interopRequireDefault(_html_log_message);
 
-	var _html_message = __webpack_require__(314);
+	var _html_message = __webpack_require__(321);
 
 	var _html_message2 = _interopRequireDefault(_html_message);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _webrtc = __webpack_require__(304);
+	var _webrtc = __webpack_require__(311);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
@@ -9654,8 +9293,8 @@ webpackJsonp([0],{
 	    return Constructor;
 	  },
 	  getAllMessages: function getAllMessages(chatId, mode, callback) {
-	    var description = this.setCollectionDescription(chatId);
-	    var table = this.tableDefinition(mode);
+	    var description = this.setCollectionDescription(chatId),
+	        table = this.tableDefinition(mode);
 	    _indexeddb2.default.getAll(description, table, function (err, messages) {
 	      if (err) {
 	        callback(err);
@@ -9664,45 +9303,84 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
+	  getLastMessage: function getLastMessage(chatId, mode, callback) {
+	    this.getAllMessages(chatId, mode, function (_err, messages) {
+	      if (_err) {
+	        callback(_err);
+	        return;
+	      }
+	      if (messages.length) {
+	        callback(null, messages[messages.length - 1]);
+	      } else {
+	        callback(null, null);
+	      }
+	    });
+	  },
 
 
 	  /**
 	   * add message to the database
 	   */
-	  addMessage: function addMessage(mode, message, chatId, callback) {
+	  addMessage: function addMessage(mode, message, chatId, lastModifyDatetime, callback) {
 	    var self = this,
 	        Message = this.getMessageConstructor(mode),
-	        _message = new Message({ innerHTML: message }).toJSON();
-	    _indexeddb2.default.addOrPutAll('put', this.setCollectionDescription(chatId), this.tableDefinition(mode), [_message], function (error) {
-	      if (error) {
-	        if (callback) {
-	          callback(error);
-	        } else {
-	          console.error(error);
-	        }
-	        return;
-	      }
+	        newMessage = new Message({ innerHTML: message }).toJSON();
+	    this.getLastMessage(chatId, mode, function (_err, lastMessage) {
+	      if (_err) return console.log(_err);
 
-	      var messageData = {
-	        type: "notifyChat",
-	        chat_type: "chat_message",
-	        message: _message,
-	        chat_description: {
-	          chat_id: chatId
+	      newMessage = self.addMessageData(lastMessage, [newMessage], false)[0];
+	      _indexeddb2.default.addOrPutAll('put', self.setCollectionDescription(chatId), self.tableDefinition(mode), [newMessage], function (error) {
+	        if (error) {
+	          if (callback) {
+	            callback(error);
+	          } else {
+	            console.error(error);
+	          }
+	          return;
 	        }
-	      };
-	      _webrtc2.default.broadcastChatMessage(chatId, JSON.stringify(messageData));
 
-	      callback && callback(error, message);
+	        var messageData = {
+	          type: "notifyChat",
+	          chat_type: "chat_message",
+	          message: newMessage,
+	          chat_description: {
+	            chat_id: chatId
+	          },
+	          lastModifyDatetime: lastModifyDatetime
+	        };
+	        _webrtc2.default.broadcastChatMessage(chatId, JSON.stringify(messageData));
+
+	        callback && callback(error, lastMessage);
+	      });
 	    });
 	  },
 
 
 	  addRemoteMessage: function addRemoteMessage(remoteMessage, mode, chatId, callback) {
 	    var self = this;
-	    var message = new _html_message2.default(remoteMessage.message).toJSON();
+	    this.getLastMessage(chatId, mode, function (_err, lastMessage) {
+	      if (_err) return console.log(_err);
 
-	    _indexeddb2.default.addOrPutAll('add', this.setCollectionDescription(chatId), this.tableDefinition(mode), [message], function (error) {
+	      remoteMessage = self.addMessageData(lastMessage, [remoteMessage], true)[0];
+	      _indexeddb2.default.addOrPutAll('add', self.setCollectionDescription(chatId), self.tableDefinition(mode), [remoteMessage], function (error) {
+	        if (error) {
+	          if (callback) {
+	            callback(error);
+	          } else {
+	            console.error(error);
+	          }
+	          return;
+	        }
+
+	        if (callback) {
+	          callback(error);
+	        }
+	      });
+	    });
+	  },
+
+	  addAllRemoteMessages: function addAllRemoteMessages(remoteMessages, mode, chatId, callback) {
+	    _indexeddb2.default.addOrPutAll('add', this.setCollectionDescription(chatId), this.tableDefinition(mode), remoteMessages, function (error) {
 	      if (error) {
 	        if (callback) {
 	          callback(error);
@@ -9716,7 +9394,47 @@ webpackJsonp([0],{
 	        callback(error);
 	      }
 	    });
+	  },
+
+	  addMessageData: function addMessageData(lastMessage, newMessages, remote) {
+	    var messagesArray = [];
+	    newMessages.forEach(function (_newMessage) {
+	      if (remote) {
+	        _newMessage = new _html_message2.default(_newMessage).toJSON();
+	      }
+	      if (lastMessage === null) {
+	        _newMessage.followed_by = {
+	          user_id: null,
+	          message_id: null
+	        };
+	      } else {
+	        _newMessage.followed_by = {
+	          user_id: lastMessage.createdByUserId,
+	          message_id: lastMessage.messageId
+	        };
+	      }
+	      messagesArray.push(_newMessage);
+	    });
+
+	    return messagesArray;
+	  },
+
+
+	  getSynchronizeChatMessages: function getSynchronizeChatMessages(_messageData) {
+	    this.getAllMessages(_messageData.chat_description.chat_id, "MESSAGES", function (_err, messages) {
+	      var messageData = {
+	        type: 'syncResponseChatMessages',
+	        from_user_id: _users_bus2.default.getUserId(),
+	        chat_description: {
+	          chat_id: _messageData.chat_description.chat_id
+	        },
+	        owner_request: _messageData.owner_request,
+	        messages: messages
+	      };
+	      _webrtc2.default.broadcastChatMessage(messageData.chat_description.chat_id, JSON.stringify(messageData));
+	    });
 	  }
+
 	};
 
 	_extend_core2.default.prototype.inherit(Messages, _id_core2.default);
@@ -9726,7 +9444,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 317:
+/***/ 324:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9735,7 +9453,7 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
@@ -9773,7 +9491,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 318:
+/***/ 325:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9786,37 +9504,37 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(42);
+	var _reactDom = __webpack_require__(45);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _event_bus = __webpack_require__(280);
-
-	var _event_bus2 = _interopRequireDefault(_event_bus);
-
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(286);
+	var _dom_core = __webpack_require__(303);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _websocket = __webpack_require__(283);
+	var _websocket = __webpack_require__(290);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _location_wrapper = __webpack_require__(288);
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _popup = __webpack_require__(285);
+	var _dialogConfirm = __webpack_require__(326);
 
-	var _popup2 = _interopRequireDefault(_popup);
+	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9824,7 +9542,6 @@ webpackJsonp([0],{
 
 	var Settings = _react2.default.createClass({
 	  displayName: 'Settings',
-
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      size_container_config: [{
@@ -10092,18 +9809,20 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
+	  getInitialState: function getInitialState() {
+	    return {
+	      confirmMessage: null,
+	      inviteByUrl: null
+	    };
+	  },
 	  componentWillMount: function componentWillMount() {
 	    this.props.data.settings_ListOptions.current_data_key = this.defineDefaultSizeConfig(this.props.size_config, this.props.data.settings_ListOptions.current_data_key).data.key;
 	    this.props.handleEvent.changeState({ settings_ListOptions: this.props.data.settings_ListOptions });
 	  },
-
 	  componentDidMount: function componentDidMount() {
 	    this.body = _reactDom2.default.findDOMNode(this);
 	    this.chatId = this.body.querySelector('[data-role="chat_id"]');
 	  },
-
-
 	  handleClick: function handleClick(event) {
 	    var element = this.getDataParameter(event.currentTarget, 'action');
 	    if (element) {
@@ -10135,15 +9854,12 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  handleChange: function handleChange() {},
-
 	  changeSendEnter: function changeSendEnter(element) {
 	    if (!element) return;
 	    this.props.data.formatOptions.sendEnter = element.checked;
 	    this.props.handleEvent.changeState({ formatOptions: this.props.data.formatOptions });
 	  },
-
 	  toggleHeaderFooter: function toggleHeaderFooter(element) {
 	    if (!element) return;
 	    this.props.data.headerFooterControl = element.checked;
@@ -10167,30 +9883,23 @@ webpackJsonp([0],{
 	        self = this,
 	        url = window.location.protocol + "//" + window.location.host + "/chat?join_chat_id=" + this.props.data.chat_id;
 	    console.log(url);
-	    _event_bus2.default.trigger('changeStatePopup', {
-	      show: true,
-	      type: 'confirm',
-	      message: 112,
-	      onDataActionClick: function onDataActionClick(action) {
-	        switch (action) {
-	          case 'confirmCancel':
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	          case 'confirmOk':
-	            if (!self.props.data.toggleChatUsersFriendship) {
-	              self.toggleChatUsersFriendship(null, true);
-	            }
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	        }
-	      },
-	      data: { "url": url }
-	    });
+	    this.setState({ confirmMessage: 112, inviteByUrl: url });
 	  },
-
-
+	  handleDialogInviteByUrl: function handleDialogInviteByUrl(event) {
+	    var element = this.getDataParameter(event.target, 'action');
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          if (!this.props.data.toggleChatUsersFriendship) {
+	            this.toggleChatUsersFriendship(null, true);
+	          }
+	          break;
+	      }
+	      this.setState({ confirmMessage: null, inviteByUrl: null });
+	    }
+	  },
 	  toggleChatUsersFriendship: function toggleChatUsersFriendship(element, forceChecked) {
 	    var self = this;
 	    if (!element) {
@@ -10208,7 +9917,6 @@ webpackJsonp([0],{
 	      ready_state: this.props.data.toggleChatUsersFriendship
 	    });
 	  },
-
 	  changeChatSize: function changeChatSize(element) {
 	    if (element.dataset.value) {
 	      this.props.data.settings_ListOptions.size_current = element.dataset.value + 'px';
@@ -10222,17 +9930,14 @@ webpackJsonp([0],{
 	      this.props.handleEvent.changeState({ settings_ListOptions: this.props.data.settings_ListOptions });
 	    }
 	  },
-
 	  saveAsCustomWidth: function saveAsCustomWidth() {
 	    this.props.data.settings_ListOptions.size_custom_value = this.props.data.settings_ListOptions.size_current;
 	    this.props.handleEvent.changeState({ settings_ListOptions: this.props.data.settings_ListOptions });
 	  },
-
 	  changeAdjustWidth: function changeAdjustWidth(element) {
 	    this.props.data.settings_ListOptions.adjust_width = element.checked;
 	    this.props.handleEvent.changeState({ settings_ListOptions: this.props.data.settings_ListOptions });
 	  },
-
 	  defineDefaultSizeConfig: function defineDefaultSizeConfig(all_size_configs, current_data_key) {
 	    var current_size_config = null;
 	    if (current_data_key) {
@@ -10253,7 +9958,6 @@ webpackJsonp([0],{
 	    }
 	    return current_size_config;
 	  },
-
 	  getSizeData: function getSizeData(all_size_configs, current_data_key) {
 	    var returnObj = {},
 	        current_size_config = this.defineDefaultSizeConfig(all_size_configs, current_data_key);
@@ -10265,7 +9969,6 @@ webpackJsonp([0],{
 	    });
 	    return returnObj;
 	  },
-
 	  calcDisplay: function calcDisplay(_config) {
 	    if (!_config.data) return true;
 	    if (this.props.data.settings_ListOptions.current_data_key === "custom_size") {
@@ -10284,7 +9987,6 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  renderItems: function renderItems(configs) {
 	    var _React$createElement;
 
@@ -10307,12 +10009,29 @@ webpackJsonp([0],{
 	    }, _defineProperty(_React$createElement, 'events', onEvent), _defineProperty(_React$createElement, 'calcDisplay', this.calcDisplay), _React$createElement)));
 	    return items;
 	  },
-
 	  render: function render() {
 	    var config = this.props.data.createdByUserId === _users_bus2.default.getUserId() ? this.props.setting_config_creator : this.props.setting_config;
 	    return _react2.default.createElement(
 	      'div',
 	      null,
+	      _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessage, message: this.state.confirmMessage,
+	        handleClick: this.handleDialogInviteByUrl,
+	        body: { content: _react2.default.createElement(
+	            'div',
+	            { className: 'w-100p p-t-b flex-sp-between' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'p-b-1em p-r-l-1em' },
+	              _localization2.default.transferText(112),
+	              ' ',
+	              _react2.default.createElement('br', null),
+	              _react2.default.createElement(
+	                'a',
+	                { href: this.state.inviteByUrl },
+	                this.state.inviteByUrl
+	              )
+	            )
+	          ) } }),
 	      this.renderItems(config),
 	      _react2.default.createElement(
 	        'div',
@@ -10334,7 +10053,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 319:
+/***/ 326:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10347,63 +10066,163 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _localization = __webpack_require__(273);
+	var _localization = __webpack_require__(280);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _chats_bus = __webpack_require__(302);
+	var _dialog = __webpack_require__(305);
+
+	var _dialog2 = _interopRequireDefault(_dialog);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var DialogConfirm = _react2.default.createClass({
+	  displayName: 'DialogConfirm',
+	  processingTitle: function processingTitle() {
+	    var title = void 0;
+	    if (this.props.title) {
+	      title = this.props.title;
+	      if (!title.textContent) {
+	        title.textContent = 80;
+	      }
+	      if (title.addClass) {
+	        title.addClass = ' confirm ' + title.addClass;
+	      } else {
+	        title.addClass = ' confirm ';
+	      }
+	    } else {
+	      title = { textContent: 80, addClass: ' confirm' };
+	    }
+
+	    return title;
+	  },
+	  processingBody: function processingBody() {
+	    var body = void 0;
+	    if (this.props.body) {
+	      body = this.props.body;
+	      if (!body.textContent) {
+	        body.textContent = this.props.message;
+	      }
+	    } else {
+	      body = { textContent: this.props.message };
+	    }
+
+	    return body;
+	  },
+	  processingFooter: function processingFooter() {
+	    var footer = void 0,
+	        _class = 'flex-sp-around p-05em border-popup-footer ';
+	    if (this.props.footer) {
+	      footer = this.props.footer;
+	      if (footer.content) {
+	        return footer.content;
+	      }
+	      if (footer.className) {
+	        _class = footer.className;
+	      } else {
+	        _class = footer.addClass ? _class + footer.addClass : _class;
+	      }
+	    }
+
+	    return _react2.default.createElement(
+	      'footer',
+	      { className: _class },
+	      _react2.default.createElement(
+	        'button',
+	        { className: 'border-radius-04em p-tb-03em-lr-1em', 'data-action': 'confirmCancel' },
+	        this.props.no ? _localization2.default.transferText(this.props.no) : _localization2.default.getLocText(42)
+	      ),
+	      _react2.default.createElement(
+	        'button',
+	        { className: 'border-radius-04em p-tb-03em-lr-1em', 'data-action': 'confirmOk' },
+	        this.props.yes ? _localization2.default.transferText(this.props.yes) : _localization2.default.getLocText(97)
+	      )
+	    );
+	  },
+	  render: function render() {
+	    if (this.props.show) {
+	      var title = this.processingTitle(),
+	          body = this.processingBody(),
+	          footer = this.processingFooter();
+
+	      return _react2.default.createElement(_dialog2.default, { show: this.props.show, title: title, body: body, footer: footer,
+	        handleClick: this.props.handleClick });
+	    } else {
+	      return _react2.default.createElement(_dialog2.default, { show: this.props.show });
+	    }
+	  }
+	});
+
+	exports.default = DialogConfirm;
+
+/***/ },
+
+/***/ 327:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	var _chats_bus = __webpack_require__(309);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(286);
+	var _dom_core = __webpack_require__(303);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _body = __webpack_require__(310);
+	var _body = __webpack_require__(316);
 
 	var _body2 = _interopRequireDefault(_body);
-
-	var _location_wrapper = __webpack_require__(288);
-
-	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var ContactList = _react2.default.createClass({
 	  displayName: 'ContactList',
-
-
 	  getInitialState: function getInitialState() {
 	    return {
 	      users: []
 	    };
 	  },
-
 	  componentWillMount: function componentWillMount() {
 	    this.getContacts();
 	  },
-
 	  componentDidMount: function componentDidMount() {
 	    _event_bus2.default.on('changeUsersConnections', this.getContacts, this);
 	    _event_bus2.default.on('changeMyUsers', this.getContacts, this);
 	  },
-
 	  componentWillUnmount: function componentWillUnmount() {
 	    _event_bus2.default.off('changeUsersConnections', this.getContacts, this);
 	    _event_bus2.default.off('changeMyUsers', this.getContacts, this);
 	  },
-
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    if (nextProps.data.user_ids !== this.initialUsers_ids) {
+	      this.getContacts();
+	    }
+	  },
 	  getContacts: function getContacts() {
 	    var self = this;
 	    _chats_bus2.default.getChatContacts(this.props.data.chat_id, function (error, contactsInfo) {
+	      self.initialUsers_ids = self.props.data.user_ids;
 	      if (error) {
 	        console.error(error);
 	        return;
@@ -10418,8 +10237,6 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
-
-
 	  handleClick: function handleClick(event) {
 	    var element = this.getDataParameter(event.currentTarget, 'action');
 	    if (element) {
@@ -10430,7 +10247,6 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  makeFriends: function makeFriends(element) {
 	    var userId = element.dataset.key;
 	    if (userId) {
@@ -10439,17 +10255,18 @@ webpackJsonp([0],{
 	      console.error('Unable to get UserId');
 	    }
 	  },
-
-
-	  renderItems: function renderItems(configs) {
+	  renderItems: function renderItems() {
 	    var items = [],
-	        self = this,
-	        control_btn = void 0;
+	        self = this;
 	    this.state.users.forEach(function (_user) {
 	      items.push(_react2.default.createElement(
 	        'div',
 	        { key: _user.user_id, className: 'flex-sp-start margin-t-b' },
-	        _react2.default.createElement('div', { className: 'width-40px flex-just-center' }),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'width-40px flex-just-center' },
+	          _react2.default.createElement('img', { src: _user.avatar_data, width: '35px', height: '35px', className: 'border-radius-5' })
+	        ),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'message flex-item-1-auto flex-dir-col flex-sp-between' },
@@ -10481,7 +10298,6 @@ webpackJsonp([0],{
 	    });
 	    return items;
 	  },
-
 	  render: function render() {
 	    if (this.state.users.length) {
 	      var items = this.renderItems();
@@ -10501,7 +10317,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 320:
+/***/ 328:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10514,58 +10330,46 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _webrtc = __webpack_require__(304);
+	var _webrtc = __webpack_require__(311);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
-
-	var _location_wrapper = __webpack_require__(288);
-
-	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Connections = _react2.default.createClass({
 	  displayName: 'Connections',
-
-
 	  getInitialState: function getInitialState() {
 	    return {
 	      connections: [],
 	      contactsInfo: []
 	    };
 	  },
-
 	  componentWillMount: function componentWillMount() {
 	    this.getConnections();
 	  },
-
 	  componentDidMount: function componentDidMount() {
 	    _event_bus2.default.on('changeConnectionList', this.getConnections, this);
 	    _event_bus2.default.on('changeMyUsers', this.getConnections, this);
 	  },
-
 	  componentWillUnmount: function componentWillUnmount() {
 	    _event_bus2.default.off('changeConnectionList', this.getConnections, this);
 	    _event_bus2.default.off('changeMyUsers', this.getConnections, this);
 	  },
-
-	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
 	    if (!this.props.data.openedState && !nextProps.data.openedState) {
 	      return false;
 	    } else {
 	      return true;
 	    }
 	  },
-
-
 	  getConnections: function getConnections() {
 	    var connections = _webrtc2.default.getAllConnections(),
 	        self = this,
@@ -10589,20 +10393,7 @@ webpackJsonp([0],{
 	      this.setState({ connections: connections });
 	    }
 	  },
-
-	  getUserName: function getUserName(_user_id) {
-	    var user_name = void 0;
-	    this.state.contactsInfo.every(function (_contactInfo) {
-	      if (_contactInfo.user_id === _user_id) {
-	        user_name = _contactInfo.userName;
-	      }
-	      return !user_name;
-	    });
-
-	    return user_name;
-	  },
-
-	  renderItems: function renderItems(configs) {
+	  renderItems: function renderItems() {
 	    var items = [],
 	        self = this;
 
@@ -10618,7 +10409,7 @@ webpackJsonp([0],{
 	            _react2.default.createElement(
 	              'div',
 	              null,
-	              self.getUserName(_user_id)
+	              _users_bus2.default.getUserName(_user_id, this.state.contactsInfo)
 	            ),
 	            _react2.default.createElement(
 	              'div',
@@ -10646,7 +10437,6 @@ webpackJsonp([0],{
 	    });
 	    return items;
 	  },
-
 	  render: function render() {
 	    var items = this.renderItems();
 	    return _react2.default.createElement(
@@ -10661,7 +10451,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 321:
+/***/ 329:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10674,43 +10464,958 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _extend_core = __webpack_require__(276);
+	var _reactDom = __webpack_require__(45);
 
-	var _extend_core2 = _interopRequireDefault(_extend_core);
+	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _switcher_core = __webpack_require__(303);
-
-	var _switcher_core2 = _interopRequireDefault(_switcher_core);
-
-	var _indexeddb = __webpack_require__(278);
-
-	var _indexeddb2 = _interopRequireDefault(_indexeddb);
-
-	var _chats_bus = __webpack_require__(302);
-
-	var _chats_bus2 = _interopRequireDefault(_chats_bus);
-
-	var _users_bus = __webpack_require__(275);
-
-	var _users_bus2 = _interopRequireDefault(_users_bus);
-
-	var _messages = __webpack_require__(316);
-
-	var _messages2 = _interopRequireDefault(_messages);
-
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _dom_core = __webpack_require__(286);
+	var _extend_core = __webpack_require__(283);
+
+	var _extend_core2 = _interopRequireDefault(_extend_core);
+
+	var _dom_core = __webpack_require__(303);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _triple_element = __webpack_require__(289);
+	var _users_bus = __webpack_require__(282);
 
-	var _triple_element2 = _interopRequireDefault(_triple_element);
+	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _location_wrapper = __webpack_require__(288);
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	var _jdenticon = __webpack_require__(330);
+
+	var _jdenticon2 = _interopRequireDefault(_jdenticon);
+
+	var _dialogSuccess = __webpack_require__(331);
+
+	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
+
+	var _dialogError = __webpack_require__(304);
+
+	var _dialogError2 = _interopRequireDefault(_dialogError);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var size_file = 2000000,
+	    mode = {
+	  SHOW: "SHOW",
+	  EDIT: "EDIT"
+	};
+	var UserAvatar = _react2.default.createClass({
+	  displayName: 'UserAvatar',
+
+
+	  canvas_elem_width: 225,
+	  canvas_elem_height: 225,
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      errorMessage: null,
+	      successMessage: null
+	    };
+	  },
+	  componentWillMount: function componentWillMount() {
+	    var self = this;
+	    this.img = new Image();
+	    _users_bus2.default.getMyInfo(null, function (err, options, userInfo) {
+	      if (err) return console.error(err);
+	      if (userInfo.avatar_data) {
+	        self.img.src = userInfo.avatar_data;
+	        if (self.props.data.avatarData !== '' && self.props.data.avatarData !== undefined) {
+	          self.img.src = self.props.data.avatarData;
+	          if (self.props.data.avatarPrevious !== '') {
+	            self._change_avatar = true;
+	            self.previous_src = self.props.data.avatarPrevious;
+	          }
+	          self.props.handleEvent.changeState({ avatarData: '', avatarPrevious: '' });
+	        }
+	        self.updateAvatar();
+	      }
+	    });
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.avatarContainer = _reactDom2.default.findDOMNode(this);
+	    this.form = this.avatarContainer.querySelector('form');
+	    this.input_file_elem = this.avatarContainer.querySelector('[name="avatar"]');
+	    this.canvas_elem = this.avatarContainer.querySelector('[data-role="preview_avatar"]');
+	    this.canvas_elem_ctx = this.canvas_elem.getContext('2d');
+
+	    this.input_file_elem.addEventListener('change', this.previewFile);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    if (this.img.src !== '') {
+	      this.props.handleEvent.changeState({ avatarData: this.img.src, avatarPrevious: this.previous_src });
+	    }
+	    this.input_file_elem.removeEventListener('change', this.previewFile);
+	  },
+	  previewFile: function previewFile() {
+	    var self = this,
+	        reader = new FileReader();
+	    reader.onloadend = function (event) {
+	      self.img.src = reader.result;
+	      self.canvas_elem_ctx.drawImage(self.img, 0, 0, self.canvas_elem_width, self.canvas_elem_height);
+	      self._change_avatar = true;
+	    };
+
+	    if (this.input_file_elem.files[0]) {
+	      if (this.input_file_elem.files[0].size <= size_file) {
+	        reader.readAsDataURL(this.input_file_elem.files[0]);
+	      } else {
+	        this.form.reset();
+	        this.setState({ errorMessage: 116 });
+	      }
+	    } else {
+	      this.form.reset();
+	      this.img.src = '';
+	      this.canvas_elem.width = this.canvas_elem.width;
+	    }
+	  },
+	  handleClick: function handleClick(event) {
+	    var element = this.getDataParameter(event.currentTarget, 'action');
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'saveAvatar':
+	          this.saveAvatar(element);
+	          break;
+	        case 'changeAvatar':
+	          this.changeAvatar(element);
+	          break;
+	        case 'closeChangeAvatar':
+	          this.closeChangeAvatar(element);
+	          break;
+	        case 'resetAvatar':
+	          this.resetAvatar(element);
+	          break;
+	      }
+	    }
+	  },
+	  handleDialogError: function handleDialogError() {
+	    this.setState({ errorMessage: null });
+	  },
+	  handleDialogConfirm: function handleDialogConfirm() {
+	    this.setState({ confirmMessage: null });
+	  },
+	  updateAvatar: function updateAvatar() {
+	    if (!this.canvas_elem_ctx) return;
+	    if (this.img.src && this.img.src !== '') {
+	      this.form.reset();
+	      this.canvas_elem.width = this.canvas_elem.width;
+	      this.canvas_elem_ctx.drawImage(this.img, 0, 0, this.canvas_elem_width, this.canvas_elem_height);
+	    }
+	  },
+	  resetAvatar: function resetAvatar() {
+	    var self = this;
+	    _jdenticon2.default.jdenticon(_users_bus2.default.getUserId(), function (avatar_data) {
+	      self._change_avatar = true;
+	      self.img.src = avatar_data;
+	      self.updateAvatar();
+	    });
+	  },
+	  saveAvatar: function saveAvatar() {
+	    var self = this;
+	    if (this._change_avatar) {
+	      if (this.img.src !== '') {
+	        _users_bus2.default.getMyInfo(null, function (err, options, userInfo) {
+	          if (err) return console.error(err);
+
+	          userInfo.avatar_data = self.img.src;
+	          userInfo.lastModifyDatetime = Date.now();
+	          _users_bus2.default.saveMyInfo(userInfo, function () {
+	            self.props.handleEvent.changeState({ avatarMode: mode.SHOW });
+	            _event_bus2.default.trigger('updateUserAvatar');
+	            self._change_avatar = false;
+	            self.form.reset();
+	            self.setState({ confirmMessage: 105 });
+	          });
+	        });
+	      }
+	    } else {
+	      self.props.handleEvent.changeState({ avatarMode: mode.SHOW });
+	      self._change_avatar = false;
+	      self.setState({ confirmMessage: 118 });
+	    }
+	  },
+	  changeAvatar: function changeAvatar() {
+	    this.props.handleEvent.changeState({ avatarMode: mode.EDIT });
+	    this._change_avatar = false;
+	    this.previous_src = this.img.src;
+	  },
+	  closeChangeAvatar: function closeChangeAvatar() {
+	    if (this._change_avatar) {
+	      this.img.src = this.previous_src;
+	      this.canvas_elem.width = this.canvas_elem.width;
+	      this.canvas_elem_ctx.drawImage(this.img, 0, 0, this.canvas_elem_width, this.canvas_elem_height);
+	    }
+	    this.form.reset();
+	    this.props.handleEvent.changeState({ avatarMode: mode.SHOW });
+	  },
+	  render: function render() {
+	    var _this = this;
+
+	    var self = this;
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'textbox' },
+	      _react2.default.createElement(_dialogError2.default, { show: this.state.errorMessage, message: this.state.errorMessage,
+	        handleClick: this.handleDialogError }),
+	      _react2.default.createElement(_dialogSuccess2.default, { show: this.state.confirmMessage, message: this.state.confirmMessage,
+	        handleClick: this.handleDialogConfirm }),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'title c-100' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'flex-item flex-wrap flex-align-c flex-item-auto' },
+	          _react2.default.createElement(
+	            'label',
+	            null,
+	            _localization2.default.getLocText(117)
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'flex-item flex-wrap flex-align-c flex-item-auto flex-dir-col' },
+	        _react2.default.createElement('canvas', { 'data-role': 'preview_avatar', width: this.canvas_elem_width, height: this.canvas_elem_height, className: 'margin-b-em' }),
+	        _react2.default.createElement(
+	          'form',
+	          { enctype: 'multipart/form-data', method: 'post', className: self.props.data.avatarMode === mode.SHOW ? 'hide' : '' },
+	          _react2.default.createElement(
+	            'p',
+	            null,
+	            _react2.default.createElement('input', { type: 'file', name: 'avatar', accept: 'image/jpeg,image/png' })
+	          )
+	        ),
+	        function () {
+	          if (self.props.data.avatarMode === mode.SHOW) {
+	            return _react2.default.createElement(
+	              'div',
+	              { className: 'w-100p p-t-b flex-sp-around c-200' },
+	              _react2.default.createElement(
+	                'button',
+	                { 'data-action': 'changeAvatar', className: 'button-convex', onClick: _this.handleClick },
+	                _localization2.default.getLocText(37)
+	              )
+	            );
+	          } else if (self.props.data.avatarMode === mode.EDIT) {
+	            return _react2.default.createElement(
+	              'div',
+	              { className: 'w-100p p-t-b flex-sp-around c-200' },
+	              _react2.default.createElement(
+	                'button',
+	                { 'data-action': 'resetAvatar', className: 'button-convex', onClick: _this.handleClick },
+	                _localization2.default.getLocText(119)
+	              ),
+	              _react2.default.createElement(
+	                'button',
+	                { 'data-action': 'closeChangeAvatar', className: 'button-convex', onClick: _this.handleClick },
+	                _localization2.default.getLocText(42)
+	              ),
+	              _react2.default.createElement(
+	                'button',
+	                { 'data-action': 'saveAvatar', className: 'button-convex', onClick: _this.handleClick },
+	                _localization2.default.getLocText(43)
+	              )
+	            );
+	          }
+	        }()
+	      )
+	    );
+	  }
+	});
+
+	_extend_core2.default.prototype.inherit(UserAvatar, _dom_core2.default);
+
+	exports.default = UserAvatar;
+
+/***/ },
+
+/***/ 330:
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	/**
+	 * Jdenticon 1.3.2
+	 * http://jdenticon.com
+	 *
+	 * Built: 2015-10-10T11:55:57.451Z
+	 *
+	 * Copyright (c) 2014-2015 Daniel Mester Pirttijärvi
+	 *
+	 * This software is provided 'as-is', without any express or implied
+	 * warranty.  In no event will the authors be held liable for any damages
+	 * arising from the use of this software.
+	 *
+	 * Permission is granted to anyone to use this software for any purpose,
+	 * including commercial applications, and to alter it and redistribute it
+	 * freely, subject to the following restrictions:
+	 *
+	 * 1. The origin of this software must not be misrepresented; you must not
+	 *    claim that you wrote the original software. If you use this software
+	 *    in a product, an acknowledgment in the product documentation would be
+	 *    appreciated but is not required.
+	 *
+	 * 2. Altered source versions must be plainly marked as such, and must not be
+	 *    misrepresented as being the original software.
+	 *
+	 * 3. This notice may not be removed or altered from any source distribution.
+	 *
+	 */
+
+	var Jdenticon = function Jdenticon() {};
+
+	Jdenticon.prototype = {
+	  Point: function Point(x, y) {
+	    this.x = x;
+	    this.y = y;
+	  },
+
+	  decToHex: function decToHex(v) {
+	    v |= 0; // Ensure integer value
+	    return v < 0 ? "00" : v < 16 ? "0" + v.toString(16) : v < 256 ? v.toString(16) : "ff";
+	  },
+
+	  hueToRgb: function hueToRgb(m1, m2, h) {
+	    h = h < 0 ? h + 6 : h > 6 ? h - 6 : h;
+	    return this.decToHex(255 * (h < 1 ? m1 + (m2 - m1) * h : h < 3 ? m2 : h < 4 ? m1 + (m2 - m1) * (4 - h) : m1));
+	  },
+
+	  /**
+	   * Gets a set of identicon color candidates for a specified hue and config.
+	   */
+	  colorTheme: function colorTheme(hue, config) {
+	    return [
+	    // Dark gray
+	    color.hsl(0, 0, config.grayscaleLightness(0)),
+	    // Mid color
+	    color.correctedHsl(hue, config.saturation, config.colorLightness(0.5)),
+	    // Light gray
+	    color.hsl(0, 0, config.grayscaleLightness(1)),
+	    // Light color
+	    color.correctedHsl(hue, config.saturation, config.colorLightness(1)),
+	    // Dark color
+	    color.correctedHsl(hue, config.saturation, config.colorLightness(0))];
+	  },
+
+	  /**
+	   * Draws an identicon to a specified renderer.
+	   */
+	  iconGenerator: function iconGenerator(renderer, hash, x, y, size, padding, config, callback) {
+	    var undefined;
+
+	    // Calculate padding
+	    padding = size * (padding === undefined ? 0.08 : padding) | 0;
+	    size -= padding * 2;
+
+	    // Sizes smaller than 30 px are not supported. If really needed, apply a scaling transformation
+	    // to the context before passing it to this function.
+	    if (size < 30) {
+	      throw new Error("Jdenticon cannot render identicons smaller than 30 pixels.");
+	    }
+	    if (!/^[0-9a-f,-]{11,}$/i.test(hash)) {
+	      throw new Error("Invalid hash passed to Jdenticon.");
+	    }
+
+	    var graphics = new Graphics(renderer);
+
+	    // Calculate cell size and ensure it is an integer
+	    var cell = 0 | size / 4;
+
+	    // Since the cell size is integer based, the actual icon will be slightly smaller than specified => center icon
+	    x += 0 | padding + size / 2 - cell * 2;
+	    y += 0 | padding + size / 2 - cell * 2;
+
+	    function renderShape(colorIndex, shapes, index, rotationIndex, positions) {
+	      var r = rotationIndex ? parseInt(hash.charAt(rotationIndex), 16) : 0,
+	          shape = shapes[parseInt(hash.charAt(index), 16) % shapes.length],
+	          i;
+
+	      renderer.beginShape(availableColors[selectedColorIndexes[colorIndex]]);
+
+	      for (i = 0; i < positions.length; i++) {
+	        graphics._transform = new Transform(x + positions[i][0] * cell, y + positions[i][1] * cell, cell, r++ % 4);
+	        shape(graphics, cell, i);
+	      }
+
+	      renderer.endShape();
+	    }
+
+	    // AVAILABLE COLORS
+	    var hue = parseInt(hash.substr(-4) + hash.substr(-8, 3), 16) / 0xfffffff,
+
+
+	    // Available colors for this icon
+	    availableColors = this.colorTheme(hue, config),
+
+
+	    // The index of the selected colors
+	    selectedColorIndexes = [],
+	        index;
+
+	    function isDuplicate(values) {
+	      if (values.indexOf(index) >= 0) {
+	        for (var i = 0; i < values.length; i++) {
+	          if (selectedColorIndexes.indexOf(values[i]) >= 0) {
+	            return true;
+	          }
+	        }
+	      }
+	    }
+
+	    for (var i = 0; i < 3; i++) {
+	      index = parseInt(hash.charAt(55 + i), 16) % availableColors.length;
+	      if (isDuplicate([0, 4]) || // Disallow dark gray and dark color combo
+	      isDuplicate([2, 3])) {
+	        // Disallow light gray and light color combo
+	        index = 1;
+	      }
+	      selectedColorIndexes.push(index);
+	    }
+
+	    // ACTUAL RENDERING
+	    // Sides
+	    renderShape(0, shapes.outer, 57, 3, [[1, 0], [2, 0], [2, 3], [1, 3], [0, 1], [3, 1], [3, 2], [0, 2]]);
+	    // Corners
+	    renderShape(1, shapes.outer, 58, 5, [[0, 0], [3, 0], [3, 3], [0, 3]]);
+	    // Center
+	    renderShape(2, shapes.center, 56, null, [[1, 1], [2, 1], [2, 2], [1, 2]]);
+	    var data_avatar = renderer._ctx.canvas.toDataURL();
+	    if (callback) {
+	      callback(data_avatar);
+	    }
+	  },
+
+	  /**
+	   * Gets the normalized current Jdenticon color configuration. Missing fields have default values.
+	   */
+	  getCurrentConfig: function getCurrentConfig() {
+	    var configObject = this.jdenticon["config"] || global["jdenticon_config"] || {},
+	        lightnessConfig = configObject["lightness"] || {},
+	        saturation = configObject["saturation"];
+
+	    /**
+	     * Creates a lightness range.
+	     */
+	    function lightness(configName, defaultMin, defaultMax) {
+	      var range = lightnessConfig[configName] instanceof Array ? lightnessConfig[configName] : [defaultMin, defaultMax];
+
+	      /**
+	       * Gets a lightness relative the specified value in the specified lightness range.
+	       */
+	      return function (value) {
+	        value = range[0] + value * (range[1] - range[0]);
+	        return value < 0 ? 0 : value > 1 ? 1 : value;
+	      };
+	    }
+
+	    return {
+	      saturation: typeof saturation == "number" ? saturation : 0.5,
+	      colorLightness: lightness("color", 0.4, 0.8),
+	      grayscaleLightness: lightness("grayscale", 0.3, 0.9)
+	    };
+	  },
+
+	  /**
+	   * Updates the identicon in the specified canvas elements.
+	   * @param {string=} hash Optional hash to be rendered. If not specified, the hash specified by the data-jdenticon-hash is used.
+	   * @param {number=} padding Optional padding in percents. Extra padding might be added to center the rendered identicon.
+	   */
+	  update: function update(el, hash, callback, padding) {
+	    if (typeof el === "string") {
+	      var element = document.createElement('canvas');
+	      element.setAttribute('width', canvas_element_width);
+	      element.setAttribute('height', canvas_element_height);
+	      this.update(element, hash, callback, padding);
+	      return;
+	    }
+	    if (!el || !el["tagName"]) {
+	      // No element found
+	      return;
+	    }
+	    hash = hash || el.getAttribute(HASH_ATTRIBUTE);
+	    if (!hash) {
+	      // No hash specified
+	      return;
+	    }
+
+	    var isCanvas = el["tagName"].toLowerCase() == "canvas";
+
+	    // Ensure we have a supported element
+	    if (!(isCanvas && "getContext" in el)) {
+	      return;
+	    }
+
+	    var width = Number(el.getAttribute("width")) || el.clientWidth || 0,
+	        height = Number(el.getAttribute("height")) || el.clientHeight || 0,
+	        renderer = new CanvasRenderer(el.getContext("2d"), width, height),
+	        size = Math.min(width, height);
+
+	    // Draw icon
+	    this.iconGenerator(renderer, hash, 0, 0, size, padding, this.getCurrentConfig(), callback);
+	  },
+
+	  jdenticon: function jdenticon(hash, callback) {
+	    if (supportsQuerySelectorAll) {
+	      this.update("canvas[" + HASH_ATTRIBUTE + "]", hash, function (avatar_data) {
+	        if (callback) {
+	          callback(avatar_data);
+	        }
+	      });
+	    }
+	  }
+	};
+
+	var Transform = function Transform(x, y, size, rotation) {
+	  this._x = x;
+	  this._y = y;
+	  this._size = size;
+	  this._rotation = rotation;
+	};
+	Transform.prototype = {
+	  /**
+	   * Transforms the specified point based on the translation and rotation specification for this Transform.
+	   * @param {number} x x-coordinate
+	   * @param {number} y y-coordinate
+	   * @param {number=} w The width of the transformed rectangle. If greater than 0, this will ensure the returned point is of the upper left corner of the transformed rectangle.
+	   * @param {number=} h The height of the transformed rectangle. If greater than 0, this will ensure the returned point is of the upper left corner of the transformed rectangle.
+	   */
+	  transformPoint: function transformPoint(x, y, w, h) {
+	    var right = this._x + this._size,
+	        bottom = this._y + this._size;
+	    return this._rotation === 1 ? new Jdenticon.prototype.Point(right - y - (h || 0), this._y + x) : this._rotation === 2 ? new Jdenticon.prototype.Point(right - x - (w || 0), bottom - y - (h || 0)) : this._rotation === 3 ? new Jdenticon.prototype.Point(this._x + y, bottom - x - (w || 0)) : new Jdenticon.prototype.Point(this._x + x, this._y + y);
+	  }
+	};
+	Transform.noTransform = new Transform(0, 0, 0, 0);
+
+	var Graphics = function Graphics(renderer) {
+	  this._renderer = renderer;
+	  this._transform = Transform.noTransform;
+	};
+	Graphics.prototype = {
+	  /**
+	   * Adds a polygon to the underlying renderer.
+	   * @param {Array} points The points of the polygon clockwise on the format [ x0, y0, x1, y1, ..., xn, yn ]
+	   * @param {boolean=} invert Specifies if the polygon will be inverted.
+	   */
+	  addPolygon: function addPolygon(points, invert) {
+	    var di = invert ? -2 : 2,
+	        transform = this._transform,
+	        transformedPoints = [],
+	        i;
+
+	    for (i = invert ? points.length - 2 : 0; i < points.length && i >= 0; i += di) {
+	      transformedPoints.push(transform.transformPoint(points[i], points[i + 1]));
+	    }
+
+	    this._renderer.addPolygon(transformedPoints);
+	  },
+
+	  /**
+	   * Adds a polygon to the underlying renderer.
+	   * Source: http://stackoverflow.com/a/2173084
+	   * @param {number} x The x-coordinate of the upper left corner of the rectangle holding the entire ellipse.
+	   * @param {number} y The y-coordinate of the upper left corner of the rectangle holding the entire ellipse.
+	   * @param {number} size The size of the ellipse.
+	   * @param {boolean=} invert Specifies if the ellipse will be inverted.
+	   */
+	  addCircle: function addCircle(x, y, size, invert) {
+	    var p = this._transform.transformPoint(x, y, size, size);
+	    this._renderer.addCircle(p, size, invert);
+	  },
+
+	  /**
+	   * Adds a rectangle to the underlying renderer.
+	   * @param {number} x The x-coordinate of the upper left corner of the rectangle.
+	   * @param {number} y The y-coordinate of the upper left corner of the rectangle.
+	   * @param {number} w The width of the rectangle.
+	   * @param {number} h The height of the rectangle.
+	   * @param {boolean=} invert Specifies if the rectangle will be inverted.
+	   */
+	  addRectangle: function addRectangle(x, y, w, h, invert) {
+	    this.addPolygon([x, y, x + w, y, x + w, y + h, x, y + h], invert);
+	  },
+
+	  /**
+	   * Adds a right triangle to the underlying renderer.
+	   * @param {number} x The x-coordinate of the upper left corner of the rectangle holding the triangle.
+	   * @param {number} y The y-coordinate of the upper left corner of the rectangle holding the triangle.
+	   * @param {number} w The width of the triangle.
+	   * @param {number} h The height of the triangle.
+	   * @param {number} r The rotation of the triangle (clockwise). 0 = right corner of the triangle in the lower left corner of the bounding rectangle.
+	   * @param {boolean=} invert Specifies if the triangle will be inverted.
+	   */
+	  addTriangle: function addTriangle(x, y, w, h, r, invert) {
+	    var points = [x + w, y, x + w, y + h, x, y + h, x, y];
+	    points.splice((r || 0) % 4 * 2, 2);
+	    this.addPolygon(points, invert);
+	  },
+
+	  /**
+	   * Adds a rhombus to the underlying renderer.
+	   * @param {number} x The x-coordinate of the upper left corner of the rectangle holding the rhombus.
+	   * @param {number} y The y-coordinate of the upper left corner of the rectangle holding the rhombus.
+	   * @param {number} w The width of the rhombus.
+	   * @param {number} h The height of the rhombus.
+	   * @param {boolean=} invert Specifies if the rhombus will be inverted.
+	   */
+	  addRhombus: function addRhombus(x, y, w, h, invert) {
+	    this.addPolygon([x + w / 2, y, x + w, y + h / 2, x + w / 2, y + h, x, y + h / 2], invert);
+	  }
+	};
+
+	var shapes = {
+	  center: [
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var k = cell * 0.42;
+	    g.addPolygon([0, 0, cell, 0, cell, cell - k * 2, cell - k, cell, 0, cell]);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var w = 0 | cell * 0.5,
+	        h = 0 | cell * 0.8;
+	    g.addTriangle(cell - w, 0, w, h, 2);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var s = 0 | cell / 3;
+	    g.addRectangle(s, s, cell - s, cell - s);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var inner = 0 | cell * 0.1,
+	        outer = 0 | cell * 0.25;
+	    g.addRectangle(outer, outer, cell - inner - outer, cell - inner - outer);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var m = 0 | cell * 0.15,
+	        s = 0 | cell * 0.5;
+	    g.addCircle(cell - s - m, cell - s - m, s);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var inner = cell * 0.1,
+	        outer = inner * 4;
+
+	    g.addRectangle(0, 0, cell, cell);
+	    g.addPolygon([outer, outer, cell - inner, outer, outer + (cell - outer - inner) / 2, cell - inner], true);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addPolygon([0, 0, cell, 0, cell, cell * 0.7, cell * 0.4, cell * 0.4, cell * 0.7, cell, 0, cell]);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addTriangle(cell / 2, cell / 2, cell / 2, cell / 2, 3);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addRectangle(0, 0, cell, cell / 2);
+	    g.addRectangle(0, cell / 2, cell / 2, cell / 2);
+	    g.addTriangle(cell / 2, cell / 2, cell / 2, cell / 2, 1);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var inner = 0 | cell * 0.14,
+	        outer = 0 | cell * 0.35;
+	    g.addRectangle(0, 0, cell, cell);
+	    g.addRectangle(outer, outer, cell - outer - inner, cell - outer - inner, true);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var inner = cell * 0.12,
+	        outer = inner * 3;
+
+	    g.addRectangle(0, 0, cell, cell);
+	    g.addCircle(outer, outer, cell - inner - outer, true);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addTriangle(cell / 2, cell / 2, cell / 2, cell / 2, 3);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var m = cell * 0.25;
+	    g.addRectangle(0, 0, cell, cell);
+	    g.addRhombus(m, m, cell - m, cell - m, true);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var m = cell * 0.4,
+	        s = cell * 1.2;
+	    if (!index) {
+	      g.addCircle(m, m, s);
+	    }
+	  }],
+
+	  outer: [
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addTriangle(0, 0, cell, cell, 0);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addTriangle(0, cell / 2, cell, cell / 2, 0);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addRhombus(0, 0, cell, cell);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var m = cell / 6;
+	    g.addCircle(m, m, cell - 2 * m);
+	  }]
+	};
+
+	/**
+	 * Functions for converting colors to hex-rgb representations.
+	 * @private
+	 */
+	var color = {
+	  /**
+	   * @param {number} r Red channel [0, 255]
+	   * @param {number} g Green channel [0, 255]
+	   * @param {number} b Blue channel [0, 255]
+	   */
+	  rgb: function rgb(r, g, b) {
+	    return "#" + this.decToHex(r) + this.decToHex(g) + this.decToHex(b);
+	  },
+	  /**
+	   * @param h Hue [0, 1]
+	   * @param s Saturation [0, 1]
+	   * @param l Lightness [0, 1]
+	   */
+	  hsl: function hsl(h, s, l) {
+	    // Based on http://www.w3.org/TR/2011/REC-css3-color-20110607/#hsl-color
+	    if (s == 0) {
+	      var partialHex = Jdenticon.prototype.decToHex(l * 255);
+	      return "#" + partialHex + partialHex + partialHex;
+	    } else {
+	      var m2 = l <= 0.5 ? l * (s + 1) : l + s - l * s,
+	          m1 = l * 2 - m2;
+	      return "#" + Jdenticon.prototype.hueToRgb(m1, m2, h * 6 + 2) + Jdenticon.prototype.hueToRgb(m1, m2, h * 6) + Jdenticon.prototype.hueToRgb(m1, m2, h * 6 - 2);
+	    }
+	  },
+	  // This function will correct the lightness for the "dark" hues
+	  correctedHsl: function correctedHsl(h, s, l) {
+	    // The corrector specifies the perceived middle lightnesses for each hue
+	    var correctors = [0.55, 0.5, 0.5, 0.46, 0.6, 0.55, 0.55],
+	        corrector = correctors[h * 6 + 0.5 | 0];
+
+	    // Adjust the input lightness relative to the corrector
+	    l = l < 0.5 ? l * corrector * 2 : corrector + (l - 0.5) * (1 - corrector) * 2;
+
+	    return color.hsl(h, s, l);
+	  }
+	};
+
+	var CanvasRenderer = function CanvasRenderer(ctx, width, height) {
+	  this._ctx = ctx;
+	  ctx.clearRect(0, 0, width, height);
+	};
+	CanvasRenderer.prototype = {
+	  /**
+	   * Marks the beginning of a new shape of the specified color. Should be ended with a call to endShape.
+	   * @param {string} color Fill color on format #xxxxxx.
+	   */
+	  beginShape: function beginShape(color) {
+	    this._ctx.fillStyle = color;
+	    this._ctx.beginPath();
+	  },
+	  /**
+	   * Marks the end of the currently drawn shape. This causes the queued paths to be rendered on the canvas.
+	   */
+	  endShape: function endShape() {
+	    this._ctx.fill();
+	  },
+	  /**
+	   * Adds a polygon to the rendering queue.
+	   * @param points An array of Point objects.
+	   */
+	  addPolygon: function addPolygon(points) {
+	    var ctx = this._ctx,
+	        i;
+	    ctx.moveTo(points[0].x, points[0].y);
+	    for (i = 1; i < points.length; i++) {
+	      ctx.lineTo(points[i].x, points[i].y);
+	    }
+	    ctx.closePath();
+	  },
+	  /**
+	   * Adds a circle to the rendering queue.
+	   * @param {Point} point The upper left corner of the circle bounding box.
+	   * @param {number} diameter The diameter of the circle.
+	   * @param {boolean} counterClockwise True if the circle is drawn counter-clockwise (will result in a hole if rendered on a clockwise path).
+	   */
+	  addCircle: function addCircle(point, diameter, counterClockwise) {
+	    var ctx = this._ctx,
+	        radius = diameter / 2;
+	    ctx.arc(point.x + radius, point.y + radius, radius, 0, Math.PI * 2, counterClockwise);
+	    ctx.closePath();
+	  }
+	};
+
+	var /** @const */
+	HASH_ATTRIBUTE = "data-jdenticon-hash",
+	    supportsQuerySelectorAll = "document" in global && "querySelectorAll" in document;
+
+	var canvas_element_width = '225';
+	var canvas_element_height = '225';
+
+	exports.default = new Jdenticon();
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+
+/***/ 331:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	var _dialog = __webpack_require__(305);
+
+	var _dialog2 = _interopRequireDefault(_dialog);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var DialogSuccess = _react2.default.createClass({
+	  displayName: 'DialogSuccess',
+	  processingTitle: function processingTitle() {
+	    var title = void 0;
+	    if (this.props.title) {
+	      title = this.props.title;
+	      if (!title.textContent) {
+	        title.textContent = 85;
+	      }
+	      if (title.addClass) {
+	        title.addClass = ' success ' + title.addClass;
+	      } else {
+	        title.addClass = ' success ';
+	      }
+	    } else {
+	      title = { textContent: 85, addClass: ' success' };
+	    }
+
+	    return title;
+	  },
+	  processingBody: function processingBody() {
+	    var body = void 0;
+	    if (this.props.body) {
+	      body = this.props.body;
+	      if (!body.textContent) {
+	        body.textContent = this.props.message;
+	      }
+	    } else {
+	      body = { textContent: this.props.message };
+	    }
+
+	    return body;
+	  },
+	  processingFooter: function processingFooter() {
+	    var footer = void 0,
+	        _class = 'flex-sp-around p-05em border-popup-footer ';
+	    if (this.props.footer) {
+	      footer = this.props.footer;
+	      if (footer.content) {
+	        return footer.content;
+	      }
+	      if (footer.className) {
+	        _class = footer.className;
+	      } else {
+	        _class = footer.addClass ? _class + footer.addClass : _class;
+	      }
+	    }
+
+	    return _react2.default.createElement(
+	      'footer',
+	      { className: _class },
+	      _react2.default.createElement(
+	        'button',
+	        { className: 'border-radius-04em p-tb-03em-lr-1em', 'data-action': 'confirmCancel' },
+	        this.props.close ? _localization2.default.transferText(this.props.close) : _localization2.default.getLocText(20)
+	      )
+	    );
+	  },
+	  render: function render() {
+	    if (this.props.show) {
+	      var title = this.processingTitle(),
+	          body = this.processingBody(),
+	          footer = this.processingFooter();
+
+	      return _react2.default.createElement(_dialog2.default, { show: this.props.show, title: title, body: body, footer: footer,
+	        handleClick: this.props.handleClick });
+	    } else {
+	      return _react2.default.createElement(_dialog2.default, { show: this.props.show });
+	    }
+	  }
+	});
+
+	exports.default = DialogSuccess;
+
+/***/ },
+
+/***/ 332:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _extend_core = __webpack_require__(283);
+
+	var _extend_core2 = _interopRequireDefault(_extend_core);
+
+	var _switcher_core = __webpack_require__(310);
+
+	var _switcher_core2 = _interopRequireDefault(_switcher_core);
+
+	var _chats_bus = __webpack_require__(309);
+
+	var _chats_bus2 = _interopRequireDefault(_chats_bus);
+
+	var _users_bus = __webpack_require__(282);
+
+	var _users_bus2 = _interopRequireDefault(_users_bus);
+
+	var _messages = __webpack_require__(323);
+
+	var _messages2 = _interopRequireDefault(_messages);
+
+	var _dom_core = __webpack_require__(303);
+
+	var _dom_core2 = _interopRequireDefault(_dom_core);
+
+	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -10721,6 +11426,7 @@ webpackJsonp([0],{
 	var Pagination = _react2.default.createClass({
 	  displayName: 'Pagination',
 
+
 	  MODE: {
 	    "PAGINATION": 'PAGINATION',
 	    "GO_TO": 'GO_TO'
@@ -10730,7 +11436,9 @@ webpackJsonp([0],{
 	    return {
 	      mainContainer: {
 	        "element": "div",
-	        "class": "flex "
+	        "config": {
+	          "class": "flex "
+	        }
 	      },
 	      configs: [{
 	        "element": "button",
@@ -10822,13 +11530,11 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
 	  getInitialState: function getInitialState() {
 	    return {
 	      currentOptions: {}
 	    };
 	  },
-
 	  defineOptions: function defineOptions(mode) {
 	    this.options = {};
 	    switch (mode) {
@@ -10843,7 +11549,6 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
 	  handleClick: function handleClick(event) {
 	    var element = this.getDataParameter(event.currentTarget, 'action');
 	    if (element) {
@@ -10864,7 +11569,6 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  countPagination: function countPagination(currentOptions, state, mode, options, callback) {
 	    if (!currentOptions) {
 	      currentOptions = this.optionsDefinition(state, mode);
@@ -10892,7 +11596,6 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
-
 	  countQuantityPages: function countQuantityPages(currentOptions, mode, options, callback) {
 	    var self = this;
 	    if (currentOptions.listOptions.data_download) {
@@ -10937,7 +11640,6 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  handleCountPagination: function handleCountPagination(data, currentOptions, callback) {
 	    var quantityPages = void 0,
 	        quantityData = void 0,
@@ -10967,7 +11669,6 @@ webpackJsonp([0],{
 	      callback(currentOptions);
 	    }
 	  },
-
 	  switchPage: function switchPage(element) {
 	    var self = this,
 	        currentOptions = this.optionsDefinition(this.props.data, this.props.mode),
@@ -10986,7 +11687,6 @@ webpackJsonp([0],{
 	      self.props.handleEvent.changeState(_newState);
 	    });
 	  },
-
 	  changePage: function changePage(element, currentOptions) {
 	    var value = parseInt(element.value, 10),
 	        gto = currentOptions.goToOptions,
@@ -11016,7 +11716,6 @@ webpackJsonp([0],{
 	    }
 	    return currentOptions;
 	  },
-
 	  render: function render() {
 	    var onEvent = {
 	      onClick: this.handleClick
@@ -11052,7 +11751,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 322:
+/***/ 333:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11065,15 +11764,15 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(303);
+	var _switcher_core = __webpack_require__(310);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _location_wrapper = __webpack_require__(288);
+	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -11081,7 +11780,6 @@ webpackJsonp([0],{
 
 	var GoTo = _react2.default.createClass({
 	  displayName: 'GoTo',
-
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      configs: [{
@@ -11164,7 +11862,6 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
 	  prepareConfig: function prepareConfig(config, mode) {
 	    config = config.filter(function (obj) {
 	      if (!obj.redraw_mode) {
@@ -11175,7 +11872,6 @@ webpackJsonp([0],{
 	    });
 	    return config;
 	  },
-
 	  changeRTE: function changeRTE(element, currentOptions) {
 	    var gto = currentOptions.goToOptions;
 	    if (element.checked) {
@@ -11189,7 +11885,6 @@ webpackJsonp([0],{
 	      return currentOptions;
 	    }
 	  },
-
 	  render: function render() {
 	    var currentOptions = this.optionsDefinition(this.props.data, this.props.mode),
 	        gto = currentOptions.goToOptions;
@@ -11217,7 +11912,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 323:
+/***/ 334:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11226,71 +11921,72 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
 	var _react = __webpack_require__(12);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(286);
+	var _dom_core = __webpack_require__(303);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _indexeddb = __webpack_require__(278);
+	var _indexeddb = __webpack_require__(285);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _chats_bus = __webpack_require__(302);
+	var _chats_bus = __webpack_require__(309);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _ajax_core = __webpack_require__(324);
+	var _ajax_core = __webpack_require__(335);
 
 	var _ajax_core2 = _interopRequireDefault(_ajax_core);
 
-	var _messages = __webpack_require__(316);
+	var _messages = __webpack_require__(323);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
-	var _websocket = __webpack_require__(283);
+	var _websocket = __webpack_require__(290);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _webrtc = __webpack_require__(304);
+	var _webrtc = __webpack_require__(311);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _model_core = __webpack_require__(315);
+	var _model_core = __webpack_require__(322);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
-	var _chat2 = __webpack_require__(325);
+	var _chat2 = __webpack_require__(336);
 
 	var _chat3 = _interopRequireDefault(_chat2);
 
-	var _popup = __webpack_require__(285);
+	var _dialogConfirm = __webpack_require__(326);
 
-	var _popup2 = _interopRequireDefault(_popup);
+	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
+
+	var _dialogError = __webpack_require__(304);
+
+	var _dialogError2 = _interopRequireDefault(_dialogError);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var id_Generator = __webpack_require__(330);
+	var id_Generator = __webpack_require__(341);
 
 	var ChatsManager = _react2.default.createClass({
 	  displayName: 'ChatsManager',
-
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      minChatsWidth: 350,
@@ -11299,41 +11995,47 @@ webpackJsonp([0],{
 	      withPanels: true
 	    };
 	  },
-
 	  getInitialState: function getInitialState() {
 	    return {
-	      chatsArray: []
+	      chatsArray: [],
+	      errorMessage: null,
+	      confirmMessageRequestChatByChatId: null,
+	      confirmDialog_chatId: null,
+	      confirmMessageCloseChat: null,
+	      confirmDialog_description: null,
+	      confirmDialog_tempChatId: null,
+	      confirmMessageSaveChat: null,
+	      confirmMessageSaveCloseChat: null
 	    };
 	  },
-
 	  componentDidMount: function componentDidMount() {
 	    _event_bus2.default.on('showChat', this.showChat, this);
 	    _event_bus2.default.on('addNewChatAuto', this.createNewChat, this);
 	    _event_bus2.default.on('getOpenChats', this.getOpenChats, this);
 	    _event_bus2.default.on('toCloseChat', this.toCloseChat, this);
 	    _event_bus2.default.on('chatsDestroy', this.destroyChats);
+	    _event_bus2.default.on('changeMyUsers', this.changeMyUsers);
 	    _event_bus2.default.on('chatJoinApproved', this.chatCreateApproved);
 	    _event_bus2.default.on('web_socket_message', this.onChatMessageRouter);
 	    _event_bus2.default.on('notifyChat', this.onChatMessageRouter);
+	    _event_bus2.default.on('syncResponseChatMessages', this.onChatMessageRouter);
 	    _event_bus2.default.on('requestChatByChatId', this.requestChatByChatId);
-
-	    this.mainConteiner = document.querySelector('[data-role="main_container"]');
+	    _event_bus2.default.on('getSynchronizeChatMessages', this.getSynchronizeChatMessages);
 	  },
-
 	  componentWillUnmount: function componentWillUnmount() {
 	    _event_bus2.default.off('showChat', this.showChat);
 	    _event_bus2.default.off('addNewChatAuto', this.createNewChat);
 	    _event_bus2.default.off('getOpenChats', this.getOpenChats);
 	    _event_bus2.default.off('toCloseChat', this.toCloseChat);
 	    _event_bus2.default.off('chatsDestroy', this.destroyChats);
+	    _event_bus2.default.off('changeMyUsers', this.changeMyUsers);
 	    _event_bus2.default.off('chatJoinApproved', this.chatCreateApproved);
 	    _event_bus2.default.off('web_socket_message', this.onChatMessageRouter);
 	    _event_bus2.default.off('notifyChat', this.onChatMessageRouter);
+	    _event_bus2.default.off('syncResponseChatMessages', this.onChatMessageRouter);
 	    _event_bus2.default.off('requestChatByChatId', this.requestChatByChatId);
-
-	    this.mainConteiner = null;
+	    _event_bus2.default.off('getSynchronizeChatMessages', this.getSynchronizeChatMessages);
 	  },
-
 	  getOpenChats: function getOpenChats(callback) {
 	    var openChats = {};
 	    _chat3.default.prototype.chatsArray.forEach(function (chat) {
@@ -11342,11 +12044,8 @@ webpackJsonp([0],{
 	    });
 	    callback(openChats);
 	  },
-
 	  showChat: function showChat(element, chat_id) {
-	    var self = this,
-	        newState = void 0,
-	        restoreOption = void 0,
+	    var restoreOption = void 0,
 	        parentElement = void 0;
 	    if (element) {
 	      parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
@@ -11364,24 +12063,23 @@ webpackJsonp([0],{
 
 	    var chatId = parentElement ? parentElement.dataset.chat_id : chat_id;
 	    if (this.isChatOpened(chatId)) {
-	      _event_bus2.default.trigger('changeStatePopup', {
-	        show: true,
-	        type: 'error',
-	        message: 93,
-	        onDataActionClick: function onDataActionClick(action) {
-	          switch (action) {
-	            case 'confirmCancel':
-	              newState = _popup2.default.prototype.handleClose(this.state);
-	              this.setState(newState);
-	              break;
-	          }
-	        }
-	      });
+	      this.setState({ errorMessage: 93 });
 	      return;
 	    }
 
 	    this.createNewChat(null, true, restoreOption, chatId);
 	  },
+	  changeMyUsers: function changeMyUsers(userId) {
+	    _chat3.default.prototype.chatsArray.forEach(function (_chat) {
+	      if (_chat.chat_description.user_ids.indexOf(userId) !== -1) {
+	        _event_bus2.default.trigger('changeMyUserInfo', userId, _chat.chat_description.chat_id);
+	      }
+	    });
+	  },
+	  getSynchronizeChatMessages: function getSynchronizeChatMessages(messageData) {
+	    _messages2.default.prototype.getSynchronizeChatMessages(messageData);
+	  },
+
 
 	  /**
 	   * chat whether requested chat by its id is opened or not
@@ -11397,7 +12095,6 @@ webpackJsonp([0],{
 
 	    return openedChat;
 	  },
-
 	  getIndexCurrentChat: function getIndexCurrentChat(chatId) {
 	    var _indexCurrentChat = void 0;
 	    _chat3.default.prototype.chatsArray.every(function (_chat, index) {
@@ -11409,7 +12106,6 @@ webpackJsonp([0],{
 
 	    return _indexCurrentChat;
 	  },
-
 	  handleChat: function handleChat(messageData, chat_description) {
 	    _event_bus2.default.trigger("changeOpenChats", "CHATS");
 	    if (messageData.chat_wscs_descrs) {
@@ -11428,7 +12124,6 @@ webpackJsonp([0],{
 	    }
 	    this.forceUpdate();
 	  },
-
 	  createNewChat: function createNewChat(event, show, restoreOption, chatId, message_request) {
 	    if (!_websocket2.default) return;
 
@@ -11452,11 +12147,17 @@ webpackJsonp([0],{
 	    _chat3.default.prototype.chatsArray.push(newRawChat);
 	    this.forceUpdate();
 	  },
-
 	  onChatMessageRouter: function onChatMessageRouter(messageData) {
 	    switch (messageData.type) {
 	      case 'chat_joined':
 	        this.chatJoinApproved(messageData);
+	        break;
+	      case 'syncResponseChatMessages':
+	        _chat3.default.prototype.chatsArray.forEach(function (_chat) {
+	          if (_chat.chat_description && messageData.chat_description.chat_id === _chat.chat_description.chat_id && messageData.owner_request === _users_bus2.default.getUserId()) {
+	            _event_bus2.default.trigger('workflowSynchronizeMessages', messageData);
+	          }
+	        });
 	        break;
 	      case 'notifyChat':
 	        _chat3.default.prototype.chatsArray.forEach(function (_chat) {
@@ -11476,7 +12177,6 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
 	  chatCreateApproved: function chatCreateApproved(event) {
 	    if (event.from_ws_device_id) {
 	      _event_bus2.default.set_ws_device_id(event.from_ws_device_id);
@@ -11508,13 +12208,13 @@ webpackJsonp([0],{
 	    });
 	  },
 
+
 	  /**
 	   * join request for this chat was approved by the server
 	   * make offer for each device for this chat
 	   */
 	  chatJoinApproved: function chatJoinApproved(event) {
 	    var self = this,
-	        newState = void 0,
 	        index = void 0;
 	    _event_bus2.default.set_ws_device_id(event.target_ws_device_id);
 	    _event_bus2.default.trigger('send_log_message', event.chat_description.chat_id, { text: 'Chat join approved. Getting chat description.', type: 'information' });
@@ -11526,28 +12226,22 @@ webpackJsonp([0],{
 	      }
 
 	      if (!chat_description) {
-	        _event_bus2.default.trigger('changeStatePopup', {
-	          show: true,
-	          type: 'error',
-	          message: 86,
-	          onDataActionClick: function onDataActionClick(action) {
-	            switch (action) {
-	              case 'confirmCancel':
-	                newState = _popup2.default.prototype.handleClose(this.state);
-	                this.setState(newState);
-	                break;
-	            }
-	          }
-	        });
+	        this.setState({ errorMessage: 86 });
 	        return;
 	      }
 
-	      _event_bus2.default.trigger('send_log_message', chat_description.chat_id, { text: 'Get chat description.', type: 'information' });
+	      _event_bus2.default.trigger('send_log_message', chat_description.chat_id, {
+	        text: 'Get chat description.',
+	        type: 'information'
+	      });
 	      index = self.getIndexCurrentChat(chat_description.chat_id);
 	      if (index === undefined) return;
 
 	      if (_chat3.default.prototype.chatsArray[index].mode !== 'ready') {
-	        _event_bus2.default.trigger('send_log_message', chat_description.chat_id, { text: 'Upgrade to chat "ready".', type: 'information' });
+	        _event_bus2.default.trigger('send_log_message', chat_description.chat_id, {
+	          text: 'Upgrade to chat "ready".',
+	          type: 'information'
+	        });
 	        _chat3.default.prototype.chatsArray[index].mode = 'ready';
 	        if (!event.chat_description.restoreOption) {
 	          _chat3.default.prototype.chatsArray[index].chat_description = {};
@@ -11557,6 +12251,7 @@ webpackJsonp([0],{
 	            createdDatetime: chat_description.createdDatetime,
 	            user_ids: chat_description.user_ids
 	          });
+	          _chat3.default.prototype.chatsArray[index].chat_description.user_ids = chat_description.user_ids;
 	        } else {
 	          _chat3.default.prototype.chatsArray[index].chat_description = chat_description;
 	        }
@@ -11567,7 +12262,6 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
-
 	  addNewChatToIndexedDB: function addNewChatToIndexedDB(chat_description, callback) {
 	    var newChat = _chat3.default.prototype.getInitialState();
 	    if (chat_description) {
@@ -11577,7 +12271,6 @@ webpackJsonp([0],{
 	    this.addMyUserId(newChat);
 	    _chats_bus2.default.putChatToIndexedDB(newChat, callback);
 	  },
-
 	  toCloseChat: function toCloseChat(saveStates, chatId, temp_chat_id) {
 	    var self = this;
 	    if (!chatId && temp_chat_id) {
@@ -11598,10 +12291,8 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
-
 	  requestChatByChatId: function requestChatByChatId(chatId, requestMessage) {
-	    var self = this,
-	        newState = void 0;
+	    var self = this;
 	    _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, chatId, function (getError, chat_description) {
 	      if (getError) {
 	        console.error(getError);
@@ -11612,67 +12303,18 @@ webpackJsonp([0],{
 	        self.createNewChat(null, null, null, chatId, requestMessage);
 	      } else {
 	        if (self.isChatOpened(chatId)) {
-	          _event_bus2.default.trigger('changeStatePopup', {
-	            show: true,
-	            type: 'error',
-	            message: 93,
-	            onDataActionClick: function onDataActionClick(action) {
-	              switch (action) {
-	                case 'confirmCancel':
-	                  newState = _popup2.default.prototype.handleClose(this.state);
-	                  this.setState(newState);
-	                  break;
-	              }
-	            }
-	          });
+	          this.setState({ errorMessage: 93 });
 	        } else {
-	          _event_bus2.default.trigger('changeStatePopup', {
-	            show: true,
-	            type: 'confirm',
-	            message: 114,
-	            onDataActionClick: function onDataActionClick(action) {
-	              switch (action) {
-	                case 'confirmCancel':
-	                  newState = _popup2.default.prototype.handleClose(this.state);
-	                  this.setState(newState);
-	                  break;
-	                case 'confirmOk':
-	                  newState = _popup2.default.prototype.handleClose(this.state);
-	                  this.setState(newState);
-	                  self.showChat(null, chatId);
-	                  break;
-	              }
-	            }
-	          });
+	          self.setState({ confirmMessageRequestChatByChatId: 114, confirmDialog_chatId: chatId });
 	        }
 	      }
 	    });
 	  },
-
-
 	  closeChat: function closeChat(description, temp_chat_id) {
-	    var newState = void 0,
-	        self = this;
-	    _event_bus2.default.trigger('changeStatePopup', {
-	      show: true,
-	      type: 'confirm',
-	      message: 83,
-	      onDataActionClick: function onDataActionClick(action) {
-	        switch (action) {
-	          case 'confirmCancel':
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	          case 'confirmOk':
-	            self.destroyChat(description, temp_chat_id);
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	        }
-	      }
-	    });
+	    this.setState({ confirmMessageCloseChat: 83,
+	      confirmDialog_description: description,
+	      confirmDialog_tempChatId: temp_chat_id });
 	  },
-
 	  destroyChat: function destroyChat(description, temp_chat_id) {
 	    var position = this.getDestroyChatPosition(!description && temp_chat_id ? temp_chat_id : description.chat_id);
 	    if (description && !temp_chat_id) {
@@ -11682,11 +12324,9 @@ webpackJsonp([0],{
 	    _chat3.default.prototype.chatsArray.splice(position, 1);
 	    this.forceUpdate();
 	  },
-
 	  destroyChats: function destroyChats() {
 	    _chat3.default.prototype.chatsArray = [];
 	  },
-
 	  getDestroyChatPosition: function getDestroyChatPosition(chat_id) {
 	    var destroyChatPosition = void 0;
 	    _chat3.default.prototype.chatsArray.every(function (_chat, index) {
@@ -11698,86 +12338,110 @@ webpackJsonp([0],{
 
 	    return destroyChatPosition;
 	  },
-
 	  saveStatesChat: function saveStatesChat(description) {
-	    var newState = void 0,
-	        self = this;
-	    _event_bus2.default.trigger('changeStatePopup', {
-	      show: true,
-	      type: 'confirm',
-	      message: 81,
-	      onDataActionClick: function onDataActionClick(action) {
-	        switch (action) {
-	          case 'confirmCancel':
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	          case 'confirmOk':
-	            self.addNewChatToIndexedDB(description, function (err) {
-	              if (err) {
-	                console.error(err);
-	              }
-	            });
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	        }
-	      }
-	    });
+	    this.setState({ confirmMessageSaveChat: 81, confirmDialog_description: description });
 	  },
-
 	  saveAndCloseChat: function saveAndCloseChat(description) {
-	    var newState = void 0,
-	        self = this;
-	    _event_bus2.default.trigger('changeStatePopup', {
-	      show: true,
-	      type: 'confirm',
-	      message: 82,
-	      onDataActionClick: function onDataActionClick(action) {
-	        switch (action) {
-	          case 'confirmCancel':
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	          case 'confirmOk':
-	            self.addNewChatToIndexedDB(description, function (err) {
-	              if (err) {
-	                console.error(err);
-	                return;
-	              }
-	              self.destroyChat(description);
-	            });
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	        }
-	      }
-	    });
+	    this.setState({ confirmMessageSaveCloseChat: 82, confirmDialog_description: description });
 	  },
-
-	  render: function render() {
-	    var self = this;
-	    if (!_chat3.default.prototype.chatsArray.length) {
-	      return _react2.default.createElement('div', { className: 'flex-outer-container align-start', 'data-role': 'chat_wrapper' });
-	    } else {
-	      var _ret = function () {
-	        var items = [];
-	        _chat3.default.prototype.chatsArray.forEach(function (_chat, index) {
-	          items.push(_react2.default.createElement(_chat3.default, { data: _chat,
-	            key: _chat.chat_description && _chat.chat_description.chat_id ? _chat.chat_description.chat_id : _chat.temp_chat_id,
-	            mode: _chat.mode, index: index, scrollEachChat: self.props.scrollEachChat }));
-	        });
-	        return {
-	          v: _react2.default.createElement(
-	            'div',
-	            { className: 'flex-outer-container align-start', 'data-role': 'chat_wrapper' },
-	            items
-	          )
-	        };
-	      }();
-
-	      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	  handleDialogError: function handleDialogError() {
+	    this.setState({ errorMessage: null });
+	  },
+	  handleDialogRequestChatByChatId: function handleDialogRequestChatByChatId(event) {
+	    var element = this.getDataParameter(event.target, 'action');
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          this.showChat(null, this.state.confirmDialog_chatId);
+	          break;
+	      }
+	      this.setState({ confirmMessageRequestChatByChatId: null, confirmDialog_chatId: null });
 	    }
+	  },
+	  handleDialogCloseChat: function handleDialogCloseChat(event) {
+	    var element = this.getDataParameter(event.target, 'action');
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          this.destroyChat(this.state.confirmDialog_description, this.state.confirmDialog_tempChatId);
+	          break;
+	      }
+	      this.setState({ confirmMessageCloseChat: null,
+	        confirmDialog_description: null,
+	        confirmDialog_tempChatId: null });
+	    }
+	  },
+	  handleDialogSaveChat: function handleDialogSaveChat(event) {
+	    var element = this.getDataParameter(event.target, 'action');
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          this.addNewChatToIndexedDB(this.state.confirmDialog_description, function (err) {
+	            if (err) console.error(err);
+	          });
+	          break;
+	      }
+	      this.setState({ confirmMessageSaveChat: null, confirmDialog_description: null });
+	    }
+	  },
+	  handleDialogSaveCloseChat: function handleDialogSaveCloseChat(event) {
+	    var element = this.getDataParameter(event.target, 'action'),
+	        self = this;
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          this.setState({ confirmMessageSaveCloseChat: null, confirmDialog_description: null });
+	          break;
+	        case 'confirmOk':
+	          this.addNewChatToIndexedDB(this.state.confirmDialog_description, function (err) {
+	            if (err) return console.error(err);
+
+	            self.destroyChat(self.state.confirmDialog_description);
+	            self.setState({ confirmMessageSaveCloseChat: null, confirmDialog_description: null });
+	          });
+	          break;
+	      }
+	    }
+	  },
+	  render: function render() {
+	    var self = this,
+	        items = [];
+	    if (_chat3.default.prototype.chatsArray.length) {
+	      _chat3.default.prototype.chatsArray.forEach(function (_chat, index) {
+	        items.push(_react2.default.createElement(_chat3.default, { data: _chat,
+	          key: _chat.chat_description && _chat.chat_description.chat_id ? _chat.chat_description.chat_id : _chat.temp_chat_id,
+	          mode: _chat.mode, index: index, scrollEachChat: self.props.scrollEachChat }));
+	      });
+	    }
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'h-100p' },
+	      _react2.default.createElement(_dialogError2.default, { show: this.state.errorMessage, message: this.state.errorMessage,
+	        handleClick: this.handleDialogError }),
+	      _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageRequestChatByChatId,
+	        message: this.state.confirmMessageRequestChatByChatId,
+	        handleClick: this.handleDialogRequestChatByChatId }),
+	      _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageCloseChat,
+	        message: this.state.confirmMessageCloseChat,
+	        handleClick: this.handleDialogCloseChat }),
+	      _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageSaveChat,
+	        message: this.state.confirmMessageSaveChat,
+	        handleClick: this.handleDialogSaveChat }),
+	      _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageSaveCloseChat,
+	        message: this.state.confirmMessageSaveCloseChat,
+	        handleClick: this.handleDialogSaveCloseChat }),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'flex-outer-container align-start', 'data-role': 'chat_wrapper' },
+	        items
+	      )
+	    );
 	  }
 	});
 
@@ -11790,7 +12454,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 324:
+/***/ 335:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -11867,7 +12531,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 325:
+/***/ 336:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11882,89 +12546,93 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(42);
+	var _reactDom = __webpack_require__(45);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(303);
+	var _switcher_core = __webpack_require__(310);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _dom_core = __webpack_require__(286);
+	var _dom_core = __webpack_require__(303);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _messages = __webpack_require__(316);
+	var _messages2 = __webpack_require__(323);
 
-	var _messages2 = _interopRequireDefault(_messages);
+	var _messages3 = _interopRequireDefault(_messages2);
 
-	var _webrtc = __webpack_require__(304);
+	var _webrtc = __webpack_require__(311);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _websocket = __webpack_require__(283);
+	var _websocket = __webpack_require__(290);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _chats_bus = __webpack_require__(302);
+	var _chats_bus = __webpack_require__(309);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _model_core = __webpack_require__(315);
+	var _model_core = __webpack_require__(322);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
-	var _indexeddb = __webpack_require__(278);
+	var _indexeddb = __webpack_require__(285);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _header = __webpack_require__(326);
+	var _header = __webpack_require__(337);
 
 	var _header2 = _interopRequireDefault(_header);
 
-	var _filter = __webpack_require__(308);
+	var _filter = __webpack_require__(314);
 
 	var _filter2 = _interopRequireDefault(_filter);
 
-	var _extra_toolbar = __webpack_require__(307);
+	var _extra_toolbar = __webpack_require__(313);
 
 	var _extra_toolbar2 = _interopRequireDefault(_extra_toolbar);
 
-	var _body = __webpack_require__(310);
+	var _body = __webpack_require__(316);
 
 	var _body2 = _interopRequireDefault(_body);
 
-	var _editor = __webpack_require__(327);
+	var _editor = __webpack_require__(338);
 
 	var _editor2 = _interopRequireDefault(_editor);
 
-	var _pagination = __webpack_require__(321);
+	var _pagination = __webpack_require__(332);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
-	var _go_to = __webpack_require__(322);
+	var _go_to = __webpack_require__(333);
 
 	var _go_to2 = _interopRequireDefault(_go_to);
 
-	var _popup = __webpack_require__(285);
-
-	var _popup2 = _interopRequireDefault(_popup);
-
-	var _toggle_visible_chat_part = __webpack_require__(329);
+	var _toggle_visible_chat_part = __webpack_require__(340);
 
 	var _toggle_visible_chat_part2 = _interopRequireDefault(_toggle_visible_chat_part);
+
+	var _dialogConfirm = __webpack_require__(326);
+
+	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
+
+	var _dialogError = __webpack_require__(304);
+
+	var _dialogError2 = _interopRequireDefault(_dialogError);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11974,6 +12642,9 @@ webpackJsonp([0],{
 	  displayName: 'Chat',
 
 	  chatsArray: [],
+	  syncMessageDataArray: [],
+	  syncMessageDataFlag: false,
+	  valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids'],
 
 	  getDefaultProps: function getDefaultProps() {
 	    return {
@@ -11983,7 +12654,6 @@ webpackJsonp([0],{
 	      }
 	    };
 	  },
-
 	  getInitialState: function getInitialState() {
 	    return {
 	      hideTopPart: false,
@@ -11992,6 +12662,9 @@ webpackJsonp([0],{
 	      toggleTopButtonLeft: '0px',
 	      toggleBottomButtonLeft: '0px',
 	      toggleChatUsersFriendship: false,
+	      errorMessage: null,
+	      confirmMessage: null,
+	      confirmMessageData: null,
 	      padding: {
 	        bottom: 5
 	      },
@@ -12013,7 +12686,7 @@ webpackJsonp([0],{
 	      formatOptions: {
 	        show: false,
 	        offScroll: false,
-	        sendEnter: false,
+	        sendEnter: true,
 	        iSender: true
 	      },
 	      messages_GoToOptions: {
@@ -12167,7 +12840,6 @@ webpackJsonp([0],{
 	      }
 	    };
 	  },
-
 	  componentWillMount: function componentWillMount() {
 	    var index = this.props.index,
 	        self = this,
@@ -12199,16 +12871,16 @@ webpackJsonp([0],{
 	          });
 	        }
 	      }
+	      this.updateUserAvatar();
 	    }
 	  },
-
 	  componentDidMount: function componentDidMount() {
 	    var _this = this;
 
 	    if (this.props.data.mode === 'raw') {
 	      (function () {
 	        var self = _this;
-	        _this.state.logMessages.push({ text: 'Create raw chat.', type: 'information' });
+	        self.state.logMessages.push({ text: 'Create raw chat.', type: 'information' });
 	        _this.setState({
 	          logMessages: _this.state.logMessages,
 	          chat_mode: _this.props.data.mode
@@ -12216,7 +12888,7 @@ webpackJsonp([0],{
 	        _event_bus2.default.on('web_socket_message', _this.onChatMessageRouter);
 	        _event_bus2.default.on('send_log_message', _this.getLogMessage);
 	        if (_this.props.data.show && _this.props.data.chat_id) {
-	          _this.state.logMessages.push({ text: 'Getting chat description.', type: 'information' });
+	          self.state.logMessages.push({ text: 'Getting chat description.', type: 'information' });
 	          _this.setState({ logMessages: _this.state.logMessages });
 	          _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, _this.props.data.chat_id, function (getError, chatDescription) {
 	            if (getError) {
@@ -12239,8 +12911,8 @@ webpackJsonp([0],{
 	            }
 	          });
 	        } else if (_this.props.data.message_request && _this.props.data.chat_id) {
-	          _this.state.logMessages.push({ text: 'Websocket sendMessage "Chat join request".', type: 'information' });
-	          _this.setState({ logMessages: _this.state.logMessages });
+	          self.state.logMessages.push({ text: 'Websocket sendMessage "Chat join request".', type: 'information' });
+	          _this.setState({ logMessages: self.state.logMessages });
 	          _websocket2.default.sendMessage({
 	            type: "chat_join_request",
 	            from_user_id: _users_bus2.default.getUserId(),
@@ -12253,8 +12925,8 @@ webpackJsonp([0],{
 	            }
 	          });
 	        } else {
-	          _this.state.logMessages.push({ text: 'Websocket sendMessage "Chat create".', type: 'information' });
-	          _this.setState({ logMessages: _this.state.logMessages });
+	          self.state.logMessages.push({ text: 'Websocket sendMessage "Chat create".', type: 'information' });
+	          _this.setState({ logMessages: self.state.logMessages });
 	          _websocket2.default.sendMessage({
 	            type: "chat_create",
 	            from_user_id: _users_bus2.default.getUserId(),
@@ -12276,6 +12948,8 @@ webpackJsonp([0],{
 	      _event_bus2.default.on('chat_message', this.onChatMessage, this);
 	      _event_bus2.default.on('chat_toggled_ready', this.onChatToggledReady, this);
 	      _event_bus2.default.on('srv_chat_join_request', this.onChatJoinRequest, this);
+	      _event_bus2.default.on('updateUserAvatar', this.updateUserAvatar, this);
+	      _event_bus2.default.on('workflowSynchronizeMessages', this.workflowSynchronizeMessages, this);
 
 	      this.splitter_left.addEventListener('mousedown', this.startResize);
 	      this.splitter_left.addEventListener('touchstart', this.startResize);
@@ -12288,7 +12962,6 @@ webpackJsonp([0],{
 	      this.splitter_right.addEventListener('touchend', this.startResize);
 	    }
 	  },
-
 	  componentWillUnmount: function componentWillUnmount() {
 	    if (this.state.chat_mode === 'raw') {
 	      _event_bus2.default.off('web_socket_message', this.onChatMessageRouter);
@@ -12299,6 +12972,8 @@ webpackJsonp([0],{
 	      _event_bus2.default.off('chat_message', this.onChatMessage, this);
 	      _event_bus2.default.off('chat_toggled_ready', this.onChatToggledReady, this);
 	      _event_bus2.default.off('srv_chat_join_request', this.onChatJoinRequest, this);
+	      _event_bus2.default.off('updateUserAvatar', this.updateUserAvatar, this);
+	      _event_bus2.default.off('workflowSynchronizeMessages', this.workflowSynchronizeMessages, this);
 
 	      this.splitter_left.removeEventListener('mousedown', this.startResize);
 	      this.splitter_left.removeEventListener('touchstart', this.startResize);
@@ -12315,13 +12990,17 @@ webpackJsonp([0],{
 	      this.splitter_right = null;
 	    }
 	  },
-
+	  updateUserAvatar: function updateUserAvatar() {
+	    var self = this;
+	    _users_bus2.default.getMyInfo(null, function (_err, options, userInfo) {
+	      self.setState({ userInfo: userInfo });
+	    });
+	  },
 	  getLogMessage: function getLogMessage(chat_id, message) {
 	    if (chat_id !== this.state.chat_id && chat_id !== this.state.temp_chat_id) return;
 	    this.state.logMessages.push({ text: message.text, type: message.type });
 	    this.setState({ logMessages: this.state.logMessages });
 	  },
-
 	  startResize: function startResize(event) {
 	    event.stopPropagation();
 	    event.preventDefault();
@@ -12336,7 +13015,6 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
 	  getChatDescription: function getChatDescription(chatId, _callback) {
 	    if (this.state.chat_id === chatId) {
 	      this.state.toggleChatUsersFriendship = false;
@@ -12346,7 +13024,6 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  handleClick: function handleClick(event) {
 	    var element = this.getDataParameter(event.currentTarget, 'action'),
 	        self = this,
@@ -12414,10 +13091,12 @@ webpackJsonp([0],{
 	        case 'hideBottomPart':
 	          this.setState({ hideBottomPart: !this.state.hideBottomPart });
 	          break;
+	        case 'synchronizeMessages':
+	          this.onSynchronizeMessages();
+	          break;
 	      }
 	    }
 	  },
-
 	  handleChange: function handleChange(event) {
 	    var element = this.getDataParameter(event.currentTarget, 'action'),
 	        self = this,
@@ -12445,7 +13124,6 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  changeMode: function changeMode(element, chat_id) {
 	    if (chat_id && chat_id !== this.state.chat_id) return;
 	    this.switchModes([{
@@ -12454,7 +13132,6 @@ webpackJsonp([0],{
 	      target: element
 	    }]);
 	  },
-
 	  switchModes: function switchModes(_array) {
 	    var self = this,
 	        currentOptions = void 0,
@@ -12530,7 +13207,27 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
-
+	  onSynchronizeMessages: function onSynchronizeMessages() {
+	    var self = this,
+	        index = self.state.user_ids.indexOf(_users_bus2.default.getUserId()),
+	        messageData = void 0,
+	        newState = void 0;
+	    if (index !== -1 && self.state.user_ids.length > 1 || index === -1 && self.state.user_ids.length > 0) {
+	      messageData = {
+	        type: "syncRequestChatMessages",
+	        chat_description: {
+	          chat_id: self.state.chat_id
+	        },
+	        owner_request: _users_bus2.default.getUserId()
+	      };
+	      var active_connections = _webrtc2.default.getChatConnections(_webrtc2.default.connections, self.state.chat_id);
+	      if (active_connections.length) {
+	        _webrtc2.default.broadcastChatMessage(self.state.chat_id, JSON.stringify(messageData));
+	      } else {
+	        this.setState({ errorMessage: 121 });
+	      }
+	    }
+	  },
 	  onChatMessageRouter: function onChatMessageRouter(messageData) {
 	    if (this.state.chat_id && this.state.chat_id !== messageData.chat_description.chat_id || messageData.chat_description && this.state.temp_chat_id !== messageData.chat_description.temp_chat_id) return;
 	    switch (messageData.type) {
@@ -12546,18 +13243,15 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
 	  defineSplitterClass: function defineSplitterClass(className) {
 	    if (!this.state.settings_ListOptions.adjust_width || this.state.settings_ListOptions.current_data_key !== "custom_size") {
 	      className = className + 'hidden';
 	    }
 	    return className;
 	  },
-
 	  onChatToggledReady: function onChatToggledReady(eventData) {
 	    this.chat_ready_state = eventData.ready_state;
 	  },
-
 	  onChatJoinRequest: function onChatJoinRequest(eventData) {
 	    var self = this,
 	        newState = void 0;
@@ -12566,58 +13260,41 @@ webpackJsonp([0],{
 	      return;
 	    }
 
-	    _event_bus2.default.trigger('changeStatePopup', {
-	      show: true,
-	      type: 'confirm',
-	      message: eventData.request_body.message,
-	      onDataActionClick: function onDataActionClick(action) {
-	        switch (action) {
-	          case 'confirmOk':
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            if (!self.isInUsers(self.state, eventData.from_user_id)) {
-	              // add user and save chat with this user
-	              self.state.user_ids.push(eventData.from_user_id);
-	              _chats_bus2.default.updateChatField(self.state.chat_id, 'user_ids', self.state.user_ids, function (error) {
-	                if (error) {
-	                  _event_bus2.default.trigger('changeStatePopup', {
-	                    show: true,
-	                    type: 'confirm',
-	                    message: err,
-	                    onDataActionClick: function onDataActionClick(action) {
-	                      switch (action) {
-	                        case 'confirmCancel':
-	                          newState = _popup2.default.prototype.handleClose(self.state);
-	                          self.setState(newState);
-	                          break;
-	                      }
-	                    }
-	                  });
-	                  return;
-	                }
-	                self._listenWebRTCConnection();
-	                _webrtc2.default.handleConnectedDevices(eventData.user_wscs_descrs);
-	              });
-	            } else {
-	              self._listenWebRTCConnection();
-	              _webrtc2.default.handleConnectedDevices(eventData.user_wscs_descrs);
-	            }
-	            this.setState(newState);
-	            break;
-	          case 'confirmCancel':
-	            newState = _popup2.default.prototype.handleClose(this.state);
-	            this.setState(newState);
-	            break;
-	        }
-	      }
-	    });
+	    this.setState({ confirmMessage: eventData.request_body.message, confirmMessageData: eventData });
 	  },
+	  handleDialogError: function handleDialogError() {
+	    this.setState({ errorMessage: null });
+	  },
+	  handleDialogChatJoinRequest: function handleDialogChatJoinRequest(event) {
+	    var element = this.getDataParameter(event.target, 'action');
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          var data = this.state.confirmMessageData,
+	              self = this;
+	          if (!this.isInUsers(this.state, data.from_user_id)) {
+	            // add user and save chat with this user
+	            this.state.user_ids.push(data.from_user_id);
+	            _chats_bus2.default.updateChatField(self.state.chat_id, 'user_ids', self.state.user_ids, function (error) {
+	              if (error) return console.error(error);
 
+	              self._listenWebRTCConnection();
+	              _webrtc2.default.handleConnectedDevices(data.user_wscs_descrs);
+	            });
+	          } else {
+	            self._listenWebRTCConnection();
+	            _webrtc2.default.handleConnectedDevices(data.user_wscs_descrs);
+	          }
+	          break;
+	      }
+	    }
+	    this.setState({ confirmMessage: null, confirmMessageData: null });
+	  },
 	  changeState: function changeState(newState) {
 	    this.setState(newState);
 	  },
-
-	  valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids'],
-
 	  valueOfChat: function valueOfChat() {
 	    var toStringObject = {},
 	        self = this;
@@ -12626,7 +13303,6 @@ webpackJsonp([0],{
 	    });
 	    return toStringObject;
 	  },
-
 	  _webRTCConnectionReady: function _webRTCConnectionReady(eventConnection) {
 	    if (eventConnection.hasChatId(this.state.chat_id)) {
 	      // if connection for chat join request
@@ -12643,21 +13319,19 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  _notListenWebRTCConnection: function _notListenWebRTCConnection() {
 	    _webrtc2.default.off('webrtc_connection_established', this._webRTCConnectionReady);
 	  },
-
 	  _listenWebRTCConnection: function _listenWebRTCConnection() {
 	    this._notListenWebRTCConnection();
 	    _webrtc2.default.on('webrtc_connection_established', this._webRTCConnectionReady, this);
 	  },
-
 	  onChatMessage: function onChatMessage(eventData) {
 	    if (this.state.chat_id !== eventData.chat_description.chat_id) return;
 	    var self = this,
 	        newState = this.state;
-	    _messages2.default.prototype.addRemoteMessage(eventData, this.state.bodyOptions.mode, this.state.chat_id, function (err) {
+	    this.checkingUserInChat([eventData.message.createdByUserId], this.state.user_ids);
+	    _messages3.default.prototype.addRemoteMessage(eventData.message, this.state.bodyOptions.mode, this.state.chat_id, function (err) {
 	      if (err) {
 	        console.error(err);
 	        return;
@@ -12673,7 +13347,134 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
+	  workflowSynchronizeMessages: function workflowSynchronizeMessages(messageData) {
+	    if (!messageData.messages.length) return;
+	    var self = this,
+	        newState = this.state,
+	        lastMessage = void 0;
+	    if (self.syncMessageDataFlag) {
+	      self.syncMessageDataArray.push(messageData);
+	    } else {
+	      self.syncMessageDataFlag = true;
+	      _messages3.default.prototype.getAllMessages(self.state.chat_id, self.state.bodyOptions.mode, function (_err, _messages) {
+	        if (_err) {
+	          self.syncMessageDataFlag = false;
+	          return console.error(_err);
+	        }
 
+	        var store = {},
+	            remoteMessages = [],
+	            usersToChecking = [];
+	        if (_messages.length) {
+	          var _iteratorNormalCompletion = true;
+	          var _didIteratorError = false;
+	          var _iteratorError = undefined;
+
+	          try {
+	            for (var _iterator = _messages[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	              var message = _step.value;
+
+	              store[message.messageId] = true;
+	            }
+	          } catch (err) {
+	            _didIteratorError = true;
+	            _iteratorError = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion && _iterator.return) {
+	                _iterator.return();
+	              }
+	            } finally {
+	              if (_didIteratorError) {
+	                throw _iteratorError;
+	              }
+	            }
+	          }
+
+	          var _iteratorNormalCompletion2 = true;
+	          var _didIteratorError2 = false;
+	          var _iteratorError2 = undefined;
+
+	          try {
+	            for (var _iterator2 = messageData.messages[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	              var _syncMessage = _step2.value;
+
+	              if (!store[_syncMessage.messageId]) {
+	                remoteMessages.push(_syncMessage);
+	                if (usersToChecking.indexOf(_syncMessage.createdByUserId) === -1) {
+	                  usersToChecking.push(_syncMessage.createdByUserId);
+	                }
+	              }
+	            }
+	          } catch (err) {
+	            _didIteratorError2 = true;
+	            _iteratorError2 = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                _iterator2.return();
+	              }
+	            } finally {
+	              if (_didIteratorError2) {
+	                throw _iteratorError2;
+	              }
+	            }
+	          }
+
+	          lastMessage = _messages[_messages.length - 1];
+	        } else {
+	          remoteMessages = messageData.messages;
+	          lastMessage = null;
+	        }
+	        var _workflow = function _workflow() {
+	          self.syncMessageDataFlag = false;
+	          if (self.syncMessageDataArray.length) {
+	            var _messageData = self.syncMessageDataArray.shift();
+	            self.workflowSynchronizeMessages(_messageData);
+	          } else {
+	            if (newState.messages_PaginationOptions.showEnablePagination) {
+	              newState.messages_PaginationOptions.currentPage = null;
+	              _pagination2.default.prototype.countPagination(null, newState, newState.bodyOptions.mode, { "chat_id": newState.chat_id }, function (_newState) {
+	                self.setState(_newState);
+	              });
+	            } else {
+	              self.setState({ messages_PaginationOptions: newState.messages_PaginationOptions });
+	            }
+	          }
+	        };
+	        if (remoteMessages.length) {
+	          self.checkingUserInChat(usersToChecking, self.state.user_ids);
+	          remoteMessages = _messages3.default.prototype.addMessageData(lastMessage, remoteMessages, true);
+	          _messages3.default.prototype.addAllRemoteMessages(remoteMessages, self.state.bodyOptions.mode, self.state.chat_id, function (_err) {
+	            if (_err) return console.error(_err);
+	            _workflow();
+	          });
+	        } else {
+	          _workflow();
+	        }
+	      });
+	    }
+	  },
+	  checkingUserInChat: function checkingUserInChat(usersToChecking, user_ids) {
+	    var newUsers = [],
+	        self = this;
+	    usersToChecking.forEach(function (_user) {
+	      if (user_ids.indexOf(_user) === -1) {
+	        newUsers.push(_user);
+	      }
+	    });
+
+	    if (newUsers.length) {
+	      (function () {
+	        var usersArray = newUsers.concat(user_ids);
+	        _chats_bus2.default.updateChatField(self.state.chat_id, 'user_ids', usersArray, function (error) {
+	          if (error) return console.error(error);
+
+	          self.setState({ user_ids: usersArray });
+	        });
+	      })();
+	    }
+	  },
 	  render: function render() {
 	    var _this2 = this;
 
@@ -12685,7 +13486,7 @@ webpackJsonp([0],{
 	      onChange: this.handleChange
 	    };
 	    if (this.props.data.mode === 'raw') {
-	      var _ret2 = function () {
+	      var _ret3 = function () {
 	        var items = [],
 	            className = void 0;
 	        _this2.state.logMessages.forEach(function (_message, index) {
@@ -12711,12 +13512,16 @@ webpackJsonp([0],{
 	        };
 	      }();
 
-	      if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+	      if ((typeof _ret3 === 'undefined' ? 'undefined' : _typeof(_ret3)) === "object") return _ret3.v;
 	    } else {
 	      return _react2.default.createElement(
 	        'section',
 	        { className: 'modal', 'data-chat_id': this.props.data.chat_description.chat_id,
 	          style: { width: this.state.settings_ListOptions.size_current } },
+	        _react2.default.createElement(_dialogError2.default, { show: this.state.errorMessage, message: this.state.errorMessage,
+	          handleClick: this.handleDialogError }),
+	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessage, message: this.state.confirmMessage,
+	          handleClick: this.handleDialogChatJoinRequest }),
 	        _react2.default.createElement('div', { className: this.defineSplitterClass('chat-splitter-item '), 'data-role': 'splitter_item',
 	          'data-splitteritem': 'left' }),
 	        _react2.default.createElement('div', { className: this.defineSplitterClass('chat-splitter-item right '), 'data-role': 'splitter_item',
@@ -12788,7 +13593,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 326:
+/***/ 337:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12801,7 +13606,7 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _location_wrapper = __webpack_require__(288);
+	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -12809,6 +13614,7 @@ webpackJsonp([0],{
 
 	var Header = _react2.default.createClass({
 	  displayName: 'Header',
+
 
 	  MODE: {
 	    FILTER: 'FILTER',
@@ -12823,8 +13629,10 @@ webpackJsonp([0],{
 	    return {
 	      mainContainer: {
 	        "element": "div",
-	        "data": {
-	          "role": 'tabs_container'
+	        "config": {
+	          "data": {
+	            "role": 'tabs_container'
+	          }
 	        }
 	      },
 	      configs: [{
@@ -12967,7 +13775,6 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
 	  defineOptions: function defineOptions(chat_mode) {
 	    if (chat_mode !== "ready") return;
 	    if (this.props.data.headerOptions.show) {
@@ -12986,7 +13793,6 @@ webpackJsonp([0],{
 	      return options;
 	    }
 	  },
-
 	  defineConfig: function defineConfig(chat_mode) {
 	    var config = void 0;
 	    switch (chat_mode) {
@@ -12998,8 +13804,6 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
-
 	  render: function render() {
 	    var options = this.defineOptions(this.props.chat_mode),
 	        config = this.defineConfig(this.props.chat_mode);
@@ -13016,7 +13820,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 327:
+/***/ 338:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13029,35 +13833,35 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(42);
+	var _reactDom = __webpack_require__(45);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(286);
+	var _dom_core = __webpack_require__(303);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _messages = __webpack_require__(316);
+	var _messages = __webpack_require__(323);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
-	var _location_wrapper = __webpack_require__(288);
+	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _format_panel = __webpack_require__(328);
+	var _format_panel = __webpack_require__(339);
 
 	var _format_panel2 = _interopRequireDefault(_format_panel);
 
-	var _pagination = __webpack_require__(321);
+	var _pagination = __webpack_require__(332);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
@@ -13068,6 +13872,7 @@ webpackJsonp([0],{
 	var Editor = _react2.default.createClass({
 	  displayName: 'Editor',
 
+
 	  MODE: {
 	    "MAIN_PANEL": 'MAIN_PANEL',
 	    "FORMAT_PANEL": 'FORMAT_PANEL'
@@ -13077,7 +13882,9 @@ webpackJsonp([0],{
 	    return {
 	      mainContainer: {
 	        "element": "div",
-	        "class": "modal-main-btn"
+	        "config": {
+	          "class": "modal-main-btn"
+	        }
 	      },
 	      configs: [{
 	        "element": "button",
@@ -13117,22 +13924,18 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
 	  componentWillMount: function componentWillMount() {
 	    this.__keyInnerHtml = Date.now();
 	  },
-
 	  componentDidMount: function componentDidMount() {
 	    this.editorContainer = _reactDom2.default.findDOMNode(this);
 	    if (this.editorContainer) {
 	      this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
 	    }
 	  },
-
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.messageInnerContainer = null;
 	  },
-
 	  handleClick: function handleClick(event) {
 	    var element = this.getDataParameter(event.currentTarget, 'action');
 	    if (element) {
@@ -13152,7 +13955,6 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
-
 	  componentDidUpdate: function componentDidUpdate() {
 	    this.editorContainer = _reactDom2.default.findDOMNode(this);
 	    if (this.editorContainer) {
@@ -13160,23 +13962,18 @@ webpackJsonp([0],{
 	      this.messageInnerContainer.addEventListener('keypress', this.sendEnter);
 	    }
 	  },
-
 	  workflowInnerHtml: function workflowInnerHtml(save) {
 	    this.__keyInnerHtml = Date.now();
 	    save && this.messageInnerContainer ? this.__innerHtml = this.messageInnerContainer.innerHTML : this.__innerHtml = "";
 	  },
-
 	  handleChange: function handleChange() {},
-
-
 	  sendEnter: function sendEnter(event) {
-	    if (event.keyCode === 13) {
+	    if (event.keyCode === 13 && !event.shiftKey) {
 	      if (this.props.data.formatOptions.sendEnter) {
 	        this.sendMessage();
 	      }
 	    }
 	  },
-
 	  sendMessage: function sendMessage() {
 	    var self = this,
 	        newState = this.props.data;
@@ -13188,7 +13985,7 @@ webpackJsonp([0],{
 	        // empty message or \n only
 	    message = this.messageInnerContainer.innerHTML;
 	    if (pattern.test(message)) {
-	      _messages2.default.prototype.addMessage(this.props.data.bodyOptions.mode, message, this.props.data.chat_id, function (err) {
+	      _messages2.default.prototype.addMessage(this.props.data.bodyOptions.mode, message, this.props.data.chat_id, this.props.data.userInfo.lastModifyDatetime, function (err) {
 	        if (err) {
 	          console.error(err);
 	          return;
@@ -13206,7 +14003,6 @@ webpackJsonp([0],{
 	      });
 	    }
 	  },
-
 	  addEdit: function addEdit(element) {
 	    var self = this,
 	        command = element.dataset.name,
@@ -13218,7 +14014,6 @@ webpackJsonp([0],{
 	      document.execCommand(command, false, null);
 	    }
 	  },
-
 	  changeEdit: function changeEdit() {
 	    var newState = this.props.data;
 	    if (this.messageInnerContainer.classList.contains("onScroll")) {
@@ -13231,7 +14026,6 @@ webpackJsonp([0],{
 	      this.props.handleEvent.changeState({ formatOptions: newState.formatOptions });
 	    }
 	  },
-
 	  render: function render() {
 	    var onEvent = {
 	      onClick: this.handleClick,
@@ -13273,7 +14067,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 328:
+/***/ 339:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13286,7 +14080,7 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _location_wrapper = __webpack_require__(288);
+	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -13294,14 +14088,15 @@ webpackJsonp([0],{
 
 	var FormatPanel = _react2.default.createClass({
 	  displayName: 'FormatPanel',
-
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      mainContainer: {
 	        "element": "div",
-	        "class": "btnEditPanel flex-align-c ",
-	        "data": {
-	          "role": 'btnEditPanel'
+	        "config": {
+	          "class": "btnEditPanel flex-align-c ",
+	          "data": {
+	            "role": 'btnEditPanel'
+	          }
 	        }
 	      },
 	      configs: [{
@@ -13394,7 +14189,6 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
 	  render: function render() {
 	    if (this.props.data.formatOptions.show) {
 	      return _react2.default.createElement(_location_wrapper2.default, { events: this.props.events, mainContainer: this.props.mainContainer,
@@ -13409,7 +14203,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 329:
+/***/ 340:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13422,19 +14216,19 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(42);
+	var _reactDom = __webpack_require__(45);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _event_bus = __webpack_require__(280);
+	var _event_bus = __webpack_require__(287);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(286);
+	var _dom_core = __webpack_require__(303);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
@@ -13442,14 +14236,12 @@ webpackJsonp([0],{
 
 	var ToggleVisibleChatPart = _react2.default.createClass({
 	  displayName: 'ToggleVisibleChatPart',
-
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      min_move: 5,
 	      padding: 4
 	    };
 	  },
-
 	  getInitialState: function getInitialState() {
 	    return {
 	      position_btn: 0,
@@ -13457,7 +14249,6 @@ webpackJsonp([0],{
 	      btnWidth: null
 	    };
 	  },
-
 	  componentWillMount: function componentWillMount() {
 	    if (this.props.location === 'TOP') {
 	      this.setState({ left: this.props.data.toggleTopButtonLeft });
@@ -13465,17 +14256,14 @@ webpackJsonp([0],{
 	      this.setState({ left: this.props.data.toggleBottomButtonLeft });
 	    }
 	  },
-
 	  componentDidMount: function componentDidMount() {
 	    this.toggle_container = _reactDom2.default.findDOMNode(this);
 	    this.toggleButton = this.toggle_container.querySelector('[data-role="toggleButton"]');
 	    _event_bus2.default.on('onMouseUp', this.handleResize, this);
 	  },
-
 	  componentWillUnmount: function componentWillUnmount() {
 	    _event_bus2.default.off('onMouseUp', this.handleResize, this);
 	  },
-
 	  startResize: function startResize(event) {
 	    switch (event.type) {
 	      case 'mousedown':
@@ -13488,7 +14276,6 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
-
 	  transformToResizeState: function transformToResizeState(event) {
 	    var toggle_btn = void 0;
 	    if (event.type === 'touchstart' && event.changedTouches) {
@@ -13502,7 +14289,6 @@ webpackJsonp([0],{
 	      btnWidth: this.toggleButton.clientWidth
 	    });
 	  },
-
 	  handleResize: function handleResize(event) {
 	    switch (event.type) {
 	      case 'mousemove':
@@ -13562,7 +14348,6 @@ webpackJsonp([0],{
 	        }
 	    }
 	  },
-
 	  handleClick: function handleClick(event) {
 	    if (this.redraw_toggle_btn) {
 	      event.stopPropagation();
@@ -13587,8 +14372,6 @@ webpackJsonp([0],{
 
 	    return className;
 	  },
-
-
 	  render: function render() {
 	    var location = this.props.location,
 	        bodyMode = this.props.data.bodyOptions.mode;
@@ -13643,7 +14426,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 330:
+/***/ 341:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -13690,7 +14473,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 331:
+/***/ 342:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13703,55 +14486,247 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(216);
+	var _reactDom = __webpack_require__(45);
 
-	var _location_wrapper = __webpack_require__(288);
+	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
+	var _event_bus = __webpack_require__(287);
 
-	var _popup = __webpack_require__(285);
+	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _popup2 = _interopRequireDefault(_popup);
-
-	var _description = __webpack_require__(298);
-
-	var _description2 = _interopRequireDefault(_description);
-
-	var _ajax_core = __webpack_require__(324);
-
-	var _ajax_core2 = _interopRequireDefault(_ajax_core);
-
-	var _extend_core = __webpack_require__(276);
+	var _extend_core = __webpack_require__(283);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _id_core = __webpack_require__(284);
+	var _dom_core = __webpack_require__(303);
+
+	var _dom_core2 = _interopRequireDefault(_dom_core);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ChatResize = _react2.default.createClass({
+	  displayName: 'ChatResize',
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      min_chats_width: 350,
+	      min_move: 5
+	    };
+	  },
+	  getInitialState: function getInitialState() {
+	    return {
+	      visible_resize_container: false,
+	      left_position_line_resize: 0,
+	      resizeMouseDown: false,
+	      positionSplitterItem: '',
+	      splitterWidth: null,
+	      offsetLeft_splitter_left: null,
+	      offsetLeft_splitter_right: null,
+	      chatResizeWidth: null,
+	      chatResize: null
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.chat_resize_container = _reactDom2.default.findDOMNode(this);
+	    this.line_resize = this.chat_resize_container.querySelector('[data-role="resize_line"]');
+	    _event_bus2.default.on('transformToResizeState', this.transformToResizeState, this);
+	    _event_bus2.default.on('redirectResize', this.handleResize, this);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    _event_bus2.default.off('transformToResizeState', this.transformToResizeState);
+	    _event_bus2.default.off('redirectResize', this.handleResize);
+	  },
+	  transformToResizeState: function transformToResizeState(event, _chat) {
+	    var left_line_resize = void 0;
+	    if (event.type === 'touchstart' && event.changedTouches) {
+	      left_line_resize = event.changedTouches[0].clientX + 'px';
+	    } else {
+	      left_line_resize = event.clientX + 'px';
+	    }
+	    this.setState({
+	      visible_resize_container: true,
+	      resizeMouseDown: true,
+	      left_position_line_resize: left_line_resize,
+	      positionSplitterItem: event.currentTarget.dataset.splitteritem,
+	      splitterWidth: _chat.splitter_left.clientWidth,
+	      offsetLeft_splitter_left: this.getOffset(_chat.splitter_left).offsetLeft,
+	      offsetLeft_splitter_right: this.getOffset(_chat.splitter_right).offsetLeft,
+	      chatResizeWidth: _chat.chat.clientWidth,
+	      chatResize: _chat
+	    });
+	  },
+	  handleResize: function handleResize(event) {
+	    switch (event.type) {
+	      case 'mousemove':
+	      case 'touchmove':
+	        if (this.state.resizeMouseDown) {
+	          var clientX = event.clientX,
+	              left_line_resize = void 0;
+	          if (event.type === 'touchmove' && event.changedTouches) {
+	            clientX = event.changedTouches[0].clientX;
+	          }
+	          if (!this.resizeClientX_absolue) {
+	            this.resizeClientX_absolue = clientX;
+	          }
+	          if (!this.resizeClientX) {
+	            this.resizeClientX = clientX;
+	          } else {
+	            var deltaX = clientX - this.resizeClientX;
+	            this.absoluteDeltaX = this.resizeClientX_absolue - clientX;
+	            this.redraw_chat = false;
+	            if (Math.abs(this.absoluteDeltaX - deltaX) > this.props.min_move) {
+	              this.redraw_chat = true;
+	              if (this.state.positionSplitterItem === 'left' && this.state.offsetLeft_splitter_right - clientX + this.state.splitterWidth > this.props.min_chats_width || this.state.positionSplitterItem === 'right' && clientX - this.state.offsetLeft_splitter_left > this.props.min_chats_width) {
+	                left_line_resize = this.line_resize.offsetLeft + deltaX + 'px';
+	                this.resizeClientX = clientX;
+	              } else {
+	                if (this.state.positionSplitterItem === 'left') {
+	                  left_line_resize = this.state.offsetLeft_splitter_right - this.props.min_chats_width + this.state.splitterWidth + 'px';
+	                }
+	                if (this.state.positionSplitterItem === 'right') {
+	                  left_line_resize = this.state.offsetLeft_splitter_left + this.props.min_chats_width + 'px';
+	                }
+	                this.resizeClientX = clientX;
+	              }
+	              this.setState({ left_position_line_resize: left_line_resize });
+	            }
+	          }
+	        }
+	        break;
+	      case 'mouseup':
+	      case 'touchend':
+	        if (this.redraw_chat) {
+	          if (this.state.positionSplitterItem === 'left') {
+	            if (this.state.chatResizeWidth + this.absoluteDeltaX >= this.props.min_chats_width) {
+	              this.state.chatResize.state.settings_ListOptions.size_current = this.state.chatResizeWidth + this.absoluteDeltaX + 'px';
+	            } else {
+	              this.state.chatResize.state.settings_ListOptions.size_current = this.props.min_chats_width + 'px';
+	            }
+	          }
+	          if (this.state.positionSplitterItem === 'right') {
+	            if (this.state.chatResizeWidth - this.absoluteDeltaX >= this.props.min_chats_width) {
+	              this.state.chatResize.state.settings_ListOptions.size_current = this.state.chatResizeWidth - this.absoluteDeltaX + 'px';
+	            } else {
+	              this.state.chatResize.state.settings_ListOptions.size_current = this.props.min_chats_width + 'px';
+	            }
+	          }
+	          this.state.chatResize.state.settings_ListOptions.size_custom_value = this.state.chatResize.state.settings_ListOptions.size_current;
+	          this.state.chatResize.changeState({
+	            settings_ListOptions: this.state.chatResize.state.settings_ListOptions
+	          });
+	        }
+
+	        this.setState({
+	          resizeMouseDown: false,
+	          visible_resize_container: false,
+	          left_position_line_resize: 0,
+	          positionSplitterItem: '',
+	          splitterWidth: null,
+	          offsetLeft_splitter_left: null,
+	          offsetLeft_splitter_right: null,
+	          chatResizeWidth: null,
+	          chatResize: null
+	        });
+
+	        delete this.resizeClientX;
+	        delete this.resizeClientX_absolue;
+	        delete this.redraw_chat;
+	    }
+	  },
+	  defineClass: function defineClass(className) {
+	    if (this.state.visible_resize_container) {
+	      className = className + " draggable";
+	    }
+
+	    return className;
+	  },
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      { 'data-role': 'chat_resize_container',
+	        className: this.defineClass("clear chat-resize-container "),
+	        onMouseUp: this.handleResize, onMouseMove: this.handleResize,
+	        onTouchEnd: this.handleResize, onTouchMove: this.handleResize },
+	      _react2.default.createElement('div', { className: 'line', style: { left: this.state.left_position_line_resize },
+	        'data-role': 'resize_line' })
+	    );
+	  }
+	});
+	_extend_core2.default.prototype.inherit(ChatResize, _dom_core2.default);
+
+	exports.default = ChatResize;
+
+/***/ },
+
+/***/ 343:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(219);
+
+	var _location_wrapper = __webpack_require__(293);
+
+	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
+
+	var _dialogError = __webpack_require__(304);
+
+	var _dialogError2 = _interopRequireDefault(_dialogError);
+
+	var _dialogSuccess = __webpack_require__(331);
+
+	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
+
+	var _description = __webpack_require__(302);
+
+	var _description2 = _interopRequireDefault(_description);
+
+	var _ajax_core = __webpack_require__(335);
+
+	var _ajax_core2 = _interopRequireDefault(_ajax_core);
+
+	var _extend_core = __webpack_require__(283);
+
+	var _extend_core2 = _interopRequireDefault(_extend_core);
+
+	var _id_core = __webpack_require__(291);
 
 	var _id_core2 = _interopRequireDefault(_id_core);
 
-	var _users_bus = __webpack_require__(275);
+	var _users_bus = __webpack_require__(282);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _localization = __webpack_require__(273);
+	var _localization = __webpack_require__(280);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _overlay_core = __webpack_require__(299);
+	var _overlay_core = __webpack_require__(306);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
+
+	var _jdenticon = __webpack_require__(330);
+
+	var _jdenticon2 = _interopRequireDefault(_jdenticon);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Register = _react2.default.createClass({
 	  displayName: 'Register',
-
-
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      mainContainer: {
 	        "element": "div",
-	        "class": "flex-inner-container"
+	        "config": {
+	          "class": "flex-inner-container"
+	        }
 	      },
 	      configs: [{
 	        "role": "locationWrapper",
@@ -13878,45 +14853,37 @@ webpackJsonp([0],{
 	      }]
 	    };
 	  },
-
 	  getInitialState: function getInitialState() {
 	    return {
-	      popupOptions: {
-	        messagePopupShow: false,
-	        type: '',
-	        options: {},
-	        onDataActionClick: null
-	      }
+	      errorMessage: null,
+	      successMessage: null
 	    };
 	  },
-
 	  componentDidMount: function componentDidMount() {
 	    this.registerForm = document.querySelector('[data-role="registerForm"]');
 	    this.toggleWaiter();
 	  },
-
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.registerForm = null;
 	  },
-
 	  handleClick: function handleClick() {},
-
+	  handleDialogError: function handleDialogError() {
+	    this.setState({ errorMessage: null });
+	  },
+	  handleDialogRegisterUser: function handleDialogRegisterUser() {
+	    _reactRouter.browserHistory.push(this.props.location.search.slice(1));
+	    this.setState({ successMessage: null });
+	  },
 	  handleChange: function handleChange(event) {
 	    switch (event.target.dataset.action) {
 	      case "changeLanguage":
-	        _localization2.default.changeLanguage(event.target.value);
-	        var language = localStorage.getItem('language');
-	        if (!language || language !== event.target.value) {
-	          localStorage.setItem('language', event.target.value);
-	        }
+	        _localization2.default.changeLanguage(event.target.value, this);
 	        break;
 	    }
 	  },
-
 	  handleSubmit: function handleSubmit(event) {
 	    event.preventDefault();
 	    var self = this,
-	        newState = void 0,
 	        userName = this.registerForm.elements.userName.value,
 	        userPassword = this.registerForm.elements.userPassword.value,
 	        userPasswordConfirm = this.registerForm.elements.userPasswordConfirm.value;
@@ -13929,53 +14896,19 @@ webpackJsonp([0],{
 	        }, function (regErr, account) {
 	          self.toggleWaiter();
 	          if (regErr) {
-	            newState = _popup2.default.prototype.handleChangeState(self.state, true, 'error', regErr, function (action) {
-	              switch (action) {
-	                case 'confirmCancel':
-	                  newState = _popup2.default.prototype.handleClose(self.state);
-	                  self.setState(newState);
-	                  break;
-	              }
-	            });
-	            self.setState(newState);
+	            self.setState({ errorMessage: regErr });
 	            return;
 	          }
 	          _users_bus2.default.setUserId(account.user_id);
-	          newState = _popup2.default.prototype.handleChangeState(self.state, true, 'success', 96, function (action) {
-	            switch (action) {
-	              case 'confirmCancel':
-	                newState = _popup2.default.prototype.handleClose(self.state);
-	                self.setState(newState);
-	                _reactRouter.browserHistory.push(self.props.location.search.slice(1));
-	                break;
-	            }
-	          });
-	          self.setState(newState);
+	          self.setState({ successMessage: 96 });
 	        });
 	      } else {
-	        newState = _popup2.default.prototype.handleChangeState(this.state, true, 'error', 91, function (action) {
-	          switch (action) {
-	            case 'confirmCancel':
-	              newState = _popup2.default.prototype.handleClose(self.state);
-	              self.setState(newState);
-	              break;
-	          }
-	        });
-	        this.setState(newState);
+	        self.setState({ errorMessage: 91 });
 	      }
 	    } else {
-	      newState = _popup2.default.prototype.handleChangeState(this.state, true, 'error', 88, function (action) {
-	        switch (action) {
-	          case 'confirmCancel':
-	            newState = _popup2.default.prototype.handleClose(self.state);
-	            self.setState(newState);
-	            break;
-	        }
-	      });
-	      this.setState(newState);
+	      self.setState({ errorMessage: 88 });
 	    }
 	  },
-
 	  registerNewUser: function registerNewUser(options, callback) {
 	    this.get_JSON_res('/api/uuid', function (err, res) {
 	      if (err) {
@@ -13983,22 +14916,22 @@ webpackJsonp([0],{
 	        return;
 	      }
 
-	      _users_bus2.default.storeNewUser(res.uuid, options.userName, options.userPassword, function (err, account) {
-	        if (err) {
-	          callback(err);
-	          return;
-	        }
+	      _jdenticon2.default.jdenticon(res.uuid, function (avatar_data) {
+	        _users_bus2.default.storeNewUser(res.uuid, options.userName, options.userPassword, avatar_data, Date.now(), function (err, account) {
+	          if (err) {
+	            callback(err);
+	            return;
+	          }
 
-	        // successful register
-	        callback(null, account);
+	          // successful register
+	          callback(null, account);
+	        });
 	      });
 	    });
 	  },
-
 	  handleEvents: function handleEvents(event) {
 	    this.descriptionContext.showDescription(event);
 	  },
-
 	  render: function render() {
 	    var _this = this;
 
@@ -14032,7 +14965,10 @@ webpackJsonp([0],{
 	          )
 	        )
 	      ),
-	      _react2.default.createElement(_popup2.default, { show: this.state.popupOptions.messagePopupShow, options: this.state.popupOptions }),
+	      _react2.default.createElement(_dialogSuccess2.default, { show: this.state.successMessage, message: this.state.successMessage,
+	        handleClick: this.handleDialogRegisterUser }),
+	      _react2.default.createElement(_dialogError2.default, { show: this.state.errorMessage, message: this.state.errorMessage,
+	        handleClick: this.handleDialogError }),
 	      _react2.default.createElement(_description2.default, { ref: function ref(obj) {
 	          return _this.descriptionContext = obj;
 	        } })
