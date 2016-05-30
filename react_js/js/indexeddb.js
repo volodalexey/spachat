@@ -98,7 +98,6 @@ class indexeddb extends AsyncCore {
 
   open(options, force, callback) {
     var self = this;
-
     if (self.canNotProceed(callback)) {
       return;
     }
@@ -142,7 +141,7 @@ class indexeddb extends AsyncCore {
     }
   }
 
-  addOrPutAll(action ,options, table_name, addOrPutItems, callback) {
+  addOrPutAll(action, options, table_name, addOrPutItems, callback) {
     var self = this, cur_table_description;
 
     if (self.canNotProceed(callback)) {
@@ -294,6 +293,7 @@ class indexeddb extends AsyncCore {
       getCursor.onsuccess = function(event) {
         if (event.target.result) {
           result = event.target.result.value;
+          event.target.result.continue();
         }
       };
     };
@@ -366,7 +366,7 @@ class indexeddb extends AsyncCore {
           callback(err);
         };
       });
-    }
+    };
 
     var _isTableInTables = self.isTableInTables(options.db_name, cur_table_description.table_name);
     if (self.openDatabases[options.db_name] && _isTableInTables) {

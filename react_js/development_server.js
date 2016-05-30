@@ -26,11 +26,11 @@ webSocketServer.on('connection', function(ws) {
     console.log('новое соединение');
     web_socket_connections_collection.on_wsc_open(ws);
     ws.on('message', function(messageData) {
-      web_socket_connections_collection.on_wsc_message(this, messageData);
+      web_socket_connections_collection.on_wsc_message(ws, messageData);
     });
     ws.on('close', function(event) {
       clients.splice(clients.indexOf(ws), 1);
-      web_socket_connections_collection.on_wsc_close(this, event.code, event.message);
+      web_socket_connections_collection.on_wsc_close(ws, event.code, event.message);
       console.log('Connection close!');
       if (event.wasClean) {
         console.log('Соединение закрыто чисто');

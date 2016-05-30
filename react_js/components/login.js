@@ -193,18 +193,23 @@ const Login = React.createClass({
         if (userCredentials) {
           users_bus.setUserId(userCredentials.user_id);
           users_bus.getMyInfo(null, function(err, options, userInfo) {
-            if (userPassword === userInfo.userPassword) {
-              users_bus.checkLoginState();
-              if (browserHistory.desired_path && browserHistory.desired_search) {
-                browserHistory.push(browserHistory.desired_path + browserHistory.desired_search);
-                browserHistory.desired_path = null;
-                browserHistory.desired_search = null;
+            if(userInfo){
+              if (userPassword === userInfo.userPassword) {
+                users_bus.checkLoginState();
+                if (browserHistory.desired_path && browserHistory.desired_search) {
+                  browserHistory.push(browserHistory.desired_path + browserHistory.desired_search);
+                  browserHistory.desired_path = null;
+                  browserHistory.desired_search = null;
+                } else {
+                  browserHistory.push('/chat');
+                }
               } else {
-                browserHistory.push('/chat');
+                self.toggleWaiter();
+                self.setState({errorMessage: 104});
               }
             } else {
               self.toggleWaiter();
-              self.setState({errorMessage: 104});
+              self.setState({errorMessage: 127});
             }
           });
         } else {
