@@ -131,45 +131,24 @@ const Settings = React.createClass({
       setting_config_creator: [
         {
           "role": "locationWrapper",
-          "classList": "w-100p p-t-b flex-sp-between",
-          "location": "chat_id_container"
-        },
-        {
-          "element": "label",
-          "icon": "",
-          "text": 5,
-          "class": "",
-          "location": "chat_id_container"
+          "classList": "w-100p flex-sp-between flex-wrap",
+          "location": "invite_in_chat"
         },
         {
           "element": "input",
-          "type": "text",
-          "location": "chat_id_container",
-          "class": "flex-item-1-auto",
+          "type": "checkbox",
+          "text": 128,
+          "class": "check-box-size",
+          "location": "invite_in_chat",
           "data": {
-            "key": "chat_id",
-            "role": "chat_id"
-          },
-          "disabled": true
-        },
-        {
-          "role": "locationWrapper",
-          "classList": "w-100p p-t-b flex-sp-between",
-          "location": "chat_id_controls"
-        },
-        {
-          "element": "button",
-          "text": 107,
-          "location": "chat_id_controls",
-          "data": {
-            "action": "copyChatId"
-          },
-          "disable": false
+            "action": "addNewUserWhenInviting",
+            "key": "addNewUserWhenInviting"
+          }
         },
         {
           "element": "button",
           "text": 111,
-          "location": "chat_id_controls",
+          "location": "invite_in_chat",
           "data": {
             "action": "inviteByUrl"
           },
@@ -189,40 +168,6 @@ const Settings = React.createClass({
           "data": {
             "action": "toggleChatUsersFriendship",
             "key": "toggleChatUsersFriendship"
-          }
-        },
-        {
-          "role": "locationWrapper",
-          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
-          "location": "send_enter"
-        },
-        {
-          "element": "input",
-          "type": "checkbox",
-          "text": 35,
-          "class": "check-box-size",
-          "location": "send_enter",
-          "data": {
-            "key": "sendEnter",
-            "role": "btnEdit",
-            "action": "changeSendEnter",
-            "name": ""
-          }
-        },
-        {
-          "role": "locationWrapper",
-          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
-          "location": "toggle_parts_chat"
-        },
-        {
-          "element": "input",
-          "type": "checkbox",
-          "text": 109,
-          "class": "check-box-size",
-          "location": "toggle_parts_chat",
-          "data": {
-            "key": "headerFooterControl",
-            "action": "toggleHeaderFooter"
           }
         }
       ],
@@ -251,35 +196,16 @@ const Settings = React.createClass({
           "disabled": true
         },
         {
-          "role": "locationWrapper",
-          "classList": "w-100p p-t-b flex-sp-between",
-          "location": "chat_id_controls"
-        },
-        {
           "element": "button",
-          "text": 107,
-          "location": "chat_id_controls",
+          "icon": 'blogs_icon',
+          "location": "chat_id_container",
           "data": {
-            "action": "copyChatId"
+            "action": "copyChatId",
+            "description": 107
           },
           "disable": false
         },
-        {
-          "role": "locationWrapper",
-          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
-          "location": "chat_users_apply"
-        },
-        {
-          "element": "input",
-          "type": "checkbox",
-          "text": 79,
-          "class": "check-box-size",
-          "location": "chat_users_apply",
-          "data": {
-            "action": "toggleChatUsersFriendship",
-            "key": "toggleChatUsersFriendship"
-          }
-        },
+        
         {
           "role": "locationWrapper",
           "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
@@ -362,6 +288,9 @@ const Settings = React.createClass({
         case 'toggleHeaderFooter':
           this.toggleHeaderFooter(element);
           break;
+        case 'addNewUserWhenInviting':
+          this.addNewUserWhenInviting(element);
+          break;
         case 'inviteByUrl':
           this.inviteByUrl(element);
           break;
@@ -376,6 +305,14 @@ const Settings = React.createClass({
     if (!element) return;
     this.props.data.formatOptions.sendEnter = element.checked;
     this.props.handleEvent.changeState({formatOptions: this.props.data.formatOptions});
+  },
+
+  addNewUserWhenInviting(element) {
+    if (!element) return;
+    this.props.data.addNewUserWhenInviting = element.checked;
+    this.props.data.lastChangedDatetime = Date.now();
+    this.props.handleEvent.changeState({addNewUserWhenInviting: this.props.data.addNewUserWhenInviting,
+      lastChangedDatetime: this.props.data.lastChangedDatetime});
   },
 
   toggleHeaderFooter(element) {
@@ -399,8 +336,13 @@ const Settings = React.createClass({
   },
 
   inviteByUrl(){
-    let newState, self = this,
+    let newState, self = this, url;
+    if (this.props.data.addNewUserWhenInviting){
+      url = window.location.protocol + "//" + window.location.host + "/chat?join_chat_id=" + this.props.data.chat_id +
+         "&user_id=" + users_bus.getUserId();
+    } else {
       url = window.location.protocol + "//" + window.location.host + "/chat?join_chat_id=" + this.props.data.chat_id;
+    }
     console.log(url);
     this.setState({confirmMessage: 112, inviteByUrl: url});
   },
@@ -515,6 +457,19 @@ const Settings = React.createClass({
     }
   },
 
+  renderCreatorLayout(){
+    if (this.props.data.createdByUserId === users_bus.getUserId()){
+      return <div className="textbox">
+          <div className="title c-100">
+            <label>{localization.getLocText(129)}</label>
+          </div>
+          {this.renderItems(this.props.setting_config_creator)}
+        </div>
+    } else {
+      return null
+    }
+  },
+
   renderItems(configs) {
     let items = [],
       data = {
@@ -523,7 +478,8 @@ const Settings = React.createClass({
         "index": this.props.data.index,
         "adjust_width": this.props.data.settings_ListOptions.adjust_width,
         "headerFooterControl": this.props.data.headerFooterControl,
-        "toggleChatUsersFriendship": this.props.data.toggleChatUsersFriendship
+        "toggleChatUsersFriendship": this.props.data.toggleChatUsersFriendship,
+        "addNewUserWhenInviting": this.props.data.addNewUserWhenInviting
       };
     let onEvent = {
       onClick: this.handleClick,
@@ -540,18 +496,17 @@ const Settings = React.createClass({
   },
 
   render() {
-    let config = this.props.data.createdByUserId === users_bus.getUserId() ? this.props.setting_config_creator :
-      this.props.setting_config;
     return <div >
       <DialogConfirm show={this.state.confirmMessage} message={this.state.confirmMessage}
                      handleClick={this.handleDialogInviteByUrl}
                      body={{content: <div className="w-100p p-t-b flex-sp-between">
-      <div className="p-b-1em p-r-l-1em">
-      {localization.transferText(112)} <br/>
-      <a href={this.state.inviteByUrl}>{this.state.inviteByUrl}</a>
-      </div>
-      </div>}}/>
-      {this.renderItems(config)}
+                      <div className="p-b-1em p-r-l-1em">
+                      {localization.transferText(112)} <br/>
+                      <a href={this.state.inviteByUrl}>{this.state.inviteByUrl}</a>
+                      </div>
+                      </div>}}/>
+      {this.renderItems(this.props.setting_config)}
+      {this.renderCreatorLayout()}
       <div className="textbox">
         <div className="title c-100">
           {this.renderItems(this.props.size_container_config)}

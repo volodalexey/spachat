@@ -67,7 +67,7 @@ const Connections = React.createClass({
           <ol style={{'listStyleType': 'circle'}} key={_user_id}>
             <li>
               <div>
-                {users_bus.getUserName(_user_id, this.state.contactsInfo)}
+                {users_bus.getUserName(_user_id, self.state.contactsInfo)}
               </div>
               <div>
                 {_user_id}

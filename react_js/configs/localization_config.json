@@ -551,8 +551,8 @@
   },
   {
     "id": 111,
-    "en": "Invite by url",
-    "ru": "Пригласить по url"
+    "en": "Invite contact by url",
+    "ru": "Пригласить контакт по url"
   },
   {
     "id": 112,
@@ -633,5 +633,15 @@
     "id": 127,
     "en": "Could not get user data",
     "ru": "Не удалось получить данные пользователя"
+  },
+  {
+    "id": 128,
+    "en": "Add new users to your contacts",
+    "ru": "Добавлять пользователей в контакты"
+  },
+  {
+    "id": 129,
+    "en": "Chat administrator settings",
+    "ru": "Настройки администратора чата"
   }
 ]

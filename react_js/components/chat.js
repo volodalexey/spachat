@@ -47,6 +47,8 @@ const Chat = React.createClass({
       toggleTopButtonLeft: '0px',
       toggleBottomButtonLeft: '0px',
       toggleChatUsersFriendship: false,
+      addNewUserWhenInviting: true,
+      lastChangedDatetime: null,
       errorMessage: null,
       confirmMessage: null,
       confirmMessageData: null,
@@ -242,6 +244,7 @@ const Chat = React.createClass({
           createdDatetime: data.chat_description.createdDatetime,
           user_ids: data.chat_description.user_ids,
           temp_chat_id: this.props.data.temp_chat_id,
+          lastChangedDatetime: this.props.data.lastChangedDatetime,
           index: index
         });
       } else {
@@ -682,6 +685,7 @@ const Chat = React.createClass({
           if (!this.isInUsers(this.state, data.from_user_id)) {
             // add user and save chat with this user
             this.state.user_ids.push(data.from_user_id);
+            this.state.lastChangedDatetime = Date.now();
             chats_bus.updateChatField(self.state.chat_id, 'user_ids', self.state.user_ids, function(error) {
               if (error) return console.error(error);
 

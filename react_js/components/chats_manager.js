@@ -302,7 +302,8 @@ const ChatsManager = React.createClass({
                 chat_id: chat_description.chat_id,
                 createdByUserId: chat_description.createdByUserId,
                 createdDatetime: chat_description.createdDatetime,
-                user_ids: chat_description.user_ids
+                user_ids: chat_description.user_ids,
+                lastChangedDatetime: chat_description.lastChangedDatetime
               });
             Chat.prototype.chatsArray[index].chat_description.user_ids = chat_description.user_ids;
           } else {
