@@ -809,6 +809,11 @@ webpackJsonp([0],{
 			"id": 126,
 			"en": "Copy",
 			"ru": "Копировать"
+		},
+		{
+			"id": 127,
+			"en": "Could not get user data",
+			"ru": "Не удалось получить данные пользователя"
 		}
 	];
 
@@ -1331,7 +1336,6 @@ webpackJsonp([0],{
 	    key: 'open',
 	    value: function open(options, force, callback) {
 	      var self = this;
-
 	      if (self.canNotProceed(callback)) {
 	        return;
 	      }
@@ -1532,6 +1536,7 @@ webpackJsonp([0],{
 	        getCursor.onsuccess = function (event) {
 	          if (event.target.result) {
 	            result = event.target.result.value;
+	            event.target.result.continue();
 	          }
 	        };
 	      };
@@ -2389,18 +2394,23 @@ webpackJsonp([0],{
 	        if (userCredentials) {
 	          _users_bus2.default.setUserId(userCredentials.user_id);
 	          _users_bus2.default.getMyInfo(null, function (err, options, userInfo) {
-	            if (userPassword === userInfo.userPassword) {
-	              _users_bus2.default.checkLoginState();
-	              if (_reactRouter.browserHistory.desired_path && _reactRouter.browserHistory.desired_search) {
-	                _reactRouter.browserHistory.push(_reactRouter.browserHistory.desired_path + _reactRouter.browserHistory.desired_search);
-	                _reactRouter.browserHistory.desired_path = null;
-	                _reactRouter.browserHistory.desired_search = null;
+	            if (userInfo) {
+	              if (userPassword === userInfo.userPassword) {
+	                _users_bus2.default.checkLoginState();
+	                if (_reactRouter.browserHistory.desired_path && _reactRouter.browserHistory.desired_search) {
+	                  _reactRouter.browserHistory.push(_reactRouter.browserHistory.desired_path + _reactRouter.browserHistory.desired_search);
+	                  _reactRouter.browserHistory.desired_path = null;
+	                  _reactRouter.browserHistory.desired_search = null;
+	                } else {
+	                  _reactRouter.browserHistory.push('/chat');
+	                }
 	              } else {
-	                _reactRouter.browserHistory.push('/chat');
+	                self.toggleWaiter();
+	                self.setState({ errorMessage: 104 });
 	              }
 	            } else {
 	              self.toggleWaiter();
-	              self.setState({ errorMessage: 104 });
+	              self.setState({ errorMessage: 127 });
 	            }
 	          });
 	        } else {
@@ -3855,6 +3865,7 @@ webpackJsonp([0],{
 	      _reactRouter.browserHistory.push('/login');
 	    } else {
 	      _users_bus2.default.getMyInfo(null, function (error, _options, userInfo) {
+	        if (error) return console.error(error);
 	        self.setState({ userInfo: userInfo, locationQuery: self.props.location.query });
 	        self.toggleWaiter();
 	      });
