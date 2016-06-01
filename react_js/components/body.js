@@ -244,7 +244,7 @@ const Body = React.createClass({
           "element": "label",
           "icon": "",
           "text": 9,
-          "class": "",
+          "class": "flex-shrink-0",
           "location": "user_id",
           "data": {
             "role": "user_id_label"
@@ -260,7 +260,7 @@ const Body = React.createClass({
           "type": "text",
           "icon": "",
           "text": "",
-          "class": "flex-grow_1",
+          "class": "flex-grow_1 flex-shrink-1",
           "location": "user_id",
           "data": {
             "role": "user_id",
@@ -274,11 +274,12 @@ const Body = React.createClass({
         },
         {
           "element": "button",
-          "text": 126,
+          "icon": 'blogs_icon',
           "class": "button-convex",
           "location": "user_id",
           "data": {
-            "action": "copyUserId"
+            "action": "copyUserId",
+            "description": 126
           }
         },
 
@@ -405,24 +406,6 @@ const Body = React.createClass({
           "data": {
             "throw": "true",
             "action": "addNewChatAuto",
-            "mode": "CREATE_CHAT"
-          },
-          "disable": false
-        },
-
-        {
-          "role": "locationWrapper",
-          "classList": "w-100p p-t-b flex-sp-around",
-          "location": "chatManual"
-        },
-        {
-          "element": "button",
-          "text": 4,
-          "class": "button-inset-square",
-          "location": "chatManual",
-          "data": {
-            "throw": "true",
-            "action": "addNewChatManual",
             "mode": "CREATE_CHAT"
           },
           "disable": false

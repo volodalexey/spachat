@@ -241,7 +241,7 @@ const Description = React.createClass({
 
             if (!positionFound) {
               futureLeft = 0;
-              futureTop = result.offsetTop - description.offsetHeight;
+              futureTop = result.offsetTop;
             }
             this.setState({
               left: futureLeft + "px",

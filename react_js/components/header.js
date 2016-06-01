@@ -76,7 +76,7 @@ const Header = React.createClass({
         },
         {
           "role": "locationWrapper",
-          "classList": "",
+          "classList": "flex-just-center",
           "location": "description",
           "data": {
             "role": "header_description"

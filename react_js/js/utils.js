@@ -14,6 +14,15 @@ Utils.prototype = {
       }
     });
     return url;
+  },
+
+  deviceIsMobile(){
+    let mobile = window.navigator.userAgent.search( /mobile/i );
+    if (mobile === -1){
+      return false;
+    } else {
+      return true;
+    }
   }
 };
 

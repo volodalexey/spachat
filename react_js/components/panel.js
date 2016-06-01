@@ -9,6 +9,7 @@ import users_bus from '../js/users_bus.js'
 import switcher_core from '../js/switcher_core.js'
 import websocket from '../js/websocket.js'
 import webrtc from '../js/webrtc.js'
+import utils from '../js/utils'
 
 import Triple_Element from '../components/triple_element'
 import ExtraToolbar from '../components/extra_toolbar'
@@ -409,6 +410,8 @@ const Panel = React.createClass({
       this.setState({userInfo: this.props.userInfo});
     }
   },
+  
+  
 
   componentDidMount() {
     document.addEventListener('load', this.handleLoad, true);
@@ -568,10 +571,16 @@ const Panel = React.createClass({
           break;
         case 'showChat':
           event_bus.trigger('showChat', element);
+          if(utils.deviceIsMobile()){
+            this.togglePanel(true);
+          }
           break;
         case 'addNewChatAuto':
           if (this.props.location !== "left") return;
           event_bus.trigger('addNewChatAuto', event);
+          if(utils.deviceIsMobile()){
+            this.togglePanel(true);
+          }
           break;
         case 'closeChat':
           if (this.props.location !== "left") return;
@@ -760,6 +769,9 @@ const Panel = React.createClass({
 
     if (requestButton && chat_id_input && chat_id_input.value && chat_message_input && chat_message_input.value) {
       event_bus.trigger('requestChatByChatId', chat_id_input.value, chat_message_input.value);
+      if(utils.deviceIsMobile()){
+        this.togglePanel(true);
+      }
     } else {
       this.setState({errorMessage: 90});
     }
