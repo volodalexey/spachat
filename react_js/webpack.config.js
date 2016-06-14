@@ -8,7 +8,7 @@ module.exports = {
   
   debug: !production,
   
-  // devtool: production ? null : 'inline-source-map',
+  devtool: production ? null : 'inline-source-map',
 
   watch: !production,
   watcherOptions: {

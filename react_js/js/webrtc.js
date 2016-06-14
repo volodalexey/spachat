@@ -459,10 +459,10 @@ WebRTC.prototype = {
 
     if (messageData.lastModifyDatetime) {
       users_bus.getContactsInfo(messageData, [messageData.message.createdByUserId], function(_err, contactsInfo, messageData) {
-
         if (_err) return console.error(_err);
 
         contactsInfo = contactsInfo[0];
+        if(contactsInfo.userName === '-//-//-//-') return;
         if (!contactsInfo.lastModifyDatetime || contactsInfo.lastModifyDatetime < messageData.lastModifyDatetime) {
           var _messageData = {
             type: 'syncRequestUserData',
@@ -548,7 +548,11 @@ WebRTC.prototype = {
           lastModifyDatetime: userInfo.lastModifyDatetime
         }
       };
-      self.broadcastChatMessage(options.chat_description.chat_id, JSON.stringify(messageData));
+      let stringifyMessageData = JSON.stringify(messageData);
+      if (stringifyMessageData.length > 66500){
+        throw new Error('Data length is too big! Browser does not work');
+      }
+      self.broadcastChatMessage(options.chat_description.chat_id, stringifyMessageData);
     })
   },
 

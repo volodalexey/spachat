@@ -43,14 +43,17 @@ const Messages = React.createClass({
   changeMyUserInfo(userId, chatId){
     if (chatId === this.props.data.chat_id) {
       let self = this;
-      users_bus.getContactsInfo(null, [userId], function(_err, userInfo) {
+      users_bus.getContactsInfo(null, [userId], function(_err, usersInfo) {
         if (_err) return console.error(_err);
-        self.state.userInfo.forEach(function(_user) {
-          if (_user.user_id === userInfo.user_id) {
-            _user.avatar_data = userInfo.avatar_data;
-            _user = self.renderAvatarUrl([_user])[0];
+        
+        usersInfo.forEach(function(_userInfo) {
+          self.state.userInfo.forEach(function(_user) {
+            if (_user.user_id === _userInfo.user_id) {
+              _user.avatar_data = _userInfo.avatar_data;
+              _user = self.renderAvatarUrl([_user])[0];
 
-          }
+            }
+          });
         });
         self.setState({userInfo: self.state.userInfo});
       });

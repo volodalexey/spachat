@@ -246,7 +246,7 @@ Users_bus.prototype = {
         userName: userName,
         userPassword: userPassword,
         avatar_data: avatar_data,
-        lastChangeDatetime: lastModifyDatetime,
+        lastModifyDatetime: lastModifyDatetime,
         user_ids: [],
         chat_ids: []
       };

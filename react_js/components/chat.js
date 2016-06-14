@@ -28,7 +28,7 @@ const Chat = React.createClass({
   chatsArray: [],
   syncMessageDataArray: [],
   syncMessageDataFlag: false,
-  valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids'],
+  valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids', 'addNewUserWhenInviting'],
 
   getDefaultProps() {
     return {
@@ -245,6 +245,7 @@ const Chat = React.createClass({
           user_ids: data.chat_description.user_ids,
           temp_chat_id: this.props.data.temp_chat_id,
           lastChangedDatetime: this.props.data.lastChangedDatetime,
+          addNewUserWhenInviting: this.props.data.chat_description.addNewUserWhenInviting,
           index: index
         });
       } else {
@@ -350,6 +351,8 @@ const Chat = React.createClass({
       this.splitter_right.addEventListener('touchstart', this.startResize);
       this.splitter_right.addEventListener('touchmove', this.startResize);
       this.splitter_right.addEventListener('touchend', this.startResize);
+
+      this.checkAutoAddContact();
     }
   },
 
@@ -379,6 +382,49 @@ const Chat = React.createClass({
       this.chat = null;
       this.splitter_left = null;
       this.splitter_right = null;
+    }
+  },
+
+  checkAutoAddContact(){
+    if (this.state.addNewUserWhenInviting) {
+      let self = this, newUsers = [];
+      chats_bus.getChatContacts(self.props.data.chat_description.chat_id, function(error, contactsInfo) {
+        if (error) return console.error(error);
+
+        if (contactsInfo) {
+          contactsInfo.forEach(function(_contact) {
+            if (_contact.userName === '-//-//-//-') {
+              newUsers.push(_contact.user_id);
+            }
+          })
+        }
+        if (newUsers.length) {
+          let active_connections = webrtc.getChatConnections(webrtc.connections, self.state.chat_id);
+          if (active_connections.length) {
+            newUsers.forEach(function(_contact_id) {
+              let connectionUser;
+              active_connections.every(function(_connection) {
+                if (_connection.users_ids.indexOf(_contact_id) !== -1) {
+                  connectionUser = true;
+                }
+                return !connectionUser;
+              });
+              if (connectionUser) {
+                console.log('send Data');
+                websocket.sendMessage({
+                  type: "user_add_auto",
+                  from_user_id: users_bus.getUserId(),
+                  avatar_data: self.state.userInfo.avatar_data,
+                  to_user_id: _contact_id,
+                  chat_description: {
+                    chat_id: self.state.chat_id
+                  }
+                });
+              }
+            })
+          }
+        }
+      })
     }
   },
 
@@ -840,6 +886,7 @@ const Chat = React.createClass({
         if (error) return console.error(error);
 
         self.setState({user_ids: usersArray});
+        self.checkAutoAddContact();
       });
     }
   },

@@ -19,7 +19,7 @@ import DialogError from './dialogError'
 var id_Generator = require('../server_js/id_generator');
 
 const ChatsManager = React.createClass({
-  
+
   getDefaultProps() {
     return {
       minChatsWidth: 350,
@@ -232,7 +232,7 @@ const ChatsManager = React.createClass({
     this.addNewChatToIndexedDB(event.chat_description, function(err, chat) {
       if (err) {
         console.error(err);
-        event_bus.trigger('send_log_message', chat.chat_id, {text: err, type: 'error'});
+        event_bus.trigger('send_log_message', event.chat_description.chat_id, {text: err, type: 'error'});
         return;
       }
       event_bus.trigger('send_log_message', chat.chat_id,
@@ -272,10 +272,7 @@ const ChatsManager = React.createClass({
       null,
       event.chat_description.chat_id,
       function(getError, chat_description) {
-        if (getError) {
-          console.error(getError);
-          return;
-        }
+        if (getError) return console.error(getError);
 
         if (!chat_description) {
           this.setState({errorMessage: 86});
@@ -303,7 +300,8 @@ const ChatsManager = React.createClass({
                 createdByUserId: chat_description.createdByUserId,
                 createdDatetime: chat_description.createdDatetime,
                 user_ids: chat_description.user_ids,
-                lastChangedDatetime: chat_description.lastChangedDatetime
+                lastChangedDatetime: chat_description.lastChangedDatetime,
+                addNewUserWhenInviting: chat_description.addNewUserWhenInviting
               });
             Chat.prototype.chatsArray[index].chat_description.user_ids = chat_description.user_ids;
           } else {
@@ -475,7 +473,7 @@ const ChatsManager = React.createClass({
         case 'confirmOk':
           this.addNewChatToIndexedDB(this.state.confirmDialog_description, function(err) {
             if (err) return console.error(err);
-            
+
             self.destroyChat(self.state.confirmDialog_description);
             self.setState({confirmMessageSaveCloseChat: null, confirmDialog_description: null});
           });
@@ -497,8 +495,8 @@ const ChatsManager = React.createClass({
     return <div className="h-100p">
       <DialogError show={this.state.errorMessage} message={this.state.errorMessage}
                    handleClick={this.handleDialogError}/>
-      <DialogConfirm show={this.state.confirmMessageRequestChatByChatId} 
-                     message={this.state.confirmMessageRequestChatByChatId} 
+      <DialogConfirm show={this.state.confirmMessageRequestChatByChatId}
+                     message={this.state.confirmMessageRequestChatByChatId}
                      handleClick={this.handleDialogRequestChatByChatId}/>
       <DialogConfirm show={this.state.confirmMessageCloseChat}
                      message={this.state.confirmMessageCloseChat}

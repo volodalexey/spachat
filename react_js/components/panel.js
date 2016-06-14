@@ -410,8 +410,6 @@ const Panel = React.createClass({
       this.setState({userInfo: this.props.userInfo});
     }
   },
-  
-  
 
   componentDidMount() {
     document.addEventListener('load', this.handleLoad, true);
@@ -611,7 +609,7 @@ const Panel = React.createClass({
   changeMyUsers(){
     this.getInfoForBody();
   },
-  
+
   copyUserId(){
     let input = this.inner_container.querySelector('[data-role="user_id"]');
     input.disabled = false;
@@ -721,20 +719,24 @@ const Panel = React.createClass({
           break;
         case 'confirmOk':
           let messageData = this.state.confirmDialog_messageData;
-          this.listenWebRTCConnection(messageData.from_user_id);
-          this.listenNotifyUser(messageData.from_user_id);
-          websocket.sendMessage({
-            type: "friendship_confirmed",
-            from_user_id: users_bus.getUserId(),
-            to_user_id: messageData.from_user_id,
-            request_body: messageData.request_body
-          });
-          console.log('handleConnectedDevices', messageData.user_wscs_descrs);
-          webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
+          this.confirmedFriendship(messageData);
           break;
       }
       this.setState({confirmMessageShowRemoteFriendshipRequest: null, confirmDialog_messageData: null});
     }
+  },
+
+  confirmedFriendship(messageData){
+    this.listenWebRTCConnection(messageData.from_user_id);
+    this.listenNotifyUser(messageData.from_user_id);
+    websocket.sendMessage({
+      type: "friendship_confirmed",
+      from_user_id: users_bus.getUserId(),
+      to_user_id: messageData.from_user_id,
+      request_body: messageData.request_body
+    });
+    console.log('handleConnectedDevices', messageData.user_wscs_descrs);
+    webrtc.handleConnectedDevices(messageData.user_wscs_descrs);
   },
 
   handleTransitionEnd(event) {
@@ -1172,6 +1174,7 @@ const Panel = React.createClass({
     if (this.props.location !== "left") {
       return;
     }
+    console.log("!!! onPanelMessageRouter", messageData.type);
     switch (messageData.type) {
       case 'user_add':
         if (this.state.bodyMode === MODE.JOIN_USER) {
@@ -1183,6 +1186,14 @@ const Panel = React.createClass({
           event_bus.set_ws_device_id(messageData.from_ws_device_id);
           this.listenNotifyUser(messageData.to_user_id);
         }
+        break;
+      case 'user_add_auto':
+        console.log("!!! user_add_auto", messageData);
+        this.confirmedFriendship(messageData);
+        break;
+      case 'user_add_auto_sent':
+        event_bus.set_ws_device_id(messageData.from_ws_device_id);
+        this.listenNotifyUser(messageData.to_user_id);
         break;
       case 'friendship_confirmed':
         if (messageData.user_wscs_descrs) {
