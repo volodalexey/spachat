@@ -52,6 +52,7 @@ const Chat = React.createClass({
       errorMessage: null,
       confirmMessage: null,
       confirmMessageData: null,
+      extraMessageIDToolbar: null,
       padding: {
         bottom: 5
       },
@@ -469,6 +470,9 @@ const Chat = React.createClass({
   handleClick(event) {
     let element = this.getDataParameter(event.currentTarget, 'action'), self = this,
       currentOptions, gto, po;
+    if(event.target.dataset && event.target.dataset.action){
+      element = event.target;
+    }
     if (element) {
       switch (element.dataset.action) {
         case 'changeMode':
@@ -536,6 +540,15 @@ const Chat = React.createClass({
           break;
         case 'synchronizeMessages':
           this.onSynchronizeMessages();
+          break;   
+        case 'displayExtraMessageToolbar':
+          this.displayExtraMessageToolbar(element);
+          break;
+        case 'deleteMessage':
+          this.deleteMessage(element);
+          break;
+        case 'editMessage':
+          this.editMessage(element);
           break;
       }
     }
@@ -654,6 +667,25 @@ const Chat = React.createClass({
         }
       }
     );
+  },
+
+  displayExtraMessageToolbar(element){
+    if(element.dataset.message_id){
+      if(!this.state.extraMessageIDToolbar ||
+        this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== element.dataset.message_id){
+        this.setState({extraMessageIDToolbar: element.dataset.message_id});
+      } else {
+        this.setState({extraMessageIDToolbar: null});
+      }
+    }
+  },
+
+  deleteMessage(element){
+    console.log('delete message');
+  },
+  
+  editMessage(element){
+    console.log('edit message');
   },
 
   onSynchronizeMessages(){

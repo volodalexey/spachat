@@ -30,6 +30,12 @@ const PanelUsers = React.createClass({
 
   renderItems(){
     let items = [], self = this, users = this.prepareData(this.props.data, this.props.type);
+    const delete_button = <div className="flex-just-center">
+        <button className="button-inset-square" data-action="removeContact"
+                onClick={self.props.events.onClick}>
+          {Localization.getLocText(131)}
+        </button>
+      </div>;
     users.forEach(function(user) {
       items.push(
         <div className="flex-sp-start margin-t-b" key={user.user_id} data-user_id={user.user_id}
@@ -38,24 +44,11 @@ const PanelUsers = React.createClass({
             <img src={user.avatar_data} width="35px" height="35px" className="border-radius-5"/>
           </div>
           <div className="message flex-item-1-auto flex-dir-col flex-sp-between">
-            <div>{
-              (()=> {
-                if (user.is_deleted) {
-                  return <span style={{color: 'red'}}> ! </span>
-                }
-              })()
-            }User name: {user.userName}</div>
+            <div>
+              {user.is_deleted ? <span style={{color: 'red'}}> ! </span> : null}
+              User name: {user.userName}</div>
             <div>User id: {user.user_id}</div>
-            {(() => {
-              if (!user.is_deleted) {
-                return <div className="flex-just-center">
-                  <button className="button-inset-square" data-action="removeContact"
-                          onClick={self.props.events.onClick}>
-                    {Localization.getLocText(131)}
-                  </button>
-                </div>
-              }
-            })()}
+            {user.is_deleted ? null : delete_button}
           </div>
         </div>
       )

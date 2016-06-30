@@ -6,6 +6,7 @@ import extend_core from '../js/extend_core'
 import switcher_core from '../js/switcher_core'
 import users_bus from '../js/users_bus'
 import event_bus from '../js/event_bus'
+import localization from '../js/localization'
 
 import Body from '../components/body'
 
@@ -170,18 +171,32 @@ const Messages = React.createClass({
       timeCreated = timeCreated.toISOString()
     }
     if (html_message.prototype.amICreator(message)) {
+      let displayExtraToolbar = this.props.data.extraMessageIDToolbar === message.messageId,
+      _className = displayExtraToolbar ? "flex-dir-col margin-t-b box-shadow-10" : "flex-dir-col margin-t-b";
       return (
-        <div className="flex-sp-start margin-t-b" key={message.messageId}>
-          <div className="message myMessage flex-item-1-auto flex-dir-col flex-sp-between">
-            <div className="message-container" dangerouslySetInnerHTML={{__html: message.innerHTML}}></div>
-            <div className="date-format">
-              {timeCreated}
+        <div className={_className} key={message.messageId} onClick={this.props.events.onClick}
+        data-action="displayExtraMessageToolbar" data-message_id={message.messageId}>
+          <div className="flex-sp-start margin-t-b">
+            <div className="message myMessage flex-item-1-auto flex-dir-col flex-sp-between">
+              <div className="message-container" dangerouslySetInnerHTML={{__html: message.innerHTML}}></div>
+              <div className="date-format">
+                {timeCreated}
+              </div>
+            </div>
+            <div className="width-40px flex-just-center flex-dir-col">
+              <img src={this.state.amICreator.avatar_url} width="35px" height="35px"
+                   className="border-radius-5 flex-item-auto"/>
+              <div className="user-info flex-item-1-auto c-01">{this.state.amICreator.userName}</div>
             </div>
           </div>
-          <div className="width-40px flex-just-center flex-dir-col">
-            <img src={this.state.amICreator.avatar_url} width="35px" height="35px"
-                 className="border-radius-5 flex-item-auto"/>
-            <div className="user-info flex-item-1-auto c-01">{this.state.amICreator.userName}</div>
+          <div className={displayExtraToolbar ? "flex-sp-end m-r-40px" : "flex-sp-end m-r-40px hide"}
+               data-role="extra_message_toolbar">
+            <button className="margin-02em button-convex" data-action="editMessage">
+              {localization.getLocText(37)}
+            </button>
+            <button className="margin-02em button-convex" data-action="deleteMessage">
+              {localization.getLocText(138)}
+            </button>
           </div>
         </div>
       )
@@ -191,7 +206,7 @@ const Messages = React.createClass({
         timeReceived = timeReceived.toISOString()
       }
       return (
-        <div className="flex-sp-start margin-t-b" key={message.messageId}>
+        <div className="flex-sp-start margin-t-b" key={message.messageId} onClick={this.props.events.onClick}>
           <div className="width-40px flex-just-center flex-dir-col">
             <img src={this.getUserParam(message.createdByUserId, 'avatar_url')} width="35px" height="35px"
                  className="border-radius-5 flex-item-auto"/>
@@ -206,6 +221,7 @@ const Messages = React.createClass({
       )
     }
   },
+  
 
   render() {
     this.getMessages();
