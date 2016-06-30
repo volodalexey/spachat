@@ -886,9 +886,10 @@ const Chat = React.createClass({
         if (error) return console.error(error);
 
         self.setState({user_ids: usersArray});
-        self.checkAutoAddContact();
+        
       });
     }
+    self.checkAutoAddContact();
   },
 
   render() {

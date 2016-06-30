@@ -44,17 +44,18 @@ const Register = React.createClass({
           "location": "language",
           "select_options": [
             {
-              "text": "English",
+              "text": 132,
               "value": "en"
             },
             {
-              "text": "Русский",
+              "text": 133,
               "value": "ru"
             }
           ],
           "data": {
             "action": "changeLanguage",
-            "role": "selectLanguage"
+            "role": "selectLanguage",
+            "key": 'lang'
           }
         },
         {
@@ -274,6 +275,9 @@ const Register = React.createClass({
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange
+    },
+    data={
+      "lang": localization.lang
     };
     //https://www.zigpress.com/2014/11/22/stop-chrome-messing-forms/
     return (
@@ -290,7 +294,8 @@ const Register = React.createClass({
                   onSubmit={this.handleSubmit}>
               <input style={{display:'none'}} type="text" />
               <input style={{display:'none'}} type="password" />
-              <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}/>
+              <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}
+              data={data}/>
             </form>
           </div>
         </div>

@@ -6,7 +6,7 @@ import extend_core from '../js/extend_core'
 import Location_Wrapper from './location_wrapper'
 
 const Filter = React.createClass({
-  
+
   MODE: {
     BLOGS_FILTER: 'BLOGS_FILTER',
     CHATS_FILTER: 'CHATS_FILTER',
@@ -131,6 +131,42 @@ const Filter = React.createClass({
           "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
           "location": "per_page",
           "redraw_mode": "nrte"
+        },
+
+        {
+          "role": "locationWrapper",
+          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+          "location": "type_display_contacts"
+        },
+        {
+          "element": "label",
+          "text": 137,
+          "class": "p-r-l-1em",
+          "location": "type_display_contacts"
+        },
+        {
+          "element": "select",
+          "location": "type_display_contacts",
+          "select_options": [
+            {
+              "text": 134,
+              "value": "all"
+            },
+            {
+              "text": 135,
+              "value": "current"
+            },
+            {
+              "text": 136,
+              "value": "deleted"
+            }
+          ],
+          "data": {
+            "action": "changeDisplayContact",
+            "role": "selectDisplayContact",
+            "warn": true,
+            "key": 'typeDisplayContacts'
+          }
         }
       ],
       chatsFilterConfig: [
@@ -249,50 +285,6 @@ const Filter = React.createClass({
         }
       ],
       messagesFilterConfig: [
-/*        {
-          "role": "locationWrapper",
-          "classList": "flex-item flex-wrap elements",
-          "location": "date_filter"
-        },
-        {
-          "element": "label",
-          "text": 44,
-          "location": "date_filter",
-          "sort": 2
-        },
-        {
-          "element": "input",
-          "class": "inputWidth",
-          "location": "date_filter",
-          "sort": 3
-        },
-        {
-          "element": "button",
-          "text": 18,
-          "class": "button-inset-white",
-          "location": "date_filter",
-          "sort": 4
-        },
-        {
-          "element": "label",
-          "text": 45,
-          "location": "date_filter",
-          "sort": 2
-        },
-        {
-          "element": "input",
-          "class": "inputWidth",
-          "location": "date_filter",
-          "sort": 3
-        },
-        {
-          "element": "button",
-          "text": 18,
-          "class": "button-inset-white",
-          "location": "date_filter",
-          "sort": 4
-        },*/
-
         {
           "role": "locationWrapper",
           "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
@@ -480,7 +472,7 @@ const Filter = React.createClass({
   },
 
   changeRTE(element, currentOptions) {
-      let po = currentOptions.paginationOptions;
+    let po = currentOptions.paginationOptions;
     if (element.checked) {
       po.mode_change = "rte";
       po.rtePerPage = true;
@@ -506,6 +498,41 @@ const Filter = React.createClass({
     return currentOptions;
   },
 
+  renderItem(options, configs, mode){
+    let mainContainer = {
+        "element": "div",
+        "config": {
+          "class": "flex-item flex-wrap"
+        }
+      },
+      data = {
+        "perPageValue": options.paginationOptions.perPageValueShow,
+        "showEnablePagination": options.paginationOptions.showEnablePagination,
+        "rtePerPage": options.paginationOptions.rtePerPage,
+        "mode_change": options.paginationOptions.mode_change,
+        "typeDisplayContacts": this.props.data.typeDisplayContacts
+      };
+
+    switch (mode) {
+      case 'CHATS':
+      case 'CONTACT_LIST':
+        return <Location_Wrapper events={this.props.events} data={data} mainContainer={mainContainer}
+                                 configs={configs}/>;
+        break;
+      case 'USERS':
+        return <Location_Wrapper events={this.props.events} data={data} mainContainer={mainContainer}
+                                 configs={configs}/>;
+        break;
+      case 'MESSAGES':
+        return <Location_Wrapper events={this.props.events} data={data} mainContainer={mainContainer}
+                                 configs={configs}/>;
+        break;
+    }
+
+    <Location_Wrapper events={this.props.events} data={data} mainContainer={mainContainer} configs={configs}/>
+
+  },
+
   render() {
     var options = this.defineOptions(this.props.mode);
     if (options && options.filterOptions.show) {
@@ -515,21 +542,9 @@ const Filter = React.createClass({
       }
 
       configs = this.prepareConfig(configs, options.paginationOptions.mode_change);
-      let mainContainer = {
-        "element": "div",
-        "config": {
-          "class": "flex-item flex-wrap"
-        }
-      };
-      let data = {
-        "perPageValue": options.paginationOptions.perPageValueShow,
-        "showEnablePagination": options.paginationOptions.showEnablePagination,
-        "rtePerPage": options.paginationOptions.rtePerPage,
-        "mode_change": options.paginationOptions.mode_change
-      };
       return <div>
         {
-          <Location_Wrapper events={this.props.events} data={data} mainContainer={mainContainer} configs={configs}/>
+          this.renderItem(options, configs, this.props.mode)
         }
       </div>
     } else {

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import indexeddb from '../js/indexeddb.js'
 import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
@@ -98,6 +99,7 @@ const Panel = React.createClass({
         avatarMode: "SHOW",
         avatarData: '',
         avatarPrevious: '',
+        typeDisplayContacts: 'all',
 
         errorMessage: null,
         confirmMessageShowRemoteFriendshipRequest: null,
@@ -331,6 +333,7 @@ const Panel = React.createClass({
         bodyMode: "USER_INFO_SHOW",
         avatarMode: "SHOW",
         scrollEachChat: true,
+        notificationOfAccession: false,
 
         errorMessage: null,
         errorMessageWrongOldPassword: null,
@@ -569,14 +572,14 @@ const Panel = React.createClass({
           break;
         case 'showChat':
           event_bus.trigger('showChat', element);
-          if(utils.deviceIsMobile()){
+          if (utils.deviceIsMobile()) {
             this.togglePanel(true);
           }
           break;
         case 'addNewChatAuto':
           if (this.props.location !== "left") return;
           event_bus.trigger('addNewChatAuto', event);
-          if(utils.deviceIsMobile()){
+          if (utils.deviceIsMobile()) {
             this.togglePanel(true);
           }
           break;
@@ -590,6 +593,9 @@ const Panel = React.createClass({
           break;
         case 'copyUserId':
           this.copyUserId();
+          break;
+        case 'removeContact':
+          this.removeContact(element);
           break;
       }
     }
@@ -668,6 +674,14 @@ const Panel = React.createClass({
         case 'readyForFriendRequest':
           if (this.props.location !== "left") return;
           this.readyForFriendRequest(element);
+          break;
+        case 'notificationOfAccession':
+          if (this.props.location !== "left") return;
+          // event_bus.trigger('changeScrollEachChat', element);
+          this.setState({notificationOfAccession: element.checked});
+          break;
+        case 'changeDisplayContact':
+          this.changeDisplayContact(event);
           break;
       }
     }
@@ -771,7 +785,7 @@ const Panel = React.createClass({
 
     if (requestButton && chat_id_input && chat_id_input.value && chat_message_input && chat_message_input.value) {
       event_bus.trigger('requestChatByChatId', chat_id_input.value, chat_message_input.value);
-      if(utils.deviceIsMobile()){
+      if (utils.deviceIsMobile()) {
         this.togglePanel(true);
       }
     } else {
@@ -1167,6 +1181,37 @@ const Panel = React.createClass({
     });
   },
 
+  removeContact(element){
+    let parentElement = this.traverseUpToDataset(element, 'role', 'userWrapper');
+    if (!parentElement || parentElement && !parentElement.dataset.user_id) {
+      return console.error(new Error('User wrapper does not have user id!'));
+    }
+    let user_id = parentElement.dataset.user_id, self = this;
+    self.state.contactsInfo.forEach(function(_contact) {
+      if (_contact.user_id === user_id) {
+        _contact.is_deleted = true;
+      }
+    });
+    indexeddb.addOrPutAll(
+      'put',
+      users_bus.userDatabaseDescription,
+      'users',
+      self.state.contactsInfo,
+      function(err) {
+        if (err) return console.error(err);
+
+      }
+    );
+    self.setState({"contactsInfo": self.state.contactsInfo});
+  },
+
+  changeDisplayContact(event){
+    let value = event.target.value;
+    if (value && value !== this.state.typeDisplayContacts){
+      this.setState({typeDisplayContacts: value});
+    }
+  },
+
   /**
    * handle message from web-socket (if it is connected with chats some how)
    */
@@ -1174,7 +1219,6 @@ const Panel = React.createClass({
     if (this.props.location !== "left") {
       return;
     }
-    console.log("!!! onPanelMessageRouter", messageData.type);
     switch (messageData.type) {
       case 'user_add':
         if (this.state.bodyMode === MODE.JOIN_USER) {
@@ -1188,7 +1232,6 @@ const Panel = React.createClass({
         }
         break;
       case 'user_add_auto':
-        console.log("!!! user_add_auto", messageData);
         this.confirmedFriendship(messageData);
         break;
       case 'user_add_auto_sent':
@@ -1350,7 +1393,8 @@ const Panel = React.createClass({
               <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
                 <Filter mode={this.state.bodyMode} data={this.state} events={onEvent}/>
               </div>
-              <div data-role="panel_body" className="overflow-a flex-item-1-auto p-t" onTransitionend={this.transitionEnd}>
+              <div data-role="panel_body" className="overflow-a flex-item-1-auto p-t"
+                   onTransitionend={this.transitionEnd}>
                 <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
                       userInfo={this.state.userInfo? this.state.userInfo : this.props.userInfo}
                       handleEvent={handleEvent}/>

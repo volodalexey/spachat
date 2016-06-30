@@ -377,18 +377,19 @@ const Body = React.createClass({
           "location": "language",
           "select_options": [
             {
-              "text": "English",
+              "text": 132,
               "value": "en"
             },
             {
-              "text": "Русский",
+              "text": 133,
               "value": "ru"
             }
           ],
           "data": {
             "action": "changeLanguage",
             "role": "selectLanguage",
-            "warn": true
+            "warn": true,
+            "key": 'lang'
           }
         }
       ],
@@ -872,6 +873,22 @@ const Body = React.createClass({
             "key": "scrollEachChat",
             "action": "scrollEachChat"
           }
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "w-100p",
+          "location": "notificationOfAccession"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "text": 130,
+          "class": "check-box-size",
+          "location": "notificationOfAccession",
+          "data": {
+            "key": "notificationOfAccession",
+            "action": "notificationOfAccession"
+          }
         }
       ]
     }
@@ -936,7 +953,7 @@ const Body = React.createClass({
         if (this.props.data.users_PaginationOptions.show) {
           contactsInfo = this.limitationQuantityRecords(contactsInfo, this.props.data, this.props.mode);
         }
-        return <PanelUsers data={contactsInfo}/>;
+        return <PanelUsers data={contactsInfo} events={this.props.events} type={this.props.data.typeDisplayContacts}/>;
         break;
       case this.MODE.JOIN_USER:
         data = {
@@ -980,6 +997,7 @@ const Body = React.createClass({
         break;
       case this.MODE.USER_INFO_SHOW:
         data = this.props.userInfo;
+        data.lang = Localization.lang;
         items.push(<Location_Wrapper key={'info'} events={this.props.events} configs={configs} data={data}/>);
         items.push(<UserAvatar key={'avatar'} events={this.props.events} configs={configs} data={this.props.data} 
                                handleEvent={this.props.handleEvent}/>);

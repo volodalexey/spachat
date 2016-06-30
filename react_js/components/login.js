@@ -41,17 +41,18 @@ const Login = React.createClass({
           "location": "language",
           "select_options": [
             {
-              "text": "English",
+              "text": 132,
               "value": "en"
             },
             {
-              "text": "Русский",
+              "text": 133,
               "value": "ru"
             }
           ],
           "data": {
             "action": "changeLanguage",
-            "role": "selectLanguage"
+            "role": "selectLanguage",
+            "key": 'lang'
           }
         },
         {
@@ -242,7 +243,10 @@ const Login = React.createClass({
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange
-    };
+    },
+      data={
+        "lang": localization.lang
+      };
     return (
       <div onMouseDown={this.handleEvents}
            onMouseMove={this.handleEvents}
@@ -254,7 +258,8 @@ const Login = React.createClass({
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
             <form className="flex-inner-container form-small" data-role="loginForm" onSubmit={this.handleSubmit}>
-              <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}/>
+              <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}
+              data={data}/>
             </form>
           </div>
         </div>

@@ -40,48 +40,12 @@ Users_message_router.prototype = {
     });
   },
 
-  /*onDeviceAddUser: function(cur_wsc, parsedMessageData) {
-   cur_wsc.put_user_id(parsedMessageData.from_user_id);
-   var to_user_wscs_descrs = this.get_user_wscs_descrs(parsedMessageData.to_user_id);
-   var from_user_wscs_descrs = this.get_user_wscs_descrs(parsedMessageData.from_user_id);
-
-   var responseData = {
-   type: 'user_add',
-   from_ws_device_id: cur_wsc.ws_device_id,
-   from_user_id: parsedMessageData.from_user_id,
-   request_body: parsedMessageData.request_body,
-   user_wscs_descrs: from_user_wscs_descrs // send initiator devices to target
-   };
-   var active = this.broadcast_user_message(parsedMessageData.to_user_id, responseData, true);
-   if (active.length) {
-   var successData = {
-   type: 'user_add_sent',
-   from_ws_device_id: cur_wsc.ws_device_id,
-   from_user_id: parsedMessageData.from_user_id,
-   to_user_id: parsedMessageData.to_user_id,
-   request_body: parsedMessageData.request_body
-   //user_wscs_descrs: to_user_wscs_descrs
-   };
-   cur_wsc.send(JSON.stringify(successData));
-   console.log('Add user from',
-   'ws_device_id = ' + cur_wsc.ws_device_id,
-   'to wscs_device_ids = ' + to_user_wscs_descrs.map(function(descr) {
-   return descr.ws_device_id;
-   })
-   )
-   } else {
-   parsedMessageData.request_type = 'user_add_sent';
-   cur_wsc.send_error(new Error('Target connection is not found or not ready!'), parsedMessageData);
-   }
-   },*/
-
   onDeviceAddUser: function(cur_wsc, parsedMessageData) {
     cur_wsc.put_user_id(parsedMessageData.from_user_id);
     var to_user_wscs_descrs = this.get_user_wscs_descrs(parsedMessageData.to_user_id),
       from_user_wscs_descrs = this.get_user_wscs_descrs(parsedMessageData.from_user_id),
       responseType = parsedMessageData.chat_description ? 'user_add_auto' : 'user_add',
       successType = parsedMessageData.chat_description ? 'user_add_auto_sent' : 'user_add_sent';
-    console.log('!!! parsedMessageData.chat_description:', parsedMessageData.chat_description, parsedMessageData);
     var responseData = {
       type: responseType,
       from_ws_device_id: cur_wsc.ws_device_id,

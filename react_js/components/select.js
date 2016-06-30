@@ -5,12 +5,12 @@ import localization from '../js/localization'
 const Select = React.createClass({
 
   render() {
-    let defaultValue,
+    let defaultValue, self = this,
       options = this.props.config.select_options.map((option, i) => {
-        if (localization.lang === option.value) {
+        if (self.props.data[self.props.config.data.key] === option.value) {
           defaultValue = option.value;
         }
-        return <option key={i} value={option.value}>{option.text}</option>
+        return <option key={i} value={option.value}>{localization.getLocText(option.text)}</option>
       });
 
     return (

@@ -643,5 +643,45 @@
     "id": 129,
     "en": "Chat administrator settings",
     "ru": "Настройки администратора чата"
+  },
+  {
+    "id": 130,
+    "en": "Receive notifications of accession",
+    "ru": "Получать оповещения о присоединении"
+  },
+  {
+    "id": 131,
+    "en": "Remove from your contact list",
+    "ru": "Удалить из списка контактов"
+  },
+  {
+    "id": 132,
+    "en": "English",
+    "ru": "English"
+  },
+  {
+    "id": 133,
+    "en": "Русский",
+    "ru": "Русский"
+  },
+  {
+    "id": 134,
+    "en": "All",
+    "ru": "Все"
+  },
+  {
+    "id": 135,
+    "en": "Current",
+    "ru": "Текущие"
+  },
+  {
+    "id": 136,
+    "en": "Deleted",
+    "ru": "Удаленные"
+  },
+  {
+    "id": 137,
+    "en": "Display contact",
+    "ru": "Отображаемые контакты:"
   }
 ]
