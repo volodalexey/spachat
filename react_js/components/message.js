@@ -10,6 +10,8 @@ import localization from '../js/localization'
 
 import Body from '../components/body'
 
+const allowedTimeChanged = 1000*60*10;
+
 const Messages = React.createClass({
   avatar_url: '',
 
@@ -52,7 +54,6 @@ const Messages = React.createClass({
             if (_user.user_id === _userInfo.user_id) {
               _user.avatar_data = _userInfo.avatar_data;
               _user = self.renderAvatarUrl([_user])[0];
-
             }
           });
         });
@@ -62,13 +63,13 @@ const Messages = React.createClass({
   },
 
   getMessages() {
-    let self = this;
-    messages.prototype.getAllMessages(this.props.data.chat_id, this.props.data.bodyOptions.mode, function(err, messages) {
-      let currentOptions = self.optionsDefinition(self.props.data, self.props.data.bodyOptions.mode),
+    let self = this, data = this.props.data;
+    messages.prototype.getAllMessages(data.chat_id, data.bodyOptions.mode, function(err, messages) {
+      let currentOptions = self.optionsDefinition(data, data.bodyOptions.mode),
         po = currentOptions.paginationOptions,
         lo = currentOptions.listOptions;
       if (po.showEnablePagination) {
-        messages = Body.prototype.limitationQuantityRecords(messages, self.props.data, self.props.data.bodyOptions.mode);
+        messages = Body.prototype.limitationQuantityRecords(messages, data, data.bodyOptions.mode);
         if (lo.start !== self.state.previousStart || lo.final !== self.state.previousFinal) {
           self.setState({messages: messages, previousStart: lo.start, previousFinal: lo.final});
           self.getDataUsers(messages);
@@ -77,6 +78,12 @@ const Messages = React.createClass({
         if (messages && messages.length !== self.state.messages.length) {
           self.getDataUsers(messages);
           self.setState({messages: messages, previousStart: 0, previousFinal: 0});
+        }
+        if (data.messages_ListOptions.forceUpdate){
+          data.messages_ListOptions.forceUpdate = false;
+          self.props.handleEvent.changeState({messages_ListOptions: data.messages_ListOptions});
+          self.getDataUsers(messages);
+          self.setState({messages: messages});
         }
       }
     });
@@ -171,18 +178,24 @@ const Messages = React.createClass({
       timeCreated = timeCreated.toISOString()
     }
     if (html_message.prototype.amICreator(message)) {
-      let displayExtraToolbar = this.props.data.extraMessageIDToolbar === message.messageId,
+      let displayExtraToolbar = parseInt(this.props.data.extraMessageIDToolbar) === message.id &&
+        Date.now() - message.createdDatetime <= allowedTimeChanged && !message.is_deleted,
       _className = displayExtraToolbar ? "flex-dir-col margin-t-b box-shadow-10" : "flex-dir-col margin-t-b";
+      // is_innerHTML = message.is_deleted ? localization.getLocText(140) : {__html: message.innerHTML};
+      const deleted_innerHTML = <div className="message myMessage flex-item-1-auto flex-dir-col flex-sp-between">
+        <div className="message-container" dangerouslySetInnerHTML={{__html: localization.getLocText(140)}}></div>
+      </div>;
+      const innerHTML = <div className="message myMessage flex-item-1-auto flex-dir-col flex-sp-between">
+        <div className="message-container" dangerouslySetInnerHTML={{__html: message.innerHTML}}></div>
+        <div className="date-format">
+          {timeCreated}
+        </div>
+      </div>;
       return (
         <div className={_className} key={message.messageId} onClick={this.props.events.onClick}
-        data-action="displayExtraMessageToolbar" data-message_id={message.messageId}>
+        data-action="displayExtraMessageToolbar" data-message_id={message.messageId} data-id={message.id}>
           <div className="flex-sp-start margin-t-b">
-            <div className="message myMessage flex-item-1-auto flex-dir-col flex-sp-between">
-              <div className="message-container" dangerouslySetInnerHTML={{__html: message.innerHTML}}></div>
-              <div className="date-format">
-                {timeCreated}
-              </div>
-            </div>
+            {message.is_deleted ? deleted_innerHTML : innerHTML}
             <div className="width-40px flex-just-center flex-dir-col">
               <img src={this.state.amICreator.avatar_url} width="35px" height="35px"
                    className="border-radius-5 flex-item-auto"/>

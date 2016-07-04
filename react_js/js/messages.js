@@ -59,14 +59,14 @@ Messages.prototype = {
       }
     );
   },
-  
+
   getLastMessage(chatId, mode, callback){
     this.getAllMessages(chatId, mode, function(_err, messages) {
       if (_err) {
         callback(_err);
         return;
       }
-      if (messages.length){
+      if (messages.length) {
         callback(null, messages[messages.length - 1]);
       } else {
         callback(null, null);
@@ -74,14 +74,32 @@ Messages.prototype = {
     })
   },
 
+  getCurrentMessage(chatId, messageId, mode, callback){
+    let description = this.setCollectionDescription(chatId),
+      table = this.tableDefinition(mode);
+    indexeddb.getByKeyPath(
+      description,
+      table,
+      messageId,
+      function(getError, message) {
+        if (getError) {
+          callback(getError);
+          return;
+        }
+
+        callback(null, message);
+      }
+    );
+  },
+
   /**
    * add message to the database
    */
   addMessage(mode, message, chatId, lastModifyDatetime, callback) {
-    let self = this,  Message = this.getMessageConstructor(mode),
-     newMessage = (new Message({innerHTML: message})).toJSON();
+    let self = this, Message = this.getMessageConstructor(mode),
+      newMessage = (new Message({innerHTML: message})).toJSON();
     this.getLastMessage(chatId, mode, function(_err, lastMessage) {
-      if(_err) return console.log(_err);
+      if (_err) return console.log(_err);
 
       newMessage = self.addMessageData(lastMessage, [newMessage], false)[0];
       indexeddb.addOrPutAll(
@@ -118,10 +136,26 @@ Messages.prototype = {
     });
   },
 
+  updateMessage(message, chatId, mode, callback){
+    indexeddb.addOrPutAll(
+      'put',
+      this.setCollectionDescription(chatId),
+      this.tableDefinition(mode),
+      [
+        message
+      ],
+      function(error) {
+        if (error) return callback(error);
+        
+        callback();
+      }
+    );
+  },
+
   addRemoteMessage: function(remoteMessage, mode, chatId, callback) {
     let self = this;
     this.getLastMessage(chatId, mode, function(_err, lastMessage) {
-      if(_err) return console.log(_err);
+      if (_err) return console.log(_err);
 
       remoteMessage = self.addMessageData(lastMessage, [remoteMessage], true)[0];
       indexeddb.addOrPutAll(
@@ -175,10 +209,10 @@ Messages.prototype = {
   addMessageData(lastMessage, newMessages, remote){
     let messagesArray = [];
     newMessages.forEach(function(_newMessage) {
-      if (remote){
+      if (remote) {
         _newMessage = (new html_message(_newMessage)).toJSON();
       }
-      if (lastMessage === null){
+      if (lastMessage === null) {
         _newMessage.followed_by = {
           user_id: null,
           message_id: null
@@ -191,11 +225,11 @@ Messages.prototype = {
       }
       messagesArray.push(_newMessage);
     });
-    
+
     return messagesArray;
   },
 
-  getSynchronizeChatMessages: function(_messageData){
+  getSynchronizeChatMessages: function(_messageData) {
     this.getAllMessages(_messageData.chat_description.chat_id, "MESSAGES", function(_err, messages) {
       let messageData = {
         type: 'syncResponseChatMessages',

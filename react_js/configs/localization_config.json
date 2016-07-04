@@ -688,5 +688,15 @@
     "id": 138,
     "en": "Delete",
     "ru": "Удалить"
+  },
+  {
+    "id": 139,
+    "en": "Are you sure you want to delete a contact from the list ?",
+    "ru": "Вы действительно желаете удалить контакт из списка ?"
+  },
+  {
+    "id": 140,
+    "en": "Message deleted.",
+    "ru": "Сообщение удалено."
   }
 ]

@@ -104,6 +104,8 @@ const Panel = React.createClass({
         errorMessage: null,
         confirmMessageShowRemoteFriendshipRequest: null,
         confirmDialog_messageData: null,
+        confirmMessageRemoveContact: null,
+        confirmDialog_userId: null,
 
         chats_GoToOptions: {
           text: "chats_GoToOptions",
@@ -740,6 +742,35 @@ const Panel = React.createClass({
     }
   },
 
+  handleDialogRemoveContact(event){
+    let element = this.getDataParameter(event.target, 'action'), self = this;
+    if (element) {
+      switch (element.dataset.action) {
+        case 'confirmCancel':
+          break;
+        case 'confirmOk':
+          self.state.contactsInfo.forEach(function(_contact) {
+            if (_contact.user_id === self.state.confirmDialog_userId) {
+              _contact.is_deleted = true;
+            }
+          });
+          indexeddb.addOrPutAll(
+            'put',
+            users_bus.userDatabaseDescription,
+            'users',
+            self.state.contactsInfo,
+            function(err) {
+              if (err) return console.error(err);
+
+            }
+          );
+          self.setState({"contactsInfo": self.state.contactsInfo});
+          break;
+      }
+      this.setState({confirmMessageRemoveContact: null, confirmDialog_userId: null});
+    }
+  },
+
   confirmedFriendship(messageData){
     this.listenWebRTCConnection(messageData.from_user_id);
     this.listenNotifyUser(messageData.from_user_id);
@@ -1186,28 +1217,13 @@ const Panel = React.createClass({
     if (!parentElement || parentElement && !parentElement.dataset.user_id) {
       return console.error(new Error('User wrapper does not have user id!'));
     }
-    let user_id = parentElement.dataset.user_id, self = this;
-    self.state.contactsInfo.forEach(function(_contact) {
-      if (_contact.user_id === user_id) {
-        _contact.is_deleted = true;
-      }
-    });
-    indexeddb.addOrPutAll(
-      'put',
-      users_bus.userDatabaseDescription,
-      'users',
-      self.state.contactsInfo,
-      function(err) {
-        if (err) return console.error(err);
-
-      }
-    );
-    self.setState({"contactsInfo": self.state.contactsInfo});
+    let user_id = parentElement.dataset.user_id;
+    this.setState({confirmMessageRemoveContact: 139, confirmDialog_userId: user_id});
   },
 
   changeDisplayContact(event){
     let value = event.target.value;
-    if (value && value !== this.state.typeDisplayContacts){
+    if (value && value !== this.state.typeDisplayContacts) {
       this.setState({typeDisplayContacts: value});
     }
   },
@@ -1376,6 +1392,9 @@ const Panel = React.createClass({
         <DialogConfirm show={this.state.confirmMessageShowRemoteFriendshipRequest}
                        message={this.state.confirmMessageShowRemoteFriendshipRequest}
                        handleClick={this.handleDialogShowRemoteFriendshipRequest}/>
+        <DialogConfirm show={this.state.confirmMessageRemoveContact}
+                       message={this.state.confirmMessageRemoveContact}
+                       handleClick={this.handleDialogRemoveContact}/>
         <section style={style} data-role={location + '_panel_outer_container'}
                  className={location + '-panel hide p-fx panel animate c-100'}>
           <div className="p-rel h-100p flex-dir-col">

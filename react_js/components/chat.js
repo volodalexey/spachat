@@ -1,17 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import extend_core from '../js/extend_core.js'
-import switcher_core from '../js/switcher_core.js'
-import dom_core from '../js/dom_core.js'
-import event_bus from '../js/event_bus.js'
-import messages from '../js/messages.js'
-import webrtc from '../js/webrtc.js'
-import websocket from '../js/websocket.js'
-import chats_bus from '../js/chats_bus.js'
-import users_bus from '../js/users_bus.js'
-import model_core from '../js/model_core.js'
-import indexeddb from '../js/indexeddb.js'
+import extend_core from '../js/extend_core'
+import switcher_core from '../js/switcher_core'
+import dom_core from '../js/dom_core'
+import event_bus from '../js/event_bus'
+import messages from '../js/messages'
+import webrtc from '../js/webrtc'
+import websocket from '../js/websocket'
+import chats_bus from '../js/chats_bus'
+import users_bus from '../js/users_bus'
+import model_core from '../js/model_core'
+import indexeddb from '../js/indexeddb'
 
 import Header from '../components/header'
 import Filter from '../components/filter'
@@ -118,7 +118,8 @@ const Chat = React.createClass({
         previousFinal: 0,
         restore: false,
         innerHTML: "",
-        data_download: true
+        data_download: true,
+        forceUpdate: false
       },
 
       logger_GoToOptions: {
@@ -470,7 +471,7 @@ const Chat = React.createClass({
   handleClick(event) {
     let element = this.getDataParameter(event.currentTarget, 'action'), self = this,
       currentOptions, gto, po;
-    if(event.target.dataset && event.target.dataset.action){
+    if (event.target.dataset && event.target.dataset.action) {
       element = event.target;
     }
     if (element) {
@@ -540,12 +541,12 @@ const Chat = React.createClass({
           break;
         case 'synchronizeMessages':
           this.onSynchronizeMessages();
-          break;   
+          break;
         case 'displayExtraMessageToolbar':
           this.displayExtraMessageToolbar(element);
           break;
         case 'deleteMessage':
-          this.deleteMessage(element);
+          this.deleteMessage();
           break;
         case 'editMessage':
           this.editMessage(element);
@@ -670,20 +671,34 @@ const Chat = React.createClass({
   },
 
   displayExtraMessageToolbar(element){
-    if(element.dataset.message_id){
-      if(!this.state.extraMessageIDToolbar ||
-        this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== element.dataset.message_id){
-        this.setState({extraMessageIDToolbar: element.dataset.message_id});
+    if (element.dataset.id) {
+      if (!this.state.extraMessageIDToolbar ||
+        this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== element.dataset.id) {
+        this.setState({extraMessageIDToolbar: parseInt(element.dataset.id)});
       } else {
         this.setState({extraMessageIDToolbar: null});
       }
     }
   },
 
-  deleteMessage(element){
-    console.log('delete message');
+  deleteMessage(){
+    if (this.state.extraMessageIDToolbar) {
+      let self = this, chatId = this.state.chat_id, mode = self.state.bodyOptions.mode;
+      messages.prototype.getCurrentMessage(chatId, self.state.extraMessageIDToolbar,
+        mode, function(_err, _message) {
+          if (_err) return console.error(_err);
+
+          _message.is_deleted = true;
+          messages.prototype.updateMessage(_message, chatId, mode, function(_error) {
+            if (_error) return console.error(_error);
+
+            self.state.messages_ListOptions.forceUpdate = true;
+            self.setState({messages_ListOptions: self.state.messages_ListOptions});
+          });
+        });
+    }
   },
-  
+
   editMessage(element){
     console.log('edit message');
   },
@@ -918,7 +933,7 @@ const Chat = React.createClass({
         if (error) return console.error(error);
 
         self.setState({user_ids: usersArray});
-        
+
       });
     }
     self.checkAutoAddContact();
