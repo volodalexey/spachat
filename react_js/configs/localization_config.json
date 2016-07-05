@@ -698,5 +698,10 @@
     "id": 140,
     "en": "Message deleted.",
     "ru": "Сообщение удалено."
+  },
+  {
+    "id": 141,
+    "en": "Are you sure you want to delete a message?",
+    "ru": "Вы действительно желаете удалить сообщение ?"
   }
 ]

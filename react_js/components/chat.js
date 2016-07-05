@@ -52,6 +52,7 @@ const Chat = React.createClass({
       errorMessage: null,
       confirmMessage: null,
       confirmMessageData: null,
+      confirmChangeMessage: null,
       extraMessageIDToolbar: null,
       padding: {
         bottom: 5
@@ -118,6 +119,8 @@ const Chat = React.createClass({
         previousFinal: 0,
         restore: false,
         innerHTML: "",
+        changeMessage: false,
+        currentMessage: null,
         data_download: true,
         forceUpdate: false
       },
@@ -549,7 +552,10 @@ const Chat = React.createClass({
           this.deleteMessage();
           break;
         case 'editMessage':
-          this.editMessage(element);
+          this.editMessage();
+          break;
+        case 'closeEditMessage':
+          this.resetParamEditingMessage();
           break;
       }
     }
@@ -673,34 +679,49 @@ const Chat = React.createClass({
   displayExtraMessageToolbar(element){
     if (element.dataset.id) {
       if (!this.state.extraMessageIDToolbar ||
-        this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== element.dataset.id) {
+        this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== parseInt(element.dataset.id)) {
         this.setState({extraMessageIDToolbar: parseInt(element.dataset.id)});
       } else {
         this.setState({extraMessageIDToolbar: null});
       }
+      this.resetParamEditingMessage();
     }
   },
 
   deleteMessage(){
     if (this.state.extraMessageIDToolbar) {
-      let self = this, chatId = this.state.chat_id, mode = self.state.bodyOptions.mode;
-      messages.prototype.getCurrentMessage(chatId, self.state.extraMessageIDToolbar,
-        mode, function(_err, _message) {
+      let self = this;
+      messages.prototype.getCurrentMessage(this.state.chat_id, self.state.extraMessageIDToolbar,
+        self.state.bodyOptions.mode, function(_err, _message) {
           if (_err) return console.error(_err);
 
-          _message.is_deleted = true;
-          messages.prototype.updateMessage(_message, chatId, mode, function(_error) {
-            if (_error) return console.error(_error);
-
-            self.state.messages_ListOptions.forceUpdate = true;
-            self.setState({messages_ListOptions: self.state.messages_ListOptions});
-          });
+          self.setState({confirmMessage: 141, confirmChangeMessage: _message});
         });
     }
   },
 
-  editMessage(element){
-    console.log('edit message');
+  editMessage(){
+    if (this.state.extraMessageIDToolbar) {
+      let self = this;
+      messages.prototype.getCurrentMessage(this.state.chat_id, self.state.extraMessageIDToolbar,
+        self.state.bodyOptions.mode, function(_err, _message) {
+          if (_err) return console.error(_err);
+          self.state.messages_ListOptions.innerHTML = _message.innerHTML;
+          self.state.messages_ListOptions.changeMessage = true;
+          self.state.messages_ListOptions.currentMessage = _message;
+          self.setState({messages_ListOptions: self.state.messages_ListOptions});
+        });
+    }
+  },
+
+  resetParamEditingMessage(forse){
+    this.state.messages_ListOptions.innerHTML = null;
+    this.state.messages_ListOptions.changeMessage = false;
+    this.state.messages_ListOptions.currentMessage = null;
+    if (forse) {
+      this.state.messages_ListOptions.forceUpdate = true;
+    }
+    this.setState({messages_ListOptions: this.state.messages_ListOptions});
   },
 
   onSynchronizeMessages(){
@@ -793,6 +814,28 @@ const Chat = React.createClass({
       }
     }
     this.setState({confirmMessage: null, confirmMessageData: null});
+  },
+
+  handleDialogDeleteMessage(event){
+    let element = this.getDataParameter(event.target, 'action'), self = this;
+    if (element) {
+      switch (element.dataset.action) {
+        case 'confirmCancel':
+          break;
+        case 'confirmOk':
+          self.state.confirmChangeMessage.is_deleted = true;
+          messages.prototype.updateMessage(self.state.confirmChangeMessage, self.state.chat_id,
+            self.state.bodyOptions.mode, function(_error) {
+              if (_error) return console.error(_error);
+
+              self.resetParamEditingMessage(true);
+              // self.state.messages_ListOptions.forceUpdate = true;
+              // self.setState({messages_ListOptions: self.state.messages_ListOptions, confirmChangeMessage: null});
+            });
+          break;
+      }
+    }
+    this.setState({confirmMessage: null});
   },
 
   changeState(newState) {
@@ -941,7 +984,8 @@ const Chat = React.createClass({
 
   render() {
     let handleEvent = {
-      changeState: this.changeState
+      changeState: this.changeState,
+      resetParamEditingMessage: this.resetParamEditingMessage
     };
     let onEvent = {
       onClick: this.handleClick,
@@ -973,6 +1017,8 @@ const Chat = React.createClass({
                        handleClick={this.handleDialogError}/>
           <DialogConfirm show={this.state.confirmMessage} message={this.state.confirmMessage}
                          handleClick={this.handleDialogChatJoinRequest}/>
+          <DialogConfirm show={this.state.confirmMessage} message={this.state.confirmMessage}
+                         handleClick={this.handleDialogDeleteMessage}/>
           <div className={this.defineSplitterClass('chat-splitter-item ')} data-role="splitter_item"
                data-splitteritem="left">
           </div>

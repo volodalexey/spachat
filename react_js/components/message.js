@@ -181,7 +181,6 @@ const Messages = React.createClass({
       let displayExtraToolbar = parseInt(this.props.data.extraMessageIDToolbar) === message.id &&
         Date.now() - message.createdDatetime <= allowedTimeChanged && !message.is_deleted,
       _className = displayExtraToolbar ? "flex-dir-col margin-t-b box-shadow-10" : "flex-dir-col margin-t-b";
-      // is_innerHTML = message.is_deleted ? localization.getLocText(140) : {__html: message.innerHTML};
       const deleted_innerHTML = <div className="message myMessage flex-item-1-auto flex-dir-col flex-sp-between">
         <div className="message-container" dangerouslySetInnerHTML={{__html: localization.getLocText(140)}}></div>
       </div>;
@@ -204,9 +203,15 @@ const Messages = React.createClass({
           </div>
           <div className={displayExtraToolbar ? "flex-sp-end m-r-40px" : "flex-sp-end m-r-40px hide"}
                data-role="extra_message_toolbar">
-            <button className="margin-02em button-convex" data-action="editMessage">
-              {localization.getLocText(37)}
-            </button>
+            {this.props.data.messages_ListOptions.changeMessage ?
+              <button className="margin-02em button-convex" data-action="closeEditMessage">
+                {localization.getLocText(42)}
+              </button> :
+              <button className="margin-02em button-convex" data-action="editMessage">
+                {localization.getLocText(37)}
+              </button>
+            }
+
             <button className="margin-02em button-convex" data-action="deleteMessage">
               {localization.getLocText(138)}
             </button>

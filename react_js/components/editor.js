@@ -11,7 +11,7 @@ import FormatPanel from './format_panel'
 import Pagination from './pagination'
 
 const Editor = React.createClass({
-  
+
   MODE: {
     "MAIN_PANEL": 'MAIN_PANEL',
     "FORMAT_PANEL": 'FORMAT_PANEL'
@@ -115,7 +115,8 @@ const Editor = React.createClass({
     (save && this.messageInnerContainer) ? this.__innerHtml = this.messageInnerContainer.innerHTML : this.__innerHtml = "";
   },
 
-  handleChange(){},
+  handleChange(){
+  },
 
   sendEnter(event) {
     if (event.keyCode === 13 && !event.shiftKey) {
@@ -126,7 +127,7 @@ const Editor = React.createClass({
   },
 
   sendMessage() {
-    let self = this, newState = this.props.data;
+    let self = this, data = this.props.data;
     if (!this.messageInnerContainer) {
       return;
     }
@@ -134,25 +135,38 @@ const Editor = React.createClass({
     let pattern = /[^\s{0,}$|^$]/, // empty message or \n only
       message = this.messageInnerContainer.innerHTML;
     if (pattern.test(message)) {
-      messages.prototype.addMessage(this.props.data.bodyOptions.mode, message, this.props.data.chat_id,
-        this.props.data.userInfo.lastModifyDatetime,
-        function(err) {
-          if (err) {
-            console.error(err);
-            return;
-          }
+      if (data.messages_ListOptions.changeMessage) {
+        if (data.messages_ListOptions.currentMessage) {
+          data.messages_ListOptions.currentMessage.innerHTML = message;
+          data.messages_ListOptions.currentMessage.lastModifyDatetime = Date.now();
+          messages.prototype.updateMessage(data.messages_ListOptions.currentMessage, data.chat_id, data.bodyOptions.mode,
+            function(_err) {
+              self.workflowInnerHtml();
 
-          self.workflowInnerHtml();
-          if (newState.messages_PaginationOptions.showEnablePagination) {
-            newState.messages_PaginationOptions.currentPage = null;
-            Pagination.prototype.countPagination(null, newState, newState.bodyOptions.mode,
-              {"chat_id": newState.chat_id}, function(_newState) {
-                self.props.handleEvent.changeState(_newState);
-              });
-          } else {
-            self.props.handleEvent.changeState({messages_PaginationOptions: newState.messages_PaginationOptions});
-          }
-        });
+              self.props.handleEvent.resetParamEditingMessage(true);
+            });
+        }
+      } else {
+        messages.prototype.addMessage(data.bodyOptions.mode, message, data.chat_id,
+          data.userInfo.lastModifyDatetime,
+          function(err) {
+            if (err) {
+              console.error(err);
+              return;
+            }
+
+            self.workflowInnerHtml();
+            if (data.messages_PaginationOptions.showEnablePagination) {
+              data.messages_PaginationOptions.currentPage = null;
+              Pagination.prototype.countPagination(null, data, data.bodyOptions.mode,
+                {"chat_id": data.chat_id}, function(_newState) {
+                  self.props.handleEvent.changeState(_newState);
+                });
+            } else {
+              self.props.handleEvent.changeState({messages_PaginationOptions: data.messages_PaginationOptions});
+            }
+          });
+      }
     }
   },
 
@@ -187,13 +201,17 @@ const Editor = React.createClass({
       onChange: this.handleChange
     };
     if (this.props.data.editorOptions.show) {
-      let classMesContainer = this.props.data.formatOptions.offScroll ? 'container onScroll' : 'container';
+      this.workflowInnerHtml(this.props.data.messages_ListOptions.changeMessage);
+      let classMesContainer = this.props.data.formatOptions.offScroll ? 'container onScroll' : 'container',
+        _innerHTML = this.props.data.messages_ListOptions.innerHTML && this.previousMode ?
+          this.props.data.messages_ListOptions.innerHTML : this.__innerHtml;
+      this.previousMode = true;
       return (
         <div data-role="editor_container" className="c-200">
           <div className="flex">
             <div data-role="message_container" className="modal-controls message_container">
               <div data-role="message_inner_container" className={classMesContainer} contentEditable="true"
-                   dangerouslySetInnerHTML={{__html: this.__innerHtml}} key={this.__keyInnerHtml}>
+                   dangerouslySetInnerHTML={{__html: _innerHTML}} key={this.__keyInnerHtml}>
               </div>
             </div>
             <div className="flex-wrap width-40px align-c" data-role="controls_container">
@@ -206,6 +224,7 @@ const Editor = React.createClass({
       )
     } else {
       this.workflowInnerHtml(true);
+      this.previousMode = false;
       return null;
     }
   }
