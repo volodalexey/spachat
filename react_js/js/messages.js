@@ -136,14 +136,12 @@ Messages.prototype = {
     });
   },
 
-  updateMessage(message, chatId, mode, callback){
+  updateMessages(messages, chatId, mode, callback){
     indexeddb.addOrPutAll(
       'put',
       this.setCollectionDescription(chatId),
       this.tableDefinition(mode),
-      [
-        message
-      ],
+      messages,
       function(error) {
         if (error) return callback(error);
         

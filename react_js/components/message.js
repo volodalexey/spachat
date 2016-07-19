@@ -223,6 +223,7 @@ const Messages = React.createClass({
         var timeReceived = new Date(message.receivedDatetime);
         timeReceived = timeReceived.toISOString()
       }
+      let _innerHTML = message.is_deleted ? localization.getLocText(140) : message.innerHTML;
       return (
         <div className="flex-sp-start margin-t-b" key={message.messageId} onClick={this.props.events.onClick}>
           <div className="width-40px flex-just-center flex-dir-col">
@@ -231,7 +232,7 @@ const Messages = React.createClass({
             <div className="user-info c-50">{this.getUserParam(message.createdByUserId, 'userName')}</div>
           </div>
           <div className="message flex-item-1-auto flex-dir-col flex-sp-between">
-            <div className="message-container" dangerouslySetInnerHTML={{__html: message.innerHTML}}></div>
+            <div className="message-container" dangerouslySetInnerHTML={{__html: _innerHTML}}></div>
             <div className="date-format">{timeCreated}</div>
             <div className="date-format">{timeReceived}</div>
           </div>

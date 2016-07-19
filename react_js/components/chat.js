@@ -51,6 +51,7 @@ const Chat = React.createClass({
       lastChangedDatetime: null,
       errorMessage: null,
       confirmMessage: null,
+      confirmMessageDeleteMessage: null,
       confirmMessageData: null,
       confirmChangeMessage: null,
       extraMessageIDToolbar: null,
@@ -342,6 +343,7 @@ const Chat = React.createClass({
       event_bus.on('changeMode', this.changeMode, this);
       event_bus.on('getChatDescription', this.getChatDescription, this);
       event_bus.on('chat_message', this.onChatMessage, this);
+      event_bus.on('update_chat_message', this.workflowSynchronizeMessages, this);
       event_bus.on('chat_toggled_ready', this.onChatToggledReady, this);
       event_bus.on('srv_chat_join_request', this.onChatJoinRequest, this);
       event_bus.on('updateUserAvatar', this.updateUserAvatar, this);
@@ -369,6 +371,7 @@ const Chat = React.createClass({
       event_bus.off('changeMode', this.changeMode, this);
       event_bus.off('getChatDescription', this.getChatDescription, this);
       event_bus.off('chat_message', this.onChatMessage, this);
+      event_bus.off('update_chat_message', this.workflowSynchronizeMessages, this);
       event_bus.off('chat_toggled_ready', this.onChatToggledReady, this);
       event_bus.off('srv_chat_join_request', this.onChatJoinRequest, this);
       event_bus.off('updateUserAvatar', this.updateUserAvatar, this);
@@ -695,7 +698,8 @@ const Chat = React.createClass({
         self.state.bodyOptions.mode, function(_err, _message) {
           if (_err) return console.error(_err);
 
-          self.setState({confirmMessage: 141, confirmChangeMessage: _message});
+          self.setState({confirmMessageDeleteMessage: 141, confirmChangeMessage: _message});
+          
         });
     }
   },
@@ -712,6 +716,18 @@ const Chat = React.createClass({
           self.setState({messages_ListOptions: self.state.messages_ListOptions});
         });
     }
+  },
+
+  updateRemoteMessage(_message){
+    let messageData = {
+      type: "notifyChat",
+      chat_type: "update_chat_message",
+      messages: [_message],
+      chat_description: {
+        chat_id: this.state.chat_id
+      }
+    };
+    webrtc.broadcastChatMessage(this.state.chat_id, JSON.stringify(messageData));
   },
 
   resetParamEditingMessage(forse){
@@ -824,18 +840,19 @@ const Chat = React.createClass({
           break;
         case 'confirmOk':
           self.state.confirmChangeMessage.is_deleted = true;
-          messages.prototype.updateMessage(self.state.confirmChangeMessage, self.state.chat_id,
+          self.state.confirmChangeMessage.lastModifyDatetime = Date.now();
+          messages.prototype.updateMessages([self.state.confirmChangeMessage], self.state.chat_id,
             self.state.bodyOptions.mode, function(_error) {
               if (_error) return console.error(_error);
 
+              self.updateRemoteMessage(self.state.confirmChangeMessage);
+
               self.resetParamEditingMessage(true);
-              // self.state.messages_ListOptions.forceUpdate = true;
-              // self.setState({messages_ListOptions: self.state.messages_ListOptions, confirmChangeMessage: null});
             });
           break;
       }
     }
-    this.setState({confirmMessage: null});
+    this.setState({confirmMessageDeleteMessage: null});
   },
 
   changeState(newState) {
@@ -899,7 +916,7 @@ const Chat = React.createClass({
         }
       });
   },
-
+  
   workflowSynchronizeMessages(messageData){
     if (!messageData.messages.length) return;
     let self = this, newState = this.state, lastMessage;
@@ -913,16 +930,21 @@ const Chat = React.createClass({
           return console.error(_err);
         }
 
-        let store = {}, remoteMessages = [], usersToChecking = [];
+        let store = {}, remoteMessages = [], updateMessages = [], usersToChecking = [];
         if (_messages.length) {
           for (let message of _messages) {
-            store[message.messageId] = true;
+            store[message.messageId] = message.lastModifyDatetime ? message.lastModifyDatetime : false;
           }
           for (let _syncMessage of messageData.messages) {
-            if (!store[_syncMessage.messageId]) {
+            if (! _syncMessage.messageId in store) {
               remoteMessages.push(_syncMessage);
               if (usersToChecking.indexOf(_syncMessage.createdByUserId) === -1) {
                 usersToChecking.push(_syncMessage.createdByUserId);
+              }
+            } else {
+              if(!store[_syncMessage.messageId] ||
+                _syncMessage.lastModifyDatetime && store[_syncMessage.messageId] !== _syncMessage.lastModifyDatetime){
+                updateMessages.push(_syncMessage);
               }
             }
           }
@@ -931,6 +953,7 @@ const Chat = React.createClass({
           remoteMessages = messageData.messages;
           lastMessage = null;
         }
+        
         let _workflow = function() {
           self.syncMessageDataFlag = false;
           if (self.syncMessageDataArray.length) {
@@ -953,6 +976,16 @@ const Chat = React.createClass({
           remoteMessages = messages.prototype.addMessageData(lastMessage, remoteMessages, true);
           messages.prototype.addAllRemoteMessages(remoteMessages, self.state.bodyOptions.mode, self.state.chat_id, function(_err) {
             if (_err) return console.error(_err);
+            _workflow();
+          });
+        }
+        if(updateMessages.length){
+          messages.prototype.updateMessages(updateMessages, self.state.chat_id, self.state.bodyOptions.mode, function(_err) {
+            if (_err) return console.error(_err);
+
+            self.state.messages_ListOptions.forceUpdate = true;
+            self.setState({messages_ListOptions: self.state.messages_ListOptions});
+
             _workflow();
           });
         } else {
@@ -985,7 +1018,8 @@ const Chat = React.createClass({
   render() {
     let handleEvent = {
       changeState: this.changeState,
-      resetParamEditingMessage: this.resetParamEditingMessage
+      resetParamEditingMessage: this.resetParamEditingMessage,
+      updateRemoteMessage: this.updateRemoteMessage
     };
     let onEvent = {
       onClick: this.handleClick,
@@ -1017,7 +1051,7 @@ const Chat = React.createClass({
                        handleClick={this.handleDialogError}/>
           <DialogConfirm show={this.state.confirmMessage} message={this.state.confirmMessage}
                          handleClick={this.handleDialogChatJoinRequest}/>
-          <DialogConfirm show={this.state.confirmMessage} message={this.state.confirmMessage}
+          <DialogConfirm show={this.state.confirmMessageDeleteMessage} message={this.state.confirmMessageDeleteMessage}
                          handleClick={this.handleDialogDeleteMessage}/>
           <div className={this.defineSplitterClass('chat-splitter-item ')} data-role="splitter_item"
                data-splitteritem="left">

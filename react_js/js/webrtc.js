@@ -475,7 +475,7 @@ WebRTC.prototype = {
         }
       })
     }
-
+    
     if (messageData.type === 'notifyChat') {
       event_bus.trigger('notifyChat', messageData);
     } else if (messageData.type === 'notifyUser') {

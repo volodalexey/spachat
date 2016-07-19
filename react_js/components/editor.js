@@ -139,10 +139,11 @@ const Editor = React.createClass({
         if (data.messages_ListOptions.currentMessage) {
           data.messages_ListOptions.currentMessage.innerHTML = message;
           data.messages_ListOptions.currentMessage.lastModifyDatetime = Date.now();
-          messages.prototype.updateMessage(data.messages_ListOptions.currentMessage, data.chat_id, data.bodyOptions.mode,
+          messages.prototype.updateMessages([data.messages_ListOptions.currentMessage], data.chat_id, data.bodyOptions.mode,
             function(_err) {
               self.workflowInnerHtml();
-
+              
+              self.props.handleEvent.updateRemoteMessage(data.messages_ListOptions.currentMessage);
               self.props.handleEvent.resetParamEditingMessage(true);
             });
         }
