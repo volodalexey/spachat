@@ -732,8 +732,8 @@ webpackJsonp([0],{
 		},
 		{
 			"id": 111,
-			"en": "Invite by url",
-			"ru": "Пригласить по url"
+			"en": "Invite contact by url",
+			"ru": "Пригласить контакт по url"
 		},
 		{
 			"id": 112,
@@ -807,13 +807,83 @@ webpackJsonp([0],{
 		},
 		{
 			"id": 126,
-			"en": "Copy",
-			"ru": "Копировать"
+			"en": "Copy user Id",
+			"ru": "Копировать Id пользователя"
 		},
 		{
 			"id": 127,
 			"en": "Could not get user data",
 			"ru": "Не удалось получить данные пользователя"
+		},
+		{
+			"id": 128,
+			"en": "Add new users to your contacts",
+			"ru": "Добавлять пользователей в контакты"
+		},
+		{
+			"id": 129,
+			"en": "Chat administrator settings",
+			"ru": "Настройки администратора чата"
+		},
+		{
+			"id": 130,
+			"en": "Receive notifications of accession",
+			"ru": "Получать оповещения о присоединении"
+		},
+		{
+			"id": 131,
+			"en": "Remove from your contact list",
+			"ru": "Удалить из списка контактов"
+		},
+		{
+			"id": 132,
+			"en": "English",
+			"ru": "English"
+		},
+		{
+			"id": 133,
+			"en": "Русский",
+			"ru": "Русский"
+		},
+		{
+			"id": 134,
+			"en": "All",
+			"ru": "Все"
+		},
+		{
+			"id": 135,
+			"en": "Current",
+			"ru": "Текущие"
+		},
+		{
+			"id": 136,
+			"en": "Deleted",
+			"ru": "Удаленные"
+		},
+		{
+			"id": 137,
+			"en": "Display contact",
+			"ru": "Отображаемые контакты:"
+		},
+		{
+			"id": 138,
+			"en": "Delete",
+			"ru": "Удалить"
+		},
+		{
+			"id": 139,
+			"en": "Are you sure you want to delete a contact from the list ?",
+			"ru": "Вы действительно желаете удалить контакт из списка ?"
+		},
+		{
+			"id": 140,
+			"en": "Message deleted.",
+			"ru": "Сообщение удалено."
+		},
+		{
+			"id": 141,
+			"en": "Are you sure you want to delete a message?",
+			"ru": "Вы действительно желаете удалить сообщение ?"
 		}
 	];
 
@@ -1067,7 +1137,7 @@ webpackJsonp([0],{
 	        userName: userName,
 	        userPassword: userPassword,
 	        avatar_data: avatar_data,
-	        lastChangeDatetime: lastModifyDatetime,
+	        lastModifyDatetime: lastModifyDatetime,
 	        user_ids: [],
 	        chat_ids: []
 	      };
@@ -2262,15 +2332,16 @@ webpackJsonp([0],{
 	        "element": "select",
 	        "location": "language",
 	        "select_options": [{
-	          "text": "English",
+	          "text": 132,
 	          "value": "en"
 	        }, {
-	          "text": "Русский",
+	          "text": 133,
 	          "value": "ru"
 	        }],
 	        "data": {
 	          "action": "changeLanguage",
-	          "role": "selectLanguage"
+	          "role": "selectLanguage",
+	          "key": 'lang'
 	        }
 	      }, {
 	        "role": "locationWrapper",
@@ -2442,6 +2513,9 @@ webpackJsonp([0],{
 	    var onEvent = {
 	      onClick: this.handleClick,
 	      onChange: this.handleChange
+	    },
+	        data = {
+	      "lang": _localization2.default.lang
 	    };
 	    return _react2.default.createElement(
 	      'div',
@@ -2461,7 +2535,8 @@ webpackJsonp([0],{
 	          _react2.default.createElement(
 	            'form',
 	            { className: 'flex-inner-container form-small', 'data-role': 'loginForm', onSubmit: this.handleSubmit },
-	            _react2.default.createElement(_location_wrapper2.default, { mainContainer: this.props.mainContainer, events: onEvent, configs: this.props.configs })
+	            _react2.default.createElement(_location_wrapper2.default, { mainContainer: this.props.mainContainer, events: onEvent, configs: this.props.configs,
+	              data: data })
 	          )
 	        )
 	      ),
@@ -3049,14 +3124,15 @@ webpackJsonp([0],{
 	  displayName: 'Select',
 	  render: function render() {
 	    var defaultValue = void 0,
+	        self = this,
 	        options = this.props.config.select_options.map(function (option, i) {
-	      if (_localization2.default.lang === option.value) {
+	      if (self.props.data[self.props.config.data.key] === option.value) {
 	        defaultValue = option.value;
 	      }
 	      return _react2.default.createElement(
 	        'option',
 	        { key: i, value: option.value },
-	        option.text
+	        _localization2.default.getLocText(option.text)
 	      );
 	    });
 
@@ -3410,7 +3486,7 @@ webpackJsonp([0],{
 
 	            if (!positionFound) {
 	              futureLeft = 0;
-	              futureTop = result.offsetTop - description.offsetHeight;
+	              futureTop = result.offsetTop;
 	            }
 	            this.setState({
 	              left: futureLeft + "px",
@@ -4005,6 +4081,10 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _indexeddb = __webpack_require__(285);
+
+	var _indexeddb2 = _interopRequireDefault(_indexeddb);
+
 	var _overlay_core = __webpack_require__(306);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
@@ -4041,23 +4121,27 @@ webpackJsonp([0],{
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
+	var _utils = __webpack_require__(313);
+
+	var _utils2 = _interopRequireDefault(_utils);
+
 	var _triple_element = __webpack_require__(295);
 
 	var _triple_element2 = _interopRequireDefault(_triple_element);
 
-	var _extra_toolbar = __webpack_require__(313);
+	var _extra_toolbar = __webpack_require__(314);
 
 	var _extra_toolbar2 = _interopRequireDefault(_extra_toolbar);
 
-	var _filter = __webpack_require__(314);
+	var _filter = __webpack_require__(315);
 
 	var _filter2 = _interopRequireDefault(_filter);
 
-	var _panel_toolbar = __webpack_require__(315);
+	var _panel_toolbar = __webpack_require__(316);
 
 	var _panel_toolbar2 = _interopRequireDefault(_panel_toolbar);
 
-	var _body = __webpack_require__(316);
+	var _body = __webpack_require__(317);
 
 	var _body2 = _interopRequireDefault(_body);
 
@@ -4160,10 +4244,13 @@ webpackJsonp([0],{
 	        avatarMode: "SHOW",
 	        avatarData: '',
 	        avatarPrevious: '',
+	        typeDisplayContacts: 'all',
 
 	        errorMessage: null,
 	        confirmMessageShowRemoteFriendshipRequest: null,
 	        confirmDialog_messageData: null,
+	        confirmMessageRemoveContact: null,
+	        confirmDialog_userId: null,
 
 	        chats_GoToOptions: {
 	          text: "chats_GoToOptions",
@@ -4395,6 +4482,7 @@ webpackJsonp([0],{
 	        bodyMode: "USER_INFO_SHOW",
 	        avatarMode: "SHOW",
 	        scrollEachChat: true,
+	        notificationOfAccession: false,
 
 	        errorMessage: null,
 	        errorMessageWrongOldPassword: null,
@@ -4618,10 +4706,16 @@ webpackJsonp([0],{
 	          break;
 	        case 'showChat':
 	          _event_bus2.default.trigger('showChat', element);
+	          if (_utils2.default.deviceIsMobile()) {
+	            this.togglePanel(true);
+	          }
 	          break;
 	        case 'addNewChatAuto':
 	          if (this.props.location !== "left") return;
 	          _event_bus2.default.trigger('addNewChatAuto', event);
+	          if (_utils2.default.deviceIsMobile()) {
+	            this.togglePanel(true);
+	          }
 	          break;
 	        case 'closeChat':
 	          if (this.props.location !== "left") return;
@@ -4633,6 +4727,9 @@ webpackJsonp([0],{
 	          break;
 	        case 'copyUserId':
 	          this.copyUserId();
+	          break;
+	        case 'removeContact':
+	          this.removeContact(element);
 	          break;
 	      }
 	    }
@@ -4707,6 +4804,14 @@ webpackJsonp([0],{
 	          if (this.props.location !== "left") return;
 	          this.readyForFriendRequest(element);
 	          break;
+	        case 'notificationOfAccession':
+	          if (this.props.location !== "left") return;
+	          // event_bus.trigger('changeScrollEachChat', element);
+	          this.setState({ notificationOfAccession: element.checked });
+	          break;
+	        case 'changeDisplayContact':
+	          this.changeDisplayContact(event);
+	          break;
 	      }
 	    }
 	  },
@@ -4751,20 +4856,45 @@ webpackJsonp([0],{
 	          break;
 	        case 'confirmOk':
 	          var messageData = this.state.confirmDialog_messageData;
-	          this.listenWebRTCConnection(messageData.from_user_id);
-	          this.listenNotifyUser(messageData.from_user_id);
-	          _websocket2.default.sendMessage({
-	            type: "friendship_confirmed",
-	            from_user_id: _users_bus2.default.getUserId(),
-	            to_user_id: messageData.from_user_id,
-	            request_body: messageData.request_body
-	          });
-	          console.log('handleConnectedDevices', messageData.user_wscs_descrs);
-	          _webrtc2.default.handleConnectedDevices(messageData.user_wscs_descrs);
+	          this.confirmedFriendship(messageData);
 	          break;
 	      }
 	      this.setState({ confirmMessageShowRemoteFriendshipRequest: null, confirmDialog_messageData: null });
 	    }
+	  },
+	  handleDialogRemoveContact: function handleDialogRemoveContact(event) {
+	    var element = this.getDataParameter(event.target, 'action'),
+	        self = this;
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          self.state.contactsInfo.forEach(function (_contact) {
+	            if (_contact.user_id === self.state.confirmDialog_userId) {
+	              _contact.is_deleted = true;
+	            }
+	          });
+	          _indexeddb2.default.addOrPutAll('put', _users_bus2.default.userDatabaseDescription, 'users', self.state.contactsInfo, function (err) {
+	            if (err) return console.error(err);
+	          });
+	          self.setState({ "contactsInfo": self.state.contactsInfo });
+	          break;
+	      }
+	      this.setState({ confirmMessageRemoveContact: null, confirmDialog_userId: null });
+	    }
+	  },
+	  confirmedFriendship: function confirmedFriendship(messageData) {
+	    this.listenWebRTCConnection(messageData.from_user_id);
+	    this.listenNotifyUser(messageData.from_user_id);
+	    _websocket2.default.sendMessage({
+	      type: "friendship_confirmed",
+	      from_user_id: _users_bus2.default.getUserId(),
+	      to_user_id: messageData.from_user_id,
+	      request_body: messageData.request_body
+	    });
+	    console.log('handleConnectedDevices', messageData.user_wscs_descrs);
+	    _webrtc2.default.handleConnectedDevices(messageData.user_wscs_descrs);
 	  },
 	  handleTransitionEnd: function handleTransitionEnd(event) {
 	    if (event.target.dataset && event.target.dataset.role === 'detail_view_container') {
@@ -4796,6 +4926,9 @@ webpackJsonp([0],{
 
 	    if (requestButton && chat_id_input && chat_id_input.value && chat_message_input && chat_message_input.value) {
 	      _event_bus2.default.trigger('requestChatByChatId', chat_id_input.value, chat_message_input.value);
+	      if (_utils2.default.deviceIsMobile()) {
+	        this.togglePanel(true);
+	      }
 	    } else {
 	      this.setState({ errorMessage: 90 });
 	    }
@@ -5162,6 +5295,20 @@ webpackJsonp([0],{
 	      ready_state: element.checked
 	    });
 	  },
+	  removeContact: function removeContact(element) {
+	    var parentElement = this.traverseUpToDataset(element, 'role', 'userWrapper');
+	    if (!parentElement || parentElement && !parentElement.dataset.user_id) {
+	      return console.error(new Error('User wrapper does not have user id!'));
+	    }
+	    var user_id = parentElement.dataset.user_id;
+	    this.setState({ confirmMessageRemoveContact: 139, confirmDialog_userId: user_id });
+	  },
+	  changeDisplayContact: function changeDisplayContact(event) {
+	    var value = event.target.value;
+	    if (value && value !== this.state.typeDisplayContacts) {
+	      this.setState({ typeDisplayContacts: value });
+	    }
+	  },
 
 
 	  /**
@@ -5182,6 +5329,13 @@ webpackJsonp([0],{
 	          _event_bus2.default.set_ws_device_id(messageData.from_ws_device_id);
 	          this.listenNotifyUser(messageData.to_user_id);
 	        }
+	        break;
+	      case 'user_add_auto':
+	        this.confirmedFriendship(messageData);
+	        break;
+	      case 'user_add_auto_sent':
+	        _event_bus2.default.set_ws_device_id(messageData.from_ws_device_id);
+	        this.listenNotifyUser(messageData.to_user_id);
 	        break;
 	      case 'friendship_confirmed':
 	        if (messageData.user_wscs_descrs) {
@@ -5314,6 +5468,9 @@ webpackJsonp([0],{
 	      _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageShowRemoteFriendshipRequest,
 	        message: this.state.confirmMessageShowRemoteFriendshipRequest,
 	        handleClick: this.handleDialogShowRemoteFriendshipRequest }),
+	      _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageRemoveContact,
+	        message: this.state.confirmMessageRemoveContact,
+	        handleClick: this.handleDialogRemoveContact }),
 	      _react2.default.createElement(
 	        'section',
 	        { style: style, 'data-role': location + '_panel_outer_container',
@@ -5345,7 +5502,8 @@ webpackJsonp([0],{
 	            ),
 	            _react2.default.createElement(
 	              'div',
-	              { 'data-role': 'panel_body', className: 'overflow-a flex-item-1-auto p-t', onTransitionend: this.transitionEnd },
+	              { 'data-role': 'panel_body', className: 'overflow-a flex-item-1-auto p-t',
+	                onTransitionend: this.transitionEnd },
 	              _react2.default.createElement(_body2.default, { mode: this.state.bodyMode, data: this.state, options: this.props.data, events: onEvent,
 	                userInfo: this.state.userInfo ? this.state.userInfo : this.props.userInfo,
 	                handleEvent: handleEvent })
@@ -6115,10 +6273,10 @@ webpackJsonp([0],{
 
 	    if (messageData.lastModifyDatetime) {
 	      _users_bus2.default.getContactsInfo(messageData, [messageData.message.createdByUserId], function (_err, contactsInfo, messageData) {
-
 	        if (_err) return console.error(_err);
 
 	        contactsInfo = contactsInfo[0];
+	        if (contactsInfo.userName === '-//-//-//-') return;
 	        if (!contactsInfo.lastModifyDatetime || contactsInfo.lastModifyDatetime < messageData.lastModifyDatetime) {
 	          var _messageData = {
 	            type: 'syncRequestUserData',
@@ -6204,7 +6362,11 @@ webpackJsonp([0],{
 	          lastModifyDatetime: userInfo.lastModifyDatetime
 	        }
 	      };
-	      self.broadcastChatMessage(options.chat_description.chat_id, JSON.stringify(messageData));
+	      var stringifyMessageData = JSON.stringify(messageData);
+	      if (stringifyMessageData.length > 66500) {
+	        throw new Error('Data length is too big! Browser does not work');
+	      }
+	      self.broadcastChatMessage(options.chat_description.chat_id, stringifyMessageData);
 	    });
 	  },
 
@@ -6595,6 +6757,46 @@ webpackJsonp([0],{
 /***/ },
 
 /***/ 313:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var Utils = function Utils() {};
+
+	Utils.prototype = {
+
+	  /**
+	   * prepare url by input object
+	   */
+
+	  objectToUrl: function objectToUrl(objectData, initial_url) {
+	    var url = initial_url;
+	    Object.keys(objectData).forEach(function (key) {
+	      var str_key = '{' + key + '}';
+	      if (url.indexOf(str_key) >= 0) {
+	        url = url.replace(str_key, objectData[key]);
+	      }
+	    });
+	    return url;
+	  },
+	  deviceIsMobile: function deviceIsMobile() {
+	    var mobile = window.navigator.userAgent.search(/mobile/i);
+	    if (mobile === -1) {
+	      return false;
+	    } else {
+	      return true;
+	    }
+	  }
+	};
+
+	exports.default = new Utils();
+
+/***/ },
+
+/***/ 314:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6784,7 +6986,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 314:
+/***/ 315:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6926,6 +7128,34 @@ webpackJsonp([0],{
 	        "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
 	        "location": "per_page",
 	        "redraw_mode": "nrte"
+	      }, {
+	        "role": "locationWrapper",
+	        "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+	        "location": "type_display_contacts"
+	      }, {
+	        "element": "label",
+	        "text": 137,
+	        "class": "p-r-l-1em",
+	        "location": "type_display_contacts"
+	      }, {
+	        "element": "select",
+	        "location": "type_display_contacts",
+	        "select_options": [{
+	          "text": 134,
+	          "value": "all"
+	        }, {
+	          "text": 135,
+	          "value": "current"
+	        }, {
+	          "text": 136,
+	          "value": "deleted"
+	        }],
+	        "data": {
+	          "action": "changeDisplayContact",
+	          "role": "selectDisplayContact",
+	          "warn": true,
+	          "key": 'typeDisplayContacts'
+	        }
 	      }],
 	      chatsFilterConfig: [{
 	        "role": "locationWrapper",
@@ -7028,52 +7258,7 @@ webpackJsonp([0],{
 	        "location": "per_page",
 	        "redraw_mode": "nrte"
 	      }],
-	      messagesFilterConfig: [
-	      /*        {
-	                "role": "locationWrapper",
-	                "classList": "flex-item flex-wrap elements",
-	                "location": "date_filter"
-	              },
-	              {
-	                "element": "label",
-	                "text": 44,
-	                "location": "date_filter",
-	                "sort": 2
-	              },
-	              {
-	                "element": "input",
-	                "class": "inputWidth",
-	                "location": "date_filter",
-	                "sort": 3
-	              },
-	              {
-	                "element": "button",
-	                "text": 18,
-	                "class": "button-inset-white",
-	                "location": "date_filter",
-	                "sort": 4
-	              },
-	              {
-	                "element": "label",
-	                "text": 45,
-	                "location": "date_filter",
-	                "sort": 2
-	              },
-	              {
-	                "element": "input",
-	                "class": "inputWidth",
-	                "location": "date_filter",
-	                "sort": 3
-	              },
-	              {
-	                "element": "button",
-	                "text": 18,
-	                "class": "button-inset-white",
-	                "location": "date_filter",
-	                "sort": 4
-	              },*/
-
-	      {
+	      messagesFilterConfig: [{
 	        "role": "locationWrapper",
 	        "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
 	        "location": "pagination"
@@ -7267,6 +7452,39 @@ webpackJsonp([0],{
 
 	    return currentOptions;
 	  },
+	  renderItem: function renderItem(options, configs, mode) {
+	    var mainContainer = {
+	      "element": "div",
+	      "config": {
+	        "class": "flex-item flex-wrap"
+	      }
+	    },
+	        data = {
+	      "perPageValue": options.paginationOptions.perPageValueShow,
+	      "showEnablePagination": options.paginationOptions.showEnablePagination,
+	      "rtePerPage": options.paginationOptions.rtePerPage,
+	      "mode_change": options.paginationOptions.mode_change,
+	      "typeDisplayContacts": this.props.data.typeDisplayContacts
+	    };
+
+	    switch (mode) {
+	      case 'CHATS':
+	      case 'CONTACT_LIST':
+	        return _react2.default.createElement(_location_wrapper2.default, { events: this.props.events, data: data, mainContainer: mainContainer,
+	          configs: configs });
+	        break;
+	      case 'USERS':
+	        return _react2.default.createElement(_location_wrapper2.default, { events: this.props.events, data: data, mainContainer: mainContainer,
+	          configs: configs });
+	        break;
+	      case 'MESSAGES':
+	        return _react2.default.createElement(_location_wrapper2.default, { events: this.props.events, data: data, mainContainer: mainContainer,
+	          configs: configs });
+	        break;
+	    }
+
+	    _react2.default.createElement(_location_wrapper2.default, { events: this.props.events, data: data, mainContainer: mainContainer, configs: configs });
+	  },
 	  render: function render() {
 	    var options = this.defineOptions(this.props.mode);
 	    if (options && options.filterOptions.show) {
@@ -7276,22 +7494,10 @@ webpackJsonp([0],{
 	      }
 
 	      configs = this.prepareConfig(configs, options.paginationOptions.mode_change);
-	      var mainContainer = {
-	        "element": "div",
-	        "config": {
-	          "class": "flex-item flex-wrap"
-	        }
-	      };
-	      var data = {
-	        "perPageValue": options.paginationOptions.perPageValueShow,
-	        "showEnablePagination": options.paginationOptions.showEnablePagination,
-	        "rtePerPage": options.paginationOptions.rtePerPage,
-	        "mode_change": options.paginationOptions.mode_change
-	      };
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(_location_wrapper2.default, { events: this.props.events, data: data, mainContainer: mainContainer, configs: configs })
+	        this.renderItem(options, configs, this.props.mode)
 	      );
 	    } else {
 	      return _react2.default.createElement('div', null);
@@ -7305,7 +7511,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 315:
+/***/ 316:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7537,7 +7743,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 316:
+/***/ 317:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7562,7 +7768,7 @@ webpackJsonp([0],{
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _utils = __webpack_require__(317);
+	var _utils = __webpack_require__(313);
 
 	var _utils2 = _interopRequireDefault(_utils);
 
@@ -7815,7 +8021,7 @@ webpackJsonp([0],{
 	        "element": "label",
 	        "icon": "",
 	        "text": 9,
-	        "class": "",
+	        "class": "flex-shrink-0",
 	        "location": "user_id",
 	        "data": {
 	          "role": "user_id_label"
@@ -7830,7 +8036,7 @@ webpackJsonp([0],{
 	        "type": "text",
 	        "icon": "",
 	        "text": "",
-	        "class": "flex-grow_1",
+	        "class": "flex-grow_1 flex-shrink-1",
 	        "location": "user_id",
 	        "data": {
 	          "role": "user_id",
@@ -7843,11 +8049,12 @@ webpackJsonp([0],{
 	        "mode": "USER_INFO_SHOW"
 	      }, {
 	        "element": "button",
-	        "text": 126,
+	        "icon": 'blogs_icon',
 	        "class": "button-convex",
 	        "location": "user_id",
 	        "data": {
-	          "action": "copyUserId"
+	          "action": "copyUserId",
+	          "description": 126
 	        }
 	      }, {
 	        "role": "locationWrapper",
@@ -7932,16 +8139,17 @@ webpackJsonp([0],{
 	        "element": "select",
 	        "location": "language",
 	        "select_options": [{
-	          "text": "English",
+	          "text": 132,
 	          "value": "en"
 	        }, {
-	          "text": "Русский",
+	          "text": 133,
 	          "value": "ru"
 	        }],
 	        "data": {
 	          "action": "changeLanguage",
 	          "role": "selectLanguage",
-	          "warn": true
+	          "warn": true,
+	          "key": 'lang'
 	        }
 	      }],
 	      create_chat_config: [{
@@ -7956,21 +8164,6 @@ webpackJsonp([0],{
 	        "data": {
 	          "throw": "true",
 	          "action": "addNewChatAuto",
-	          "mode": "CREATE_CHAT"
-	        },
-	        "disable": false
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-sp-around",
-	        "location": "chatManual"
-	      }, {
-	        "element": "button",
-	        "text": 4,
-	        "class": "button-inset-square",
-	        "location": "chatManual",
-	        "data": {
-	          "throw": "true",
-	          "action": "addNewChatManual",
 	          "mode": "CREATE_CHAT"
 	        },
 	        "disable": false
@@ -8382,6 +8575,20 @@ webpackJsonp([0],{
 	          "key": "scrollEachChat",
 	          "action": "scrollEachChat"
 	        }
+	      }, {
+	        "role": "locationWrapper",
+	        "classList": "w-100p",
+	        "location": "notificationOfAccession"
+	      }, {
+	        "element": "input",
+	        "type": "checkbox",
+	        "text": 130,
+	        "class": "check-box-size",
+	        "location": "notificationOfAccession",
+	        "data": {
+	          "key": "notificationOfAccession",
+	          "action": "notificationOfAccession"
+	        }
 	      }]
 	    };
 	  },
@@ -8445,7 +8652,7 @@ webpackJsonp([0],{
 	        if (this.props.data.users_PaginationOptions.show) {
 	          contactsInfo = this.limitationQuantityRecords(contactsInfo, this.props.data, this.props.mode);
 	        }
-	        return _react2.default.createElement(_panel_users2.default, { data: contactsInfo });
+	        return _react2.default.createElement(_panel_users2.default, { data: contactsInfo, events: this.props.events, type: this.props.data.typeDisplayContacts });
 	        break;
 	      case this.MODE.JOIN_USER:
 	        data = {
@@ -8489,6 +8696,7 @@ webpackJsonp([0],{
 	        break;
 	      case this.MODE.USER_INFO_SHOW:
 	        data = this.props.userInfo;
+	        data.lang = _localization2.default.lang;
 	        items.push(_react2.default.createElement(_location_wrapper2.default, { key: 'info', events: this.props.events, configs: configs, data: data }));
 	        items.push(_react2.default.createElement(_user_avarat2.default, { key: 'avatar', events: this.props.events, configs: configs, data: this.props.data,
 	          handleEvent: this.props.handleEvent }));
@@ -8501,7 +8709,7 @@ webpackJsonp([0],{
 	        break;
 
 	      case this.MODE.MESSAGES:
-	        return _react2.default.createElement(_message2.default, { data: this.props.data, handleEvent: this.props.handleEvent });
+	        return _react2.default.createElement(_message2.default, { data: this.props.data, handleEvent: this.props.handleEvent, events: this.props.events });
 	        break;
 	      case this.MODE.SETTINGS:
 	        return _react2.default.createElement(_setting2.default, { data: this.props.data, handleEvent: this.props.handleEvent });
@@ -8553,42 +8761,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 317:
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var Utils = function Utils() {};
-
-	Utils.prototype = {
-
-	  /**
-	   * prepare url by input object
-	   */
-
-	  objectToUrl: function objectToUrl(objectData, initial_url) {
-	    var url = initial_url;
-	    Object.keys(objectData).forEach(function (key) {
-	      var str_key = '{' + key + '}';
-	      if (url.indexOf(str_key) >= 0) {
-	        url = url.replace(str_key, objectData[key]);
-	      }
-	    });
-	    return url;
-	  }
-	};
-
-	exports.default = new Utils();
-
-/***/ },
-
 /***/ 318:
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -8598,36 +8774,83 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var PanelUsers = _react2.default.createClass({
-	  displayName: "PanelUsers",
+	  displayName: 'PanelUsers',
+	  prepareData: function prepareData(users, type) {
+	    var display_users = [];
+	    switch (type) {
+	      case 'all':
+	        display_users = users;
+	        break;
+	      case 'current':
+	        users.forEach(function (_user) {
+	          if (!_user.is_deleted) {
+	            display_users.push(_user);
+	          }
+	        });
+	        break;
+	      case 'deleted':
+	        users.forEach(function (_user) {
+	          if (_user.is_deleted) {
+	            display_users.push(_user);
+	          }
+	        });
+	        break;
+	    }
+
+	    return display_users;
+	  },
 	  renderItems: function renderItems() {
-	    var items = [];
-	    this.props.data.forEach(function (user) {
+	    var items = [],
+	        self = this,
+	        users = this.prepareData(this.props.data, this.props.type);
+	    var delete_button = _react2.default.createElement(
+	      'div',
+	      { className: 'flex-just-center' },
+	      _react2.default.createElement(
+	        'button',
+	        { className: 'button-inset-square', 'data-action': 'removeContact',
+	          onClick: self.props.events.onClick },
+	        _localization2.default.getLocText(131)
+	      )
+	    );
+	    users.forEach(function (user) {
 	      items.push(_react2.default.createElement(
-	        "div",
-	        { className: "flex-sp-start margin-t-b", key: user.user_id },
+	        'div',
+	        { className: 'flex-sp-start margin-t-b', key: user.user_id, 'data-user_id': user.user_id,
+	          'data-role': 'userWrapper' },
 	        _react2.default.createElement(
-	          "div",
-	          { className: "width-40px flex-just-center" },
-	          _react2.default.createElement("img", { src: user.avatar_data, width: "35px", height: "35px", className: "border-radius-5" })
+	          'div',
+	          { className: 'width-40px flex-just-center' },
+	          _react2.default.createElement('img', { src: user.avatar_data, width: '35px', height: '35px', className: 'border-radius-5' })
 	        ),
 	        _react2.default.createElement(
-	          "div",
-	          { className: "message flex-item-1-auto flex-dir-col flex-sp-between" },
+	          'div',
+	          { className: 'message flex-item-1-auto flex-dir-col flex-sp-between' },
 	          _react2.default.createElement(
-	            "div",
+	            'div',
 	            null,
-	            "User name: ",
+	            user.is_deleted ? _react2.default.createElement(
+	              'span',
+	              { style: { color: 'red' } },
+	              ' ! '
+	            ) : null,
+	            'User name: ',
 	            user.userName
 	          ),
 	          _react2.default.createElement(
-	            "div",
+	            'div',
 	            null,
-	            "User id: ",
+	            'User id: ',
 	            user.user_id
-	          )
+	          ),
+	          user.is_deleted ? null : delete_button
 	        )
 	      ));
 	    });
@@ -8636,12 +8859,12 @@ webpackJsonp([0],{
 	  render: function render() {
 	    if (this.props.data && this.props.data.length) {
 	      return _react2.default.createElement(
-	        "div",
+	        'div',
 	        null,
 	        this.renderItems()
 	      );
 	    } else {
-	      return _react2.default.createElement("div", null);
+	      return _react2.default.createElement('div', null);
 	    }
 	  }
 	});
@@ -8846,11 +9069,17 @@ webpackJsonp([0],{
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _body = __webpack_require__(316);
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	var _body = __webpack_require__(317);
 
 	var _body2 = _interopRequireDefault(_body);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var allowedTimeChanged = 1000 * 60 * 10;
 
 	var Messages = _react2.default.createClass({
 	  displayName: 'Messages',
@@ -8887,13 +9116,16 @@ webpackJsonp([0],{
 	    if (chatId === this.props.data.chat_id) {
 	      (function () {
 	        var self = _this;
-	        _users_bus2.default.getContactsInfo(null, [userId], function (_err, userInfo) {
+	        _users_bus2.default.getContactsInfo(null, [userId], function (_err, usersInfo) {
 	          if (_err) return console.error(_err);
-	          self.state.userInfo.forEach(function (_user) {
-	            if (_user.user_id === userInfo.user_id) {
-	              _user.avatar_data = userInfo.avatar_data;
-	              _user = self.renderAvatarUrl([_user])[0];
-	            }
+
+	          usersInfo.forEach(function (_userInfo) {
+	            self.state.userInfo.forEach(function (_user) {
+	              if (_user.user_id === _userInfo.user_id) {
+	                _user.avatar_data = _userInfo.avatar_data;
+	                _user = self.renderAvatarUrl([_user])[0];
+	              }
+	            });
 	          });
 	          self.setState({ userInfo: self.state.userInfo });
 	        });
@@ -8901,13 +9133,14 @@ webpackJsonp([0],{
 	    }
 	  },
 	  getMessages: function getMessages() {
-	    var self = this;
-	    _messages2.default.prototype.getAllMessages(this.props.data.chat_id, this.props.data.bodyOptions.mode, function (err, messages) {
-	      var currentOptions = self.optionsDefinition(self.props.data, self.props.data.bodyOptions.mode),
+	    var self = this,
+	        data = this.props.data;
+	    _messages2.default.prototype.getAllMessages(data.chat_id, data.bodyOptions.mode, function (err, messages) {
+	      var currentOptions = self.optionsDefinition(data, data.bodyOptions.mode),
 	          po = currentOptions.paginationOptions,
 	          lo = currentOptions.listOptions;
 	      if (po.showEnablePagination) {
-	        messages = _body2.default.prototype.limitationQuantityRecords(messages, self.props.data, self.props.data.bodyOptions.mode);
+	        messages = _body2.default.prototype.limitationQuantityRecords(messages, data, data.bodyOptions.mode);
 	        if (lo.start !== self.state.previousStart || lo.final !== self.state.previousFinal) {
 	          self.setState({ messages: messages, previousStart: lo.start, previousFinal: lo.final });
 	          self.getDataUsers(messages);
@@ -8916,6 +9149,12 @@ webpackJsonp([0],{
 	        if (messages && messages.length !== self.state.messages.length) {
 	          self.getDataUsers(messages);
 	          self.setState({ messages: messages, previousStart: 0, previousFinal: 0 });
+	        }
+	        if (data.messages_ListOptions.forceUpdate) {
+	          data.messages_ListOptions.forceUpdate = false;
+	          self.props.handleEvent.changeState({ messages_ListOptions: data.messages_ListOptions });
+	          self.getDataUsers(messages);
+	          self.setState({ messages: messages });
 	        }
 	      }
 	    });
@@ -9009,28 +9248,60 @@ webpackJsonp([0],{
 	      timeCreated = timeCreated.toISOString();
 	    }
 	    if (_html_message2.default.prototype.amICreator(message)) {
-	      return _react2.default.createElement(
+	      var displayExtraToolbar = parseInt(this.props.data.extraMessageIDToolbar) === message.id && Date.now() - message.createdDatetime <= allowedTimeChanged && !message.is_deleted,
+	          _className = displayExtraToolbar ? "flex-dir-col margin-t-b box-shadow-10" : "flex-dir-col margin-t-b";
+	      var deleted_innerHTML = _react2.default.createElement(
 	        'div',
-	        { className: 'flex-sp-start margin-t-b', key: message.messageId },
+	        { className: 'message myMessage flex-item-1-auto flex-dir-col flex-sp-between' },
+	        _react2.default.createElement('div', { className: 'message-container', dangerouslySetInnerHTML: { __html: _localization2.default.getLocText(140) } })
+	      );
+	      var innerHTML = _react2.default.createElement(
+	        'div',
+	        { className: 'message myMessage flex-item-1-auto flex-dir-col flex-sp-between' },
+	        _react2.default.createElement('div', { className: 'message-container', dangerouslySetInnerHTML: { __html: message.innerHTML } }),
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'message myMessage flex-item-1-auto flex-dir-col flex-sp-between' },
-	          _react2.default.createElement('div', { className: 'message-container', dangerouslySetInnerHTML: { __html: message.innerHTML } }),
+	          { className: 'date-format' },
+	          timeCreated
+	        )
+	      );
+	      return _react2.default.createElement(
+	        'div',
+	        { className: _className, key: message.messageId, onClick: this.props.events.onClick,
+	          'data-action': 'displayExtraMessageToolbar', 'data-message_id': message.messageId, 'data-id': message.id },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'flex-sp-start margin-t-b' },
+	          message.is_deleted ? deleted_innerHTML : innerHTML,
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'date-format' },
-	            timeCreated
+	            { className: 'width-40px flex-just-center flex-dir-col' },
+	            _react2.default.createElement('img', { src: this.state.amICreator.avatar_url, width: '35px', height: '35px',
+	              className: 'border-radius-5 flex-item-auto' }),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'user-info flex-item-1-auto c-01' },
+	              this.state.amICreator.userName
+	            )
 	          )
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'width-40px flex-just-center flex-dir-col' },
-	          _react2.default.createElement('img', { src: this.state.amICreator.avatar_url, width: '35px', height: '35px',
-	            className: 'border-radius-5 flex-item-auto' }),
+	          { className: displayExtraToolbar ? "flex-sp-end m-r-40px" : "flex-sp-end m-r-40px hide",
+	            'data-role': 'extra_message_toolbar' },
+	          this.props.data.messages_ListOptions.changeMessage ? _react2.default.createElement(
+	            'button',
+	            { className: 'margin-02em button-convex', 'data-action': 'closeEditMessage' },
+	            _localization2.default.getLocText(42)
+	          ) : _react2.default.createElement(
+	            'button',
+	            { className: 'margin-02em button-convex', 'data-action': 'editMessage' },
+	            _localization2.default.getLocText(37)
+	          ),
 	          _react2.default.createElement(
-	            'div',
-	            { className: 'user-info flex-item-1-auto c-01' },
-	            this.state.amICreator.userName
+	            'button',
+	            { className: 'margin-02em button-convex', 'data-action': 'deleteMessage' },
+	            _localization2.default.getLocText(138)
 	          )
 	        )
 	      );
@@ -9041,7 +9312,7 @@ webpackJsonp([0],{
 	      }
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'flex-sp-start margin-t-b', key: message.messageId },
+	        { className: 'flex-sp-start margin-t-b', key: message.messageId, onClick: this.props.events.onClick },
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'width-40px flex-just-center flex-dir-col' },
@@ -9327,6 +9598,18 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
+	  getCurrentMessage: function getCurrentMessage(chatId, messageId, mode, callback) {
+	    var description = this.setCollectionDescription(chatId),
+	        table = this.tableDefinition(mode);
+	    _indexeddb2.default.getByKeyPath(description, table, messageId, function (getError, message) {
+	      if (getError) {
+	        callback(getError);
+	        return;
+	      }
+
+	      callback(null, message);
+	    });
+	  },
 
 
 	  /**
@@ -9363,6 +9646,13 @@ webpackJsonp([0],{
 
 	        callback && callback(error, lastMessage);
 	      });
+	    });
+	  },
+	  updateMessage: function updateMessage(message, chatId, mode, callback) {
+	    _indexeddb2.default.addOrPutAll('put', this.setCollectionDescription(chatId), this.tableDefinition(mode), [message], function (error) {
+	      if (error) return callback(error);
+
+	      callback();
 	    });
 	  },
 
@@ -9658,40 +9948,22 @@ webpackJsonp([0],{
 	      }],
 	      setting_config_creator: [{
 	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-sp-between",
-	        "location": "chat_id_container"
-	      }, {
-	        "element": "label",
-	        "icon": "",
-	        "text": 5,
-	        "class": "",
-	        "location": "chat_id_container"
+	        "classList": "w-100p flex-sp-between flex-wrap",
+	        "location": "invite_in_chat"
 	      }, {
 	        "element": "input",
-	        "type": "text",
-	        "location": "chat_id_container",
-	        "class": "flex-item-1-auto",
+	        "type": "checkbox",
+	        "text": 128,
+	        "class": "check-box-size",
+	        "location": "invite_in_chat",
 	        "data": {
-	          "key": "chat_id",
-	          "role": "chat_id"
-	        },
-	        "disabled": true
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-sp-between",
-	        "location": "chat_id_controls"
-	      }, {
-	        "element": "button",
-	        "text": 107,
-	        "location": "chat_id_controls",
-	        "data": {
-	          "action": "copyChatId"
-	        },
-	        "disable": false
+	          "action": "addNewUserWhenInviting",
+	          "key": "addNewUserWhenInviting"
+	        }
 	      }, {
 	        "element": "button",
 	        "text": 111,
-	        "location": "chat_id_controls",
+	        "location": "invite_in_chat",
 	        "data": {
 	          "action": "inviteByUrl"
 	        },
@@ -9709,36 +9981,6 @@ webpackJsonp([0],{
 	        "data": {
 	          "action": "toggleChatUsersFriendship",
 	          "key": "toggleChatUsersFriendship"
-	        }
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
-	        "location": "send_enter"
-	      }, {
-	        "element": "input",
-	        "type": "checkbox",
-	        "text": 35,
-	        "class": "check-box-size",
-	        "location": "send_enter",
-	        "data": {
-	          "key": "sendEnter",
-	          "role": "btnEdit",
-	          "action": "changeSendEnter",
-	          "name": ""
-	        }
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
-	        "location": "toggle_parts_chat"
-	      }, {
-	        "element": "input",
-	        "type": "checkbox",
-	        "text": 109,
-	        "class": "check-box-size",
-	        "location": "toggle_parts_chat",
-	        "data": {
-	          "key": "headerFooterControl",
-	          "action": "toggleHeaderFooter"
 	        }
 	      }],
 	      setting_config: [{
@@ -9762,31 +10004,14 @@ webpackJsonp([0],{
 	        },
 	        "disabled": true
 	      }, {
-	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-sp-between",
-	        "location": "chat_id_controls"
-	      }, {
 	        "element": "button",
-	        "text": 107,
-	        "location": "chat_id_controls",
+	        "icon": 'blogs_icon',
+	        "location": "chat_id_container",
 	        "data": {
-	          "action": "copyChatId"
+	          "action": "copyChatId",
+	          "description": 107
 	        },
 	        "disable": false
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
-	        "location": "chat_users_apply"
-	      }, {
-	        "element": "input",
-	        "type": "checkbox",
-	        "text": 79,
-	        "class": "check-box-size",
-	        "location": "chat_users_apply",
-	        "data": {
-	          "action": "toggleChatUsersFriendship",
-	          "key": "toggleChatUsersFriendship"
-	        }
 	      }, {
 	        "role": "locationWrapper",
 	        "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
@@ -9859,6 +10084,9 @@ webpackJsonp([0],{
 	        case 'toggleHeaderFooter':
 	          this.toggleHeaderFooter(element);
 	          break;
+	        case 'addNewUserWhenInviting':
+	          this.addNewUserWhenInviting(element);
+	          break;
 	        case 'inviteByUrl':
 	          this.inviteByUrl(element);
 	          break;
@@ -9870,6 +10098,13 @@ webpackJsonp([0],{
 	    if (!element) return;
 	    this.props.data.formatOptions.sendEnter = element.checked;
 	    this.props.handleEvent.changeState({ formatOptions: this.props.data.formatOptions });
+	  },
+	  addNewUserWhenInviting: function addNewUserWhenInviting(element) {
+	    if (!element) return;
+	    this.props.data.addNewUserWhenInviting = element.checked;
+	    this.props.data.lastChangedDatetime = Date.now();
+	    this.props.handleEvent.changeState({ addNewUserWhenInviting: this.props.data.addNewUserWhenInviting,
+	      lastChangedDatetime: this.props.data.lastChangedDatetime });
 	  },
 	  toggleHeaderFooter: function toggleHeaderFooter(element) {
 	    if (!element) return;
@@ -9892,7 +10127,12 @@ webpackJsonp([0],{
 	  inviteByUrl: function inviteByUrl() {
 	    var newState = void 0,
 	        self = this,
-	        url = window.location.protocol + "//" + window.location.host + "/chat?join_chat_id=" + this.props.data.chat_id;
+	        url = void 0;
+	    if (this.props.data.addNewUserWhenInviting) {
+	      url = window.location.protocol + "//" + window.location.host + "/chat?join_chat_id=" + this.props.data.chat_id + "&user_id=" + _users_bus2.default.getUserId();
+	    } else {
+	      url = window.location.protocol + "//" + window.location.host + "/chat?join_chat_id=" + this.props.data.chat_id;
+	    }
 	    console.log(url);
 	    this.setState({ confirmMessage: 112, inviteByUrl: url });
 	  },
@@ -9998,6 +10238,26 @@ webpackJsonp([0],{
 	      }
 	    }
 	  },
+	  renderCreatorLayout: function renderCreatorLayout() {
+	    if (this.props.data.createdByUserId === _users_bus2.default.getUserId()) {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'textbox' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'title c-100' },
+	          _react2.default.createElement(
+	            'label',
+	            null,
+	            _localization2.default.getLocText(129)
+	          )
+	        ),
+	        this.renderItems(this.props.setting_config_creator)
+	      );
+	    } else {
+	      return null;
+	    }
+	  },
 	  renderItems: function renderItems(configs) {
 	    var _React$createElement;
 
@@ -10008,7 +10268,8 @@ webpackJsonp([0],{
 	      "index": this.props.data.index,
 	      "adjust_width": this.props.data.settings_ListOptions.adjust_width,
 	      "headerFooterControl": this.props.data.headerFooterControl,
-	      "toggleChatUsersFriendship": this.props.data.toggleChatUsersFriendship
+	      "toggleChatUsersFriendship": this.props.data.toggleChatUsersFriendship,
+	      "addNewUserWhenInviting": this.props.data.addNewUserWhenInviting
 	    };
 	    var onEvent = {
 	      onClick: this.handleClick,
@@ -10021,7 +10282,6 @@ webpackJsonp([0],{
 	    return items;
 	  },
 	  render: function render() {
-	    var config = this.props.data.createdByUserId === _users_bus2.default.getUserId() ? this.props.setting_config_creator : this.props.setting_config;
 	    return _react2.default.createElement(
 	      'div',
 	      null,
@@ -10043,7 +10303,8 @@ webpackJsonp([0],{
 	              )
 	            )
 	          ) } }),
-	      this.renderItems(config),
+	      this.renderItems(this.props.setting_config),
+	      this.renderCreatorLayout(),
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'textbox' },
@@ -10201,7 +10462,7 @@ webpackJsonp([0],{
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _body = __webpack_require__(316);
+	var _body = __webpack_require__(317);
 
 	var _body2 = _interopRequireDefault(_body);
 
@@ -10420,7 +10681,7 @@ webpackJsonp([0],{
 	            _react2.default.createElement(
 	              'div',
 	              null,
-	              _users_bus2.default.getUserName(_user_id, this.state.contactsInfo)
+	              _users_bus2.default.getUserName(_user_id, self.state.contactsInfo)
 	            ),
 	            _react2.default.createElement(
 	              'div',
@@ -12196,7 +12457,7 @@ webpackJsonp([0],{
 	    this.addNewChatToIndexedDB(event.chat_description, function (err, chat) {
 	      if (err) {
 	        console.error(err);
-	        _event_bus2.default.trigger('send_log_message', chat.chat_id, { text: err, type: 'error' });
+	        _event_bus2.default.trigger('send_log_message', event.chat_description.chat_id, { text: err, type: 'error' });
 	        return;
 	      }
 	      _event_bus2.default.trigger('send_log_message', chat.chat_id, { text: 'Added chat to IndexedDB. Saving chat in List Chats users.', type: 'information' });
@@ -12231,10 +12492,7 @@ webpackJsonp([0],{
 	    _event_bus2.default.trigger('send_log_message', event.chat_description.chat_id, { text: 'Chat join approved. Getting chat description.', type: 'information' });
 
 	    _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, event.chat_description.chat_id, function (getError, chat_description) {
-	      if (getError) {
-	        console.error(getError);
-	        return;
-	      }
+	      if (getError) return console.error(getError);
 
 	      if (!chat_description) {
 	        this.setState({ errorMessage: 86 });
@@ -12260,7 +12518,9 @@ webpackJsonp([0],{
 	            chat_id: chat_description.chat_id,
 	            createdByUserId: chat_description.createdByUserId,
 	            createdDatetime: chat_description.createdDatetime,
-	            user_ids: chat_description.user_ids
+	            user_ids: chat_description.user_ids,
+	            lastChangedDatetime: chat_description.lastChangedDatetime,
+	            addNewUserWhenInviting: chat_description.addNewUserWhenInviting
 	          });
 	          _chat3.default.prototype.chatsArray[index].chat_description.user_ids = chat_description.user_ids;
 	        } else {
@@ -12609,15 +12869,15 @@ webpackJsonp([0],{
 
 	var _header2 = _interopRequireDefault(_header);
 
-	var _filter = __webpack_require__(314);
+	var _filter = __webpack_require__(315);
 
 	var _filter2 = _interopRequireDefault(_filter);
 
-	var _extra_toolbar = __webpack_require__(313);
+	var _extra_toolbar = __webpack_require__(314);
 
 	var _extra_toolbar2 = _interopRequireDefault(_extra_toolbar);
 
-	var _body = __webpack_require__(316);
+	var _body = __webpack_require__(317);
 
 	var _body2 = _interopRequireDefault(_body);
 
@@ -12655,7 +12915,7 @@ webpackJsonp([0],{
 	  chatsArray: [],
 	  syncMessageDataArray: [],
 	  syncMessageDataFlag: false,
-	  valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids'],
+	  valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids', 'addNewUserWhenInviting'],
 
 	  getDefaultProps: function getDefaultProps() {
 	    return {
@@ -12673,9 +12933,13 @@ webpackJsonp([0],{
 	      toggleTopButtonLeft: '0px',
 	      toggleBottomButtonLeft: '0px',
 	      toggleChatUsersFriendship: false,
+	      addNewUserWhenInviting: true,
+	      lastChangedDatetime: null,
 	      errorMessage: null,
 	      confirmMessage: null,
 	      confirmMessageData: null,
+	      confirmChangeMessage: null,
+	      extraMessageIDToolbar: null,
 	      padding: {
 	        bottom: 5
 	      },
@@ -12741,7 +13005,10 @@ webpackJsonp([0],{
 	        previousFinal: 0,
 	        restore: false,
 	        innerHTML: "",
-	        data_download: true
+	        changeMessage: false,
+	        currentMessage: null,
+	        data_download: true,
+	        forceUpdate: false
 	      },
 
 	      logger_GoToOptions: {
@@ -12869,6 +13136,8 @@ webpackJsonp([0],{
 	          createdDatetime: data.chat_description.createdDatetime,
 	          user_ids: data.chat_description.user_ids,
 	          temp_chat_id: this.props.data.temp_chat_id,
+	          lastChangedDatetime: this.props.data.lastChangedDatetime,
+	          addNewUserWhenInviting: this.props.data.chat_description.addNewUserWhenInviting,
 	          index: index
 	        });
 	      } else {
@@ -12971,6 +13240,8 @@ webpackJsonp([0],{
 	      this.splitter_right.addEventListener('touchstart', this.startResize);
 	      this.splitter_right.addEventListener('touchmove', this.startResize);
 	      this.splitter_right.addEventListener('touchend', this.startResize);
+
+	      this.checkAutoAddContact();
 	    }
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
@@ -12999,6 +13270,55 @@ webpackJsonp([0],{
 	      this.chat = null;
 	      this.splitter_left = null;
 	      this.splitter_right = null;
+	    }
+	  },
+	  checkAutoAddContact: function checkAutoAddContact() {
+	    var _this2 = this;
+
+	    if (this.state.addNewUserWhenInviting) {
+	      (function () {
+	        var self = _this2,
+	            newUsers = [];
+	        _chats_bus2.default.getChatContacts(self.props.data.chat_description.chat_id, function (error, contactsInfo) {
+	          if (error) return console.error(error);
+
+	          if (contactsInfo) {
+	            contactsInfo.forEach(function (_contact) {
+	              if (_contact.userName === '-//-//-//-') {
+	                newUsers.push(_contact.user_id);
+	              }
+	            });
+	          }
+	          if (newUsers.length) {
+	            (function () {
+	              var active_connections = _webrtc2.default.getChatConnections(_webrtc2.default.connections, self.state.chat_id);
+	              if (active_connections.length) {
+	                newUsers.forEach(function (_contact_id) {
+	                  var connectionUser = void 0;
+	                  active_connections.every(function (_connection) {
+	                    if (_connection.users_ids.indexOf(_contact_id) !== -1) {
+	                      connectionUser = true;
+	                    }
+	                    return !connectionUser;
+	                  });
+	                  if (connectionUser) {
+	                    console.log('send Data');
+	                    _websocket2.default.sendMessage({
+	                      type: "user_add_auto",
+	                      from_user_id: _users_bus2.default.getUserId(),
+	                      avatar_data: self.state.userInfo.avatar_data,
+	                      to_user_id: _contact_id,
+	                      chat_description: {
+	                        chat_id: self.state.chat_id
+	                      }
+	                    });
+	                  }
+	                });
+	              }
+	            })();
+	          }
+	        });
+	      })();
 	    }
 	  },
 	  updateUserAvatar: function updateUserAvatar() {
@@ -13041,6 +13361,9 @@ webpackJsonp([0],{
 	        currentOptions = void 0,
 	        gto = void 0,
 	        po = void 0;
+	    if (event.target.dataset && event.target.dataset.action) {
+	      element = event.target;
+	    }
 	    if (element) {
 	      switch (element.dataset.action) {
 	        case 'changeMode':
@@ -13104,6 +13427,18 @@ webpackJsonp([0],{
 	          break;
 	        case 'synchronizeMessages':
 	          this.onSynchronizeMessages();
+	          break;
+	        case 'displayExtraMessageToolbar':
+	          this.displayExtraMessageToolbar(element);
+	          break;
+	        case 'deleteMessage':
+	          this.deleteMessage();
+	          break;
+	        case 'editMessage':
+	          this.editMessage();
+	          break;
+	        case 'closeEditMessage':
+	          this.resetParamEditingMessage();
 	          break;
 	      }
 	    }
@@ -13218,6 +13553,55 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
+	  displayExtraMessageToolbar: function displayExtraMessageToolbar(element) {
+	    if (element.dataset.id) {
+	      if (!this.state.extraMessageIDToolbar || this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== parseInt(element.dataset.id)) {
+	        this.setState({ extraMessageIDToolbar: parseInt(element.dataset.id) });
+	      } else {
+	        this.setState({ extraMessageIDToolbar: null });
+	      }
+	      this.resetParamEditingMessage();
+	    }
+	  },
+	  deleteMessage: function deleteMessage() {
+	    var _this3 = this;
+
+	    if (this.state.extraMessageIDToolbar) {
+	      (function () {
+	        var self = _this3;
+	        _messages3.default.prototype.getCurrentMessage(_this3.state.chat_id, self.state.extraMessageIDToolbar, self.state.bodyOptions.mode, function (_err, _message) {
+	          if (_err) return console.error(_err);
+
+	          self.setState({ confirmMessage: 141, confirmChangeMessage: _message });
+	        });
+	      })();
+	    }
+	  },
+	  editMessage: function editMessage() {
+	    var _this4 = this;
+
+	    if (this.state.extraMessageIDToolbar) {
+	      (function () {
+	        var self = _this4;
+	        _messages3.default.prototype.getCurrentMessage(_this4.state.chat_id, self.state.extraMessageIDToolbar, self.state.bodyOptions.mode, function (_err, _message) {
+	          if (_err) return console.error(_err);
+	          self.state.messages_ListOptions.innerHTML = _message.innerHTML;
+	          self.state.messages_ListOptions.changeMessage = true;
+	          self.state.messages_ListOptions.currentMessage = _message;
+	          self.setState({ messages_ListOptions: self.state.messages_ListOptions });
+	        });
+	      })();
+	    }
+	  },
+	  resetParamEditingMessage: function resetParamEditingMessage(forse) {
+	    this.state.messages_ListOptions.innerHTML = null;
+	    this.state.messages_ListOptions.changeMessage = false;
+	    this.state.messages_ListOptions.currentMessage = null;
+	    if (forse) {
+	      this.state.messages_ListOptions.forceUpdate = true;
+	    }
+	    this.setState({ messages_ListOptions: this.state.messages_ListOptions });
+	  },
 	  onSynchronizeMessages: function onSynchronizeMessages() {
 	    var self = this,
 	        index = self.state.user_ids.indexOf(_users_bus2.default.getUserId()),
@@ -13288,6 +13672,7 @@ webpackJsonp([0],{
 	          if (!this.isInUsers(this.state, data.from_user_id)) {
 	            // add user and save chat with this user
 	            this.state.user_ids.push(data.from_user_id);
+	            this.state.lastChangedDatetime = Date.now();
 	            _chats_bus2.default.updateChatField(self.state.chat_id, 'user_ids', self.state.user_ids, function (error) {
 	              if (error) return console.error(error);
 
@@ -13302,6 +13687,27 @@ webpackJsonp([0],{
 	      }
 	    }
 	    this.setState({ confirmMessage: null, confirmMessageData: null });
+	  },
+	  handleDialogDeleteMessage: function handleDialogDeleteMessage(event) {
+	    var element = this.getDataParameter(event.target, 'action'),
+	        self = this;
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          self.state.confirmChangeMessage.is_deleted = true;
+	          _messages3.default.prototype.updateMessage(self.state.confirmChangeMessage, self.state.chat_id, self.state.bodyOptions.mode, function (_error) {
+	            if (_error) return console.error(_error);
+
+	            self.resetParamEditingMessage(true);
+	            // self.state.messages_ListOptions.forceUpdate = true;
+	            // self.setState({messages_ListOptions: self.state.messages_ListOptions, confirmChangeMessage: null});
+	          });
+	          break;
+	      }
+	    }
+	    this.setState({ confirmMessage: null });
 	  },
 	  changeState: function changeState(newState) {
 	    this.setState(newState);
@@ -13485,22 +13891,24 @@ webpackJsonp([0],{
 	        });
 	      })();
 	    }
+	    self.checkAutoAddContact();
 	  },
 	  render: function render() {
-	    var _this2 = this;
+	    var _this5 = this;
 
 	    var handleEvent = {
-	      changeState: this.changeState
+	      changeState: this.changeState,
+	      resetParamEditingMessage: this.resetParamEditingMessage
 	    };
 	    var onEvent = {
 	      onClick: this.handleClick,
 	      onChange: this.handleChange
 	    };
 	    if (this.props.data.mode === 'raw') {
-	      var _ret3 = function () {
+	      var _ret7 = function () {
 	        var items = [],
 	            className = void 0;
-	        _this2.state.logMessages.forEach(function (_message, index) {
+	        _this5.state.logMessages.forEach(function (_message, index) {
 	          className = _message.type === 'error' ? "myMessage message margin-t-b color-red" : "myMessage message margin-t-b";
 	          items.push(_react2.default.createElement(
 	            'div',
@@ -13513,7 +13921,7 @@ webpackJsonp([0],{
 	          v: _react2.default.createElement(
 	            'section',
 	            { className: 'modal' },
-	            _react2.default.createElement(_header2.default, { data: _this2.state, chat_mode: _this2.props.data.mode, handleEvent: handleEvent, events: onEvent }),
+	            _react2.default.createElement(_header2.default, { data: _this5.state, chat_mode: _this5.props.data.mode, handleEvent: handleEvent, events: onEvent }),
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'modal-body overflow-y-scroll' },
@@ -13523,7 +13931,7 @@ webpackJsonp([0],{
 	        };
 	      }();
 
-	      if ((typeof _ret3 === 'undefined' ? 'undefined' : _typeof(_ret3)) === "object") return _ret3.v;
+	      if ((typeof _ret7 === 'undefined' ? 'undefined' : _typeof(_ret7)) === "object") return _ret7.v;
 	    } else {
 	      return _react2.default.createElement(
 	        'section',
@@ -13533,6 +13941,8 @@ webpackJsonp([0],{
 	          handleClick: this.handleDialogError }),
 	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessage, message: this.state.confirmMessage,
 	          handleClick: this.handleDialogChatJoinRequest }),
+	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessage, message: this.state.confirmMessage,
+	          handleClick: this.handleDialogDeleteMessage }),
 	        _react2.default.createElement('div', { className: this.defineSplitterClass('chat-splitter-item '), 'data-role': 'splitter_item',
 	          'data-splitteritem': 'left' }),
 	        _react2.default.createElement('div', { className: this.defineSplitterClass('chat-splitter-item right '), 'data-role': 'splitter_item',
@@ -13694,7 +14104,7 @@ webpackJsonp([0],{
 	        "name": "SaveCloseChat"
 	      }, {
 	        "role": "locationWrapper",
-	        "classList": "",
+	        "classList": "flex-just-center",
 	        "location": "description",
 	        "data": {
 	          "role": "header_description"
@@ -13987,7 +14397,7 @@ webpackJsonp([0],{
 	  },
 	  sendMessage: function sendMessage() {
 	    var self = this,
-	        newState = this.props.data;
+	        data = this.props.data;
 	    if (!this.messageInnerContainer) {
 	      return;
 	    }
@@ -13996,22 +14406,34 @@ webpackJsonp([0],{
 	        // empty message or \n only
 	    message = this.messageInnerContainer.innerHTML;
 	    if (pattern.test(message)) {
-	      _messages2.default.prototype.addMessage(this.props.data.bodyOptions.mode, message, this.props.data.chat_id, this.props.data.userInfo.lastModifyDatetime, function (err) {
-	        if (err) {
-	          console.error(err);
-	          return;
-	        }
+	      if (data.messages_ListOptions.changeMessage) {
+	        if (data.messages_ListOptions.currentMessage) {
+	          data.messages_ListOptions.currentMessage.innerHTML = message;
+	          data.messages_ListOptions.currentMessage.lastModifyDatetime = Date.now();
+	          _messages2.default.prototype.updateMessage(data.messages_ListOptions.currentMessage, data.chat_id, data.bodyOptions.mode, function (_err) {
+	            self.workflowInnerHtml();
 
-	        self.workflowInnerHtml();
-	        if (newState.messages_PaginationOptions.showEnablePagination) {
-	          newState.messages_PaginationOptions.currentPage = null;
-	          _pagination2.default.prototype.countPagination(null, newState, newState.bodyOptions.mode, { "chat_id": newState.chat_id }, function (_newState) {
-	            self.props.handleEvent.changeState(_newState);
+	            self.props.handleEvent.resetParamEditingMessage(true);
 	          });
-	        } else {
-	          self.props.handleEvent.changeState({ messages_PaginationOptions: newState.messages_PaginationOptions });
 	        }
-	      });
+	      } else {
+	        _messages2.default.prototype.addMessage(data.bodyOptions.mode, message, data.chat_id, data.userInfo.lastModifyDatetime, function (err) {
+	          if (err) {
+	            console.error(err);
+	            return;
+	          }
+
+	          self.workflowInnerHtml();
+	          if (data.messages_PaginationOptions.showEnablePagination) {
+	            data.messages_PaginationOptions.currentPage = null;
+	            _pagination2.default.prototype.countPagination(null, data, data.bodyOptions.mode, { "chat_id": data.chat_id }, function (_newState) {
+	              self.props.handleEvent.changeState(_newState);
+	            });
+	          } else {
+	            self.props.handleEvent.changeState({ messages_PaginationOptions: data.messages_PaginationOptions });
+	          }
+	        });
+	      }
 	    }
 	  },
 	  addEdit: function addEdit(element) {
@@ -14043,7 +14465,10 @@ webpackJsonp([0],{
 	      onChange: this.handleChange
 	    };
 	    if (this.props.data.editorOptions.show) {
-	      var classMesContainer = this.props.data.formatOptions.offScroll ? 'container onScroll' : 'container';
+	      this.workflowInnerHtml(this.props.data.messages_ListOptions.changeMessage);
+	      var classMesContainer = this.props.data.formatOptions.offScroll ? 'container onScroll' : 'container',
+	          _innerHTML = this.props.data.messages_ListOptions.innerHTML && this.previousMode ? this.props.data.messages_ListOptions.innerHTML : this.__innerHtml;
+	      this.previousMode = true;
 	      return _react2.default.createElement(
 	        'div',
 	        { 'data-role': 'editor_container', className: 'c-200' },
@@ -14054,7 +14479,7 @@ webpackJsonp([0],{
 	            'div',
 	            { 'data-role': 'message_container', className: 'modal-controls message_container' },
 	            _react2.default.createElement('div', { 'data-role': 'message_inner_container', className: classMesContainer, contentEditable: 'true',
-	              dangerouslySetInnerHTML: { __html: this.__innerHtml }, key: this.__keyInnerHtml })
+	              dangerouslySetInnerHTML: { __html: _innerHTML }, key: this.__keyInnerHtml })
 	          ),
 	          _react2.default.createElement(
 	            'div',
@@ -14067,6 +14492,7 @@ webpackJsonp([0],{
 	      );
 	    } else {
 	      this.workflowInnerHtml(true);
+	      this.previousMode = false;
 	      return null;
 	    }
 	  }
@@ -14755,15 +15181,16 @@ webpackJsonp([0],{
 	        "element": "select",
 	        "location": "language",
 	        "select_options": [{
-	          "text": "English",
+	          "text": 132,
 	          "value": "en"
 	        }, {
-	          "text": "Русский",
+	          "text": 133,
 	          "value": "ru"
 	        }],
 	        "data": {
 	          "action": "changeLanguage",
-	          "role": "selectLanguage"
+	          "role": "selectLanguage",
+	          "key": 'lang'
 	        }
 	      }, {
 	        "role": "locationWrapper",
@@ -14949,6 +15376,9 @@ webpackJsonp([0],{
 	    var onEvent = {
 	      onClick: this.handleClick,
 	      onChange: this.handleChange
+	    },
+	        data = {
+	      "lang": _localization2.default.lang
 	    };
 	    //https://www.zigpress.com/2014/11/22/stop-chrome-messing-forms/
 	    return _react2.default.createElement(
@@ -14972,7 +15402,8 @@ webpackJsonp([0],{
 	              onSubmit: this.handleSubmit },
 	            _react2.default.createElement('input', { style: { display: 'none' }, type: 'text' }),
 	            _react2.default.createElement('input', { style: { display: 'none' }, type: 'password' }),
-	            _react2.default.createElement(_location_wrapper2.default, { mainContainer: this.props.mainContainer, events: onEvent, configs: this.props.configs })
+	            _react2.default.createElement(_location_wrapper2.default, { mainContainer: this.props.mainContainer, events: onEvent, configs: this.props.configs,
+	              data: data })
 	          )
 	        )
 	      ),

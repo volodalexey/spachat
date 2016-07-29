@@ -51,6 +51,9 @@
   box-shadow: 0 0 3px 6px rgba(109, 76, 65, 0.5);
   background: rgba(0, 0, 0, 0.4);
 }
+.box-shadow-10 {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
 .c-pink {
   background-color: #FFC0CB;
 }
@@ -108,6 +111,9 @@ body {
 .margin-t-b {
   margin: 0.4em 0 0.4em 0;
 }
+.margin-02em {
+  margin: 0.2em;
+}
 .p-fx {
   position: fixed;
 }
@@ -159,6 +165,9 @@ body {
 }
 .p-05em {
   padding: 0.5em;
+}
+.m-r-40px {
+  margin-right: 40px;
 }
 .padding-l-r {
   padding: 0 1px 0 1px;
@@ -387,7 +396,7 @@ img {
 }
 .textbox {
   border: 0.1em solid #8D6E63;
-  margin: 1em 0.3em;
+  margin: 1.2em 0.3em;
   position: relative;
   padding: 1em 0.5em 0.5em;
 }
@@ -454,6 +463,9 @@ img {
 }
 .flex-shrink-0 {
   flex-shrink: 0;
+}
+.flex-shrink-1 {
+  flex-shrink: 1;
 }
 .flex-align-c {
   display: flex;
