@@ -40,14 +40,14 @@ var Users_bus = function() {
 
 Users_bus.prototype = {
 
-  checkLoginState: function() {
+  checkLoginState() {
     var user_id = this.getCookie('user_id');
     if (user_id && !this.user_id) {
       this.setUserId(user_id);
     }
   },
 
-  setUserId: function(user_id, skip_websocket) {
+  setUserId(user_id, skip_websocket) {
     if(user_id){
       this.user_id = user_id;
       if (!skip_websocket){
@@ -64,7 +64,7 @@ Users_bus.prototype = {
     }
   },
 
-  getUserId: function() {
+  getUserId() {
     return this.user_id;
   },
 
@@ -77,7 +77,7 @@ Users_bus.prototype = {
     return user_ids;
   },
 
-  getContactsInfo: function(options, user_ids, _callback) {
+  getContactsInfo(options, user_ids, _callback) {
     if (user_ids.length) {
       indexeddb.getByKeysPath(
         this.userDatabaseDescription,
@@ -109,7 +109,7 @@ Users_bus.prototype = {
     }
   },
 
-  getMyInfo: function(options, _callback) {
+  getMyInfo(options, _callback) {
     var _this = this;
     indexeddb.getByKeyPath(
       _this.userDatabaseDescription,
@@ -132,7 +132,7 @@ Users_bus.prototype = {
     );
   },
 
-  getUserDescription: function(options, callback) {
+  getUserDescription(options, callback) {
     this.getMyInfo(options, function(error, _options, userInfo) {
       if (error) {
         if (callback) {
@@ -165,7 +165,7 @@ Users_bus.prototype = {
     return user_name;
   },
 
-  hasInArray: function(_array, item) {
+  hasInArray(_array, item) {
     var found;
     _array.every(function(_item) {
       if (_item === item) {
@@ -176,7 +176,7 @@ Users_bus.prototype = {
     return found;
   },
 
-  putItemIntoArray: function(arrayName, item, callback) {
+  putItemIntoArray(arrayName, item, callback) {
     var self = this;
     self.getMyInfo({}, function(error, _options, userInfo) {
       if (error) {
@@ -195,15 +195,15 @@ Users_bus.prototype = {
     });
   },
 
-  putUserIdAndSave: function(user_id, callback) {
+  putUserIdAndSave(user_id, callback) {
     this.putItemIntoArray('user_ids', user_id, callback);
   },
 
-  putChatIdAndSave: function(chat_id, callback) {
+  putChatIdAndSave(chat_id, callback) {
     this.putItemIntoArray('chat_ids', chat_id, callback);
   },
 
-  saveMyInfo: function(userInfo, _callback) {
+  saveMyInfo(userInfo, _callback) {
     indexeddb.addOrPutAll(
       'put',
       this.userDatabaseDescription,
@@ -213,7 +213,7 @@ Users_bus.prototype = {
     )
   },
 
-  addNewUserToIndexedDB: function(user_description, callback) {
+  addNewUserToIndexedDB(user_description, callback) {
     indexeddb.addOrPutAll(
       'put',
       this.userDatabaseDescription,
@@ -232,7 +232,7 @@ Users_bus.prototype = {
     );
   },
 
-  storeNewUser: function(user_id, userName, userPassword, avatar_data, lastModifyDatetime, callback) {
+  storeNewUser(user_id, userName, userPassword, avatar_data, lastModifyDatetime, callback) {
     var self = this;
     indexeddb.addGlobalUser(user_id, userName, userPassword, function(err) {
       if (err) {
@@ -269,7 +269,33 @@ Users_bus.prototype = {
         }
       );
     });
+  },
+
+  filterUsersByTypeDisplay(users, type){
+    let display_users = [];
+    switch (type) {
+      case 'all':
+        display_users = users;
+        break;
+      case 'current':
+        users.forEach(function(_user) {
+          if (!_user.is_deleted) {
+            display_users.push(_user);
+          }
+        });
+        break;
+      case 'deleted':
+        users.forEach(function(_user) {
+          if (_user.is_deleted) {
+            display_users.push(_user);
+          }
+        });
+        break;
+    }
+
+    return display_users;
   }
+
 };
 
 extend_core.prototype.inherit(Users_bus, cookie_core);

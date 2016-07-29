@@ -170,6 +170,7 @@ const Chat = React.createClass({
 
       contactList_FilterOptions: {
         text: "contactList_FilterOptions",
+        typeDisplayContacts: 'all',
         show: false
       },
       contactList_ExtraToolbarOptions: {
@@ -565,11 +566,11 @@ const Chat = React.createClass({
   },
 
   handleChange(event) {
-    let element = this.getDataParameter(event.currentTarget, 'action'), self = this, currentOptions;
+    let element = this.getDataParameter(event.currentTarget, 'action'), self = this, 
+      currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
     if (element) {
       switch (element.dataset.action) {
         case 'changePerPage':
-          currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
           currentOptions = Filter.prototype.changePerPage(element, currentOptions);
           if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
             Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
@@ -581,12 +582,26 @@ const Chat = React.createClass({
           }
           break;
         case 'changePage':
-          currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
           currentOptions = Pagination.prototype.changePage(element, currentOptions);
           Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
             {"chat_id": this.state.chat_id}, function(_newState) {
               self.setState(_newState);
             });
+          break;
+        case 'changeDisplayContact':
+          let value = event.target.value;
+          if (value && value !== currentOptions.filterOptions.typeDisplayContacts) {
+            currentOptions.paginationOptions.currentPage = null;
+            currentOptions.filterOptions.typeDisplayContacts = value;
+            this.setState({contactList_FilterOptions: currentOptions.filterOptions, 
+              contactList_PaginationOptions: currentOptions.paginationOptions});
+            if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
+              Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
+                {"chat_id": this.state.chat_id}, function(_newState) {
+                self.setState({_newState});
+              });
+            }
+          }
           break;
       }
     }
@@ -710,6 +725,7 @@ const Chat = React.createClass({
       messages.prototype.getCurrentMessage(this.state.chat_id, self.state.extraMessageIDToolbar,
         self.state.bodyOptions.mode, function(_err, _message) {
           if (_err) return console.error(_err);
+          
           self.state.messages_ListOptions.innerHTML = _message.innerHTML;
           self.state.messages_ListOptions.changeMessage = true;
           self.state.messages_ListOptions.currentMessage = _message;

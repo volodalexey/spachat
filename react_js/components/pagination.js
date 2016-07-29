@@ -222,6 +222,8 @@ const Pagination = React.createClass({
                 console.error(_error);
                 return;
               }
+
+              contactsInfo = users_bus.filterUsersByTypeDisplay(contactsInfo, currentOptions.filterOptions.typeDisplayContacts);
               self.handleCountPagination(contactsInfo, currentOptions, callback);
             });
           });
@@ -232,6 +234,7 @@ const Pagination = React.createClass({
               console.error(error);
               return;
             }
+            contactsInfo = users_bus.filterUsersByTypeDisplay(contactsInfo, currentOptions.filterOptions.typeDisplayContacts);
             self.handleCountPagination(contactsInfo, currentOptions, callback);
           });
           break;
@@ -276,10 +279,10 @@ const Pagination = React.createClass({
     if (elementRole === "first" || elementRole === "last") {
       po.currentPage = parseInt(element.dataset.value);
     }
-    if (elementRole === "back") {
+    if (elementRole === "back" && po.currentPage !== po.firstPage) {
       po.currentPage = parseInt(po.currentPage) - 1;
     }
-    if (elementRole === "forward") {
+    if (elementRole === "forward" && po.currentPage !== po.lastPage) {
       po.currentPage = parseInt(po.currentPage) + 1;
     }
     this.countPagination(currentOptions, null, this.props.mode,

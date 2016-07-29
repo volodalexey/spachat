@@ -72,6 +72,10 @@ Element.prototype = {
       }
     }
 
+    if (props.data && config.data && config.data.key) {
+      params['data-value'] = props.data[config.data.key];
+    }
+
     this.renderDataAttributes(config, params);
     if (options) {
       this.renderOptionsAttributes(options, params);
@@ -103,7 +107,7 @@ Element.prototype = {
     return handlers;
   },
 
-  renderClassName(classList, props, options) {
+  renderClassName(classList, props) {
     let _class = '';
     _class = classList ? classList : '';
     if (props.hide) {

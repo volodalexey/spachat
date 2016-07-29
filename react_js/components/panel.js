@@ -99,7 +99,6 @@ const Panel = React.createClass({
         avatarMode: "SHOW",
         avatarData: '',
         avatarPrevious: '',
-        typeDisplayContacts: 'all',
 
         errorMessage: null,
         confirmMessageShowRemoteFriendshipRequest: null,
@@ -156,6 +155,7 @@ const Panel = React.createClass({
         },
         users_FilterOptions: {
           text: "users_FilterOptions",
+          typeDisplayContacts: 'all',
           show: false
         },
         users_GoToOptions: {
@@ -599,6 +599,14 @@ const Panel = React.createClass({
         case 'removeContact':
           this.removeContact(element);
           break;
+        case 'makeFriends':
+          let userId = element.dataset.key;
+          if (userId) {
+            this.onForceMakeFriends(userId, element);
+          } else {
+            console.error('Unable to get UserId');
+          }
+          break;
       }
     }
   },
@@ -764,7 +772,28 @@ const Panel = React.createClass({
 
             }
           );
-          self.setState({"contactsInfo": self.state.contactsInfo});
+          self.state.userInfo.lastModifyDatetime = Date.now();
+          self.setState({
+            "contactsInfo": self.state.contactsInfo,
+            "userInfo": self.state.userInfo
+          });
+          event_bus.trigger('changeMyUsers');
+
+          let _connection = webrtc.getConnectionByUserId(self.state.confirmDialog_userId);
+          if (_connection) {
+            let messageData = {
+              type: 'syncResponseUserData',
+              userId: self.state.userInfo.user_id,
+              is_deleted_owner_request: self.state.confirmDialog_userId,
+              is_deleted: true,
+              updateInfo: {
+                avatar_data: self.state.userInfo.avatar_data,
+                lastModifyDatetime: self.state.userInfo.lastModifyDatetime
+              }
+            };
+            webrtc.broadcastMessage([_connection], JSON.stringify(messageData));
+          }
+
           break;
       }
       this.setState({confirmMessageRemoveContact: null, confirmDialog_userId: null});
@@ -897,11 +926,13 @@ const Panel = React.createClass({
             return;
           }
           currentOptions = self.optionsDefinition(self.state, mode);
+
           if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
             Pagination.prototype.countPagination(currentOptions, null, mode, null, function(_newState) {
               self.setState({_newState, "userInfo": userInfo, "contactsInfo": contactsInfo});
             });
           } else {
+            contactsInfo = users_bus.filterUsersByTypeDisplay(contactsInfo, currentOptions.filterOptions.typeDisplayContacts);
             self.setState({"userInfo": userInfo, "contactsInfo": contactsInfo});
           }
         });
@@ -1222,9 +1253,12 @@ const Panel = React.createClass({
   },
 
   changeDisplayContact(event){
-    let value = event.target.value;
-    if (value && value !== this.state.typeDisplayContacts) {
-      this.setState({typeDisplayContacts: value});
+    let value = event.target.value, po = this.state.users_PaginationOptions, fo = this.state.users_FilterOptions;
+    if (value && value !== fo.typeDisplayContacts) {
+      po.currentPage = null;
+      fo.typeDisplayContacts = value;
+      this.setState({users_FilterOptions: fo, users_PaginationOptions: po});
+      this.getInfoForBody();
     }
   },
 
@@ -1237,15 +1271,11 @@ const Panel = React.createClass({
     }
     switch (messageData.type) {
       case 'user_add':
-        if (this.state.bodyMode === MODE.JOIN_USER) {
-          this.showRemoteFriendshipRequest(messageData);
-        }
+        this.showRemoteFriendshipRequest(messageData);
         break;
       case 'user_add_sent':
-        if (this.state.bodyMode === MODE.JOIN_USER) {
-          event_bus.set_ws_device_id(messageData.from_ws_device_id);
-          this.listenNotifyUser(messageData.to_user_id);
-        }
+        event_bus.set_ws_device_id(messageData.from_ws_device_id);
+        this.listenNotifyUser(messageData.to_user_id);
         break;
       case 'user_add_auto':
         this.confirmedFriendship(messageData);

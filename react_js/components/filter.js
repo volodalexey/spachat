@@ -135,7 +135,7 @@ const Filter = React.createClass({
 
         {
           "role": "locationWrapper",
-          "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+          "classList": "flex-align-c flex-item-auto",
           "location": "type_display_contacts"
         },
         {
@@ -421,7 +421,7 @@ const Filter = React.createClass({
         return this.props.messagesFilterConfig;
         break;
       case 'CONTACT_LIST':
-        return this.props.chatsFilterConfig;
+        return this.props.usersFilterConfig;
         break;
     }
   },

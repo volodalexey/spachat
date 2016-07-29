@@ -3,6 +3,7 @@ import switcher_core from '../js/switcher_core.js'
 import extend_core from '../js/extend_core.js'
 import Localization from '../js/localization'
 import utils from '../js/utils'
+import users_bus from '../js/users_bus'
 
 import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
@@ -951,9 +952,12 @@ const Body = React.createClass({
       case this.MODE.USERS:
         let contactsInfo = this.props.data.contactsInfo;
         if (this.props.data.users_PaginationOptions.show) {
+          contactsInfo = users_bus.filterUsersByTypeDisplay(contactsInfo, 
+            this.props.data.users_FilterOptions.typeDisplayContacts);
           contactsInfo = this.limitationQuantityRecords(contactsInfo, this.props.data, this.props.mode);
         }
-        return <PanelUsers data={contactsInfo} events={this.props.events} type={this.props.data.typeDisplayContacts}/>;
+        return <PanelUsers data={contactsInfo} events={this.props.events}
+                           type={this.props.data.typeDisplayContacts}/>;
         break;
       case this.MODE.JOIN_USER:
         data = {
@@ -1016,7 +1020,8 @@ const Body = React.createClass({
         return <Setting data={this.props.data} handleEvent={this.props.handleEvent}/>;
         break;
       case this.MODE.CONTACT_LIST:
-        return <ContactList data={this.props.data} handleEvent={this.props.handleEvent}/>;
+        return <ContactList data={this.props.data} handleEvent={this.props.handleEvent} 
+        onLimitationQuantityRecords={this.limitationQuantityRecords}/>;
         break;
       case this.MODE.CONNECTIONS:
         return <Connections data={this.props.data} />;

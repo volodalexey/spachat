@@ -5,6 +5,7 @@ import chats_bus from '../js/chats_bus.js'
 import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
 import event_bus from '../js/event_bus.js'
+import users_bus from '../js/users_bus.js'
 
 import Body from '../components/body'
 
@@ -76,27 +77,28 @@ const ContactList = React.createClass({
   },
 
   renderItems() {
-    let items = [], self = this;
-    this.state.users.forEach(function(_user) {
+    let items = [], self = this,
+      users = users_bus.filterUsersByTypeDisplay(self.state.users, this.props.data.contactList_FilterOptions.typeDisplayContacts);
+    if(this.props.data.contactList_PaginationOptions.show){
+      users = self.props.onLimitationQuantityRecords(users, self.props.data, self.props.data.bodyOptions.mode);
+    }
+    users.forEach(function(_user) {
+      const add_user_button = <div className="flex-just-center">
+        <button data-key={_user.user_id} data-action="makeFriends" onClick={self.handleClick}>
+          {localization.getLocText(66)}
+        </button>
+      </div>;
       items.push(
         <div key={_user.user_id} className="flex-sp-start margin-t-b">
           <div className="width-40px flex-just-center">
             <img src={_user.avatar_data} width="35px" height="35px" className="border-radius-5"></img>
           </div>
           <div className="message flex-item-1-auto flex-dir-col flex-sp-between">
-            <div className="text-bold">{_user.userName}</div>
+            <div className="text-bold">
+              {_user.is_deleted ? <span style={{color: 'red'}}> ! </span> : null}
+              {_user.userName}</div>
             <div>{_user.user_id}</div>
-            {(() => {
-              if (_user.userName === '-//-//-//-') {
-                return (
-                  <div className="flex-just-center">
-                    <button data-key={_user.user_id} data-action="makeFriends" onClick={self.handleClick}>
-                      {localization.getLocText(66)}
-                    </button>
-                  </div>
-                )
-              }
-            })()}
+            {_user.userName === '-//-//-//-' || _user.is_deleted ? add_user_button : null}
           </div>
         </div>
       );

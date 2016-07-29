@@ -21,16 +21,15 @@ const Button = React.createClass({
       if (this.props.data && data && this.props.data[data.key_disable]) {
         flag = true;
       }
-      if (this.flag) {
+      if (flag) {
         content.push(
-          (<div>
-            <div className="opacity-05 cursor-not-allowed">
-              <img src={this.src}/>
+          (<div key={config.icon} className="opacity-05 cursor-not-allowed ">
+              <img src={"/__build__/svg/" + config.icon + ".svg"}/>
             </div>
-          </div>))
+          ))
       } else {
         content.push(<img key={config.icon} data-onload={config.onload ? 'true' : ''}
-                          data-role={config.data.role}
+                          data-role={config.data.role} className=""
                           src={"/__build__/svg/" + config.icon + ".svg"}/>);
       }
     }

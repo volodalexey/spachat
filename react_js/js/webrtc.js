@@ -56,6 +56,28 @@ WebRTC.prototype = {
     return connection;
   },
 
+  getConnectionByUserId: function(user_id) {
+    var connection, user;
+    this.connections.every(function(_connection) {
+
+      _connection.users_ids.every(function(_user) {
+        if(_user === user_id){
+          user = _user;
+        }
+
+        return !user;
+      });
+
+      if (user) {
+        connection = _connection;
+      }
+
+      return !connection;
+    });
+
+    return connection;
+  },
+
   getAllConnections: function() {
     return this.connections;
   },
@@ -467,6 +489,7 @@ WebRTC.prototype = {
           var _messageData = {
             type: 'syncRequestUserData',
             userId: contactsInfo.user_id,
+            owner_request: users_bus.getUserId(),
             chat_description: {
               chat_id: messageData.chat_description.chat_id
             }
@@ -493,6 +516,9 @@ WebRTC.prototype = {
         if (_err) return console.error(_err);
         userInfo[0].lastModifyDatetime = messageData.updateInfo.lastModifyDatetime;
         userInfo[0].avatar_data = messageData.updateInfo.avatar_data;
+        if(messageData.is_deleted_owner_request && messageData.is_deleted){
+          userInfo[0].is_deleted = messageData.is_deleted;
+        }
         users_bus.addNewUserToIndexedDB(userInfo[0], function(_err, user_description) {
           if (_err) return console.error(_err);
           event_bus.trigger('changeMyUsers', messageData.userId);
@@ -539,20 +565,32 @@ WebRTC.prototype = {
 
   requestUserInfo(messageData){
     let self = this;
-    users_bus.getMyInfo(messageData, function(_err, options, userInfo) {
-      var messageData = {
-        type: 'syncResponseUserData',
-        userId: userInfo.user_id,
-        updateInfo: {
-          avatar_data: userInfo.avatar_data,
-          lastModifyDatetime: userInfo.lastModifyDatetime
-        }
-      };
-      let stringifyMessageData = JSON.stringify(messageData);
-      if (stringifyMessageData.length > 66500){
-        throw new Error('Data length is too big! Browser does not work');
+    users_bus.getMyInfo(messageData, function(_err, _messageData, userInfo) {
+
+      if(userInfo.user_ids.indexOf(_messageData.owner_request) !==-1){
+        users_bus.getContactsInfo(_messageData, [_messageData.owner_request],
+          function(err, contactsInfo, _messageData) {
+            if(err) return console.error(err);
+            
+            var messageData = {
+              type: 'syncResponseUserData',
+              userId: userInfo.user_id,
+              is_deleted_owner_request: contactsInfo[0],
+              is_deleted: contactsInfo[0].is_deleted,
+              updateInfo: {
+                avatar_data: userInfo.avatar_data,
+                lastModifyDatetime: userInfo.lastModifyDatetime
+              }
+            };
+            let stringifyMessageData = JSON.stringify(messageData);
+            if (stringifyMessageData.length > 66500){
+              throw new Error('Data length is too big! Browser does not work');
+            }
+            self.broadcastChatMessage(_messageData.chat_description.chat_id, stringifyMessageData);
+        })
       }
-      self.broadcastChatMessage(options.chat_description.chat_id, stringifyMessageData);
+
+
     })
   },
 

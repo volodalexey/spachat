@@ -1,42 +1,24 @@
 import React from 'react'
 import Localization from '../js/localization'
+import users_bus from '../js/users_bus.js'
 
 const PanelUsers = React.createClass({
-
-  prepareData(users, type){
-    let display_users = [];
-    switch (type) {
-      case 'all':
-        display_users = users;
-        break;
-      case 'current':
-        users.forEach(function(_user) {
-          if (!_user.is_deleted) {
-            display_users.push(_user);
-          }
-        });
-        break;
-      case 'deleted':
-        users.forEach(function(_user) {
-          if (_user.is_deleted) {
-            display_users.push(_user);
-          }
-        });
-        break;
-    }
-
-    return display_users;
-  },
-
+  
   renderItems(){
-    let items = [], self = this, users = this.prepareData(this.props.data, this.props.type);
+    let items = [], self = this; 
+      // users = users_bus.filterUsersByTypeDisplay(this.props.data, this.props.type);
     const delete_button = <div className="flex-just-center">
         <button className="button-inset-square" data-action="removeContact"
                 onClick={self.props.events.onClick}>
           {Localization.getLocText(131)}
         </button>
       </div>;
-    users.forEach(function(user) {
+    this.props.data.forEach(function(user) {
+      let add_user_button = <div className="flex-just-center">
+        <button data-key={user.user_id} data-action="makeFriends" onClick={self.props.events.onClick}>
+          {Localization.getLocText(66)}
+        </button>
+      </div>;
       items.push(
         <div className="flex-sp-start margin-t-b" key={user.user_id} data-user_id={user.user_id}
              data-role="userWrapper">
@@ -48,7 +30,7 @@ const PanelUsers = React.createClass({
               {user.is_deleted ? <span style={{color: 'red'}}> ! </span> : null}
               User name: {user.userName}</div>
             <div>User id: {user.user_id}</div>
-            {user.is_deleted ? null : delete_button}
+            {user.is_deleted ? add_user_button : delete_button}
           </div>
         </div>
       )
