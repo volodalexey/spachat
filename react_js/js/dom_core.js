@@ -22,6 +22,15 @@ Dom_core.prototype = {
       return null;
     }
   },
+  
+  getUserIdByParentElement(element){
+    let parentElement = this.traverseUpToDataset(element, 'role', 'contactWrapper');
+    if (!parentElement || parentElement && !parentElement.dataset.user_id) {
+      console.error(new Error('User wrapper does not have user id!'));
+    } else {
+      return parentElement.dataset.user_id;
+    }
+  },
 
   getDataParameter(element, param, _n) {
     if (!element) {

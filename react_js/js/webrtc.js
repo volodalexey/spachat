@@ -1,9 +1,12 @@
 import websocket from '../js/websocket'
-import event_core from '../js/event_core.js'
-import extend_core from '../js/extend_core.js'
-import event_bus from '../js/event_bus.js'
-import users_bus from '../js/users_bus.js'
-import Connection from '../js/connection.js'
+import event_core from '../js/event_core'
+import extend_core from '../js/extend_core'
+import event_bus from '../js/event_bus'
+import users_bus from '../js/users_bus'
+import indexeddb from '../js/indexeddb'
+import chats_bus from '../js/chats_bus'
+import sync_core from '../js/sync_core'
+import Connection from '../js/connection'
 
 var WebRTC = function() {
   this.configuration = {
@@ -61,7 +64,7 @@ WebRTC.prototype = {
     this.connections.every(function(_connection) {
 
       _connection.users_ids.every(function(_user) {
-        if(_user === user_id){
+        if (_user === user_id) {
           user = _user;
         }
 
@@ -477,54 +480,52 @@ WebRTC.prototype = {
       console.error(e);
       return;
     }
-    let self = this;
 
-    if (messageData.lastModifyDatetime) {
-      users_bus.getContactsInfo(messageData, [messageData.message.createdByUserId], function(_err, contactsInfo, messageData) {
-        if (_err) return console.error(_err);
+    users_bus.isDeletedUser(messageData, function(err, deleted, userInfo, messageData) {
+      if (err) return console.error(err);
 
-        contactsInfo = contactsInfo[0];
-        if(contactsInfo.userName === '-//-//-//-') return;
-        if (!contactsInfo.lastModifyDatetime || contactsInfo.lastModifyDatetime < messageData.lastModifyDatetime) {
-          var _messageData = {
-            type: 'syncRequestUserData',
-            userId: contactsInfo.user_id,
-            owner_request: users_bus.getUserId(),
-            chat_description: {
-              chat_id: messageData.chat_description.chat_id
-            }
-          };
-          self.broadcastChatMessage(messageData.chat_description.chat_id, JSON.stringify(_messageData));
+      if (messageData.type === 'notifyUser') {
+        event_bus.trigger('notifyUser', messageData);
+      }
+      if (deleted) return;
+
+      if (messageData.lastModifyDatetime) {
+        sync_core.needSyncUserData(messageData, userInfo);
+      }
+
+      if (messageData.type === 'syncRequestUserData') {
+        sync_core.requestUserData(messageData);
+      } else if (messageData.type === 'syncResponseUserData') {
+        sync_core.responseUserData(messageData, userInfo);
+      }
+      
+      if(!messageData.chat_description) return;
+      chats_bus.isDeletedContact(messageData, function(err, deleted, chat_description, messageData) {
+        if(err) return console.error(err);
+
+        if (!chat_description && messageData.type === 'chatJoinApproved') {
+          event_bus.trigger('chatJoinApproved', messageData);
+          return;
         }
-      })
-    }
-    
-    if (messageData.type === 'notifyChat') {
-      event_bus.trigger('notifyChat', messageData);
-    } else if (messageData.type === 'notifyUser') {
-      event_bus.trigger('notifyUser', messageData);
-    } else if (messageData.type === 'chatJoinApproved') {
-      event_bus.trigger('chatJoinApproved', messageData);
-    } else  if (messageData.type === 'syncRequestChatMessages') {
-      event_bus.trigger('getSynchronizeChatMessages', messageData);
-    }else  if (messageData.type === 'syncResponseChatMessages') {
-      event_bus.trigger('syncResponseChatMessages', messageData);
-    } else if (messageData.type === 'syncRequestUserData') {
-      this.requestUserInfo(messageData);
-    } else if (messageData.type === 'syncResponseUserData') {
-      users_bus.getContactsInfo(messageData, [messageData.userId], function(_err, userInfo, messageData) {
-        if (_err) return console.error(_err);
-        userInfo[0].lastModifyDatetime = messageData.updateInfo.lastModifyDatetime;
-        userInfo[0].avatar_data = messageData.updateInfo.avatar_data;
-        if(messageData.is_deleted_owner_request && messageData.is_deleted){
-          userInfo[0].is_deleted = messageData.is_deleted;
+        
+        if(!chat_description || deleted) return;
+
+        if (messageData.chat_description && messageData.chat_description.lastChangedDatetime) {
+          sync_core.needSyncChatDescription(messageData, chat_description);
         }
-        users_bus.addNewUserToIndexedDB(userInfo[0], function(_err, user_description) {
-          if (_err) return console.error(_err);
-          event_bus.trigger('changeMyUsers', messageData.userId);
-        });
+        if (messageData.type === 'notifyChat') {
+          event_bus.trigger('notifyChat', messageData);
+        } else if (messageData.type === 'syncRequestChatData') {
+          sync_core.requestChatData(messageData);
+        } else if (messageData.type === 'syncResponseChatData') {
+          sync_core.responseChatData(messageData);
+        } else if (messageData.type === 'syncRequestChatMessages') {
+          event_bus.trigger('getSynchronizeChatMessages', messageData);
+        } else if (messageData.type === 'syncResponseChatMessages') {
+          event_bus.trigger('syncResponseChatMessages', messageData);
+        }
       });
-    }
+    });
   },
 
   onDataChannelClose: function(curConnection, event) {
@@ -561,37 +562,6 @@ WebRTC.prototype = {
     dataChannel.onmessage = null;
     dataChannel.onclose = null;
     dataChannel.onerror = null;
-  },
-
-  requestUserInfo(messageData){
-    let self = this;
-    users_bus.getMyInfo(messageData, function(_err, _messageData, userInfo) {
-
-      if(userInfo.user_ids.indexOf(_messageData.owner_request) !==-1){
-        users_bus.getContactsInfo(_messageData, [_messageData.owner_request],
-          function(err, contactsInfo, _messageData) {
-            if(err) return console.error(err);
-            
-            var messageData = {
-              type: 'syncResponseUserData',
-              userId: userInfo.user_id,
-              is_deleted_owner_request: contactsInfo[0],
-              is_deleted: contactsInfo[0].is_deleted,
-              updateInfo: {
-                avatar_data: userInfo.avatar_data,
-                lastModifyDatetime: userInfo.lastModifyDatetime
-              }
-            };
-            let stringifyMessageData = JSON.stringify(messageData);
-            if (stringifyMessageData.length > 66500){
-              throw new Error('Data length is too big! Browser does not work');
-            }
-            self.broadcastChatMessage(_messageData.chat_description.chat_id, stringifyMessageData);
-        })
-      }
-
-
-    })
   },
 
   /**

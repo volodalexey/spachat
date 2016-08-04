@@ -32,7 +32,7 @@ const ContactList = React.createClass({
   },
 
   componentWillReceiveProps(nextProps){
-    if(nextProps.data.user_ids !== this.initialUsers_ids){
+    if (nextProps.data.user_ids !== this.initialUsers_ids) {
       this.getContacts();
     }
   },
@@ -56,54 +56,69 @@ const ContactList = React.createClass({
     });
   },
 
-  handleClick(event) {
-    let element = this.getDataParameter(event.currentTarget, 'action');
-    if (element) {
-      switch (element.dataset.action) {
-        case 'makeFriends':
-          this.makeFriends(element);
-          break;
-      }
-    }
-  },
-
-  makeFriends(element){
-    let userId = element.dataset.key;
-    if (userId) {
-      event_bus.trigger('makeFriends', userId, element);
-    } else {
-      console.error('Unable to get UserId');
-    }
-  },
-
   renderItems() {
     let items = [], self = this,
       users = users_bus.filterUsersByTypeDisplay(self.state.users, this.props.data.contactList_FilterOptions.typeDisplayContacts);
-    if(this.props.data.contactList_PaginationOptions.show){
+    if (this.props.data.contactList_PaginationOptions.show) {
       users = self.props.onLimitationQuantityRecords(users, self.props.data, self.props.data.bodyOptions.mode);
     }
     users.forEach(function(_user) {
-      const add_user_button = <div className="flex-just-center">
-        <button data-key={_user.user_id} data-action="makeFriends" onClick={self.handleClick}>
-          {localization.getLocText(66)}
-        </button>
-      </div>;
+      let deleted_contact = self.props.data.deleted_user_ids.indexOf(_user.user_id) !== -1,
+        blocked_contact = self.props.data.blocked_user_ids.indexOf(_user.user_id) !== -1;
       items.push(
-        <div key={_user.user_id} className="flex-sp-start margin-t-b">
+        <div key={_user.user_id} className="flex-sp-start margin-t-b" data-role="contactWrapper"
+             data-user_id={_user.user_id}>
           <div className="width-40px flex-just-center">
             <img src={_user.avatar_data} width="35px" height="35px" className="border-radius-5"></img>
           </div>
           <div className="message flex-item-1-auto flex-dir-col flex-sp-between">
             <div className="text-bold">
-              {_user.is_deleted ? <span style={{color: 'red'}}> ! </span> : null}
+              {_user.is_deleted || deleted_contact ? <span style={{color: 'red'}}> ! </span> : null}
+              {blocked_contact ? <span style={{color: 'red'}}> Block </span> : null}
               {_user.userName}</div>
             <div>{_user.user_id}</div>
-            {_user.userName === '-//-//-//-' || _user.is_deleted ? add_user_button : null}
+            <div className="flex-just-center">
+              {self.renderUserButtons(_user, deleted_contact, blocked_contact, self.props.events.onClick)}
+            </div>
           </div>
         </div>
       );
     });
     return items;
+  },
+
+  renderUserButtons(_user, deleted_contact, blocked_contact, onClick){
+    const add_user_button = <div className="flex-just-center">
+        <button data-action="makeFriends" onClick={onClick}>
+          {localization.getLocText(66)}
+        </button>
+      </div>,
+      add_contact_button = <button data-action="restoreUserInChat" onClick={onClick}>
+        {localization.getLocText(143)}
+      </button>,
+      block_contact_button = <button data-action="blockUserInChat" onClick={onClick}>
+        {localization.getLocText(144)}
+      </button>,
+      unblock_contact_button = <button data-action="unblockUserInChat" onClick={onClick}>
+        {localization.getLocText(145)}
+      </button>,
+      delete_button = <button data-action="removeContact" onClick={onClick}>
+        {localization.getLocText(142)}
+      </button>;
+    if (_user.userName === '-//-//-//-' || _user.is_deleted) {
+      return add_user_button;
+    }
+    if (users_bus.isOwner(this.props.data.createdByUserId)) {
+      if (deleted_contact) {
+        return add_contact_button;
+      }
+      if (blocked_contact) {
+        return <div>{unblock_contact_button}{delete_button}</div>;
+      } else {
+        return <div>{block_contact_button}{delete_button}</div>;
+      }
+    }
+    return null;
   },
 
   render() {

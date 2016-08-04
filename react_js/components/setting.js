@@ -458,7 +458,7 @@ const Settings = React.createClass({
   },
 
   renderCreatorLayout(){
-    if (this.props.data.createdByUserId === users_bus.getUserId()){
+    if (users_bus.isOwner(this.props.data.createdByUserId)){
       return <div className="textbox">
           <div className="title c-100">
             <label>{localization.getLocText(129)}</label>

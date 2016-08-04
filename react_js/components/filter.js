@@ -510,7 +510,7 @@ const Filter = React.createClass({
         "showEnablePagination": options.paginationOptions.showEnablePagination,
         "rtePerPage": options.paginationOptions.rtePerPage,
         "mode_change": options.paginationOptions.mode_change,
-        "typeDisplayContacts": this.props.data.typeDisplayContacts
+        "typeDisplayContacts": options.filterOptions.typeDisplayContacts
       };
 
     switch (mode) {

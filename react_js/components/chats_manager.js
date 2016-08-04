@@ -300,10 +300,14 @@ const ChatsManager = React.createClass({
                 createdByUserId: chat_description.createdByUserId,
                 createdDatetime: chat_description.createdDatetime,
                 user_ids: chat_description.user_ids,
+                deleted_user_ids: chat_description.deleted_user_ids,
+                blocked_user_ids: chat_description.blocked_user_ids,
                 lastChangedDatetime: chat_description.lastChangedDatetime,
                 addNewUserWhenInviting: chat_description.addNewUserWhenInviting
               });
             Chat.prototype.chatsArray[index].chat_description.user_ids = chat_description.user_ids;
+            Chat.prototype.chatsArray[index].chat_description.deleted_user_ids = chat_description.deleted_user_ids;
+            Chat.prototype.chatsArray[index].chat_description.blocked_user_ids = chat_description.blocked_user_ids;
           } else {
             Chat.prototype.chatsArray[index].chat_description = chat_description;
           }

@@ -95,7 +95,7 @@ Messages.prototype = {
   /**
    * add message to the database
    */
-  addMessage(mode, message, chatId, lastModifyDatetime, callback) {
+  addMessage(mode, message, lastChangedDatetime, chatId, lastModifyDatetime, callback) {
     let self = this, Message = this.getMessageConstructor(mode),
       newMessage = (new Message({innerHTML: message})).toJSON();
     this.getLastMessage(chatId, mode, function(_err, lastMessage) {
@@ -121,10 +121,12 @@ Messages.prototype = {
 
           var messageData = {
             type: "notifyChat",
+            from_user_id: users_bus.getUserId(),
             chat_type: "chat_message",
             message: newMessage,
             chat_description: {
-              chat_id: chatId
+              chat_id: chatId,
+              lastChangedDatetime: lastChangedDatetime
             },
             lastModifyDatetime: lastModifyDatetime
           };
@@ -233,9 +235,10 @@ Messages.prototype = {
         type: 'syncResponseChatMessages',
         from_user_id: users_bus.getUserId(),
         chat_description: {
-          chat_id: _messageData.chat_description.chat_id
+          chat_id: _messageData.chat_description.chat_id,
+          lastChangedDatetime: _messageData.chat_description.lastChangedDatetime
         },
-        owner_request: _messageData.owner_request,
+        owner_request: _messageData.from_user_id,
         messages: messages
       };
       webrtc.broadcastChatMessage(messageData.chat_description.chat_id, JSON.stringify(messageData));

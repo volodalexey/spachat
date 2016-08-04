@@ -1020,7 +1020,7 @@ const Body = React.createClass({
         return <Setting data={this.props.data} handleEvent={this.props.handleEvent}/>;
         break;
       case this.MODE.CONTACT_LIST:
-        return <ContactList data={this.props.data} handleEvent={this.props.handleEvent} 
+        return <ContactList data={this.props.data} handleEvent={this.props.handleEvent} events={this.props.events}
         onLimitationQuantityRecords={this.limitationQuantityRecords}/>;
         break;
       case this.MODE.CONNECTIONS:

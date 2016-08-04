@@ -703,5 +703,30 @@
     "id": 141,
     "en": "Are you sure you want to delete a message?",
     "ru": "Вы действительно желаете удалить сообщение ?"
+  },
+  {
+    "id": 142,
+    "en": "Remove from chat",
+    "ru": "Удалить из чата"
+  },
+  {
+    "id": 143,
+    "en": "Restore",
+    "ru": "Восстановить"
+  },
+  {
+    "id": 144,
+    "en": "Block",
+    "ru": "Блокировать"
+  },
+  {
+    "id": 145,
+    "en": "Unblock",
+    "ru": "Разблокировать"
+  },
+  {
+    "id": 146,
+    "en": "Are you sure you want to blocked a contact from the list ?",
+    "ru": "Вы действительно желаете заблокировать контакт из списка ?"
   }
 ]

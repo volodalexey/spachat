@@ -48,9 +48,9 @@ Users_bus.prototype = {
   },
 
   setUserId(user_id, skip_websocket) {
-    if(user_id){
+    if (user_id) {
       this.user_id = user_id;
-      if (!skip_websocket){
+      if (!skip_websocket) {
         websocket.createAndListen();
       }
       this.userDatabaseDescription.db_name = user_id;
@@ -66,6 +66,10 @@ Users_bus.prototype = {
 
   getUserId() {
     return this.user_id;
+  },
+
+  isOwner(user_id) {
+    return user_id === this.user_id;
   },
 
   excludeUser: function(options, user_ids) {
@@ -164,7 +168,7 @@ Users_bus.prototype = {
 
     return user_name;
   },
-
+  
   hasInArray(_array, item) {
     var found;
     _array.every(function(_item) {
@@ -294,6 +298,18 @@ Users_bus.prototype = {
     }
 
     return display_users;
+  },
+
+  isDeletedUser(messageData, callback){
+    this.getContactsInfo(messageData, [messageData.from_user_id], function(_err, contactsInfo, messageData) {
+      if (_err) {
+        callback(_err);
+      } else {
+        if (contactsInfo[0]) {
+          callback(null, contactsInfo[0].is_deleted, contactsInfo[0], messageData)
+        }
+      }
+    })
   }
 
 };

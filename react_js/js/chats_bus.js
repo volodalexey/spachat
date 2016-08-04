@@ -61,12 +61,12 @@ Chats_bus.prototype = {
     indexeddb.getAll(
       this.collectionDescription,
       "chats",
-      function(_err, allChats){
-        if(_err){
+      function(_err, allChats) {
+        if (_err) {
           console.error(_err);
           return;
         }
-        if(_callback){
+        if (_callback) {
           _callback(getError, allChats);
         }
       }
@@ -138,6 +138,21 @@ Chats_bus.prototype = {
       chat_description[chat_field_name] = chat_field_value;
       _this.putChatToIndexedDB(chat_description, callback);
     });
+  },
+
+  isDeletedContact(messageData, callback){
+    let deleted;
+    indexeddb.getByKeyPath(this.collectionDescription, null, messageData.chat_description.chat_id,
+      function(getError, chat_description) {
+        if (getError) {
+          callback(getError);
+        } else {
+          if (chat_description) {
+            deleted = users_bus.hasInArray(chat_description.deleted_user_ids, messageData.from_user_id);
+          }
+          callback(null, deleted, chat_description, messageData);
+        }
+      });
   }
 };
 

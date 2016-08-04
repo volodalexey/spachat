@@ -148,7 +148,7 @@ const Editor = React.createClass({
             });
         }
       } else {
-        messages.prototype.addMessage(data.bodyOptions.mode, message, data.chat_id,
+        messages.prototype.addMessage(data.bodyOptions.mode, message, data.lastChangedDatetime, data.chat_id,
           data.userInfo.lastModifyDatetime,
           function(err) {
             if (err) {

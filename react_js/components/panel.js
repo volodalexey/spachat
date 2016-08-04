@@ -596,8 +596,8 @@ const Panel = React.createClass({
         case 'copyUserId':
           this.copyUserId();
           break;
-        case 'removeContact':
-          this.removeContact(element);
+        case 'removeUser':
+          this.removeUser(element);
           break;
         case 'makeFriends':
           let userId = element.dataset.key;
@@ -783,7 +783,7 @@ const Panel = React.createClass({
           if (_connection) {
             let messageData = {
               type: 'syncResponseUserData',
-              userId: self.state.userInfo.user_id,
+              from_user_id: self.state.userInfo.user_id,
               is_deleted_owner_request: self.state.confirmDialog_userId,
               is_deleted: true,
               updateInfo: {
@@ -1243,7 +1243,7 @@ const Panel = React.createClass({
     });
   },
 
-  removeContact(element){
+  removeUser(element){
     let parentElement = this.traverseUpToDataset(element, 'role', 'userWrapper');
     if (!parentElement || parentElement && !parentElement.dataset.user_id) {
       return console.error(new Error('User wrapper does not have user id!'));
@@ -1341,7 +1341,8 @@ const Panel = React.createClass({
         }
         var messageData = {
           type: "notifyUser",
-          user_description: user_description
+          user_description: user_description,
+          from_user_id: user_description.user_id
         };
         if (triggerConnection.isActive()) {
           triggerConnection.dataChannel.send(JSON.stringify(messageData));
