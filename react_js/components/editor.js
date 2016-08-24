@@ -211,9 +211,10 @@ const Editor = React.createClass({
         _innerHTML = this.props.data.messages_ListOptions.innerHTML && this.previousMode ?
           this.props.data.messages_ListOptions.innerHTML : this.__innerHtml;
       this.previousMode = true;
-      
-      return users_bus.hasInArray(this.props.data.blocked_user_ids, users_bus.getUserId()) ? 
-        <div className="color-red">{Localization.getLocText(152)}</div> :
+      let not_active_user = users_bus.hasInArray(this.props.data.blocked_user_ids, users_bus.getUserId()) ||
+        users_bus.hasInArray(this.props.data.deleted_user_ids, users_bus.getUserId());
+      return not_active_user ? 
+        null :
         <div data-role="editor_container" className="c-200">
           <div className="flex">
             <div data-role="message_container" className="modal-controls message_container">

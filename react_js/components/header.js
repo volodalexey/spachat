@@ -1,5 +1,8 @@
 import React from 'react'
 
+import users_bus from '../js/users_bus'
+import Localization from '../js/localization'
+
 import Location_Wrapper from './location_wrapper'
 
 const Header = React.createClass({
@@ -82,15 +85,15 @@ const Header = React.createClass({
             "role": "header_description"
           }
         },
-        {
+/*        {
           "element": "label",
           "text": "",
           "class": "",
           "location": "description",
           "data": {
-            "role": "labelUserPassword"
+            "role": "chatDescription"
           }
-        },
+        },*/
         {
           "role": "locationWrapper",
           "classList": "flex",
@@ -208,11 +211,22 @@ const Header = React.createClass({
     }
   },
 
+  defineTitle(){
+  if(users_bus.hasInArray(this.props.data.deleted_user_ids, users_bus.getUserId())){
+    return <div className="c-50 flex-just-center border-01em-red">{Localization.getLocText(157)}</div>
+  } else if(users_bus.hasInArray(this.props.data.blocked_user_ids, users_bus.getUserId())){
+    return <div className="c-50 flex-just-center border-01em-red">{Localization.getLocText(152)}</div>
+  } else {
+    return <div className="c-50 flex-just-center">{Localization.getLocText(59)}</div>
+  }
+  },
+
   render() {
     let options = this.defineOptions(this.props.chat_mode),
       config = this.defineConfig(this.props.chat_mode);
     return (
       <header data-role="header_container" className="modal-header">
+        {this.defineTitle()}
         <Location_Wrapper events={this.props.events} data={options} mainContainer={this.props.mainContainer}
                           configs={config} mode={this.props.data.bodyOptions.mode}/>
       </header>

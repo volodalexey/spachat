@@ -773,5 +773,15 @@
     "id": 155,
     "en": "Are you sure you want to unblocked a contact in the list ?",
     "ru": "Вы действительно желаете разблокировать контакт в списке ?"
+  },
+  {
+    "id": 156,
+    "en": "Not friends.",
+    "ru": "Не в друзьях."
+  },
+  {
+    "id": 157,
+    "en": "You are removed from this chat!",
+    "ru": "Вы удалены из данного чата!"
   }
 ]

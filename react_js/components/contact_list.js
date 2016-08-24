@@ -81,8 +81,8 @@ const ContactList = React.createClass({
           <div className="message flex-item-1-auto flex-dir-col flex-sp-between">
             <div className="text-bold">
               {_user.userName}</div>
-            <div>{_user.is_deleted || deleted_contact ?
-              <span className="color-red">{localization.getLocText(148)}</span> :
+            <div>{_user.is_deleted ? <span className="color-red">{localization.getLocText(156)}</span> :
+              deleted_contact ? <span className="color-red">{localization.getLocText(148)}</span> :
               blocked_contact ? <span className="color-red"> {localization.getLocText(147)}</span> : null}
             </div>
             <div>

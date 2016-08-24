@@ -378,7 +378,7 @@ const Chat = React.createClass({
       this.splitter_right.addEventListener('touchstart', this.startResize);
       this.splitter_right.addEventListener('touchmove', this.startResize);
       this.splitter_right.addEventListener('touchend', this.startResize);
-
+      
       this.checkAutoAddContact();
     }
   },
@@ -751,8 +751,10 @@ const Chat = React.createClass({
 
   displayExtraMessageToolbar(element){
     if (element.dataset.id) {
-      if (!this.state.extraMessageIDToolbar ||
-        this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== parseInt(element.dataset.id)) {
+      let not_active_user = users_bus.hasInArray(this.state.blocked_user_ids, users_bus.getUserId()) ||
+        users_bus.hasInArray(this.state.deleted_user_ids, users_bus.getUserId());
+      if (!not_active_user && (!this.state.extraMessageIDToolbar ||
+        this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== parseInt(element.dataset.id))) {
         this.setState({extraMessageIDToolbar: parseInt(element.dataset.id)});
       } else {
         this.setState({extraMessageIDToolbar: null});
@@ -815,7 +817,9 @@ const Chat = React.createClass({
 
   onSynchronizeMessages(){
     let self = this, index = self.state.user_ids.indexOf(users_bus.getUserId()),
-      messageData, newState;
+      messageData, all_connections, send_connections = [];
+    if(users_bus.hasInArray(self.state.deleted_user_ids,users_bus.getUserId())) return;
+    
     if (index !== -1 && self.state.user_ids.length > 1 ||
       index === -1 && self.state.user_ids.length > 0) {
       messageData = {
@@ -826,9 +830,16 @@ const Chat = React.createClass({
         },
         from_user_id: users_bus.getUserId()
       };
-      let active_connections = webrtc.getChatConnections(webrtc.connections, self.state.chat_id);
-      if (active_connections.length) {
-        webrtc.broadcastChatMessage(self.state.chat_id, JSON.stringify(messageData));
+      all_connections = webrtc.getChatConnections(webrtc.connections, self.state.chat_id);
+      if(all_connections){
+        all_connections.forEach(function(_connection) {
+          if(!users_bus.hasInArray(self.state.deleted_user_ids, _connection.users_ids[0])){
+            send_connections.push(_connection);
+          }
+        })
+      }
+      if (send_connections.length) {
+        webrtc.broadcastMessage(send_connections, JSON.stringify(messageData));
       } else {
         this.setState({errorMessage: 121});
       }
@@ -1199,7 +1210,9 @@ const Chat = React.createClass({
       return;
     let self = this, newState = this.state;
     this.checkingUserInChat([eventData.message.createdByUserId], this.state.user_ids);
-    if (users_bus.hasInArray(this.state.blocked_user_ids, eventData.message.createdByUserId)) return;
+    if (users_bus.hasInArray(this.state.blocked_user_ids, users_bus.getUserId()) ||
+      users_bus.hasInArray(this.state.deleted_user_ids, users_bus.getUserId())) return;
+    
     messages.prototype.addRemoteMessage(eventData.message, this.state.bodyOptions.mode, this.state.chat_id,
       function(err) {
         if (err) {
@@ -1299,12 +1312,17 @@ const Chat = React.createClass({
 
   updateChatDescription(updateDescription){
     if (this.state.chat_id === updateDescription.chat_id) {
+      if(users_bus.hasInArray(updateDescription.blocked_user_ids, users_bus.getUserId()) ||
+        users_bus.hasInArray(updateDescription.deleted_user_ids, users_bus.getUserId())){
+        this.state.extraMessageIDToolbar = null;
+      }
       this.setState({
         lastChangedDatetime: updateDescription.lastChangedDatetime,
         user_ids: updateDescription.user_ids,
         deleted_user_ids: updateDescription.deleted_user_ids,
         blocked_user_ids: updateDescription.blocked_user_ids,
-        addNewUserWhenInviting: updateDescription.addNewUserWhenInviting
+        addNewUserWhenInviting: updateDescription.addNewUserWhenInviting,
+        extraMessageIDToolbar: this.state.extraMessageIDToolbar
       });
     }
   },

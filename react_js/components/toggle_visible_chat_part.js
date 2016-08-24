@@ -1,9 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import event_bus from '../js/event_bus.js'
-import extend_core from '../js/extend_core.js'
-import dom_core from '../js/dom_core.js'
+import event_bus from '../js/event_bus'
+import extend_core from '../js/extend_core'
+import dom_core from '../js/dom_core'
+import users_bus from '../js/users_bus'
 
 const ToggleVisibleChatPart = React.createClass({
   
@@ -32,6 +33,7 @@ const ToggleVisibleChatPart = React.createClass({
 
   componentDidMount() {
     this.toggle_container = ReactDOM.findDOMNode(this);
+    if(!this.toggle_container) return;
     this.toggleButton = this.toggle_container.querySelector('[data-role="toggleButton"]');
     event_bus.on('onMouseUp', this.handleResize, this);
   },
@@ -177,7 +179,9 @@ const ToggleVisibleChatPart = React.createClass({
         </div>
       )
     } else if (location === 'BOTTOM') {
-      return (
+      let not_active_user = users_bus.hasInArray(this.props.data.blocked_user_ids, users_bus.getUserId()) ||
+        users_bus.hasInArray(this.props.data.deleted_user_ids, users_bus.getUserId());
+      return not_active_user ?  null :
         <div className={this.defineClassName(bodyMode, location)}
              data-role="toggleContainer"
              onMouseUp={this.handleResize} onMouseMove={this.handleResize}
@@ -193,7 +197,6 @@ const ToggleVisibleChatPart = React.createClass({
             </button>
           </div>
         </div>
-      )
     }
   }
 });

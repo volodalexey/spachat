@@ -6,7 +6,6 @@ const PanelUsers = React.createClass({
   
   renderItems(){
     let items = [], self = this; 
-      // users = users_bus.filterUsersByTypeDisplay(this.props.data, this.props.type);
     const delete_button = <div className="flex-just-center">
         <button className="button-inset-square" data-action="removeUser"
                 onClick={self.props.events.onClick}>

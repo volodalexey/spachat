@@ -157,8 +157,12 @@ const ExtraToolbar = React.createClass({
     if (!_config.data) return true;
     if(_config.data.role === 'synchronizeMessages'){
       let index = this.props.data.user_ids.indexOf(users_bus.getUserId());
-      return (index !== -1 && this.props.data.user_ids.length > 1 ||
-      index === -1 && this.props.data.user_ids.length > 0)
+       if(users_bus.hasInArray(this.props.data.deleted_user_ids,users_bus.getUserId())){
+        return false;
+      } else {
+        return (index !== -1 && this.props.data.user_ids.length > 1 ||
+        index === -1 && this.props.data.user_ids.length > 0)
+      }
     }
   },
 
