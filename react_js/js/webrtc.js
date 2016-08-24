@@ -508,7 +508,7 @@ WebRTC.prototype = {
           return;
         }
         
-        if(!chat_description || deleted) return;
+        if(!chat_description || deleted && messageData.chat_type !== "user_restore_in_chat_response") return;
 
         if (messageData.chat_description && messageData.chat_description.lastChangedDatetime) {
           sync_core.needSyncChatDescription(messageData, chat_description);

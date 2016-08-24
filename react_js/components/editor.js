@@ -5,6 +5,8 @@ import extend_core from '../js/extend_core.js'
 import dom_core from '../js/dom_core.js'
 import event_bus from '../js/event_bus.js'
 import messages from '../js/messages.js'
+import users_bus from '../js/users_bus'
+import Localization from '../js/localization'
 
 import Location_Wrapper from './location_wrapper'
 import FormatPanel from './format_panel'
@@ -106,7 +108,9 @@ const Editor = React.createClass({
     this.editorContainer = ReactDOM.findDOMNode(this);
     if (this.editorContainer) {
       this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
-      this.messageInnerContainer.addEventListener('keypress', this.sendEnter);
+      if(this.messageInnerContainer){
+        this.messageInnerContainer.addEventListener('keypress', this.sendEnter);
+      }
     }
   },
 
@@ -207,7 +211,9 @@ const Editor = React.createClass({
         _innerHTML = this.props.data.messages_ListOptions.innerHTML && this.previousMode ?
           this.props.data.messages_ListOptions.innerHTML : this.__innerHtml;
       this.previousMode = true;
-      return (
+      
+      return users_bus.hasInArray(this.props.data.blocked_user_ids, users_bus.getUserId()) ? 
+        <div className="color-red">{Localization.getLocText(152)}</div> :
         <div data-role="editor_container" className="c-200">
           <div className="flex">
             <div data-role="message_container" className="modal-controls message_container">
@@ -222,7 +228,6 @@ const Editor = React.createClass({
           </div>
           <FormatPanel data={this.props.data} events={onEvent}/>
         </div>
-      )
     } else {
       this.workflowInnerHtml(true);
       this.previousMode = false;

@@ -1,11 +1,12 @@
 import React from 'react'
 
-import localization from '../js/localization.js'
-import chats_bus from '../js/chats_bus.js'
-import extend_core from '../js/extend_core.js'
-import dom_core from '../js/dom_core.js'
-import event_bus from '../js/event_bus.js'
-import users_bus from '../js/users_bus.js'
+import localization from '../js/localization'
+import chats_bus from '../js/chats_bus'
+import extend_core from '../js/extend_core'
+import dom_core from '../js/dom_core'
+import event_bus from '../js/event_bus'
+import users_bus from '../js/users_bus'
+import webrtc from '../js/webrtc'
 
 import Body from '../components/body'
 
@@ -24,11 +25,13 @@ const ContactList = React.createClass({
   componentDidMount() {
     event_bus.on('changeUsersConnections', this.getContacts, this);
     event_bus.on('changeMyUsers', this.getContacts, this);
+    event_bus.on('changeConnectionList', this.forceUpdate, this);
   },
 
   componentWillUnmount() {
     event_bus.off('changeUsersConnections', this.getContacts, this);
     event_bus.off('changeMyUsers', this.getContacts, this);
+    event_bus.off('changeConnectionList', this.forceUpdate, this);
   },
 
   componentWillReceiveProps(nextProps){
@@ -56,6 +59,10 @@ const ContactList = React.createClass({
     });
   },
 
+  getConnections(){
+    this.setState({connections: webrtc.getChatConnections(webrtc.connections, this.props.data.chat_id)});
+  },
+
   renderItems() {
     let items = [], self = this,
       users = users_bus.filterUsersByTypeDisplay(self.state.users, this.props.data.contactList_FilterOptions.typeDisplayContacts);
@@ -73,10 +80,16 @@ const ContactList = React.createClass({
           </div>
           <div className="message flex-item-1-auto flex-dir-col flex-sp-between">
             <div className="text-bold">
-              {_user.is_deleted || deleted_contact ? <span style={{color: 'red'}}> ! </span> : null}
-              {blocked_contact ? <span style={{color: 'red'}}> Block </span> : null}
               {_user.userName}</div>
-            <div>{_user.user_id}</div>
+            <div>{_user.is_deleted || deleted_contact ?
+              <span className="color-red">{localization.getLocText(148)}</span> :
+              blocked_contact ? <span className="color-red"> {localization.getLocText(147)}</span> : null}
+            </div>
+            <div>
+              {webrtc.getConnectionByUserId(_user.user_id) ? 
+                <span className="color-green">{localization.getLocText(150)}</span> :
+                <span className="color-blue">{localization.getLocText(149)}</span>}
+            </div>
             <div className="flex-just-center">
               {self.renderUserButtons(_user, deleted_contact, blocked_contact, self.props.events.onClick)}
             </div>

@@ -728,5 +728,50 @@
     "id": 146,
     "en": "Are you sure you want to blocked a contact from the list ?",
     "ru": "Вы действительно желаете заблокировать контакт из списка ?"
+  },
+  {
+    "id": 147,
+    "en": "Blocked. ",
+    "ru": "Заблокирован. "
+  },
+  {
+    "id": 148,
+    "en": "Deleted. ",
+    "ru": "Удален. "
+  },
+  {
+    "id": 149,
+    "en": "Disconnected",
+    "ru": "Отключен"
+  },
+  {
+    "id": 150,
+    "en": "Connected",
+    "ru": "Подключен"
+  },
+  {
+    "id": 151,
+    "en": "At the moment the user is offline!",
+    "ru": "В настоящй момент пользователь отключен!"
+  },
+  {
+    "id": 152,
+    "en": "You are locked in this chat!",
+    "ru": "Вы заблокированы в данном чате!"
+  },
+  {
+    "id": 153,
+    "en": "Hello. User, {userName}, wants to restore you to the chat contacts list {chatId}.",
+    "ru": "Здравствуйте. Пользователь, {userName}, хочет восстановить Вас с списке контактов чата {chatId}."
+  },
+  {
+    "id": 154,
+    "en": "Are you sure you want to restore a contact in the list ?",
+    "ru": "Вы действительно желаете восстановить контакт в списке ?"
+  },
+  {
+    "id": 155,
+    "en": "Are you sure you want to unblocked a contact in the list ?",
+    "ru": "Вы действительно желаете разблокировать контакт в списке ?"
   }
 ]

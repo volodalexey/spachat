@@ -425,7 +425,7 @@ const Panel = React.createClass({
       event_bus.on('changeOpenChats', this.getInfoForBody);
       event_bus.on('changeMyUsers', this.changeMyUsers);
       event_bus.on('web_socket_message', this.onPanelMessageRouter);
-      event_bus.on('makeFriends', this.onForceMakeFriends);
+      event_bus.on('makeFriends', this.onForceMakeFriends, this);
       this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
       this.inner_container = document.querySelector('[data-role="left_panel_inner_container"]');
       this.outerContainer.style.right = '100vw';

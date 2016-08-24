@@ -967,7 +967,7 @@ const Body = React.createClass({
           "userName": this.props.data.userInfo.userName
         };
         if (this.props.data.joinUser_ListOptions.messageRequest){
-          data.messageRequest = this.transformationData(data, this.props.data.joinUser_ListOptions.messageRequest);
+          data.messageRequest = utils.transformationData(data, this.props.data.joinUser_ListOptions.messageRequest);
         }
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}/>);
         return items;
@@ -994,7 +994,7 @@ const Body = React.createClass({
           "userName": this.props.data.userInfo.userName
         };
         if (this.props.data.joinChat_ListOptions.messageRequest){
-          data.messageRequest = this.transformationData(data, this.props.data.joinChat_ListOptions.messageRequest);
+          data.messageRequest = utils.transformationData(data, this.props.data.joinChat_ListOptions.messageRequest);
         }
         items.push(<Location_Wrapper key={1} events={this.props.events} configs={configs} data={data}/>);
         return items;
@@ -1034,11 +1034,7 @@ const Body = React.createClass({
     return items;
   },
 
-  transformationData(_data, _transform_value){
-    let transform_value = Localization.getLocText(_transform_value);
-    transform_value = utils.objectToUrl(_data, transform_value);
-    return transform_value;
-  },
+
 
   limitationQuantityRecords(data, state, mode) {
     if (data && data.length) {

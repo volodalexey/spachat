@@ -27,7 +27,7 @@ const PanelUsers = React.createClass({
           </div>
           <div className="message flex-item-1-auto flex-dir-col flex-sp-between">
             <div>
-              {user.is_deleted ? <span style={{color: 'red'}}> ! </span> : null}
+              {user.is_deleted ? <span className="color-red"> ! </span> : null}
               User name: {user.userName}</div>
             <div>User id: {user.user_id}</div>
             {user.is_deleted ? add_user_button : delete_button}

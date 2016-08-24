@@ -1,4 +1,5 @@
 var Utils = function() {};
+import Localization from '../js/localization'
 
 Utils.prototype = {
 
@@ -23,6 +24,12 @@ Utils.prototype = {
     } else {
       return true;
     }
+  },
+
+  transformationData(_data, _transform_value){
+    let transform_value = Localization.getLocText(_transform_value);
+    transform_value = this.objectToUrl(_data, transform_value);
+    return transform_value;
   }
 };
 
