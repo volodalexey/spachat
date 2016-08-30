@@ -169,6 +169,164 @@ const Filter = React.createClass({
           }
         }
       ],
+      contactsFilterConfig: [
+        {
+          "role": "locationWrapper",
+          "classList": "elements flex-align-c flex-item-auto",
+          "location": "pagination"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "class": "check-box-size",
+          "data": {
+            "throw": "true",
+            "role": "enablePagination",
+            "action": "changeMode",
+            "mode_to": "PAGINATION",
+            "chat_part": "pagination",
+            "key": "showEnablePagination"
+          },
+          "location": "pagination"
+        },
+        {
+          "element": "label",
+          "text": 28,
+          "location": "pagination"
+        },
+
+        {
+          "role": "locationWrapper",
+          "classList": "elements flex-align-c flex-item-auto",
+          "location": "per_page"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "class": "check-box-size",
+          "data": {
+            "throw": "true",
+            "role": "rteShowPerPage",
+            "action": "changeRTE",
+            "key": "rtePerPage"
+          },
+          "location": "per_page",
+          "redraw_mode": "rte"
+        },
+        {
+          "element": "label",
+          "text": 19,
+          "htmlFor": "show_per_page",
+          "location": "per_page",
+          "redraw_mode": "rte"
+        },
+        {
+          "element": "input",
+          "type": "text",
+          "class": "inputWidth",
+          "data": {
+            "role": "perPageValue",
+            "action": "changePerPage",
+            "key": "perPageValue"
+          },
+          "id": "show_per_page",
+          "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+          "location": "per_page",
+          "redraw_mode": "rte"
+        },
+
+        {
+          "element": "label",
+          "data": {
+            "role": "icon_show_per_page"
+          },
+          "location": "per_page",
+          "redraw_mode": "nrte"
+        },
+        {
+          "element": "input",
+          "type": "checkbox",
+          "class": "check-box-size",
+          "data": {
+            "throw": "true",
+            "role": "rteChoicePerPage",
+            "action": "changeRTE",
+            "key": "rtePerPage"
+          },
+          "location": "per_page",
+          "redraw_mode": "nrte"
+        },
+        {
+          "element": "button",
+          "text": 19,
+          "class": "button-inset-white",
+          "data": {
+            "role": "show_per_page",
+            "action": "showPerPage"
+          },
+          "htmlFor": "show_per_page",
+          "location": "per_page",
+          "redraw_mode": "nrte"
+        },
+        {
+          "element": "input",
+          "type": "text",
+          "class": "inputWidth",
+          "data": {
+            "role": "perPageValue",
+            "action": "changePerPage",
+            "key": "perPageValue"
+          },
+          "id": "show_per_page",
+          "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+          "location": "per_page",
+          "redraw_mode": "nrte"
+        },
+
+        {
+          "role": "locationWrapper",
+          "classList": "flex-align-c flex-item-auto",
+          "location": "type_display_contacts"
+        },
+        {
+          "element": "label",
+          "text": 137,
+          "class": "p-r-l-1em",
+          "location": "type_display_contacts"
+        },
+        {
+          "element": "select",
+          "location": "type_display_contacts",
+          "select_options": [
+            {
+              "text": 134,
+              "value": "all"
+            },
+            {
+              "text": 135,
+              "value": "current"
+            },
+            {
+              "text": 158,
+              "value": "blocked"
+            },
+            {
+              "text": 159,
+              "value": "deletedFromChat"
+            },
+            {
+              "text": 136,
+              "value": "deleted"
+            }
+          ],
+          "data": {
+            "action": "changeDisplayContact",
+            "role": "selectDisplayContact",
+            "warn": true,
+            "key": 'typeDisplayContacts'
+          }
+        }
+      ],
       chatsFilterConfig: [
         {
           "role": "locationWrapper",
@@ -421,7 +579,7 @@ const Filter = React.createClass({
         return this.props.messagesFilterConfig;
         break;
       case 'CONTACT_LIST':
-        return this.props.usersFilterConfig;
+        return this.props.contactsFilterConfig;
         break;
     }
   },

@@ -24,12 +24,14 @@ const ContactList = React.createClass({
 
   componentDidMount() {
     event_bus.on('changeUsersConnections', this.getContacts, this);
-    event_bus.on('changeMyUsers', this.getContacts, this);
+    event_bus.on('changeConnection', this.getContacts, this);
+    event_bus.on('changeMyUsers', this.getConnections, this);
     event_bus.on('changeConnectionList', this.forceUpdate, this);
   },
 
   componentWillUnmount() {
     event_bus.off('changeUsersConnections', this.getContacts, this);
+    event_bus.off('changeConnection', this.getConnections, this);
     event_bus.off('changeMyUsers', this.getContacts, this);
     event_bus.off('changeConnectionList', this.forceUpdate, this);
   },
@@ -65,7 +67,11 @@ const ContactList = React.createClass({
 
   renderItems() {
     let items = [], self = this,
-      users = users_bus.filterUsersByTypeDisplay(self.state.users, this.props.data.contactList_FilterOptions.typeDisplayContacts);
+      users = users_bus.filterUsersByTypeDisplay(self.state.users,
+        this.props.data.contactList_FilterOptions.typeDisplayContacts,
+        {'blocked_user_ids': this.props.data.blocked_user_ids,
+          'deleted_user_ids': this.props.data.deleted_user_ids}
+      );
     if (this.props.data.contactList_PaginationOptions.show) {
       users = self.props.onLimitationQuantityRecords(users, self.props.data, self.props.data.bodyOptions.mode);
     }

@@ -652,7 +652,9 @@ const Chat = React.createClass({
             });
             if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
               Pagination.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode,
-                {"chat_id": this.state.chat_id}, function(_newState) {
+                {"chat_id": this.state.chat_id,
+                'blocked_user_ids': this.state.blocked_user_ids,
+                'deleted_user_ids': this.state.deleted_user_ids}, function(_newState) {
                   self.setState({_newState});
                 });
             }

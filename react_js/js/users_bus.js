@@ -171,6 +171,9 @@ Users_bus.prototype = {
   
   hasInArray(_array, item) {
     var found;
+    if (_array.length === 0 ){
+      return false;
+    }
     _array.every(function(_item) {
       if (_item === item) {
         found = _item;
@@ -275,16 +278,23 @@ Users_bus.prototype = {
     });
   },
 
-  filterUsersByTypeDisplay(users, type){
-    let display_users = [];
+  filterUsersByTypeDisplay(users, type, options){
+    let display_users = [], self = this;
     switch (type) {
       case 'all':
         display_users = users;
         break;
       case 'current':
         users.forEach(function(_user) {
-          if (!_user.is_deleted) {
-            display_users.push(_user);
+          if (!_user.is_deleted){
+            if(options){
+              if(options.blocked_user_ids && !self.hasInArray(options.blocked_user_ids, _user.user_id) &&
+                options.deleted_user_ids && !self.hasInArray(options.deleted_user_ids, _user.user_id)){
+                display_users.push(_user);
+              }
+            }else {
+              display_users.push(_user);
+            }
           }
         });
         break;
@@ -294,6 +304,24 @@ Users_bus.prototype = {
             display_users.push(_user);
           }
         });
+        break;
+      case 'blocked':
+        if (options && options.blocked_user_ids){
+          users.forEach(function(_user) {
+            if (self.hasInArray(options.blocked_user_ids, _user.user_id)) {
+              display_users.push(_user);
+            }
+          });
+        }
+        break;
+      case 'deletedFromChat':
+        if (options && options.deleted_user_ids){
+          users.forEach(function(_user) {
+            if (self.hasInArray(options.deleted_user_ids, _user.user_id)) {
+              display_users.push(_user);
+            }
+          });
+        }
         break;
     }
 

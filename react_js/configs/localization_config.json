@@ -783,5 +783,15 @@
     "id": 157,
     "en": "You are removed from this chat!",
     "ru": "Вы удалены из данного чата!"
+  },
+  {
+    "id": 158,
+    "en": "Blocked",
+    "ru": "Заблокированные"
+  },
+  {
+    "id": 159,
+    "en": "Deleted from chat",
+    "ru": "Удаленные из чата"
   }
 ]
