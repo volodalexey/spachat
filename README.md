@@ -4,5 +4,5 @@ SPACHAT - web application for communication between browsers with the help of We
 
 ## Two implementations
 
-- [Vanilla JS (deprecated)](/vanilla_js#readme)
 - [React JS](/react_js#readme)
+- [Vanilla JS (deprecated)](/vanilla_js#readme)
