@@ -25,7 +25,7 @@ const ContactList = React.createClass({
   componentDidMount() {
     event_bus.on('changeUsersConnections', this.getContacts, this);
     event_bus.on('changeConnection', this.getContacts, this);
-    event_bus.on('changeMyUsers', this.getConnections, this);
+    event_bus.on('changeMyUsers', this.getContacts, this);
     event_bus.on('changeConnectionList', this.forceUpdate, this);
   },
 
@@ -61,10 +61,6 @@ const ContactList = React.createClass({
     });
   },
 
-  getConnections(){
-    this.setState({connections: webrtc.getChatConnections(webrtc.connections, this.props.data.chat_id)});
-  },
-
   renderItems() {
     let items = [], self = this,
       users = users_bus.filterUsersByTypeDisplay(self.state.users,
@@ -77,7 +73,8 @@ const ContactList = React.createClass({
     }
     users.forEach(function(_user) {
       let deleted_contact = self.props.data.deleted_user_ids.indexOf(_user.user_id) !== -1,
-        blocked_contact = self.props.data.blocked_user_ids.indexOf(_user.user_id) !== -1;
+        blocked_contact = self.props.data.blocked_user_ids.indexOf(_user.user_id) !== -1,
+        left_chat_contact = self.props.data.left_chat_user_ids.indexOf(_user.user_id) !== -1;
       items.push(
         <div key={_user.user_id} className="flex-sp-start margin-t-b" data-role="contactWrapper"
              data-user_id={_user.user_id}>
@@ -88,6 +85,7 @@ const ContactList = React.createClass({
             <div className="text-bold">
               {_user.userName}</div>
             <div>{_user.is_deleted ? <span className="color-red">{localization.getLocText(156)}</span> :
+              left_chat_contact ? <span className="color-red">{localization.getLocText(163)}</span> :
               deleted_contact ? <span className="color-red">{localization.getLocText(148)}</span> :
               blocked_contact ? <span className="color-red"> {localization.getLocText(147)}</span> : null}
             </div>

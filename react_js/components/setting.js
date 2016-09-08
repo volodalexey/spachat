@@ -205,7 +205,7 @@ const Settings = React.createClass({
           },
           "disable": false
         },
-        
+
         {
           "role": "locationWrapper",
           "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
@@ -496,6 +496,9 @@ const Settings = React.createClass({
   },
 
   render() {
+    const delete_chat = <div className="flex-item flex-wrap flex-align-c flex-item-auto">
+      <button data-action="deleteChat" onClick={this.props.events.onClick}>{localization.getLocText(160)}</button>
+    </div>;
     return <div >
       <DialogConfirm show={this.state.confirmMessage} message={this.state.confirmMessage}
                      handleClick={this.handleDialogInviteByUrl}
@@ -506,6 +509,7 @@ const Settings = React.createClass({
                       </div>
                       </div>}}/>
       {this.renderItems(this.props.setting_config)}
+      {this.props.data.is_deleted ? null : delete_chat}
       {this.renderCreatorLayout()}
       <div className="textbox">
         <div className="title c-100">

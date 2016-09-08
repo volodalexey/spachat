@@ -39,11 +39,20 @@ Sync_core.prototype = {
         if (!chat_description.lastChangedDatetime ||
           chat_description.lastChangedDatetime < updateDescription.lastChangedDatetime) {
 
-          chat_description.lastChangedDatetime = updateDescription.lastChangedDatetime;
-          chat_description.user_ids = updateDescription.user_ids;
-          chat_description.deleted_user_ids = updateDescription.deleted_user_ids;
-          chat_description.blocked_user_ids = updateDescription.blocked_user_ids;
-          chat_description.addNewUserWhenInviting = updateDescription.addNewUserWhenInviting;
+          chat_description.lastChangedDatetime = updateDescription.lastChangedDatetime ? 
+            updateDescription.lastChangedDatetime : chat_description.lastChangedDatetime;
+          chat_description.user_ids = updateDescription.user_ids ? 
+            updateDescription.user_ids : chat_description.user_ids;
+          chat_description.deleted_user_ids = updateDescription.deleted_user_ids ? 
+            updateDescription.deleted_user_ids : chat_description.deleted_user_ids;
+          chat_description.blocked_user_ids = updateDescription.blocked_user_ids ?
+            updateDescription.blocked_user_ids : chat_description.blocked_user_ids;
+          chat_description.addNewUserWhenInviting = updateDescription.addNewUserWhenInviting ?
+            updateDescription.addNewUserWhenInviting : chat_description.addNewUserWhenInviting;
+          chat_description.is_deleted = updateDescription.is_deleted ?
+            updateDescription.is_deleted : chat_description.is_deleted;
+          chat_description.left_chat_user_ids = updateDescription.left_chat_user_ids ?
+            updateDescription.left_chat_user_ids : chat_description.left_chat_user_ids;
 
           chats_bus.putChatToIndexedDB(chat_description, function(_err, chat_description) {
             if (_err) return console.error(_err);
@@ -68,7 +77,9 @@ Sync_core.prototype = {
         user_ids: chat_description.user_ids,
         deleted_user_ids: chat_description.deleted_user_ids,
         blocked_user_ids: chat_description.blocked_user_ids,
-        addNewUserWhenInviting: chat_description.addNewUserWhenInviting
+        addNewUserWhenInviting: chat_description.addNewUserWhenInviting,
+        is_deleted: chat_description.is_deleted,
+        left_chat_user_ids: chat_description.left_chat_user_ids
       }
     };
     webrtc.broadcastChatMessage(chat_description.chat_id, JSON.stringify(_messageData));

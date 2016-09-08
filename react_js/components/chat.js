@@ -62,6 +62,7 @@ const Chat = React.createClass({
       confirmMessageBlockedContact: null,
       confirmDialog_blockedUserId: null,
       confirmMessageUnblockedContact: null,
+      confirmMessageDeleteChat: null,
       confirmDialog_unblockedUserId: null,
       confirmData_restoreUserRequest: null,
       confirmMessageData: null,
@@ -69,6 +70,7 @@ const Chat = React.createClass({
       extraMessageIDToolbar: null,
       deleted_user_ids: [],
       blocked_user_ids: [],
+      left_chat_user_ids: [],
       padding: {
         bottom: 5
       },
@@ -614,6 +616,9 @@ const Chat = React.createClass({
             this.setState({confirmMessageUnblockedContact: 155, confirmDialog_unblockedUserId: user_id});
           }
           break;
+        case 'deleteChat':
+          this.setState({confirmMessageDeleteChat: 161});
+          break;
       }
     }
   },
@@ -980,6 +985,70 @@ const Chat = React.createClass({
     }
   },
 
+  handleDialogDeleteChat(event){
+    let element = this.getDataParameter(event.target, 'action'), self = this;
+    if (element) {
+      switch (element.dataset.action) {
+        case 'confirmCancel':
+          break;
+        case 'confirmOk':
+          indexeddb.getByKeyPath(
+            chats_bus.collectionDescription,
+            null,
+            self.state.chat_id,
+            function(getError, chat_description) {
+              if (getError) return console.error(getError);
+
+              if (!chat_description) return;
+
+              chat_description.is_deleted = true;
+              if(users_bus.getUserId() === chat_description.createdByUserId){
+                chat_description.lastChangedDatetime = Date.now();
+                chats_bus.putChatToIndexedDB(chat_description, function(_err, chat_description) {
+                  if (_err) return console.error(_err);
+
+                  self.setState({
+                    lastChangedDatetime: chat_description.lastChangedDatetime,
+                    is_deleted: chat_description.is_deleted
+                  });
+                  sync_core.sendSyncChatDescription(chat_description, users_bus.getUserId());
+                });
+              } else {
+                chat_description.left_chat_user_ids.push(users_bus.getUserId());
+                chats_bus.putChatToIndexedDB(chat_description, function(_err, chat_description) {
+                  if (_err) return console.error(_err);
+
+                  self.setState({
+                    is_deleted: chat_description.is_deleted,
+                    left_chat_user_ids: chat_description.left_chat_user_ids
+                  });
+
+                  let active_owner_connection = webrtc.getConnectionByUserId(chat_description.createdByUserId);
+                  if(active_owner_connection){
+                    let _messageData = {
+                      type: 'syncResponseChatData',
+                      owner_request: users_bus.getUserId(),
+                      from_user_id: users_bus.getUserId(),
+                      chat_description: {
+                        chat_id: chat_description.chat_id
+                      },
+                      updateDescription: {
+                        left_chat_user_ids: chat_description.left_chat_user_ids
+                      }
+                    };
+                    webrtc.broadcastMessage([active_owner_connection], JSON.stringify(_messageData));
+                  }
+                });
+              }
+            }
+          );
+          
+          break;
+      }
+      this.setState({confirmMessageDeleteChat: null});
+    }
+  },
+
   handleDialogRemoveContact(event){
     let element = this.getDataParameter(event.target, 'action'), self = this;
     if (element) {
@@ -1212,8 +1281,9 @@ const Chat = React.createClass({
       return;
     let self = this, newState = this.state;
     this.checkingUserInChat([eventData.message.createdByUserId], this.state.user_ids);
-    if (users_bus.hasInArray(this.state.blocked_user_ids, users_bus.getUserId()) ||
-      users_bus.hasInArray(this.state.deleted_user_ids, users_bus.getUserId())) return;
+    if (this.state.is_deleted || users_bus.hasInArray(this.state.blocked_user_ids, users_bus.getUserId()) ||
+      users_bus.hasInArray(this.state.deleted_user_ids, users_bus.getUserId()) ||
+      users_bus.hasInArray(this.state.left_chat_user_ids, users_bus.getUserId())) return;
     
     messages.prototype.addRemoteMessage(eventData.message, this.state.bodyOptions.mode, this.state.chat_id,
       function(err) {
@@ -1323,8 +1393,10 @@ const Chat = React.createClass({
         user_ids: updateDescription.user_ids,
         deleted_user_ids: updateDescription.deleted_user_ids,
         blocked_user_ids: updateDescription.blocked_user_ids,
+        is_deleted: updateDescription.is_deleted,
         addNewUserWhenInviting: updateDescription.addNewUserWhenInviting,
-        extraMessageIDToolbar: this.state.extraMessageIDToolbar
+        extraMessageIDToolbar: this.state.extraMessageIDToolbar,
+        left_chat_user_ids: updateDescription.left_chat_user_ids
       });
     }
   },
@@ -1402,6 +1474,9 @@ const Chat = React.createClass({
           <DialogConfirm show={this.state.confirmMessageRestoreUserRequest}
                          message={this.state.confirmMessageRestoreUserRequest}
                          handleClick={this.handleDialogRestoreUserRequest}/>
+          <DialogConfirm show={this.state.confirmMessageDeleteChat}
+                         message={this.state.confirmMessageDeleteChat}
+                         handleClick={this.handleDialogDeleteChat}/>
           <div className={this.defineSplitterClass('chat-splitter-item ')} data-role="splitter_item"
                data-splitteritem="left">
           </div>

@@ -1017,7 +1017,7 @@ const Body = React.createClass({
         return <Message data={this.props.data} handleEvent={this.props.handleEvent} events={this.props.events}/>;
         break;
       case this.MODE.SETTINGS:
-        return <Setting data={this.props.data} handleEvent={this.props.handleEvent}/>;
+        return <Setting data={this.props.data} events={this.props.events} handleEvent={this.props.handleEvent}/>;
         break;
       case this.MODE.CONTACT_LIST:
         return <ContactList data={this.props.data} handleEvent={this.props.handleEvent} events={this.props.events}

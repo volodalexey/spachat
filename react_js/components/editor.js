@@ -211,9 +211,9 @@ const Editor = React.createClass({
         _innerHTML = this.props.data.messages_ListOptions.innerHTML && this.previousMode ?
           this.props.data.messages_ListOptions.innerHTML : this.__innerHtml;
       this.previousMode = true;
-      let not_active_user = users_bus.hasInArray(this.props.data.blocked_user_ids, users_bus.getUserId()) ||
+      let not_active_chat = this.props.data.is_deleted || users_bus.hasInArray(this.props.data.blocked_user_ids, users_bus.getUserId()) ||
         users_bus.hasInArray(this.props.data.deleted_user_ids, users_bus.getUserId());
-      return not_active_user ? 
+      return not_active_chat ?
         null :
         <div data-role="editor_container" className="c-200">
           <div className="flex">

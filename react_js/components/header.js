@@ -212,7 +212,13 @@ const Header = React.createClass({
   },
 
   defineTitle(){
-  if(users_bus.hasInArray(this.props.data.deleted_user_ids, users_bus.getUserId())){
+    if(this.props.data.is_deleted){
+      if(users_bus.hasInArray(this.props.data.left_chat_user_ids, users_bus.getUserId())){
+        return <div className="c-50 flex-just-center border-01em-red">{Localization.getLocText(164)}</div>
+      } else {
+        return <div className="c-50 flex-just-center border-01em-red">{Localization.getLocText(162)}</div>
+      }
+    } else if(users_bus.hasInArray(this.props.data.deleted_user_ids, users_bus.getUserId())){
     return <div className="c-50 flex-just-center border-01em-red">{Localization.getLocText(157)}</div>
   } else if(users_bus.hasInArray(this.props.data.blocked_user_ids, users_bus.getUserId())){
     return <div className="c-50 flex-just-center border-01em-red">{Localization.getLocText(152)}</div>

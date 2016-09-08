@@ -149,7 +149,7 @@ const ChatsManager = React.createClass({
 
   handleChat(messageData, chat_description) {
     event_bus.trigger("changeOpenChats", "CHATS");
-    if (messageData.chat_wscs_descrs) {
+    if (messageData.chat_wscs_descrs && !chat_description.is_deleted) {
       webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
     } else {
       websocket.wsRequest({
@@ -285,7 +285,7 @@ const ChatsManager = React.createClass({
         });
         index = self.getIndexCurrentChat(chat_description.chat_id);
         if (index === undefined) return;
-
+console.log(Chat.prototype.chatsArray[index]);
         if (Chat.prototype.chatsArray[index].mode !== 'ready') {
           event_bus.trigger('send_log_message', chat_description.chat_id, {
             text: 'Upgrade to chat "ready".',
@@ -312,7 +312,8 @@ const ChatsManager = React.createClass({
             Chat.prototype.chatsArray[index].chat_description = chat_description;
           }
           self.handleChat(event, chat_description);
-        } else if (Chat.prototype.chatsArray[index].mode === 'ready' && event.chat_wscs_descrs) {
+        } else if (Chat.prototype.chatsArray[index].mode === 'ready' && event.chat_wscs_descrs &&
+          !Chat.prototype.chatsArray[index].chat_description.is_deleted) {
           event_bus.trigger('send_log_message', chat_description.chat_id,
             {text: 'Webrtc handleConnectedDevices".', type: 'information'});
           webrtc.handleConnectedDevices(event.chat_wscs_descrs);

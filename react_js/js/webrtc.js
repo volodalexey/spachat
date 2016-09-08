@@ -481,13 +481,13 @@ WebRTC.prototype = {
       return;
     }
 
-    users_bus.isDeletedUser(messageData, function(err, deleted, userInfo, messageData) {
+    users_bus.isDeletedUser(messageData, function(err, deleted_user, userInfo, messageData) {
       if (err) return console.error(err);
 
       if (messageData.type === 'notifyUser') {
         event_bus.trigger('notifyUser', messageData);
       }
-      if (deleted) return;
+      if (deleted_user) return;
 
       if (messageData.lastModifyDatetime) {
         sync_core.needSyncUserData(messageData, userInfo);
@@ -500,16 +500,18 @@ WebRTC.prototype = {
       }
       
       if(!messageData.chat_description) return;
-      chats_bus.isDeletedContact(messageData, function(err, deleted, chat_description, messageData) {
+      chats_bus.isDeletedContact(messageData, function(err, deleted_user, chat_description, messageData) {
         if(err) return console.error(err);
-
+        
         if (!chat_description && messageData.type === 'chatJoinApproved') {
           event_bus.trigger('chatJoinApproved', messageData);
           return;
         }
         
-        if(!chat_description || deleted && messageData.chat_type !== "user_restore_in_chat_response") return;
+        if(!chat_description || deleted_user && messageData.chat_type !== "user_restore_in_chat_response") return;
 
+        if(chat_description && chat_description.is_deleted) return;
+        
         if (messageData.chat_description && messageData.chat_description.lastChangedDatetime) {
           sync_core.needSyncChatDescription(messageData, chat_description);
         }

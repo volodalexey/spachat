@@ -793,5 +793,30 @@
     "id": 159,
     "en": "Deleted from chat",
     "ru": "Удаленные из чата"
+  },
+  {
+    "id": 160,
+    "en": "Delete chat",
+    "ru": "Удалить чат"
+  },
+  {
+    "id": 161,
+    "en": "Are you sure you want to delete chat?",
+    "ru": "Вы действительно желаете удалить чат?"
+  },
+  {
+    "id": 162,
+    "en": "Chat deleted !",
+    "ru": "Чат удален !"
+  },
+  {
+    "id": 163,
+    "en": "Left the chat",
+    "ru": "Покинул чат"
+  },
+  {
+    "id": 164,
+    "en": "You have removed the chat!",
+    "ru": "Вы удалили данный чат!"
   }
 ]
