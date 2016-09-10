@@ -26,7 +26,7 @@ npm install
 
 ### Build production files
 ```bash
-npm run webpack
+npm run build
 ```
 All files will be in "__build__" folder
 
@@ -34,12 +34,12 @@ All files will be in "__build__" folder
 
 ### Development testing server
 ```bash
-npm run server:dev
+npm run server-dev
 ```
 Visit [http://localhost:8081/](http://localhost:8081/) in browser
 
 ### Production testing server
 ```bash
-npm run server:prod
+npm run server-prod
 ```
 Visit [http://localhost:8082/](http://localhost:8082/) in browser

@@ -142,6 +142,9 @@ body {
 .h-100p {
   height: 100%;
 }
+.p-0 {
+  padding: 0;
+}
 .p-t-b {
   padding-top: 0.5em;
   padding-bottom: 0.5em;
@@ -297,6 +300,9 @@ img {
 }
 .margin-b-em {
   margin-bottom: 0.5em;
+}
+.border-01em-red {
+  border: 0.1em solid red;
 }
 .modal-controls {
   flex: 1 1 auto;

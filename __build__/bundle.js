@@ -65,7 +65,7 @@ webpackJsonp([0],{
 
 	var _chat_app2 = _interopRequireDefault(_chat_app);
 
-	var _register = __webpack_require__(343);
+	var _register = __webpack_require__(345);
 
 	var _register2 = _interopRequireDefault(_register);
 
@@ -884,6 +884,121 @@ webpackJsonp([0],{
 			"id": 141,
 			"en": "Are you sure you want to delete a message?",
 			"ru": "Вы действительно желаете удалить сообщение ?"
+		},
+		{
+			"id": 142,
+			"en": "Remove from chat",
+			"ru": "Удалить из чата"
+		},
+		{
+			"id": 143,
+			"en": "Restore",
+			"ru": "Восстановить"
+		},
+		{
+			"id": 144,
+			"en": "Block",
+			"ru": "Блокировать"
+		},
+		{
+			"id": 145,
+			"en": "Unblock",
+			"ru": "Разблокировать"
+		},
+		{
+			"id": 146,
+			"en": "Are you sure you want to blocked a contact from the list ?",
+			"ru": "Вы действительно желаете заблокировать контакт из списка ?"
+		},
+		{
+			"id": 147,
+			"en": "Blocked. ",
+			"ru": "Заблокирован. "
+		},
+		{
+			"id": 148,
+			"en": "Deleted. ",
+			"ru": "Удален. "
+		},
+		{
+			"id": 149,
+			"en": "Disconnected",
+			"ru": "Отключен"
+		},
+		{
+			"id": 150,
+			"en": "Connected",
+			"ru": "Подключен"
+		},
+		{
+			"id": 151,
+			"en": "At the moment the user is offline!",
+			"ru": "В настоящй момент пользователь отключен!"
+		},
+		{
+			"id": 152,
+			"en": "You are locked in this chat!",
+			"ru": "Вы заблокированы в данном чате!"
+		},
+		{
+			"id": 153,
+			"en": "Hello. User, {userName}, wants to restore you to the chat contacts list {chatId}.",
+			"ru": "Здравствуйте. Пользователь, {userName}, хочет восстановить Вас с списке контактов чата {chatId}."
+		},
+		{
+			"id": 154,
+			"en": "Are you sure you want to restore a contact in the list ?",
+			"ru": "Вы действительно желаете восстановить контакт в списке ?"
+		},
+		{
+			"id": 155,
+			"en": "Are you sure you want to unblocked a contact in the list ?",
+			"ru": "Вы действительно желаете разблокировать контакт в списке ?"
+		},
+		{
+			"id": 156,
+			"en": "Not friends.",
+			"ru": "Не в друзьях."
+		},
+		{
+			"id": 157,
+			"en": "You are removed from this chat!",
+			"ru": "Вы удалены из данного чата!"
+		},
+		{
+			"id": 158,
+			"en": "Blocked",
+			"ru": "Заблокированные"
+		},
+		{
+			"id": 159,
+			"en": "Deleted from chat",
+			"ru": "Удаленные из чата"
+		},
+		{
+			"id": 160,
+			"en": "Delete chat",
+			"ru": "Удалить чат"
+		},
+		{
+			"id": 161,
+			"en": "Are you sure you want to delete chat?",
+			"ru": "Вы действительно желаете удалить чат?"
+		},
+		{
+			"id": 162,
+			"en": "Chat deleted !",
+			"ru": "Чат удален !"
+		},
+		{
+			"id": 163,
+			"en": "Left the chat",
+			"ru": "Покинул чат"
+		},
+		{
+			"id": 164,
+			"en": "You have removed the chat!",
+			"ru": "Вы удалили данный чат!"
 		}
 	];
 
@@ -954,14 +1069,12 @@ webpackJsonp([0],{
 	};
 
 	Users_bus.prototype = {
-
 	  checkLoginState: function checkLoginState() {
 	    var user_id = this.getCookie('user_id');
 	    if (user_id && !this.user_id) {
 	      this.setUserId(user_id);
 	    }
 	  },
-
 	  setUserId: function setUserId(user_id, skip_websocket) {
 	    if (user_id) {
 	      this.user_id = user_id;
@@ -978,10 +1091,13 @@ webpackJsonp([0],{
 	      _websocket2.default.dispose();
 	    }
 	  },
-
 	  getUserId: function getUserId() {
 	    return this.user_id;
 	  },
+	  isOwner: function isOwner(user_id) {
+	    return user_id === this.user_id;
+	  },
+
 
 	  excludeUser: function excludeUser(options, user_ids) {
 	    var _this = this;
@@ -1017,7 +1133,6 @@ webpackJsonp([0],{
 	      _callback(null, null);
 	    }
 	  },
-
 	  getMyInfo: function getMyInfo(options, _callback) {
 	    var _this = this;
 	    _indexeddb2.default.getByKeyPath(_this.userDatabaseDescription, 'information', _this.user_id, function (getError, userInfo) {
@@ -1035,7 +1150,6 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
-
 	  getUserDescription: function getUserDescription(options, callback) {
 	    this.getMyInfo(options, function (error, _options, userInfo) {
 	      if (error) {
@@ -1056,7 +1170,6 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
-
 	  getUserName: function getUserName(_user_id, user_ids) {
 	    var user_name = void 0;
 	    user_ids.every(function (_contactInfo) {
@@ -1068,10 +1181,11 @@ webpackJsonp([0],{
 
 	    return user_name;
 	  },
-
-
 	  hasInArray: function hasInArray(_array, item) {
 	    var found;
+	    if (_array.length === 0) {
+	      return false;
+	    }
 	    _array.every(function (_item) {
 	      if (_item === item) {
 	        found = _item;
@@ -1080,7 +1194,6 @@ webpackJsonp([0],{
 	    });
 	    return found;
 	  },
-
 	  putItemIntoArray: function putItemIntoArray(arrayName, item, callback) {
 	    var self = this;
 	    self.getMyInfo({}, function (error, _options, userInfo) {
@@ -1099,19 +1212,15 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
-
 	  putUserIdAndSave: function putUserIdAndSave(user_id, callback) {
 	    this.putItemIntoArray('user_ids', user_id, callback);
 	  },
-
 	  putChatIdAndSave: function putChatIdAndSave(chat_id, callback) {
 	    this.putItemIntoArray('chat_ids', chat_id, callback);
 	  },
-
 	  saveMyInfo: function saveMyInfo(userInfo, _callback) {
 	    _indexeddb2.default.addOrPutAll('put', this.userDatabaseDescription, 'information', [userInfo], _callback);
 	  },
-
 	  addNewUserToIndexedDB: function addNewUserToIndexedDB(user_description, callback) {
 	    _indexeddb2.default.addOrPutAll('put', this.userDatabaseDescription, 'users', [user_description], function (error) {
 	      if (error) {
@@ -1122,7 +1231,6 @@ webpackJsonp([0],{
 	      callback(null, user_description);
 	    });
 	  },
-
 	  storeNewUser: function storeNewUser(user_id, userName, userPassword, avatar_data, lastModifyDatetime, callback) {
 	    var self = this;
 	    _indexeddb2.default.addGlobalUser(user_id, userName, userPassword, function (err) {
@@ -1151,6 +1259,66 @@ webpackJsonp([0],{
 	        }
 	        callback(null, userInfo);
 	      });
+	    });
+	  },
+	  filterUsersByTypeDisplay: function filterUsersByTypeDisplay(users, type, options) {
+	    var display_users = [],
+	        self = this;
+	    switch (type) {
+	      case 'all':
+	        display_users = users;
+	        break;
+	      case 'current':
+	        users.forEach(function (_user) {
+	          if (!_user.is_deleted) {
+	            if (options) {
+	              if (options.blocked_user_ids && !self.hasInArray(options.blocked_user_ids, _user.user_id) && options.deleted_user_ids && !self.hasInArray(options.deleted_user_ids, _user.user_id)) {
+	                display_users.push(_user);
+	              }
+	            } else {
+	              display_users.push(_user);
+	            }
+	          }
+	        });
+	        break;
+	      case 'deleted':
+	        users.forEach(function (_user) {
+	          if (_user.is_deleted) {
+	            display_users.push(_user);
+	          }
+	        });
+	        break;
+	      case 'blocked':
+	        if (options && options.blocked_user_ids) {
+	          users.forEach(function (_user) {
+	            if (self.hasInArray(options.blocked_user_ids, _user.user_id)) {
+	              display_users.push(_user);
+	            }
+	          });
+	        }
+	        break;
+	      case 'deletedFromChat':
+	        if (options && options.deleted_user_ids) {
+	          users.forEach(function (_user) {
+	            if (self.hasInArray(options.deleted_user_ids, _user.user_id)) {
+	              display_users.push(_user);
+	            }
+	          });
+	        }
+	        break;
+	    }
+
+	    return display_users;
+	  },
+	  isDeletedUser: function isDeletedUser(messageData, callback) {
+	    this.getContactsInfo(messageData, [messageData.from_user_id], function (_err, contactsInfo, messageData) {
+	      if (_err) {
+	        callback(_err);
+	      } else {
+	        if (contactsInfo[0]) {
+	          callback(null, contactsInfo[0].is_deleted, contactsInfo[0], messageData);
+	        }
+	      }
 	    });
 	  }
 	};
@@ -2060,7 +2228,9 @@ webpackJsonp([0],{
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Websocket = function Websocket() {
+	var ping_time = 40000,
+	    ping_message = { type: 'ping' },
+	    Websocket = function Websocket() {
 	  this.bindContexts();
 	  this.responseCallbacks = [];
 	  this.protocol = window.location.origin.indexOf('https') >= 0 ? 'wss://' : 'ws://';
@@ -2079,8 +2249,17 @@ webpackJsonp([0],{
 	  },
 
 	  createAndListen: function createAndListen() {
+	    var _this = this;
+
 	    this.create();
 	    this.addSocketListeners();
+	    if (!this.connectionPing) {
+	      this.connectionPing = setInterval(function () {
+	        if (_this.socket && _this.socket.readyState === _this.socket.OPEN) {
+	          _this.sendMessage(ping_message);
+	        }
+	      }, ping_time);
+	    }
 	  },
 
 	  create: function create() {
@@ -2748,6 +2927,10 @@ webpackJsonp([0],{
 	      }
 	    }
 
+	    if (props.data && config.data && config.data.key) {
+	      params['data-value'] = props.data[config.data.key];
+	    }
+
 	    this.renderDataAttributes(config, params);
 	    if (options) {
 	      this.renderOptionsAttributes(options, params);
@@ -2776,7 +2959,7 @@ webpackJsonp([0],{
 	    }
 	    return handlers;
 	  },
-	  renderClassName: function renderClassName(classList, props, options) {
+	  renderClassName: function renderClassName(classList, props) {
 	    var _class = '';
 	    _class = classList ? classList : '';
 	    if (props.hide) {
@@ -2859,7 +3042,11 @@ webpackJsonp([0],{
 	        return _react2.default.createElement(_svg2.default, { events: this.props.events, config: this.props.config, data: this.props.data });
 	        break;
 	      default:
-	        return _react2.default.createElement('div', null);
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          this.props.config.content
+	        );
 	        break;
 	    }
 	  },
@@ -2917,19 +3104,15 @@ webpackJsonp([0],{
 	      if (this.props.data && data && this.props.data[data.key_disable]) {
 	        flag = true;
 	      }
-	      if (this.flag) {
+	      if (flag) {
 	        content.push(_react2.default.createElement(
 	          'div',
-	          null,
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'opacity-05 cursor-not-allowed' },
-	            _react2.default.createElement('img', { src: this.src })
-	          )
+	          { key: config.icon, className: 'opacity-05 cursor-not-allowed ' },
+	          _react2.default.createElement('img', { src: "/__build__/svg/" + config.icon + ".svg" })
 	        ));
 	      } else {
 	        content.push(_react2.default.createElement('img', { key: config.icon, 'data-onload': config.onload ? 'true' : '',
-	          'data-role': config.data.role,
+	          'data-role': config.data.role, className: '',
 	          src: "/__build__/svg/" + config.icon + ".svg" }));
 	      }
 	    }
@@ -3555,7 +3738,7 @@ webpackJsonp([0],{
 /***/ 303:
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -3589,6 +3772,14 @@ webpackJsonp([0],{
 	    }
 	  },
 
+	  getUserIdByParentElement: function getUserIdByParentElement(element) {
+	    var parentElement = this.traverseUpToDataset(element, 'role', 'contactWrapper');
+	    if (!parentElement || parentElement && !parentElement.dataset.user_id) {
+	      console.error(new Error('User wrapper does not have user id!'));
+	    } else {
+	      return parentElement.dataset.user_id;
+	    }
+	  },
 	  getDataParameter: function getDataParameter(element, param, _n) {
 	    if (!element) {
 	      return null;
@@ -3885,7 +4076,7 @@ webpackJsonp([0],{
 
 	var _panel2 = _interopRequireDefault(_panel);
 
-	var _chats_manager = __webpack_require__(334);
+	var _chats_manager = __webpack_require__(336);
 
 	var _chats_manager2 = _interopRequireDefault(_chats_manager);
 
@@ -3893,7 +4084,7 @@ webpackJsonp([0],{
 
 	var _description2 = _interopRequireDefault(_description);
 
-	var _chat_resize = __webpack_require__(342);
+	var _chat_resize = __webpack_require__(344);
 
 	var _chat_resize2 = _interopRequireDefault(_chat_resize);
 
@@ -4121,7 +4312,7 @@ webpackJsonp([0],{
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _utils = __webpack_require__(313);
+	var _utils = __webpack_require__(314);
 
 	var _utils2 = _interopRequireDefault(_utils);
 
@@ -4129,31 +4320,31 @@ webpackJsonp([0],{
 
 	var _triple_element2 = _interopRequireDefault(_triple_element);
 
-	var _extra_toolbar = __webpack_require__(314);
+	var _extra_toolbar = __webpack_require__(315);
 
 	var _extra_toolbar2 = _interopRequireDefault(_extra_toolbar);
 
-	var _filter = __webpack_require__(315);
+	var _filter = __webpack_require__(316);
 
 	var _filter2 = _interopRequireDefault(_filter);
 
-	var _panel_toolbar = __webpack_require__(316);
+	var _panel_toolbar = __webpack_require__(317);
 
 	var _panel_toolbar2 = _interopRequireDefault(_panel_toolbar);
 
-	var _body = __webpack_require__(317);
+	var _body = __webpack_require__(318);
 
 	var _body2 = _interopRequireDefault(_body);
 
-	var _pagination = __webpack_require__(332);
+	var _pagination = __webpack_require__(334);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
-	var _go_to = __webpack_require__(333);
+	var _go_to = __webpack_require__(335);
 
 	var _go_to2 = _interopRequireDefault(_go_to);
 
-	var _dialogConfirm = __webpack_require__(326);
+	var _dialogConfirm = __webpack_require__(327);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
@@ -4161,7 +4352,7 @@ webpackJsonp([0],{
 
 	var _dialogError2 = _interopRequireDefault(_dialogError);
 
-	var _dialogSuccess = __webpack_require__(331);
+	var _dialogSuccess = __webpack_require__(332);
 
 	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
 
@@ -4244,7 +4435,6 @@ webpackJsonp([0],{
 	        avatarMode: "SHOW",
 	        avatarData: '',
 	        avatarPrevious: '',
-	        typeDisplayContacts: 'all',
 
 	        errorMessage: null,
 	        confirmMessageShowRemoteFriendshipRequest: null,
@@ -4301,6 +4491,7 @@ webpackJsonp([0],{
 	        },
 	        users_FilterOptions: {
 	          text: "users_FilterOptions",
+	          typeDisplayContacts: 'all',
 	          show: false
 	        },
 	        users_GoToOptions: {
@@ -4558,7 +4749,7 @@ webpackJsonp([0],{
 	      _event_bus2.default.on('changeOpenChats', this.getInfoForBody);
 	      _event_bus2.default.on('changeMyUsers', this.changeMyUsers);
 	      _event_bus2.default.on('web_socket_message', this.onPanelMessageRouter);
-	      _event_bus2.default.on('makeFriends', this.onForceMakeFriends);
+	      _event_bus2.default.on('makeFriends', this.onForceMakeFriends, this);
 	      this.outerContainer = document.querySelector('[data-role="left_panel_outer_container"]');
 	      this.inner_container = document.querySelector('[data-role="left_panel_inner_container"]');
 	      this.outerContainer.style.right = '100vw';
@@ -4728,8 +4919,16 @@ webpackJsonp([0],{
 	        case 'copyUserId':
 	          this.copyUserId();
 	          break;
-	        case 'removeContact':
-	          this.removeContact(element);
+	        case 'removeUser':
+	          this.removeUser(element);
+	          break;
+	        case 'makeFriends':
+	          var userId = element.dataset.key;
+	          if (userId) {
+	            this.onForceMakeFriends(userId, element);
+	          } else {
+	            console.error('Unable to get UserId');
+	          }
 	          break;
 	      }
 	    }
@@ -4878,7 +5077,28 @@ webpackJsonp([0],{
 	          _indexeddb2.default.addOrPutAll('put', _users_bus2.default.userDatabaseDescription, 'users', self.state.contactsInfo, function (err) {
 	            if (err) return console.error(err);
 	          });
-	          self.setState({ "contactsInfo": self.state.contactsInfo });
+	          self.state.userInfo.lastModifyDatetime = Date.now();
+	          self.setState({
+	            "contactsInfo": self.state.contactsInfo,
+	            "userInfo": self.state.userInfo
+	          });
+	          _event_bus2.default.trigger('changeMyUsers');
+
+	          var _connection = _webrtc2.default.getConnectionByUserId(self.state.confirmDialog_userId);
+	          if (_connection) {
+	            var messageData = {
+	              type: 'syncResponseUserData',
+	              from_user_id: self.state.userInfo.user_id,
+	              is_deleted_owner_request: self.state.confirmDialog_userId,
+	              is_deleted: true,
+	              updateInfo: {
+	                avatar_data: self.state.userInfo.avatar_data,
+	                lastModifyDatetime: self.state.userInfo.lastModifyDatetime
+	              }
+	            };
+	            _webrtc2.default.broadcastMessage([_connection], JSON.stringify(messageData));
+	          }
+
 	          break;
 	      }
 	      this.setState({ confirmMessageRemoveContact: null, confirmDialog_userId: null });
@@ -5001,11 +5221,13 @@ webpackJsonp([0],{
 	            return;
 	          }
 	          currentOptions = self.optionsDefinition(self.state, mode);
+
 	          if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
 	            _pagination2.default.prototype.countPagination(currentOptions, null, mode, null, function (_newState) {
 	              self.setState({ _newState: _newState, "userInfo": userInfo, "contactsInfo": contactsInfo });
 	            });
 	          } else {
+	            contactsInfo = _users_bus2.default.filterUsersByTypeDisplay(contactsInfo, currentOptions.filterOptions.typeDisplayContacts);
 	            self.setState({ "userInfo": userInfo, "contactsInfo": contactsInfo });
 	          }
 	        });
@@ -5295,7 +5517,7 @@ webpackJsonp([0],{
 	      ready_state: element.checked
 	    });
 	  },
-	  removeContact: function removeContact(element) {
+	  removeUser: function removeUser(element) {
 	    var parentElement = this.traverseUpToDataset(element, 'role', 'userWrapper');
 	    if (!parentElement || parentElement && !parentElement.dataset.user_id) {
 	      return console.error(new Error('User wrapper does not have user id!'));
@@ -5304,9 +5526,14 @@ webpackJsonp([0],{
 	    this.setState({ confirmMessageRemoveContact: 139, confirmDialog_userId: user_id });
 	  },
 	  changeDisplayContact: function changeDisplayContact(event) {
-	    var value = event.target.value;
-	    if (value && value !== this.state.typeDisplayContacts) {
-	      this.setState({ typeDisplayContacts: value });
+	    var value = event.target.value,
+	        po = this.state.users_PaginationOptions,
+	        fo = this.state.users_FilterOptions;
+	    if (value && value !== fo.typeDisplayContacts) {
+	      po.currentPage = null;
+	      fo.typeDisplayContacts = value;
+	      this.setState({ users_FilterOptions: fo, users_PaginationOptions: po });
+	      this.getInfoForBody();
 	    }
 	  },
 
@@ -5320,15 +5547,11 @@ webpackJsonp([0],{
 	    }
 	    switch (messageData.type) {
 	      case 'user_add':
-	        if (this.state.bodyMode === MODE.JOIN_USER) {
-	          this.showRemoteFriendshipRequest(messageData);
-	        }
+	        this.showRemoteFriendshipRequest(messageData);
 	        break;
 	      case 'user_add_sent':
-	        if (this.state.bodyMode === MODE.JOIN_USER) {
-	          _event_bus2.default.set_ws_device_id(messageData.from_ws_device_id);
-	          this.listenNotifyUser(messageData.to_user_id);
-	        }
+	        _event_bus2.default.set_ws_device_id(messageData.from_ws_device_id);
+	        this.listenNotifyUser(messageData.to_user_id);
 	        break;
 	      case 'user_add_auto':
 	        this.confirmedFriendship(messageData);
@@ -5392,7 +5615,8 @@ webpackJsonp([0],{
 	        }
 	        var messageData = {
 	          type: "notifyUser",
-	          user_description: user_description
+	          user_description: user_description,
+	          from_user_id: user_description.user_id
 	        };
 	        if (triggerConnection.isActive()) {
 	          triggerConnection.dataChannel.send(JSON.stringify(messageData));
@@ -5677,6 +5901,20 @@ webpackJsonp([0],{
 	      chat_description[chat_field_name] = chat_field_value;
 	      _this.putChatToIndexedDB(chat_description, callback);
 	    });
+	  },
+
+	  isDeletedContact: function isDeletedContact(messageData, callback) {
+	    var deleted = void 0;
+	    _indexeddb2.default.getByKeyPath(this.collectionDescription, null, messageData.chat_description.chat_id, function (getError, chat_description) {
+	      if (getError) {
+	        callback(getError);
+	      } else {
+	        if (chat_description) {
+	          deleted = _users_bus2.default.hasInArray(chat_description.deleted_user_ids, messageData.from_user_id);
+	        }
+	        callback(null, deleted, chat_description, messageData);
+	      }
+	    });
 	  }
 	};
 
@@ -5838,7 +6076,19 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _connection2 = __webpack_require__(312);
+	var _indexeddb = __webpack_require__(285);
+
+	var _indexeddb2 = _interopRequireDefault(_indexeddb);
+
+	var _chats_bus = __webpack_require__(309);
+
+	var _chats_bus2 = _interopRequireDefault(_chats_bus);
+
+	var _sync_core = __webpack_require__(312);
+
+	var _sync_core2 = _interopRequireDefault(_sync_core);
+
+	var _connection2 = __webpack_require__(313);
 
 	var _connection3 = _interopRequireDefault(_connection2);
 
@@ -5885,6 +6135,28 @@ webpackJsonp([0],{
 	      if (_connection.ws_device_id === ws_device_id) {
 	        connection = _connection;
 	      }
+	      return !connection;
+	    });
+
+	    return connection;
+	  },
+
+	  getConnectionByUserId: function getConnectionByUserId(user_id) {
+	    var connection, user;
+	    this.connections.every(function (_connection) {
+
+	      _connection.users_ids.every(function (_user) {
+	        if (_user === user_id) {
+	          user = _user;
+	        }
+
+	        return !user;
+	      });
+
+	      if (user) {
+	        connection = _connection;
+	      }
+
 	      return !connection;
 	    });
 
@@ -6269,50 +6541,54 @@ webpackJsonp([0],{
 	      console.error(e);
 	      return;
 	    }
-	    var self = this;
 
-	    if (messageData.lastModifyDatetime) {
-	      _users_bus2.default.getContactsInfo(messageData, [messageData.message.createdByUserId], function (_err, contactsInfo, messageData) {
-	        if (_err) return console.error(_err);
+	    _users_bus2.default.isDeletedUser(messageData, function (err, deleted_user, userInfo, messageData) {
+	      if (err) return console.error(err);
 
-	        contactsInfo = contactsInfo[0];
-	        if (contactsInfo.userName === '-//-//-//-') return;
-	        if (!contactsInfo.lastModifyDatetime || contactsInfo.lastModifyDatetime < messageData.lastModifyDatetime) {
-	          var _messageData = {
-	            type: 'syncRequestUserData',
-	            userId: contactsInfo.user_id,
-	            chat_description: {
-	              chat_id: messageData.chat_description.chat_id
-	            }
-	          };
-	          self.broadcastChatMessage(messageData.chat_description.chat_id, JSON.stringify(_messageData));
+	      if (messageData.type === 'notifyUser') {
+	        _event_bus2.default.trigger('notifyUser', messageData);
+	      }
+	      if (deleted_user) return;
+
+	      if (messageData.lastModifyDatetime) {
+	        _sync_core2.default.needSyncUserData(messageData, userInfo);
+	      }
+
+	      if (messageData.type === 'syncRequestUserData') {
+	        _sync_core2.default.requestUserData(messageData);
+	      } else if (messageData.type === 'syncResponseUserData') {
+	        _sync_core2.default.responseUserData(messageData, userInfo);
+	      }
+
+	      if (!messageData.chat_description) return;
+	      _chats_bus2.default.isDeletedContact(messageData, function (err, deleted_user, chat_description, messageData) {
+	        if (err) return console.error(err);
+
+	        if (!chat_description && messageData.type === 'chatJoinApproved') {
+	          _event_bus2.default.trigger('chatJoinApproved', messageData);
+	          return;
+	        }
+
+	        if (!chat_description || deleted_user && messageData.chat_type !== "user_restore_in_chat_response") return;
+
+	        if (chat_description && chat_description.is_deleted) return;
+
+	        if (messageData.chat_description && messageData.chat_description.lastChangedDatetime) {
+	          _sync_core2.default.needSyncChatDescription(messageData, chat_description);
+	        }
+	        if (messageData.type === 'notifyChat') {
+	          _event_bus2.default.trigger('notifyChat', messageData);
+	        } else if (messageData.type === 'syncRequestChatData') {
+	          _sync_core2.default.requestChatData(messageData);
+	        } else if (messageData.type === 'syncResponseChatData') {
+	          _sync_core2.default.responseChatData(messageData);
+	        } else if (messageData.type === 'syncRequestChatMessages') {
+	          _event_bus2.default.trigger('getSynchronizeChatMessages', messageData);
+	        } else if (messageData.type === 'syncResponseChatMessages') {
+	          _event_bus2.default.trigger('syncResponseChatMessages', messageData);
 	        }
 	      });
-	    }
-
-	    if (messageData.type === 'notifyChat') {
-	      _event_bus2.default.trigger('notifyChat', messageData);
-	    } else if (messageData.type === 'notifyUser') {
-	      _event_bus2.default.trigger('notifyUser', messageData);
-	    } else if (messageData.type === 'chatJoinApproved') {
-	      _event_bus2.default.trigger('chatJoinApproved', messageData);
-	    } else if (messageData.type === 'syncRequestChatMessages') {
-	      _event_bus2.default.trigger('getSynchronizeChatMessages', messageData);
-	    } else if (messageData.type === 'syncResponseChatMessages') {
-	      _event_bus2.default.trigger('syncResponseChatMessages', messageData);
-	    } else if (messageData.type === 'syncRequestUserData') {
-	      this.requestUserInfo(messageData);
-	    } else if (messageData.type === 'syncResponseUserData') {
-	      _users_bus2.default.getContactsInfo(messageData, [messageData.userId], function (_err, userInfo, messageData) {
-	        if (_err) return console.error(_err);
-	        userInfo[0].lastModifyDatetime = messageData.updateInfo.lastModifyDatetime;
-	        userInfo[0].avatar_data = messageData.updateInfo.avatar_data;
-	        _users_bus2.default.addNewUserToIndexedDB(userInfo[0], function (_err, user_description) {
-	          if (_err) return console.error(_err);
-	          _event_bus2.default.trigger('changeMyUsers', messageData.userId);
-	        });
-	      });
-	    }
+	    });
 	  },
 
 	  onDataChannelClose: function onDataChannelClose(curConnection, event) {
@@ -6350,26 +6626,6 @@ webpackJsonp([0],{
 	    dataChannel.onclose = null;
 	    dataChannel.onerror = null;
 	  },
-
-	  requestUserInfo: function requestUserInfo(messageData) {
-	    var self = this;
-	    _users_bus2.default.getMyInfo(messageData, function (_err, options, userInfo) {
-	      var messageData = {
-	        type: 'syncResponseUserData',
-	        userId: userInfo.user_id,
-	        updateInfo: {
-	          avatar_data: userInfo.avatar_data,
-	          lastModifyDatetime: userInfo.lastModifyDatetime
-	        }
-	      };
-	      var stringifyMessageData = JSON.stringify(messageData);
-	      if (stringifyMessageData.length > 66500) {
-	        throw new Error('Data length is too big! Browser does not work');
-	      }
-	      self.broadcastChatMessage(options.chat_description.chat_id, stringifyMessageData);
-	    });
-	  },
-
 
 	  /**
 	   * create data channel with channel id equal to chat id
@@ -6600,6 +6856,174 @@ webpackJsonp([0],{
 	  value: true
 	});
 
+	var _indexeddb = __webpack_require__(285);
+
+	var _indexeddb2 = _interopRequireDefault(_indexeddb);
+
+	var _users_bus = __webpack_require__(282);
+
+	var _users_bus2 = _interopRequireDefault(_users_bus);
+
+	var _chats_bus = __webpack_require__(309);
+
+	var _chats_bus2 = _interopRequireDefault(_chats_bus);
+
+	var _event_bus = __webpack_require__(287);
+
+	var _event_bus2 = _interopRequireDefault(_event_bus);
+
+	var _webrtc = __webpack_require__(311);
+
+	var _webrtc2 = _interopRequireDefault(_webrtc);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Sync_core = function Sync_core() {};
+
+	Sync_core.prototype = {
+	  requestChatData: function requestChatData(messageData) {
+	    var self = this,
+	        from_user_id = messageData.from_user_id;
+	    _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, messageData.chat_description.chat_id, function (getError, chat_description) {
+	      if (getError) return console.error(getError);
+
+	      if (!chat_description) return;
+
+	      if (chat_description.user_ids.indexOf(from_user_id) !== -1 && chat_description.deleted_user_ids.indexOf(from_user_id) === -1) {
+	        self.sendSyncChatDescription(chat_description, from_user_id);
+	      }
+	    });
+	  },
+	  responseChatData: function responseChatData(messageData) {
+	    var updateDescription = messageData.updateDescription;
+	    _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, messageData.chat_description.chat_id, function (getError, chat_description) {
+	      if (getError) return console.error(getError);
+
+	      if (!chat_description) return;
+
+	      if (!chat_description.lastChangedDatetime || chat_description.lastChangedDatetime < updateDescription.lastChangedDatetime) {
+
+	        chat_description.lastChangedDatetime = updateDescription.lastChangedDatetime ? updateDescription.lastChangedDatetime : chat_description.lastChangedDatetime;
+	        chat_description.user_ids = updateDescription.user_ids ? updateDescription.user_ids : chat_description.user_ids;
+	        chat_description.deleted_user_ids = updateDescription.deleted_user_ids ? updateDescription.deleted_user_ids : chat_description.deleted_user_ids;
+	        chat_description.blocked_user_ids = updateDescription.blocked_user_ids ? updateDescription.blocked_user_ids : chat_description.blocked_user_ids;
+	        chat_description.addNewUserWhenInviting = updateDescription.addNewUserWhenInviting ? updateDescription.addNewUserWhenInviting : chat_description.addNewUserWhenInviting;
+	        chat_description.is_deleted = updateDescription.is_deleted ? updateDescription.is_deleted : chat_description.is_deleted;
+	        chat_description.left_chat_user_ids = updateDescription.left_chat_user_ids ? updateDescription.left_chat_user_ids : chat_description.left_chat_user_ids;
+
+	        _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
+	          if (_err) return console.error(_err);
+
+	          _event_bus2.default.trigger("updateChatDescription", chat_description);
+	        });
+	      }
+	    });
+	  },
+	  sendSyncChatDescription: function sendSyncChatDescription(chat_description, from_user_id) {
+	    var _messageData = {
+	      type: 'syncResponseChatData',
+	      owner_request: from_user_id,
+	      from_user_id: _users_bus2.default.getUserId(),
+	      chat_description: {
+	        chat_id: chat_description.chat_id
+	      },
+	      updateDescription: {
+	        lastChangedDatetime: chat_description.lastChangedDatetime,
+	        user_ids: chat_description.user_ids,
+	        deleted_user_ids: chat_description.deleted_user_ids,
+	        blocked_user_ids: chat_description.blocked_user_ids,
+	        addNewUserWhenInviting: chat_description.addNewUserWhenInviting,
+	        is_deleted: chat_description.is_deleted,
+	        left_chat_user_ids: chat_description.left_chat_user_ids
+	      }
+	    };
+	    _webrtc2.default.broadcastChatMessage(chat_description.chat_id, JSON.stringify(_messageData));
+	  },
+	  needSyncChatDescription: function needSyncChatDescription(messageData, chat_description) {
+	    if (!chat_description.lastChangedDatetime || chat_description.lastChangedDatetime < messageData.chat_description.lastChangedDatetime) {
+	      var _messageData = {
+	        type: 'syncRequestChatData',
+	        from_user_id: _users_bus2.default.getUserId(),
+	        chat_description: {
+	          chat_id: chat_description.chat_id
+	        }
+	      };
+	      var active_owner_connection = _webrtc2.default.getConnectionByUserId(chat_description.createdByUserId);
+	      if (active_owner_connection) {
+	        _webrtc2.default.broadcastMessage([active_owner_connection], JSON.stringify(_messageData));
+	      } else {
+	        _webrtc2.default.broadcastChatMessage(chat_description.chat_id, JSON.stringify(_messageData));
+	      }
+	    }
+	  },
+	  requestUserData: function requestUserData(messageData) {
+	    var self = this;
+	    _users_bus2.default.getMyInfo(messageData, function (_err, _messageData, userInfo) {
+	      if (userInfo.user_ids.indexOf(_messageData.owner_request) !== -1) {
+	        _users_bus2.default.getContactsInfo(_messageData, [_messageData.owner_request], function (err, contactsInfo, _messageData) {
+	          if (err) return console.error(err);
+
+	          var messageData = {
+	            type: 'syncResponseUserData',
+	            from_user_id: userInfo.user_id,
+	            owner_request: _messageData.userId,
+	            is_deleted_owner_request: contactsInfo[0],
+	            is_deleted: contactsInfo[0].is_deleted,
+	            updateInfo: {
+	              avatar_data: userInfo.avatar_data,
+	              lastModifyDatetime: userInfo.lastModifyDatetime
+	            }
+	          };
+	          var stringifyMessageData = JSON.stringify(messageData);
+	          if (stringifyMessageData.length > 66500) {
+	            throw new Error('Data length is too big! Browser does not work');
+	          }
+	          _webrtc2.default.broadcastChatMessage(_messageData.chat_description.chat_id, stringifyMessageData);
+	        });
+	      }
+	    });
+	  },
+	  responseUserData: function responseUserData(messageData, userInfo) {
+	    var _messageData = messageData;
+	    userInfo.lastModifyDatetime = messageData.updateInfo.lastModifyDatetime;
+	    userInfo.avatar_data = messageData.updateInfo.avatar_data;
+	    if (messageData.is_deleted_owner_request && messageData.is_deleted) {
+	      userInfo.is_deleted = messageData.is_deleted;
+	    }
+	    _users_bus2.default.addNewUserToIndexedDB(userInfo, function (_err, user_description) {
+	      if (_err) return console.error(_err);
+	      _event_bus2.default.trigger('changeMyUsers', _messageData.from_user_id);
+	    });
+	  },
+	  needSyncUserData: function needSyncUserData(messageData, userInfo) {
+	    if (userInfo.userName === '-//-//-//-') return;
+	    if (!userInfo.lastModifyDatetime || userInfo.lastModifyDatetime < messageData.lastModifyDatetime) {
+	      var _messageData = {
+	        type: 'syncRequestUserData',
+	        userId: userInfo.user_id,
+	        from_user_id: _users_bus2.default.getUserId(),
+	        chat_description: {
+	          chat_id: messageData.chat_description.chat_id
+	        }
+	      };
+	      _webrtc2.default.broadcastChatMessage(messageData.chat_description.chat_id, JSON.stringify(_messageData));
+	    }
+	  }
+	};
+
+	exports.default = new Sync_core();
+
+/***/ },
+
+/***/ 313:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
 	var _websocket = __webpack_require__(290);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
@@ -6756,15 +7180,23 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 313:
-/***/ function(module, exports) {
+/***/ 314:
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	var Utils = function Utils() {};
+
 
 	Utils.prototype = {
 
@@ -6789,6 +7221,11 @@ webpackJsonp([0],{
 	    } else {
 	      return true;
 	    }
+	  },
+	  transformationData: function transformationData(_data, _transform_value) {
+	    var transform_value = _localization2.default.getLocText(_transform_value);
+	    transform_value = this.objectToUrl(_data, transform_value);
+	    return transform_value;
 	  }
 	};
 
@@ -6796,7 +7233,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 314:
+/***/ 315:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6958,7 +7395,11 @@ webpackJsonp([0],{
 	    if (!_config.data) return true;
 	    if (_config.data.role === 'synchronizeMessages') {
 	      var index = this.props.data.user_ids.indexOf(_users_bus2.default.getUserId());
-	      return index !== -1 && this.props.data.user_ids.length > 1 || index === -1 && this.props.data.user_ids.length > 0;
+	      if (this.props.data.is_deleted || _users_bus2.default.hasInArray(this.props.data.deleted_user_ids, _users_bus2.default.getUserId()) || _users_bus2.default.hasInArray(this.props.data.blocked_user_ids, _users_bus2.default.getUserId()) || _users_bus2.default.hasInArray(this.props.data.left_chat_user_ids, _users_bus2.default.getUserId())) {
+	        return false;
+	      } else {
+	        return index !== -1 && this.props.data.user_ids.length > 1 || index === -1 && this.props.data.user_ids.length > 0;
+	      }
 	    }
 	  },
 	  render: function render() {
@@ -6986,7 +7427,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 315:
+/***/ 316:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7130,7 +7571,7 @@ webpackJsonp([0],{
 	        "redraw_mode": "nrte"
 	      }, {
 	        "role": "locationWrapper",
-	        "classList": "flex-item flex-wrap flex-align-c flex-item-auto",
+	        "classList": "flex-align-c flex-item-auto",
 	        "location": "type_display_contacts"
 	      }, {
 	        "element": "label",
@@ -7146,6 +7587,140 @@ webpackJsonp([0],{
 	        }, {
 	          "text": 135,
 	          "value": "current"
+	        }, {
+	          "text": 136,
+	          "value": "deleted"
+	        }],
+	        "data": {
+	          "action": "changeDisplayContact",
+	          "role": "selectDisplayContact",
+	          "warn": true,
+	          "key": 'typeDisplayContacts'
+	        }
+	      }],
+	      contactsFilterConfig: [{
+	        "role": "locationWrapper",
+	        "classList": "elements flex-align-c flex-item-auto",
+	        "location": "pagination"
+	      }, {
+	        "element": "input",
+	        "type": "checkbox",
+	        "class": "check-box-size",
+	        "data": {
+	          "throw": "true",
+	          "role": "enablePagination",
+	          "action": "changeMode",
+	          "mode_to": "PAGINATION",
+	          "chat_part": "pagination",
+	          "key": "showEnablePagination"
+	        },
+	        "location": "pagination"
+	      }, {
+	        "element": "label",
+	        "text": 28,
+	        "location": "pagination"
+	      }, {
+	        "role": "locationWrapper",
+	        "classList": "elements flex-align-c flex-item-auto",
+	        "location": "per_page"
+	      }, {
+	        "element": "input",
+	        "type": "checkbox",
+	        "class": "check-box-size",
+	        "data": {
+	          "throw": "true",
+	          "role": "rteShowPerPage",
+	          "action": "changeRTE",
+	          "key": "rtePerPage"
+	        },
+	        "location": "per_page",
+	        "redraw_mode": "rte"
+	      }, {
+	        "element": "label",
+	        "text": 19,
+	        "htmlFor": "show_per_page",
+	        "location": "per_page",
+	        "redraw_mode": "rte"
+	      }, {
+	        "element": "input",
+	        "type": "text",
+	        "class": "inputWidth",
+	        "data": {
+	          "role": "perPageValue",
+	          "action": "changePerPage",
+	          "key": "perPageValue"
+	        },
+	        "id": "show_per_page",
+	        "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+	        "location": "per_page",
+	        "redraw_mode": "rte"
+	      }, {
+	        "element": "label",
+	        "data": {
+	          "role": "icon_show_per_page"
+	        },
+	        "location": "per_page",
+	        "redraw_mode": "nrte"
+	      }, {
+	        "element": "input",
+	        "type": "checkbox",
+	        "class": "check-box-size",
+	        "data": {
+	          "throw": "true",
+	          "role": "rteChoicePerPage",
+	          "action": "changeRTE",
+	          "key": "rtePerPage"
+	        },
+	        "location": "per_page",
+	        "redraw_mode": "nrte"
+	      }, {
+	        "element": "button",
+	        "text": 19,
+	        "class": "button-inset-white",
+	        "data": {
+	          "role": "show_per_page",
+	          "action": "showPerPage"
+	        },
+	        "htmlFor": "show_per_page",
+	        "location": "per_page",
+	        "redraw_mode": "nrte"
+	      }, {
+	        "element": "input",
+	        "type": "text",
+	        "class": "inputWidth",
+	        "data": {
+	          "role": "perPageValue",
+	          "action": "changePerPage",
+	          "key": "perPageValue"
+	        },
+	        "id": "show_per_page",
+	        "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+	        "location": "per_page",
+	        "redraw_mode": "nrte"
+	      }, {
+	        "role": "locationWrapper",
+	        "classList": "flex-align-c flex-item-auto",
+	        "location": "type_display_contacts"
+	      }, {
+	        "element": "label",
+	        "text": 137,
+	        "class": "p-r-l-1em",
+	        "location": "type_display_contacts"
+	      }, {
+	        "element": "select",
+	        "location": "type_display_contacts",
+	        "select_options": [{
+	          "text": 134,
+	          "value": "all"
+	        }, {
+	          "text": 135,
+	          "value": "current"
+	        }, {
+	          "text": 158,
+	          "value": "blocked"
+	        }, {
+	          "text": 159,
+	          "value": "deletedFromChat"
 	        }, {
 	          "text": 136,
 	          "value": "deleted"
@@ -7380,7 +7955,7 @@ webpackJsonp([0],{
 	        return this.props.messagesFilterConfig;
 	        break;
 	      case 'CONTACT_LIST':
-	        return this.props.chatsFilterConfig;
+	        return this.props.contactsFilterConfig;
 	        break;
 	    }
 	  },
@@ -7464,7 +8039,7 @@ webpackJsonp([0],{
 	      "showEnablePagination": options.paginationOptions.showEnablePagination,
 	      "rtePerPage": options.paginationOptions.rtePerPage,
 	      "mode_change": options.paginationOptions.mode_change,
-	      "typeDisplayContacts": this.props.data.typeDisplayContacts
+	      "typeDisplayContacts": options.filterOptions.typeDisplayContacts
 	    };
 
 	    switch (mode) {
@@ -7511,7 +8086,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 316:
+/***/ 317:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7743,7 +8318,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 317:
+/***/ 318:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7751,6 +8326,8 @@ webpackJsonp([0],{
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 	var _react = __webpack_require__(12);
 
@@ -7768,45 +8345,87 @@ webpackJsonp([0],{
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _utils = __webpack_require__(313);
+	var _utils = __webpack_require__(314);
 
 	var _utils2 = _interopRequireDefault(_utils);
+
+	var _users_bus = __webpack_require__(282);
+
+	var _users_bus2 = _interopRequireDefault(_users_bus);
 
 	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _panel_users = __webpack_require__(318);
+	var _panel_users = __webpack_require__(319);
 
 	var _panel_users2 = _interopRequireDefault(_panel_users);
 
-	var _panel_chats = __webpack_require__(319);
+	var _panel_chats = __webpack_require__(320);
 
 	var _panel_chats2 = _interopRequireDefault(_panel_chats);
 
-	var _message = __webpack_require__(320);
+	var _message = __webpack_require__(321);
 
 	var _message2 = _interopRequireDefault(_message);
 
-	var _setting = __webpack_require__(325);
+	var _setting = __webpack_require__(326);
 
 	var _setting2 = _interopRequireDefault(_setting);
 
-	var _contact_list = __webpack_require__(327);
+	var _contact_list = __webpack_require__(328);
 
 	var _contact_list2 = _interopRequireDefault(_contact_list);
 
-	var _connections = __webpack_require__(328);
+	var _connections = __webpack_require__(329);
 
 	var _connections2 = _interopRequireDefault(_connections);
 
-	var _user_avarat = __webpack_require__(329);
+	var _user_avarat = __webpack_require__(330);
 
 	var _user_avarat2 = _interopRequireDefault(_user_avarat);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Body = _react2.default.createClass({
+	var json_package = __webpack_require__(333),
+	    render_table_obj = function render_table_obj(obj) {
+	  if (obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
+	    var keys = Object.keys(obj);
+	    return _react2.default.createElement(
+	      'table',
+	      { className: 'info-table' },
+	      _react2.default.createElement(
+	        'tbody',
+	        null,
+	        keys.map(function (key) {
+	          return _react2.default.createElement(
+	            'tr',
+	            { key: key },
+	            _react2.default.createElement(
+	              'td',
+	              null,
+	              key
+	            ),
+	            _react2.default.createElement(
+	              'td',
+	              null,
+	              render_table_obj(obj[key])
+	            )
+	          );
+	        })
+	      )
+	    );
+	  } else if (obj === null) {
+	    return 'null';
+	  } else if (obj === true) {
+	    return 'true';
+	  } else if (obj === false) {
+	    return 'false';
+	  } else {
+	    return obj;
+	  }
+	},
+	    Body = _react2.default.createClass({
 	  displayName: 'Body',
 
 	  MODE: {
@@ -8589,6 +9208,15 @@ webpackJsonp([0],{
 	          "key": "notificationOfAccession",
 	          "action": "notificationOfAccession"
 	        }
+	      }, {
+	        "role": "locationWrapper",
+	        "classList": "w-100p",
+	        "location": "clientVersion"
+	      }, {
+	        "element": "",
+	        "content": render_table_obj({ name: json_package.name, version: json_package.version, description: json_package.description }),
+	        "location": "clientVersion",
+	        "disabled": true
 	      }]
 	    };
 	  },
@@ -8650,9 +9278,11 @@ webpackJsonp([0],{
 	      case this.MODE.USERS:
 	        var contactsInfo = this.props.data.contactsInfo;
 	        if (this.props.data.users_PaginationOptions.show) {
+	          contactsInfo = _users_bus2.default.filterUsersByTypeDisplay(contactsInfo, this.props.data.users_FilterOptions.typeDisplayContacts);
 	          contactsInfo = this.limitationQuantityRecords(contactsInfo, this.props.data, this.props.mode);
 	        }
-	        return _react2.default.createElement(_panel_users2.default, { data: contactsInfo, events: this.props.events, type: this.props.data.typeDisplayContacts });
+	        return _react2.default.createElement(_panel_users2.default, { data: contactsInfo, events: this.props.events,
+	          type: this.props.data.typeDisplayContacts });
 	        break;
 	      case this.MODE.JOIN_USER:
 	        data = {
@@ -8662,7 +9292,7 @@ webpackJsonp([0],{
 	          "userName": this.props.data.userInfo.userName
 	        };
 	        if (this.props.data.joinUser_ListOptions.messageRequest) {
-	          data.messageRequest = this.transformationData(data, this.props.data.joinUser_ListOptions.messageRequest);
+	          data.messageRequest = _utils2.default.transformationData(data, this.props.data.joinUser_ListOptions.messageRequest);
 	        }
 	        items.push(_react2.default.createElement(_location_wrapper2.default, { key: 1, events: this.props.events, configs: configs, data: data }));
 	        return items;
@@ -8689,7 +9319,7 @@ webpackJsonp([0],{
 	          "userName": this.props.data.userInfo.userName
 	        };
 	        if (this.props.data.joinChat_ListOptions.messageRequest) {
-	          data.messageRequest = this.transformationData(data, this.props.data.joinChat_ListOptions.messageRequest);
+	          data.messageRequest = _utils2.default.transformationData(data, this.props.data.joinChat_ListOptions.messageRequest);
 	        }
 	        items.push(_react2.default.createElement(_location_wrapper2.default, { key: 1, events: this.props.events, configs: configs, data: data }));
 	        return items;
@@ -8712,10 +9342,11 @@ webpackJsonp([0],{
 	        return _react2.default.createElement(_message2.default, { data: this.props.data, handleEvent: this.props.handleEvent, events: this.props.events });
 	        break;
 	      case this.MODE.SETTINGS:
-	        return _react2.default.createElement(_setting2.default, { data: this.props.data, handleEvent: this.props.handleEvent });
+	        return _react2.default.createElement(_setting2.default, { data: this.props.data, events: this.props.events, handleEvent: this.props.handleEvent });
 	        break;
 	      case this.MODE.CONTACT_LIST:
-	        return _react2.default.createElement(_contact_list2.default, { data: this.props.data, handleEvent: this.props.handleEvent });
+	        return _react2.default.createElement(_contact_list2.default, { data: this.props.data, handleEvent: this.props.handleEvent, events: this.props.events,
+	          onLimitationQuantityRecords: this.limitationQuantityRecords });
 	        break;
 	      case this.MODE.CONNECTIONS:
 	        return _react2.default.createElement(_connections2.default, { data: this.props.data });
@@ -8726,11 +9357,6 @@ webpackJsonp([0],{
 	        break;
 	    }
 	    return items;
-	  },
-	  transformationData: function transformationData(_data, _transform_value) {
-	    var transform_value = _localization2.default.getLocText(_transform_value);
-	    transform_value = _utils2.default.objectToUrl(_data, transform_value);
-	    return transform_value;
 	  },
 	  limitationQuantityRecords: function limitationQuantityRecords(data, state, mode) {
 	    if (data && data.length) {
@@ -8761,7 +9387,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 318:
+/***/ 319:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8778,49 +9404,37 @@ webpackJsonp([0],{
 
 	var _localization2 = _interopRequireDefault(_localization);
 
+	var _users_bus = __webpack_require__(282);
+
+	var _users_bus2 = _interopRequireDefault(_users_bus);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var PanelUsers = _react2.default.createClass({
 	  displayName: 'PanelUsers',
-	  prepareData: function prepareData(users, type) {
-	    var display_users = [];
-	    switch (type) {
-	      case 'all':
-	        display_users = users;
-	        break;
-	      case 'current':
-	        users.forEach(function (_user) {
-	          if (!_user.is_deleted) {
-	            display_users.push(_user);
-	          }
-	        });
-	        break;
-	      case 'deleted':
-	        users.forEach(function (_user) {
-	          if (_user.is_deleted) {
-	            display_users.push(_user);
-	          }
-	        });
-	        break;
-	    }
-
-	    return display_users;
-	  },
 	  renderItems: function renderItems() {
 	    var items = [],
-	        self = this,
-	        users = this.prepareData(this.props.data, this.props.type);
+	        self = this;
 	    var delete_button = _react2.default.createElement(
 	      'div',
 	      { className: 'flex-just-center' },
 	      _react2.default.createElement(
 	        'button',
-	        { className: 'button-inset-square', 'data-action': 'removeContact',
+	        { className: 'button-inset-square', 'data-action': 'removeUser',
 	          onClick: self.props.events.onClick },
 	        _localization2.default.getLocText(131)
 	      )
 	    );
-	    users.forEach(function (user) {
+	    this.props.data.forEach(function (user) {
+	      var add_user_button = _react2.default.createElement(
+	        'div',
+	        { className: 'flex-just-center' },
+	        _react2.default.createElement(
+	          'button',
+	          { 'data-key': user.user_id, 'data-action': 'makeFriends', onClick: self.props.events.onClick },
+	          _localization2.default.getLocText(66)
+	        )
+	      );
 	      items.push(_react2.default.createElement(
 	        'div',
 	        { className: 'flex-sp-start margin-t-b', key: user.user_id, 'data-user_id': user.user_id,
@@ -8838,7 +9452,7 @@ webpackJsonp([0],{
 	            null,
 	            user.is_deleted ? _react2.default.createElement(
 	              'span',
-	              { style: { color: 'red' } },
+	              { className: 'color-red' },
 	              ' ! '
 	            ) : null,
 	            'User name: ',
@@ -8850,7 +9464,7 @@ webpackJsonp([0],{
 	            'User id: ',
 	            user.user_id
 	          ),
-	          user.is_deleted ? null : delete_button
+	          user.is_deleted ? add_user_button : delete_button
 	        )
 	      ));
 	    });
@@ -8873,7 +9487,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 319:
+/***/ 320:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9032,7 +9646,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 320:
+/***/ 321:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9045,11 +9659,11 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _html_message = __webpack_require__(321);
+	var _html_message = __webpack_require__(322);
 
 	var _html_message2 = _interopRequireDefault(_html_message);
 
-	var _messages = __webpack_require__(323);
+	var _messages = __webpack_require__(324);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
@@ -9073,7 +9687,7 @@ webpackJsonp([0],{
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _body = __webpack_require__(317);
+	var _body = __webpack_require__(318);
 
 	var _body2 = _interopRequireDefault(_body);
 
@@ -9310,6 +9924,7 @@ webpackJsonp([0],{
 	        var timeReceived = new Date(message.receivedDatetime);
 	        timeReceived = timeReceived.toISOString();
 	      }
+	      var _innerHTML = message.is_deleted ? _localization2.default.getLocText(140) : message.innerHTML;
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'flex-sp-start margin-t-b', key: message.messageId, onClick: this.props.events.onClick },
@@ -9327,7 +9942,7 @@ webpackJsonp([0],{
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'message flex-item-1-auto flex-dir-col flex-sp-between' },
-	          _react2.default.createElement('div', { className: 'message-container', dangerouslySetInnerHTML: { __html: message.innerHTML } }),
+	          _react2.default.createElement('div', { className: 'message-container', dangerouslySetInnerHTML: { __html: _innerHTML } }),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'date-format' },
@@ -9359,7 +9974,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 321:
+/***/ 322:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9384,7 +9999,7 @@ webpackJsonp([0],{
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _model_core = __webpack_require__(322);
+	var _model_core = __webpack_require__(323);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
@@ -9431,7 +10046,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 322:
+/***/ 323:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9498,7 +10113,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 323:
+/***/ 324:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9523,11 +10138,11 @@ webpackJsonp([0],{
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _html_log_message = __webpack_require__(324);
+	var _html_log_message = __webpack_require__(325);
 
 	var _html_log_message2 = _interopRequireDefault(_html_log_message);
 
-	var _html_message = __webpack_require__(321);
+	var _html_message = __webpack_require__(322);
 
 	var _html_message2 = _interopRequireDefault(_html_message);
 
@@ -9615,7 +10230,7 @@ webpackJsonp([0],{
 	  /**
 	   * add message to the database
 	   */
-	  addMessage: function addMessage(mode, message, chatId, lastModifyDatetime, callback) {
+	  addMessage: function addMessage(mode, message, lastChangedDatetime, chatId, lastModifyDatetime, callback) {
 	    var self = this,
 	        Message = this.getMessageConstructor(mode),
 	        newMessage = new Message({ innerHTML: message }).toJSON();
@@ -9635,10 +10250,12 @@ webpackJsonp([0],{
 
 	        var messageData = {
 	          type: "notifyChat",
+	          from_user_id: _users_bus2.default.getUserId(),
 	          chat_type: "chat_message",
 	          message: newMessage,
 	          chat_description: {
-	            chat_id: chatId
+	            chat_id: chatId,
+	            lastChangedDatetime: lastChangedDatetime
 	          },
 	          lastModifyDatetime: lastModifyDatetime
 	        };
@@ -9648,8 +10265,8 @@ webpackJsonp([0],{
 	      });
 	    });
 	  },
-	  updateMessage: function updateMessage(message, chatId, mode, callback) {
-	    _indexeddb2.default.addOrPutAll('put', this.setCollectionDescription(chatId), this.tableDefinition(mode), [message], function (error) {
+	  updateMessages: function updateMessages(messages, chatId, mode, callback) {
+	    _indexeddb2.default.addOrPutAll('put', this.setCollectionDescription(chatId), this.tableDefinition(mode), messages, function (error) {
 	      if (error) return callback(error);
 
 	      callback();
@@ -9727,9 +10344,10 @@ webpackJsonp([0],{
 	        type: 'syncResponseChatMessages',
 	        from_user_id: _users_bus2.default.getUserId(),
 	        chat_description: {
-	          chat_id: _messageData.chat_description.chat_id
+	          chat_id: _messageData.chat_description.chat_id,
+	          lastChangedDatetime: _messageData.chat_description.lastChangedDatetime
 	        },
-	        owner_request: _messageData.owner_request,
+	        owner_request: _messageData.from_user_id,
 	        messages: messages
 	      };
 	      _webrtc2.default.broadcastChatMessage(messageData.chat_description.chat_id, JSON.stringify(messageData));
@@ -9745,7 +10363,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 324:
+/***/ 325:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9792,7 +10410,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 325:
+/***/ 326:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9833,7 +10451,7 @@ webpackJsonp([0],{
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _dialogConfirm = __webpack_require__(326);
+	var _dialogConfirm = __webpack_require__(327);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
@@ -10239,7 +10857,7 @@ webpackJsonp([0],{
 	    }
 	  },
 	  renderCreatorLayout: function renderCreatorLayout() {
-	    if (this.props.data.createdByUserId === _users_bus2.default.getUserId()) {
+	    if (_users_bus2.default.isOwner(this.props.data.createdByUserId)) {
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'textbox' },
@@ -10282,6 +10900,15 @@ webpackJsonp([0],{
 	    return items;
 	  },
 	  render: function render() {
+	    var delete_chat = _react2.default.createElement(
+	      'div',
+	      { className: 'flex-item flex-wrap flex-align-c flex-item-auto' },
+	      _react2.default.createElement(
+	        'button',
+	        { 'data-action': 'deleteChat', onClick: this.props.events.onClick },
+	        _localization2.default.getLocText(160)
+	      )
+	    );
 	    return _react2.default.createElement(
 	      'div',
 	      null,
@@ -10304,6 +10931,7 @@ webpackJsonp([0],{
 	            )
 	          ) } }),
 	      this.renderItems(this.props.setting_config),
+	      this.props.data.is_deleted ? null : delete_chat,
 	      this.renderCreatorLayout(),
 	      _react2.default.createElement(
 	        'div',
@@ -10325,7 +10953,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 326:
+/***/ 327:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10429,7 +11057,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 327:
+/***/ 328:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10462,7 +11090,15 @@ webpackJsonp([0],{
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _body = __webpack_require__(317);
+	var _users_bus = __webpack_require__(282);
+
+	var _users_bus2 = _interopRequireDefault(_users_bus);
+
+	var _webrtc = __webpack_require__(311);
+
+	var _webrtc2 = _interopRequireDefault(_webrtc);
+
+	var _body = __webpack_require__(318);
 
 	var _body2 = _interopRequireDefault(_body);
 
@@ -10480,11 +11116,15 @@ webpackJsonp([0],{
 	  },
 	  componentDidMount: function componentDidMount() {
 	    _event_bus2.default.on('changeUsersConnections', this.getContacts, this);
+	    _event_bus2.default.on('changeConnection', this.getContacts, this);
 	    _event_bus2.default.on('changeMyUsers', this.getContacts, this);
+	    _event_bus2.default.on('changeConnectionList', this.forceUpdate, this);
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    _event_bus2.default.off('changeUsersConnections', this.getContacts, this);
+	    _event_bus2.default.off('changeConnection', this.getConnections, this);
 	    _event_bus2.default.off('changeMyUsers', this.getContacts, this);
+	    _event_bus2.default.off('changeConnectionList', this.forceUpdate, this);
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 	    if (nextProps.data.user_ids !== this.initialUsers_ids) {
@@ -10509,31 +11149,22 @@ webpackJsonp([0],{
 	      }
 	    });
 	  },
-	  handleClick: function handleClick(event) {
-	    var element = this.getDataParameter(event.currentTarget, 'action');
-	    if (element) {
-	      switch (element.dataset.action) {
-	        case 'makeFriends':
-	          this.makeFriends(element);
-	          break;
-	      }
-	    }
-	  },
-	  makeFriends: function makeFriends(element) {
-	    var userId = element.dataset.key;
-	    if (userId) {
-	      _event_bus2.default.trigger('makeFriends', userId, element);
-	    } else {
-	      console.error('Unable to get UserId');
-	    }
-	  },
 	  renderItems: function renderItems() {
 	    var items = [],
-	        self = this;
-	    this.state.users.forEach(function (_user) {
+	        self = this,
+	        users = _users_bus2.default.filterUsersByTypeDisplay(self.state.users, this.props.data.contactList_FilterOptions.typeDisplayContacts, { 'blocked_user_ids': this.props.data.blocked_user_ids,
+	      'deleted_user_ids': this.props.data.deleted_user_ids });
+	    if (this.props.data.contactList_PaginationOptions.show) {
+	      users = self.props.onLimitationQuantityRecords(users, self.props.data, self.props.data.bodyOptions.mode);
+	    }
+	    users.forEach(function (_user) {
+	      var deleted_contact = self.props.data.deleted_user_ids.indexOf(_user.user_id) !== -1,
+	          blocked_contact = self.props.data.blocked_user_ids.indexOf(_user.user_id) !== -1,
+	          left_chat_contact = self.props.data.left_chat_user_ids.indexOf(_user.user_id) !== -1;
 	      items.push(_react2.default.createElement(
 	        'div',
-	        { key: _user.user_id, className: 'flex-sp-start margin-t-b' },
+	        { key: _user.user_id, className: 'flex-sp-start margin-t-b', 'data-role': 'contactWrapper',
+	          'data-user_id': _user.user_id },
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'width-40px flex-just-center' },
@@ -10550,25 +11181,102 @@ webpackJsonp([0],{
 	          _react2.default.createElement(
 	            'div',
 	            null,
-	            _user.user_id
+	            _user.is_deleted ? _react2.default.createElement(
+	              'span',
+	              { className: 'color-red' },
+	              _localization2.default.getLocText(156)
+	            ) : left_chat_contact ? _react2.default.createElement(
+	              'span',
+	              { className: 'color-red' },
+	              _localization2.default.getLocText(163)
+	            ) : deleted_contact ? _react2.default.createElement(
+	              'span',
+	              { className: 'color-red' },
+	              _localization2.default.getLocText(148)
+	            ) : blocked_contact ? _react2.default.createElement(
+	              'span',
+	              { className: 'color-red' },
+	              ' ',
+	              _localization2.default.getLocText(147)
+	            ) : null
 	          ),
-	          function () {
-	            if (_user.userName === '-//-//-//-') {
-	              return _react2.default.createElement(
-	                'div',
-	                { className: 'flex-just-center' },
-	                _react2.default.createElement(
-	                  'button',
-	                  { 'data-key': _user.user_id, 'data-action': 'makeFriends', onClick: self.handleClick },
-	                  _localization2.default.getLocText(66)
-	                )
-	              );
-	            }
-	          }()
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            _webrtc2.default.getConnectionByUserId(_user.user_id) ? _react2.default.createElement(
+	              'span',
+	              { className: 'color-green' },
+	              _localization2.default.getLocText(150)
+	            ) : _react2.default.createElement(
+	              'span',
+	              { className: 'color-blue' },
+	              _localization2.default.getLocText(149)
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'flex-just-center' },
+	            self.renderUserButtons(_user, deleted_contact, blocked_contact, self.props.events.onClick)
+	          )
 	        )
 	      ));
 	    });
 	    return items;
+	  },
+	  renderUserButtons: function renderUserButtons(_user, deleted_contact, blocked_contact, onClick) {
+	    var add_user_button = _react2.default.createElement(
+	      'div',
+	      { className: 'flex-just-center' },
+	      _react2.default.createElement(
+	        'button',
+	        { 'data-action': 'makeFriends', onClick: onClick },
+	        _localization2.default.getLocText(66)
+	      )
+	    ),
+	        add_contact_button = _react2.default.createElement(
+	      'button',
+	      { 'data-action': 'restoreUserInChat', onClick: onClick },
+	      _localization2.default.getLocText(143)
+	    ),
+	        block_contact_button = _react2.default.createElement(
+	      'button',
+	      { 'data-action': 'blockUserInChat', onClick: onClick },
+	      _localization2.default.getLocText(144)
+	    ),
+	        unblock_contact_button = _react2.default.createElement(
+	      'button',
+	      { 'data-action': 'unblockUserInChat', onClick: onClick },
+	      _localization2.default.getLocText(145)
+	    ),
+	        delete_button = _react2.default.createElement(
+	      'button',
+	      { 'data-action': 'removeContact', onClick: onClick },
+	      _localization2.default.getLocText(142)
+	    );
+	    if (_user.userName === '-//-//-//-' || _user.is_deleted) {
+	      return add_user_button;
+	    }
+	    if (_users_bus2.default.isOwner(this.props.data.createdByUserId)) {
+	      if (deleted_contact) {
+	        return add_contact_button;
+	      }
+	      if (blocked_contact) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          unblock_contact_button,
+	          delete_button
+	        );
+	      } else {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          block_contact_button,
+	          delete_button
+	        );
+	      }
+	    }
+	    return null;
 	  },
 	  render: function render() {
 	    if (this.state.users.length) {
@@ -10589,7 +11297,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 328:
+/***/ 329:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10723,7 +11431,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 329:
+/***/ 330:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10760,11 +11468,11 @@ webpackJsonp([0],{
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _jdenticon = __webpack_require__(330);
+	var _jdenticon = __webpack_require__(331);
 
 	var _jdenticon2 = _interopRequireDefault(_jdenticon);
 
-	var _dialogSuccess = __webpack_require__(331);
+	var _dialogSuccess = __webpack_require__(332);
 
 	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
 
@@ -11008,7 +11716,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 330:
+/***/ 331:
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -11551,7 +12259,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 331:
+/***/ 332:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11650,7 +12358,70 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 332:
+/***/ 333:
+/***/ function(module, exports) {
+
+	module.exports = {
+		"name": "spachat",
+		"version": "0.7.0",
+		"private": true,
+		"description": "Single Page Application Chat",
+		"author": "Alexey Volodko",
+		"contributors": [
+			{
+				"name": "Alina Volodko"
+			}
+		],
+		"dependencies": {
+			"ws": "^1.1.0"
+		},
+		"devDependencies": {
+			"babel-core": "^6.9.0",
+			"babel-loader": "^6.2.4",
+			"babel-preset-es2015": "^6.9.0",
+			"babel-preset-react": "^6.5.0",
+			"cross-env": "^1.0.8",
+			"css-loader": "^0.23.1",
+			"extract-text-webpack-plugin": "^1.0.1",
+			"file-loader": "^0.8.5",
+			"html-webpack-plugin": "^2.17.0",
+			"json-loader": "^0.5.4",
+			"less": "^2.7.1",
+			"less-loader": "^2.2.3",
+			"react": "^15.1.0",
+			"react-dom": "^15.1.0",
+			"react-router": "^2.4.1",
+			"style-loader": "^0.13.1",
+			"webpack": "^1.13.1",
+			"webpack-dev-middleware": "^1.6.1"
+		},
+		"scripts": {
+			"start": "node production_server.js",
+			"build": "./node_modules/.bin/cross-env NODE_ENV=production ./node_modules/.bin/webpack --display-error-details --config ./webpack.config.js",
+			"server-dev": "./node_modules/.bin/cross-env node ./development_server.js",
+			"server-prod": "./node_modules/.bin/cross-env node ./production_server.js"
+		},
+		"main": "production_server.js",
+		"engines": {
+			"node": "4.5.0",
+			"npm": "2.15.9"
+		},
+		"repository": {
+			"type": "git",
+			"url": "https://github.com/volodalexey/spachat.git"
+		},
+		"keywords": [
+			"ReactJS",
+			"WebRTC",
+			"IndexedDB",
+			"NodeJS"
+		],
+		"license": "MIT"
+	};
+
+/***/ },
+
+/***/ 334:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11679,7 +12450,7 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _messages = __webpack_require__(323);
+	var _messages = __webpack_require__(324);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
@@ -11896,6 +12667,8 @@ webpackJsonp([0],{
 	                console.error(_error);
 	                return;
 	              }
+
+	              contactsInfo = _users_bus2.default.filterUsersByTypeDisplay(contactsInfo, currentOptions.filterOptions.typeDisplayContacts);
 	              self.handleCountPagination(contactsInfo, currentOptions, callback);
 	            });
 	          });
@@ -11906,6 +12679,7 @@ webpackJsonp([0],{
 	              console.error(error);
 	              return;
 	            }
+	            contactsInfo = _users_bus2.default.filterUsersByTypeDisplay(contactsInfo, currentOptions.filterOptions.typeDisplayContacts, options);
 	            self.handleCountPagination(contactsInfo, currentOptions, callback);
 	          });
 	          break;
@@ -11949,10 +12723,10 @@ webpackJsonp([0],{
 	    if (elementRole === "first" || elementRole === "last") {
 	      po.currentPage = parseInt(element.dataset.value);
 	    }
-	    if (elementRole === "back") {
+	    if (elementRole === "back" && po.currentPage !== po.firstPage) {
 	      po.currentPage = parseInt(po.currentPage) - 1;
 	    }
-	    if (elementRole === "forward") {
+	    if (elementRole === "forward" && po.currentPage !== po.lastPage) {
 	      po.currentPage = parseInt(po.currentPage) + 1;
 	    }
 	    this.countPagination(currentOptions, null, this.props.mode, { "chat_id": this.props.data.chat_id }, function (_newState) {
@@ -12023,7 +12797,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 333:
+/***/ 335:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12184,7 +12958,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 334:
+/***/ 336:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12221,11 +12995,11 @@ webpackJsonp([0],{
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _ajax_core = __webpack_require__(335);
+	var _ajax_core = __webpack_require__(337);
 
 	var _ajax_core2 = _interopRequireDefault(_ajax_core);
 
-	var _messages = __webpack_require__(323);
+	var _messages = __webpack_require__(324);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
@@ -12237,15 +13011,15 @@ webpackJsonp([0],{
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _model_core = __webpack_require__(322);
+	var _model_core = __webpack_require__(323);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
-	var _chat2 = __webpack_require__(336);
+	var _chat2 = __webpack_require__(338);
 
 	var _chat3 = _interopRequireDefault(_chat2);
 
-	var _dialogConfirm = __webpack_require__(326);
+	var _dialogConfirm = __webpack_require__(327);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
@@ -12255,7 +13029,7 @@ webpackJsonp([0],{
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var id_Generator = __webpack_require__(341);
+	var id_Generator = __webpack_require__(343);
 
 	var ChatsManager = _react2.default.createClass({
 	  displayName: 'ChatsManager',
@@ -12380,7 +13154,7 @@ webpackJsonp([0],{
 	  },
 	  handleChat: function handleChat(messageData, chat_description) {
 	    _event_bus2.default.trigger("changeOpenChats", "CHATS");
-	    if (messageData.chat_wscs_descrs) {
+	    if (messageData.chat_wscs_descrs && !chat_description.is_deleted) {
 	      _webrtc2.default.handleConnectedDevices(messageData.chat_wscs_descrs);
 	    } else {
 	      _websocket2.default.wsRequest({
@@ -12505,7 +13279,7 @@ webpackJsonp([0],{
 	      });
 	      index = self.getIndexCurrentChat(chat_description.chat_id);
 	      if (index === undefined) return;
-
+	      console.log(_chat3.default.prototype.chatsArray[index]);
 	      if (_chat3.default.prototype.chatsArray[index].mode !== 'ready') {
 	        _event_bus2.default.trigger('send_log_message', chat_description.chat_id, {
 	          text: 'Upgrade to chat "ready".',
@@ -12519,15 +13293,19 @@ webpackJsonp([0],{
 	            createdByUserId: chat_description.createdByUserId,
 	            createdDatetime: chat_description.createdDatetime,
 	            user_ids: chat_description.user_ids,
+	            deleted_user_ids: chat_description.deleted_user_ids,
+	            blocked_user_ids: chat_description.blocked_user_ids,
 	            lastChangedDatetime: chat_description.lastChangedDatetime,
 	            addNewUserWhenInviting: chat_description.addNewUserWhenInviting
 	          });
 	          _chat3.default.prototype.chatsArray[index].chat_description.user_ids = chat_description.user_ids;
+	          _chat3.default.prototype.chatsArray[index].chat_description.deleted_user_ids = chat_description.deleted_user_ids;
+	          _chat3.default.prototype.chatsArray[index].chat_description.blocked_user_ids = chat_description.blocked_user_ids;
 	        } else {
 	          _chat3.default.prototype.chatsArray[index].chat_description = chat_description;
 	        }
 	        self.handleChat(event, chat_description);
-	      } else if (_chat3.default.prototype.chatsArray[index].mode === 'ready' && event.chat_wscs_descrs) {
+	      } else if (_chat3.default.prototype.chatsArray[index].mode === 'ready' && event.chat_wscs_descrs && !_chat3.default.prototype.chatsArray[index].chat_description.is_deleted) {
 	        _event_bus2.default.trigger('send_log_message', chat_description.chat_id, { text: 'Webrtc handleConnectedDevices".', type: 'information' });
 	        _webrtc2.default.handleConnectedDevices(event.chat_wscs_descrs);
 	      }
@@ -12725,7 +13503,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 335:
+/***/ 337:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12802,7 +13580,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 336:
+/***/ 338:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12837,7 +13615,7 @@ webpackJsonp([0],{
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _messages2 = __webpack_require__(323);
+	var _messages2 = __webpack_require__(324);
 
 	var _messages3 = _interopRequireDefault(_messages2);
 
@@ -12857,7 +13635,7 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _model_core = __webpack_require__(322);
+	var _model_core = __webpack_require__(323);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
@@ -12865,39 +13643,47 @@ webpackJsonp([0],{
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _header = __webpack_require__(337);
+	var _sync_core = __webpack_require__(312);
+
+	var _sync_core2 = _interopRequireDefault(_sync_core);
+
+	var _utils = __webpack_require__(314);
+
+	var _utils2 = _interopRequireDefault(_utils);
+
+	var _header = __webpack_require__(339);
 
 	var _header2 = _interopRequireDefault(_header);
 
-	var _filter = __webpack_require__(315);
+	var _filter = __webpack_require__(316);
 
 	var _filter2 = _interopRequireDefault(_filter);
 
-	var _extra_toolbar = __webpack_require__(314);
+	var _extra_toolbar = __webpack_require__(315);
 
 	var _extra_toolbar2 = _interopRequireDefault(_extra_toolbar);
 
-	var _body = __webpack_require__(317);
+	var _body = __webpack_require__(318);
 
 	var _body2 = _interopRequireDefault(_body);
 
-	var _editor = __webpack_require__(338);
+	var _editor = __webpack_require__(340);
 
 	var _editor2 = _interopRequireDefault(_editor);
 
-	var _pagination = __webpack_require__(332);
+	var _pagination = __webpack_require__(334);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
-	var _go_to = __webpack_require__(333);
+	var _go_to = __webpack_require__(335);
 
 	var _go_to2 = _interopRequireDefault(_go_to);
 
-	var _toggle_visible_chat_part = __webpack_require__(340);
+	var _toggle_visible_chat_part = __webpack_require__(342);
 
 	var _toggle_visible_chat_part2 = _interopRequireDefault(_toggle_visible_chat_part);
 
-	var _dialogConfirm = __webpack_require__(326);
+	var _dialogConfirm = __webpack_require__(327);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
@@ -12937,9 +13723,24 @@ webpackJsonp([0],{
 	      lastChangedDatetime: null,
 	      errorMessage: null,
 	      confirmMessage: null,
+	      confirmMessageDeleteMessage: null,
+	      confirmMessageRemoveContact: null,
+	      confirmDialog_userId: null,
+	      confirmMessageRestoreContact: null,
+	      confirmMessageRestoreUserRequest: null,
+	      confirmDialog_restoreUserId: null,
+	      confirmMessageBlockedContact: null,
+	      confirmDialog_blockedUserId: null,
+	      confirmMessageUnblockedContact: null,
+	      confirmMessageDeleteChat: null,
+	      confirmDialog_unblockedUserId: null,
+	      confirmData_restoreUserRequest: null,
 	      confirmMessageData: null,
 	      confirmChangeMessage: null,
 	      extraMessageIDToolbar: null,
+	      deleted_user_ids: [],
+	      blocked_user_ids: [],
+	      left_chat_user_ids: [],
 	      padding: {
 	        bottom: 5
 	      },
@@ -13055,6 +13856,7 @@ webpackJsonp([0],{
 
 	      contactList_FilterOptions: {
 	        text: "contactList_FilterOptions",
+	        typeDisplayContacts: 'all',
 	        show: false
 	      },
 	      contactList_ExtraToolbarOptions: {
@@ -13135,6 +13937,8 @@ webpackJsonp([0],{
 	          createdByUserId: data.chat_description.createdByUserId,
 	          createdDatetime: data.chat_description.createdDatetime,
 	          user_ids: data.chat_description.user_ids,
+	          deleted_user_ids: data.chat_description.deleted_user_ids,
+	          blocked_user_ids: data.chat_description.blocked_user_ids,
 	          temp_chat_id: this.props.data.temp_chat_id,
 	          lastChangedDatetime: this.props.data.lastChangedDatetime,
 	          addNewUserWhenInviting: this.props.data.chat_description.addNewUserWhenInviting,
@@ -13226,6 +14030,10 @@ webpackJsonp([0],{
 	      _event_bus2.default.on('changeMode', this.changeMode, this);
 	      _event_bus2.default.on('getChatDescription', this.getChatDescription, this);
 	      _event_bus2.default.on('chat_message', this.onChatMessage, this);
+	      _event_bus2.default.on('update_chat_message', this.workflowSynchronizeMessages, this);
+	      _event_bus2.default.on('user_restore_in_chat_request', this.onChatRestoreUserRequest, this);
+	      _event_bus2.default.on('user_restore_in_chat_response', this.restoreUserInChat, this);
+	      _event_bus2.default.on('updateChatDescription', this.updateChatDescription, this);
 	      _event_bus2.default.on('chat_toggled_ready', this.onChatToggledReady, this);
 	      _event_bus2.default.on('srv_chat_join_request', this.onChatJoinRequest, this);
 	      _event_bus2.default.on('updateUserAvatar', this.updateUserAvatar, this);
@@ -13252,6 +14060,10 @@ webpackJsonp([0],{
 	      _event_bus2.default.off('changeMode', this.changeMode, this);
 	      _event_bus2.default.off('getChatDescription', this.getChatDescription, this);
 	      _event_bus2.default.off('chat_message', this.onChatMessage, this);
+	      _event_bus2.default.off('update_chat_message', this.workflowSynchronizeMessages, this);
+	      _event_bus2.default.off('user_restore_in_chat_request', this.onChatRestoreUserRequest, this);
+	      _event_bus2.default.off('user_restore_in_chat_response', this.restoreUserInChat, this);
+	      _event_bus2.default.off('updateChatDescription', this.updateChatDescription, this);
 	      _event_bus2.default.off('chat_toggled_ready', this.onChatToggledReady, this);
 	      _event_bus2.default.off('srv_chat_join_request', this.onChatJoinRequest, this);
 	      _event_bus2.default.off('updateUserAvatar', this.updateUserAvatar, this);
@@ -13309,7 +14121,8 @@ webpackJsonp([0],{
 	                      avatar_data: self.state.userInfo.avatar_data,
 	                      to_user_id: _contact_id,
 	                      chat_description: {
-	                        chat_id: self.state.chat_id
+	                        chat_id: self.state.chat_id,
+	                        lastChangedDatetime: self.state.lastChangedDatetime
 	                      }
 	                    });
 	                  }
@@ -13358,6 +14171,7 @@ webpackJsonp([0],{
 	  handleClick: function handleClick(event) {
 	    var element = this.getDataParameter(event.currentTarget, 'action'),
 	        self = this,
+	        user_id = void 0,
 	        currentOptions = void 0,
 	        gto = void 0,
 	        po = void 0;
@@ -13440,17 +14254,49 @@ webpackJsonp([0],{
 	        case 'closeEditMessage':
 	          this.resetParamEditingMessage();
 	          break;
+	        case 'makeFriends':
+	          user_id = this.getUserIdByParentElement(element);
+	          if (user_id) {
+	            _event_bus2.default.trigger('makeFriends', user_id, element);
+	          }
+	          break;
+	        case 'removeContact':
+	          user_id = this.getUserIdByParentElement(element);
+	          if (user_id) {
+	            this.setState({ confirmMessageRemoveContact: 139, confirmDialog_userId: user_id });
+	          }
+	          break;
+	        case 'restoreUserInChat':
+	          user_id = this.getUserIdByParentElement(element);
+	          if (user_id) {
+	            this.setState({ confirmMessageRestoreContact: 154, confirmDialog_restoreUserId: user_id });
+	          }
+	          break;
+	        case 'blockUserInChat':
+	          user_id = this.getUserIdByParentElement(element);
+	          if (user_id) {
+	            this.setState({ confirmMessageBlockedContact: 146, confirmDialog_blockedUserId: user_id });
+	          }
+	          break;
+	        case 'unblockUserInChat':
+	          user_id = this.getUserIdByParentElement(element);
+	          if (user_id) {
+	            this.setState({ confirmMessageUnblockedContact: 155, confirmDialog_unblockedUserId: user_id });
+	          }
+	          break;
+	        case 'deleteChat':
+	          this.setState({ confirmMessageDeleteChat: 161 });
+	          break;
 	      }
 	    }
 	  },
 	  handleChange: function handleChange(event) {
 	    var element = this.getDataParameter(event.currentTarget, 'action'),
 	        self = this,
-	        currentOptions = void 0;
+	        currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
 	    if (element) {
 	      switch (element.dataset.action) {
 	        case 'changePerPage':
-	          currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
 	          currentOptions = _filter2.default.prototype.changePerPage(element, currentOptions);
 	          if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
 	            _pagination2.default.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode, { "chat_id": this.state.chat_id }, function (_newState) {
@@ -13461,11 +14307,28 @@ webpackJsonp([0],{
 	          }
 	          break;
 	        case 'changePage':
-	          currentOptions = this.optionsDefinition(this.state, this.state.bodyOptions.mode);
 	          currentOptions = _pagination2.default.prototype.changePage(element, currentOptions);
 	          _pagination2.default.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode, { "chat_id": this.state.chat_id }, function (_newState) {
 	            self.setState(_newState);
 	          });
+	          break;
+	        case 'changeDisplayContact':
+	          var value = event.target.value;
+	          if (value && value !== currentOptions.filterOptions.typeDisplayContacts) {
+	            currentOptions.paginationOptions.currentPage = null;
+	            currentOptions.filterOptions.typeDisplayContacts = value;
+	            this.setState({
+	              contactList_FilterOptions: currentOptions.filterOptions,
+	              contactList_PaginationOptions: currentOptions.paginationOptions
+	            });
+	            if (currentOptions.paginationOptions.show && currentOptions.paginationOptions.rtePerPage) {
+	              _pagination2.default.prototype.countPagination(currentOptions, null, this.state.bodyOptions.mode, { "chat_id": this.state.chat_id,
+	                'blocked_user_ids': this.state.blocked_user_ids,
+	                'deleted_user_ids': this.state.deleted_user_ids }, function (_newState) {
+	                self.setState({ _newState: _newState });
+	              });
+	            }
+	          }
 	          break;
 	      }
 	    }
@@ -13555,7 +14418,8 @@ webpackJsonp([0],{
 	  },
 	  displayExtraMessageToolbar: function displayExtraMessageToolbar(element) {
 	    if (element.dataset.id) {
-	      if (!this.state.extraMessageIDToolbar || this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== parseInt(element.dataset.id)) {
+	      var not_active_user = _users_bus2.default.hasInArray(this.state.blocked_user_ids, _users_bus2.default.getUserId()) || _users_bus2.default.hasInArray(this.state.deleted_user_ids, _users_bus2.default.getUserId());
+	      if (!not_active_user && (!this.state.extraMessageIDToolbar || this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== parseInt(element.dataset.id))) {
 	        this.setState({ extraMessageIDToolbar: parseInt(element.dataset.id) });
 	      } else {
 	        this.setState({ extraMessageIDToolbar: null });
@@ -13572,7 +14436,7 @@ webpackJsonp([0],{
 	        _messages3.default.prototype.getCurrentMessage(_this3.state.chat_id, self.state.extraMessageIDToolbar, self.state.bodyOptions.mode, function (_err, _message) {
 	          if (_err) return console.error(_err);
 
-	          self.setState({ confirmMessage: 141, confirmChangeMessage: _message });
+	          self.setState({ confirmMessageDeleteMessage: 141, confirmChangeMessage: _message });
 	        });
 	      })();
 	    }
@@ -13585,6 +14449,7 @@ webpackJsonp([0],{
 	        var self = _this4;
 	        _messages3.default.prototype.getCurrentMessage(_this4.state.chat_id, self.state.extraMessageIDToolbar, self.state.bodyOptions.mode, function (_err, _message) {
 	          if (_err) return console.error(_err);
+
 	          self.state.messages_ListOptions.innerHTML = _message.innerHTML;
 	          self.state.messages_ListOptions.changeMessage = true;
 	          self.state.messages_ListOptions.currentMessage = _message;
@@ -13592,6 +14457,19 @@ webpackJsonp([0],{
 	        });
 	      })();
 	    }
+	  },
+	  updateRemoteMessage: function updateRemoteMessage(_message) {
+	    var messageData = {
+	      type: "notifyChat",
+	      chat_type: "update_chat_message",
+	      messages: [_message],
+	      from_user_id: _users_bus2.default.getUserId(),
+	      chat_description: {
+	        chat_id: this.state.chat_id,
+	        lastChangedDatetime: this.state.lastChangedDatetime
+	      }
+	    };
+	    _webrtc2.default.broadcastChatMessage(this.state.chat_id, JSON.stringify(messageData));
 	  },
 	  resetParamEditingMessage: function resetParamEditingMessage(forse) {
 	    this.state.messages_ListOptions.innerHTML = null;
@@ -13606,18 +14484,29 @@ webpackJsonp([0],{
 	    var self = this,
 	        index = self.state.user_ids.indexOf(_users_bus2.default.getUserId()),
 	        messageData = void 0,
-	        newState = void 0;
+	        all_connections = void 0,
+	        send_connections = [];
+	    if (_users_bus2.default.hasInArray(self.state.deleted_user_ids, _users_bus2.default.getUserId())) return;
+
 	    if (index !== -1 && self.state.user_ids.length > 1 || index === -1 && self.state.user_ids.length > 0) {
 	      messageData = {
 	        type: "syncRequestChatMessages",
 	        chat_description: {
-	          chat_id: self.state.chat_id
+	          chat_id: self.state.chat_id,
+	          lastChangedDatetime: self.state.lastChangedDatetime
 	        },
-	        owner_request: _users_bus2.default.getUserId()
+	        from_user_id: _users_bus2.default.getUserId()
 	      };
-	      var active_connections = _webrtc2.default.getChatConnections(_webrtc2.default.connections, self.state.chat_id);
-	      if (active_connections.length) {
-	        _webrtc2.default.broadcastChatMessage(self.state.chat_id, JSON.stringify(messageData));
+	      all_connections = _webrtc2.default.getChatConnections(_webrtc2.default.connections, self.state.chat_id);
+	      if (all_connections) {
+	        all_connections.forEach(function (_connection) {
+	          if (!_users_bus2.default.hasInArray(self.state.deleted_user_ids, _connection.users_ids[0])) {
+	            send_connections.push(_connection);
+	          }
+	        });
+	      }
+	      if (send_connections.length) {
+	        _webrtc2.default.broadcastMessage(send_connections, JSON.stringify(messageData));
 	      } else {
 	        this.setState({ errorMessage: 121 });
 	      }
@@ -13657,6 +14546,20 @@ webpackJsonp([0],{
 
 	    this.setState({ confirmMessage: eventData.request_body.message, confirmMessageData: eventData });
 	  },
+	  onChatRestoreUserRequest: function onChatRestoreUserRequest(eventData) {
+	    var self = this,
+	        text = void 0;
+	    _users_bus2.default.getContactsInfo(eventData, [eventData.from_user_id], function (_err, contactInfo, eventData) {
+	      text = _utils2.default.transformationData({
+	        userName: contactInfo[0].userName,
+	        chatId: eventData.chat_description.chat_id
+	      }, eventData.request_body.message);
+	      self.setState({
+	        confirmMessageRestoreUserRequest: text,
+	        confirmData_restoreUserRequest: eventData
+	      });
+	    });
+	  },
 	  handleDialogError: function handleDialogError() {
 	    this.setState({ errorMessage: null });
 	  },
@@ -13685,8 +14588,31 @@ webpackJsonp([0],{
 	          }
 	          break;
 	      }
+	      this.setState({ confirmMessage: null, confirmMessageData: null });
 	    }
-	    this.setState({ confirmMessage: null, confirmMessageData: null });
+	  },
+	  handleDialogRestoreUserRequest: function handleDialogRestoreUserRequest(event) {
+	    var element = this.getDataParameter(event.target, 'action');
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          var data = this.state.confirmData_restoreUserRequest;
+
+	          var messageData = {
+	            type: "notifyChat",
+	            chat_type: "user_restore_in_chat_response",
+	            chat_description: {
+	              chat_id: this.state.chat_id
+	            },
+	            from_user_id: _users_bus2.default.getUserId()
+	          };
+	          _webrtc2.default.broadcastChatMessage(this.state.chat_id, JSON.stringify(messageData));
+	          break;
+	      }
+	      this.setState({ confirmMessageRestoreUserRequest: null, confirmData_restoreUserRequest: null });
+	    }
 	  },
 	  handleDialogDeleteMessage: function handleDialogDeleteMessage(event) {
 	    var element = this.getDataParameter(event.target, 'action'),
@@ -13697,17 +14623,245 @@ webpackJsonp([0],{
 	          break;
 	        case 'confirmOk':
 	          self.state.confirmChangeMessage.is_deleted = true;
-	          _messages3.default.prototype.updateMessage(self.state.confirmChangeMessage, self.state.chat_id, self.state.bodyOptions.mode, function (_error) {
+	          self.state.confirmChangeMessage.lastModifyDatetime = Date.now();
+	          _messages3.default.prototype.updateMessages([self.state.confirmChangeMessage], self.state.chat_id, self.state.bodyOptions.mode, function (_error) {
 	            if (_error) return console.error(_error);
 
+	            self.updateRemoteMessage(self.state.confirmChangeMessage);
+
 	            self.resetParamEditingMessage(true);
-	            // self.state.messages_ListOptions.forceUpdate = true;
-	            // self.setState({messages_ListOptions: self.state.messages_ListOptions, confirmChangeMessage: null});
 	          });
 	          break;
 	      }
+	      this.setState({ confirmMessageDeleteMessage: null });
 	    }
-	    this.setState({ confirmMessage: null });
+	  },
+	  handleDialogDeleteChat: function handleDialogDeleteChat(event) {
+	    var element = this.getDataParameter(event.target, 'action'),
+	        self = this;
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, self.state.chat_id, function (getError, chat_description) {
+	            if (getError) return console.error(getError);
+
+	            if (!chat_description) return;
+
+	            chat_description.is_deleted = true;
+	            if (_users_bus2.default.getUserId() === chat_description.createdByUserId) {
+	              chat_description.lastChangedDatetime = Date.now();
+	              _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
+	                if (_err) return console.error(_err);
+
+	                self.setState({
+	                  lastChangedDatetime: chat_description.lastChangedDatetime,
+	                  is_deleted: chat_description.is_deleted
+	                });
+	                _sync_core2.default.sendSyncChatDescription(chat_description, _users_bus2.default.getUserId());
+	              });
+	            } else {
+	              chat_description.left_chat_user_ids.push(_users_bus2.default.getUserId());
+	              _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
+	                if (_err) return console.error(_err);
+
+	                self.setState({
+	                  is_deleted: chat_description.is_deleted,
+	                  left_chat_user_ids: chat_description.left_chat_user_ids
+	                });
+
+	                var active_owner_connection = _webrtc2.default.getConnectionByUserId(chat_description.createdByUserId);
+	                if (active_owner_connection) {
+	                  var _messageData = {
+	                    type: 'syncResponseChatData',
+	                    owner_request: _users_bus2.default.getUserId(),
+	                    from_user_id: _users_bus2.default.getUserId(),
+	                    chat_description: {
+	                      chat_id: chat_description.chat_id
+	                    },
+	                    updateDescription: {
+	                      left_chat_user_ids: chat_description.left_chat_user_ids
+	                    }
+	                  };
+	                  _webrtc2.default.broadcastMessage([active_owner_connection], JSON.stringify(_messageData));
+	                }
+	              });
+	            }
+	          });
+
+	          break;
+	      }
+	      this.setState({ confirmMessageDeleteChat: null });
+	    }
+	  },
+	  handleDialogRemoveContact: function handleDialogRemoveContact(event) {
+	    var element = this.getDataParameter(event.target, 'action'),
+	        self = this;
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          var delete_user_id = self.state.confirmDialog_userId;
+	          if (self.state.user_ids.indexOf(delete_user_id) === -1) return;
+
+	          if (self.state.deleted_user_ids.indexOf(delete_user_id) === -1) {
+
+	            _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, self.state.chat_id, function (getError, chat_description) {
+	              if (getError) return console.error(getError);
+
+	              if (!chat_description) return;
+
+	              chat_description.deleted_user_ids.push(delete_user_id);
+	              chat_description.lastChangedDatetime = Date.now();
+
+	              _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
+	                if (_err) return console.error(_err);
+
+	                self.setState({
+	                  lastChangedDatetime: chat_description.lastChangedDatetime,
+	                  deleted_user_ids: chat_description.deleted_user_ids
+	                });
+	                _sync_core2.default.sendSyncChatDescription(chat_description, _users_bus2.default.getUserId());
+	              });
+	            });
+	          }
+	          break;
+	      }
+	      this.setState({ confirmMessageRemoveContact: null, confirmDialog_userId: null });
+	    }
+	  },
+	  handleDialogRestoreContact: function handleDialogRestoreContact(event) {
+	    var element = this.getDataParameter(event.target, 'action'),
+	        self = this;
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          var user_id = self.state.confirmDialog_restoreUserId;
+	          if (!self.state.addNewUserWhenInviting) {
+	            if (!_webrtc2.default.getConnectionByUserId(user_id)) {
+	              self.setState({ errorMessage: 151 });
+	            }
+	            var messageData = {
+	              type: "notifyChat",
+	              chat_type: "user_restore_in_chat_request",
+	              chat_description: {
+	                chat_id: self.state.chat_id,
+	                lastChangedDatetime: self.state.lastChangedDatetime
+	              },
+	              request_body: {
+	                message: 153
+	              },
+	              from_user_id: _users_bus2.default.getUserId()
+	            };
+	            _webrtc2.default.broadcastChatMessage(self.state.chat_id, JSON.stringify(messageData));
+	          } else {
+	            self.workflowUserPosition(user_id);
+	          }
+	          break;
+	      }
+	      this.setState({ confirmMessageRestoreContact: null, confirmDialog_restoreUserId: null });
+	    }
+	  },
+	  workflowUserPosition: function workflowUserPosition(user_id) {
+	    var self = this;
+	    _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, self.state.chat_id, function (getError, chat_description) {
+	      if (getError) return console.error(getError);
+
+	      if (!chat_description) return;
+
+	      chat_description.deleted_user_ids.splice(self.state.deleted_user_ids.indexOf(user_id), 1);
+	      chat_description.lastChangedDatetime = Date.now();
+
+	      _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
+	        if (_err) return console.error(_err);
+
+	        self.setState({
+	          lastChangedDatetime: chat_description.lastChangedDatetime,
+	          deleted_user_ids: chat_description.deleted_user_ids
+	        });
+	        _sync_core2.default.sendSyncChatDescription(chat_description, _users_bus2.default.getUserId());
+	      });
+	    });
+	  },
+	  restoreUserInChat: function restoreUserInChat(eventData) {
+	    var self = this,
+	        restore_user_id = eventData.from_user_id;
+	    if (this.state.user_ids.indexOf(restore_user_id) === -1) return;
+
+	    if (_users_bus2.default.hasInArray(this.state.deleted_user_ids, restore_user_id)) {
+	      this.workflowUserPosition(restore_user_id);
+	    }
+	  },
+	  handleDialogBlockedContact: function handleDialogBlockedContact(event) {
+	    var element = this.getDataParameter(event.target, 'action'),
+	        self = this;
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          var blocked_user_id = self.state.confirmDialog_blockedUserId;
+	          if (self.state.user_ids.indexOf(blocked_user_id) === -1) return;
+
+	          if (self.state.blocked_user_ids.indexOf(blocked_user_id) === -1) {
+	            _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, self.state.chat_id, function (getError, chat_description) {
+	              if (getError) return console.error(getError);
+
+	              if (!chat_description) return;
+
+	              chat_description.blocked_user_ids.push(blocked_user_id);
+	              chat_description.lastChangedDatetime = Date.now();
+
+	              _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
+	                if (_err) return console.error(_err);
+
+	                self.setState({
+	                  lastChangedDatetime: chat_description.lastChangedDatetime,
+	                  blocked_user_ids: chat_description.blocked_user_ids
+	                });
+	                _sync_core2.default.sendSyncChatDescription(chat_description, _users_bus2.default.getUserId());
+	              });
+	            });
+	          }
+	          break;
+	      }
+	      this.setState({ confirmMessageBlockedContact: null, confirmDialog_blockedUserId: null });
+	    }
+	  },
+	  handleDialogUnblockedContact: function handleDialogUnblockedContact(event) {
+	    var element = this.getDataParameter(event.target, 'action'),
+	        self = this;
+	    if (element) {
+	      switch (element.dataset.action) {
+	        case 'confirmCancel':
+	          break;
+	        case 'confirmOk':
+	          _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, self.state.chat_id, function (getError, chat_description) {
+	            if (getError) return console.error(getError);
+
+	            if (!chat_description) return;
+
+	            chat_description.blocked_user_ids.splice(self.state.blocked_user_ids.indexOf(self.state.confirmDialog_unblockedUserId), 1);
+	            chat_description.lastChangedDatetime = Date.now();
+
+	            _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
+	              if (_err) return console.error(_err);
+
+	              self.setState({
+	                lastChangedDatetime: chat_description.lastChangedDatetime,
+	                blocked_user_ids: chat_description.blocked_user_ids
+	              });
+	              _sync_core2.default.sendSyncChatDescription(chat_description, _users_bus2.default.getUserId());
+	            });
+	          });
+	          break;
+	      }
+	      this.setState({ confirmMessageUnblockedContact: null, confirmDialog_unblockedUserId: null });
+	    }
 	  },
 	  changeState: function changeState(newState) {
 	    this.setState(newState);
@@ -13748,6 +14902,8 @@ webpackJsonp([0],{
 	    var self = this,
 	        newState = this.state;
 	    this.checkingUserInChat([eventData.message.createdByUserId], this.state.user_ids);
+	    if (this.state.is_deleted || _users_bus2.default.hasInArray(this.state.blocked_user_ids, _users_bus2.default.getUserId()) || _users_bus2.default.hasInArray(this.state.deleted_user_ids, _users_bus2.default.getUserId()) || _users_bus2.default.hasInArray(this.state.left_chat_user_ids, _users_bus2.default.getUserId())) return;
+
 	    _messages3.default.prototype.addRemoteMessage(eventData.message, this.state.bodyOptions.mode, this.state.chat_id, function (err) {
 	      if (err) {
 	        console.error(err);
@@ -13781,6 +14937,7 @@ webpackJsonp([0],{
 
 	        var store = {},
 	            remoteMessages = [],
+	            updateMessages = [],
 	            usersToChecking = [];
 	        if (_messages.length) {
 	          var _iteratorNormalCompletion = true;
@@ -13791,7 +14948,7 @@ webpackJsonp([0],{
 	            for (var _iterator = _messages[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	              var message = _step.value;
 
-	              store[message.messageId] = true;
+	              store[message.messageId] = message.lastModifyDatetime ? message.lastModifyDatetime : false;
 	            }
 	          } catch (err) {
 	            _didIteratorError = true;
@@ -13816,10 +14973,14 @@ webpackJsonp([0],{
 	            for (var _iterator2 = messageData.messages[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
 	              var _syncMessage = _step2.value;
 
-	              if (!store[_syncMessage.messageId]) {
+	              if (!_syncMessage.messageId in store) {
 	                remoteMessages.push(_syncMessage);
 	                if (usersToChecking.indexOf(_syncMessage.createdByUserId) === -1) {
 	                  usersToChecking.push(_syncMessage.createdByUserId);
+	                }
+	              } else {
+	                if (!store[_syncMessage.messageId] || _syncMessage.lastModifyDatetime && store[_syncMessage.messageId] !== _syncMessage.lastModifyDatetime) {
+	                  updateMessages.push(_syncMessage);
 	                }
 	              }
 	            }
@@ -13843,6 +15004,7 @@ webpackJsonp([0],{
 	          remoteMessages = messageData.messages;
 	          lastMessage = null;
 	        }
+
 	        var _workflow = function _workflow() {
 	          self.syncMessageDataFlag = false;
 	          if (self.syncMessageDataArray.length) {
@@ -13866,9 +15028,36 @@ webpackJsonp([0],{
 	            if (_err) return console.error(_err);
 	            _workflow();
 	          });
+	        }
+	        if (updateMessages.length) {
+	          _messages3.default.prototype.updateMessages(updateMessages, self.state.chat_id, self.state.bodyOptions.mode, function (_err) {
+	            if (_err) return console.error(_err);
+
+	            self.state.messages_ListOptions.forceUpdate = true;
+	            self.setState({ messages_ListOptions: self.state.messages_ListOptions });
+
+	            _workflow();
+	          });
 	        } else {
 	          _workflow();
 	        }
+	      });
+	    }
+	  },
+	  updateChatDescription: function updateChatDescription(updateDescription) {
+	    if (this.state.chat_id === updateDescription.chat_id) {
+	      if (_users_bus2.default.hasInArray(updateDescription.blocked_user_ids, _users_bus2.default.getUserId()) || _users_bus2.default.hasInArray(updateDescription.deleted_user_ids, _users_bus2.default.getUserId())) {
+	        this.state.extraMessageIDToolbar = null;
+	      }
+	      this.setState({
+	        lastChangedDatetime: updateDescription.lastChangedDatetime,
+	        user_ids: updateDescription.user_ids,
+	        deleted_user_ids: updateDescription.deleted_user_ids,
+	        blocked_user_ids: updateDescription.blocked_user_ids,
+	        is_deleted: updateDescription.is_deleted,
+	        addNewUserWhenInviting: updateDescription.addNewUserWhenInviting,
+	        extraMessageIDToolbar: this.state.extraMessageIDToolbar,
+	        left_chat_user_ids: updateDescription.left_chat_user_ids
 	      });
 	    }
 	  },
@@ -13898,7 +15087,8 @@ webpackJsonp([0],{
 
 	    var handleEvent = {
 	      changeState: this.changeState,
-	      resetParamEditingMessage: this.resetParamEditingMessage
+	      resetParamEditingMessage: this.resetParamEditingMessage,
+	      updateRemoteMessage: this.updateRemoteMessage
 	    };
 	    var onEvent = {
 	      onClick: this.handleClick,
@@ -13941,8 +15131,26 @@ webpackJsonp([0],{
 	          handleClick: this.handleDialogError }),
 	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessage, message: this.state.confirmMessage,
 	          handleClick: this.handleDialogChatJoinRequest }),
-	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessage, message: this.state.confirmMessage,
+	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageDeleteMessage, message: this.state.confirmMessageDeleteMessage,
 	          handleClick: this.handleDialogDeleteMessage }),
+	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageRemoveContact,
+	          message: this.state.confirmMessageRemoveContact,
+	          handleClick: this.handleDialogRemoveContact }),
+	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageRestoreContact,
+	          message: this.state.confirmMessageRestoreContact,
+	          handleClick: this.handleDialogRestoreContact }),
+	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageBlockedContact,
+	          message: this.state.confirmMessageBlockedContact,
+	          handleClick: this.handleDialogBlockedContact }),
+	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageUnblockedContact,
+	          message: this.state.confirmMessageUnblockedContact,
+	          handleClick: this.handleDialogUnblockedContact }),
+	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageRestoreUserRequest,
+	          message: this.state.confirmMessageRestoreUserRequest,
+	          handleClick: this.handleDialogRestoreUserRequest }),
+	        _react2.default.createElement(_dialogConfirm2.default, { show: this.state.confirmMessageDeleteChat,
+	          message: this.state.confirmMessageDeleteChat,
+	          handleClick: this.handleDialogDeleteChat }),
 	        _react2.default.createElement('div', { className: this.defineSplitterClass('chat-splitter-item '), 'data-role': 'splitter_item',
 	          'data-splitteritem': 'left' }),
 	        _react2.default.createElement('div', { className: this.defineSplitterClass('chat-splitter-item right '), 'data-role': 'splitter_item',
@@ -14014,7 +15222,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 337:
+/***/ 339:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14026,6 +15234,14 @@ webpackJsonp([0],{
 	var _react = __webpack_require__(12);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _users_bus = __webpack_require__(282);
+
+	var _users_bus2 = _interopRequireDefault(_users_bus);
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
 
 	var _location_wrapper = __webpack_require__(293);
 
@@ -14109,15 +15325,17 @@ webpackJsonp([0],{
 	        "data": {
 	          "role": "header_description"
 	        }
-	      }, {
-	        "element": "label",
-	        "text": "",
-	        "class": "",
-	        "location": "description",
-	        "data": {
-	          "role": "labelUserPassword"
-	        }
-	      }, {
+	      },
+	      /*        {
+	                "element": "label",
+	                "text": "",
+	                "class": "",
+	                "location": "description",
+	                "data": {
+	                  "role": "chatDescription"
+	                }
+	              },*/
+	      {
 	        "role": "locationWrapper",
 	        "classList": "flex",
 	        "location": "bottomPanel",
@@ -14225,12 +15443,48 @@ webpackJsonp([0],{
 	        break;
 	    }
 	  },
+	  defineTitle: function defineTitle() {
+	    if (this.props.data.is_deleted) {
+	      if (_users_bus2.default.hasInArray(this.props.data.left_chat_user_ids, _users_bus2.default.getUserId())) {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'c-50 flex-just-center border-01em-red' },
+	          _localization2.default.getLocText(164)
+	        );
+	      } else {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'c-50 flex-just-center border-01em-red' },
+	          _localization2.default.getLocText(162)
+	        );
+	      }
+	    } else if (_users_bus2.default.hasInArray(this.props.data.deleted_user_ids, _users_bus2.default.getUserId())) {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'c-50 flex-just-center border-01em-red' },
+	        _localization2.default.getLocText(157)
+	      );
+	    } else if (_users_bus2.default.hasInArray(this.props.data.blocked_user_ids, _users_bus2.default.getUserId())) {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'c-50 flex-just-center border-01em-red' },
+	        _localization2.default.getLocText(152)
+	      );
+	    } else {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'c-50 flex-just-center' },
+	        _localization2.default.getLocText(59)
+	      );
+	    }
+	  },
 	  render: function render() {
 	    var options = this.defineOptions(this.props.chat_mode),
 	        config = this.defineConfig(this.props.chat_mode);
 	    return _react2.default.createElement(
 	      'header',
 	      { 'data-role': 'header_container', className: 'modal-header' },
+	      this.defineTitle(),
 	      _react2.default.createElement(_location_wrapper2.default, { events: this.props.events, data: options, mainContainer: this.props.mainContainer,
 	        configs: config, mode: this.props.data.bodyOptions.mode })
 	    );
@@ -14241,7 +15495,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 338:
+/***/ 340:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14270,19 +15524,27 @@ webpackJsonp([0],{
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _messages = __webpack_require__(323);
+	var _messages = __webpack_require__(324);
 
 	var _messages2 = _interopRequireDefault(_messages);
+
+	var _users_bus = __webpack_require__(282);
+
+	var _users_bus2 = _interopRequireDefault(_users_bus);
+
+	var _localization = __webpack_require__(280);
+
+	var _localization2 = _interopRequireDefault(_localization);
 
 	var _location_wrapper = __webpack_require__(293);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _format_panel = __webpack_require__(339);
+	var _format_panel = __webpack_require__(341);
 
 	var _format_panel2 = _interopRequireDefault(_format_panel);
 
-	var _pagination = __webpack_require__(332);
+	var _pagination = __webpack_require__(334);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
@@ -14380,7 +15642,9 @@ webpackJsonp([0],{
 	    this.editorContainer = _reactDom2.default.findDOMNode(this);
 	    if (this.editorContainer) {
 	      this.messageInnerContainer = this.editorContainer.querySelector('[data-role="message_inner_container"]');
-	      this.messageInnerContainer.addEventListener('keypress', this.sendEnter);
+	      if (this.messageInnerContainer) {
+	        this.messageInnerContainer.addEventListener('keypress', this.sendEnter);
+	      }
 	    }
 	  },
 	  workflowInnerHtml: function workflowInnerHtml(save) {
@@ -14410,14 +15674,15 @@ webpackJsonp([0],{
 	        if (data.messages_ListOptions.currentMessage) {
 	          data.messages_ListOptions.currentMessage.innerHTML = message;
 	          data.messages_ListOptions.currentMessage.lastModifyDatetime = Date.now();
-	          _messages2.default.prototype.updateMessage(data.messages_ListOptions.currentMessage, data.chat_id, data.bodyOptions.mode, function (_err) {
+	          _messages2.default.prototype.updateMessages([data.messages_ListOptions.currentMessage], data.chat_id, data.bodyOptions.mode, function (_err) {
 	            self.workflowInnerHtml();
 
+	            self.props.handleEvent.updateRemoteMessage(data.messages_ListOptions.currentMessage);
 	            self.props.handleEvent.resetParamEditingMessage(true);
 	          });
 	        }
 	      } else {
-	        _messages2.default.prototype.addMessage(data.bodyOptions.mode, message, data.chat_id, data.userInfo.lastModifyDatetime, function (err) {
+	        _messages2.default.prototype.addMessage(data.bodyOptions.mode, message, data.lastChangedDatetime, data.chat_id, data.userInfo.lastModifyDatetime, function (err) {
 	          if (err) {
 	            console.error(err);
 	            return;
@@ -14469,7 +15734,8 @@ webpackJsonp([0],{
 	      var classMesContainer = this.props.data.formatOptions.offScroll ? 'container onScroll' : 'container',
 	          _innerHTML = this.props.data.messages_ListOptions.innerHTML && this.previousMode ? this.props.data.messages_ListOptions.innerHTML : this.__innerHtml;
 	      this.previousMode = true;
-	      return _react2.default.createElement(
+	      var not_active_chat = this.props.data.is_deleted || _users_bus2.default.hasInArray(this.props.data.blocked_user_ids, _users_bus2.default.getUserId()) || _users_bus2.default.hasInArray(this.props.data.deleted_user_ids, _users_bus2.default.getUserId());
+	      return not_active_chat ? null : _react2.default.createElement(
 	        'div',
 	        { 'data-role': 'editor_container', className: 'c-200' },
 	        _react2.default.createElement(
@@ -14504,7 +15770,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 339:
+/***/ 341:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14640,7 +15906,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 340:
+/***/ 342:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14669,6 +15935,10 @@ webpackJsonp([0],{
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
+	var _users_bus = __webpack_require__(282);
+
+	var _users_bus2 = _interopRequireDefault(_users_bus);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var ToggleVisibleChatPart = _react2.default.createClass({
@@ -14695,6 +15965,7 @@ webpackJsonp([0],{
 	  },
 	  componentDidMount: function componentDidMount() {
 	    this.toggle_container = _reactDom2.default.findDOMNode(this);
+	    if (!this.toggle_container) return;
 	    this.toggleButton = this.toggle_container.querySelector('[data-role="toggleButton"]');
 	    _event_bus2.default.on('onMouseUp', this.handleResize, this);
 	  },
@@ -14831,7 +16102,8 @@ webpackJsonp([0],{
 	        )
 	      );
 	    } else if (location === 'BOTTOM') {
-	      return _react2.default.createElement(
+	      var not_active_user = _users_bus2.default.hasInArray(this.props.data.blocked_user_ids, _users_bus2.default.getUserId()) || _users_bus2.default.hasInArray(this.props.data.deleted_user_ids, _users_bus2.default.getUserId());
+	      return not_active_user ? null : _react2.default.createElement(
 	        'div',
 	        { className: this.defineClassName(bodyMode, location),
 	          'data-role': 'toggleContainer',
@@ -14863,7 +16135,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 341:
+/***/ 343:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -14910,7 +16182,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 342:
+/***/ 344:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15094,7 +16366,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 343:
+/***/ 345:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15117,7 +16389,7 @@ webpackJsonp([0],{
 
 	var _dialogError2 = _interopRequireDefault(_dialogError);
 
-	var _dialogSuccess = __webpack_require__(331);
+	var _dialogSuccess = __webpack_require__(332);
 
 	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
 
@@ -15125,7 +16397,7 @@ webpackJsonp([0],{
 
 	var _description2 = _interopRequireDefault(_description);
 
-	var _ajax_core = __webpack_require__(335);
+	var _ajax_core = __webpack_require__(337);
 
 	var _ajax_core2 = _interopRequireDefault(_ajax_core);
 
@@ -15149,7 +16421,7 @@ webpackJsonp([0],{
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
 
-	var _jdenticon = __webpack_require__(330);
+	var _jdenticon = __webpack_require__(331);
 
 	var _jdenticon2 = _interopRequireDefault(_jdenticon);
 
