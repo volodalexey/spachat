@@ -1,6 +1,6 @@
 {
   "name": "spachat",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "description": "Single Page Application Chat",
   "author": "Alexey Volodko",
@@ -34,14 +34,14 @@
   },
   "scripts": {
     "start": "node production_server.js",
-    "webpack": "./node_modules/.bin/cross-env NODE_ENV=production ./node_modules/.bin/webpack --display-error-details --config ./webpack.config.js",
-    "server:dev": "./node_modules/.bin/cross-env node ./development_server.js",
-    "server:prod": "./node_modules/.bin/cross-env node ./production_server.js"
+    "build": "./node_modules/.bin/cross-env NODE_ENV=production ./node_modules/.bin/webpack --display-error-details --config ./webpack.config.js",
+    "server-dev": "./node_modules/.bin/cross-env node ./development_server.js",
+    "server-prod": "./node_modules/.bin/cross-env node ./production_server.js"
   },
   "main": "production_server.js",
   "engines": {
-    "node": "4.4.0",
-    "npm": "2.14.20"
+    "node": "4.5.0",
+    "npm": "2.15.9"
   },
   "repository": {
     "type": "git",

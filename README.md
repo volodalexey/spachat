@@ -12,7 +12,7 @@ Each chat can save its state.
 <a href="http://spachat.net" target="_blank">SPACHAT</a>
 - Chrome & Firefox
 
-##### Description will be provided soon
+##### Description
 
 
 After WebRTC find the way to each other A and B should have names of each-other under "Contact list"

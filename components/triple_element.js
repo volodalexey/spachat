@@ -33,7 +33,7 @@ const TripleElement = React.createClass({
         return <Svg events={this.props.events} config={this.props.config} data={this.props.data}/>;
         break;
       default:
-        return <div></div>;
+        return <div>{this.props.config.content}</div>;
         break;
     }
   },

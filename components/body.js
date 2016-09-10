@@ -14,7 +14,33 @@ import ContactList from './contact_list'
 import Connections from './connections'
 import UserAvatar from './user_avarat'
 
-const Body = React.createClass({
+const json_package = require('../package.json'),
+  render_table_obj = function(obj) {
+    if (obj !== null && typeof obj === 'object') {
+      let keys = Object.keys(obj);
+      return <table className="info-table">
+        <tbody>
+        {keys.map((key) => {
+          return (
+            <tr key={key}>
+              <td>{key}</td>
+              <td>{render_table_obj(obj[key])}</td>
+            </tr>
+          )
+        })}
+        </tbody>
+      </table>;
+    } else if (obj === null) {
+      return 'null';
+    } else if (obj === true) {
+      return 'true';
+    } else if (obj === false) {
+      return 'false';
+    } else {
+      return obj;
+    }
+  },
+  Body = React.createClass({
   MODE: {
     SETTINGS: 'SETTINGS',
     MESSAGES: 'MESSAGES',
@@ -890,6 +916,17 @@ const Body = React.createClass({
             "key": "notificationOfAccession",
             "action": "notificationOfAccession"
           }
+        },
+        {
+          "role": "locationWrapper",
+          "classList": "w-100p",
+          "location": "clientVersion"
+        },
+        {
+          "element": "",
+          "content": render_table_obj({name: json_package.name, version: json_package.version, description: json_package.description}),
+          "location": "clientVersion",
+          "disabled": true
         }
       ]
     }
