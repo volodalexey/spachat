@@ -2,7 +2,10 @@ import extend_core from '../js/extend_core.js'
 import id_core from '../js/id_core.js'
 import event_bus from '../js/event_bus.js'
 
-var Websocket = function() {
+var
+  ping_time = 40000,
+  ping_message = { type: 'ping' },
+  Websocket = function() {
   this.bindContexts();
   this.responseCallbacks = [];
   this.protocol = window.location.origin.indexOf('https') >= 0 ? 'wss://' : 'ws://';
@@ -23,6 +26,13 @@ Websocket.prototype = {
   createAndListen: function() {
     this.create();
     this.addSocketListeners();
+    if (!this.connectionPing) {
+      this.connectionPing = setInterval(() => {
+        if (this.socket && this.socket.readyState === this.socket.OPEN) {
+          this.sendMessage(ping_message);
+        }
+      }, ping_time);
+    }
   },
 
   create: function() {
