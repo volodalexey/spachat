@@ -1,7 +1,0 @@
-{
-  "db_name": "global_users",
-  "table_descriptions": [{
-    "table_name": "global_users",
-    "table_parameter": {"keyPath": "user_id"}
-  }]
-}

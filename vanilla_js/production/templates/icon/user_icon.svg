@@ -1,7 +1,0 @@
-<svg width="30" height="18" viewBox="-20 -43 83 45" overflow="visible" xmlns="http://www.w3.org/2000/svg">
-    <g transform="matrix(1 0 0 -1 0 0)" fill="none">
-        <path d="M 38 0 A 19 19 0 1  1  0 0" color="#000080" stroke="currentColor" stroke-width="0.25em"/>
-        <circle cx="19" cy="33" r="10" color="#000080" stroke="currentColor" stroke-width="0.25em"/>
-        <line x1="0" y1="0" x2="38" y2="0" color="#000080" stroke="currentColor" stroke-width="0.25em"/>
-    </g>
-</svg>
