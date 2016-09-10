@@ -9,15 +9,15 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(45);
+	var _reactDom = __webpack_require__(41);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _total = __webpack_require__(175);
+	var _total = __webpack_require__(174);
 
 	var _total2 = _interopRequireDefault(_total);
 
-	var _index = __webpack_require__(218);
+	var _index = __webpack_require__(217);
 
 	var _index2 = _interopRequireDefault(_index);
 
@@ -27,14 +27,14 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 175:
+/***/ 174:
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
 
-/***/ 218:
+/***/ 217:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47,25 +47,25 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(219);
+	var _reactRouter = __webpack_require__(218);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _login = __webpack_require__(292);
+	var _login = __webpack_require__(293);
 
 	var _login2 = _interopRequireDefault(_login);
 
-	var _chat_app = __webpack_require__(307);
+	var _chat_app = __webpack_require__(308);
 
 	var _chat_app2 = _interopRequireDefault(_chat_app);
 
-	var _register = __webpack_require__(345);
+	var _register = __webpack_require__(346);
 
 	var _register2 = _interopRequireDefault(_register);
 
@@ -121,7 +121,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 280:
+/***/ 281:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -136,7 +136,7 @@ webpackJsonp([0],{
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var localization_config = __webpack_require__(281);
+	var localization_config = __webpack_require__(282);
 
 
 	var Localization = function Localization(lang) {
@@ -176,7 +176,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 281:
+/***/ 282:
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -1004,7 +1004,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 282:
+/***/ 283:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1013,23 +1013,23 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _cookie_core = __webpack_require__(284);
+	var _cookie_core = __webpack_require__(285);
 
 	var _cookie_core2 = _interopRequireDefault(_cookie_core);
 
-	var _indexeddb = __webpack_require__(285);
+	var _indexeddb = __webpack_require__(286);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _websocket = __webpack_require__(290);
+	var _websocket = __webpack_require__(291);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
@@ -1329,7 +1329,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 283:
+/***/ 284:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1376,7 +1376,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 284:
+/***/ 285:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1435,7 +1435,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 285:
+/***/ 286:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1446,11 +1446,11 @@ webpackJsonp([0],{
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _async_core = __webpack_require__(286);
+	var _async_core = __webpack_require__(287);
 
 	var _async_core2 = _interopRequireDefault(_async_core);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
@@ -1462,7 +1462,7 @@ webpackJsonp([0],{
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var globalUsersDatabaseDescription = __webpack_require__(289);
+	var globalUsersDatabaseDescription = __webpack_require__(290);
 
 	var indexeddb = function (_AsyncCore) {
 	  _inherits(indexeddb, _AsyncCore);
@@ -1470,7 +1470,7 @@ webpackJsonp([0],{
 	  function indexeddb() {
 	    _classCallCheck(this, indexeddb);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(indexeddb).call(this));
+	    var _this = _possibleConstructorReturn(this, (indexeddb.__proto__ || Object.getPrototypeOf(indexeddb)).call(this));
 
 	    _this.defaultVersion = 1;
 	    _this.STATES = {
@@ -1987,7 +1987,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 286:
+/***/ 287:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2076,7 +2076,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 287:
+/***/ 288:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2085,11 +2085,11 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _event_core = __webpack_require__(288);
+	var _event_core = __webpack_require__(289);
 
 	var _event_core2 = _interopRequireDefault(_event_core);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
@@ -2114,7 +2114,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 288:
+/***/ 289:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2188,7 +2188,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 289:
+/***/ 290:
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2205,7 +2205,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 290:
+/***/ 291:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2214,15 +2214,15 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _id_core = __webpack_require__(291);
+	var _id_core = __webpack_require__(292);
 
 	var _id_core2 = _interopRequireDefault(_id_core);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
@@ -2384,7 +2384,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 291:
+/***/ 292:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2436,7 +2436,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 292:
+/***/ 293:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2449,37 +2449,37 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(219);
+	var _reactRouter = __webpack_require__(218);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _description = __webpack_require__(302);
+	var _description = __webpack_require__(303);
 
 	var _description2 = _interopRequireDefault(_description);
 
-	var _dialogError = __webpack_require__(304);
+	var _dialogError = __webpack_require__(305);
 
 	var _dialogError2 = _interopRequireDefault(_dialogError);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _indexeddb = __webpack_require__(285);
+	var _indexeddb = __webpack_require__(286);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _overlay_core = __webpack_require__(306);
+	var _overlay_core = __webpack_require__(307);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
@@ -2733,7 +2733,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 293:
+/***/ 294:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2748,9 +2748,9 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _element = __webpack_require__(294);
+	var _element = __webpack_require__(295);
 
-	var _triple_element = __webpack_require__(295);
+	var _triple_element = __webpack_require__(296);
 
 	var _triple_element2 = _interopRequireDefault(_triple_element);
 
@@ -2836,7 +2836,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 294:
+/***/ 295:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2846,7 +2846,7 @@ webpackJsonp([0],{
 	});
 	exports.element = undefined;
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
@@ -2859,7 +2859,6 @@ webpackJsonp([0],{
 	  /**
 	   * prepare data attribute for each provided data object key
 	   */
-
 	  renderDataAttributes: function renderDataAttributes(data_config, result) {
 	    if (!result) {
 	      result = {};
@@ -2974,7 +2973,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 295:
+/***/ 296:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2987,27 +2986,27 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _button = __webpack_require__(296);
+	var _button = __webpack_require__(297);
 
 	var _button2 = _interopRequireDefault(_button);
 
-	var _input = __webpack_require__(297);
+	var _input = __webpack_require__(298);
 
 	var _input2 = _interopRequireDefault(_input);
 
-	var _label = __webpack_require__(298);
+	var _label = __webpack_require__(299);
 
 	var _label2 = _interopRequireDefault(_label);
 
-	var _select = __webpack_require__(299);
+	var _select = __webpack_require__(300);
 
 	var _select2 = _interopRequireDefault(_select);
 
-	var _textarea = __webpack_require__(300);
+	var _textarea = __webpack_require__(301);
 
 	var _textarea2 = _interopRequireDefault(_textarea);
 
-	var _svg = __webpack_require__(301);
+	var _svg = __webpack_require__(302);
 
 	var _svg2 = _interopRequireDefault(_svg);
 
@@ -3059,7 +3058,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 296:
+/***/ 297:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3074,11 +3073,11 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(219);
+	var _reactRouter = __webpack_require__(218);
 
-	var _element = __webpack_require__(294);
+	var _element = __webpack_require__(295);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
@@ -3148,7 +3147,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 297:
+/***/ 298:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3163,9 +3162,9 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _element = __webpack_require__(294);
+	var _element = __webpack_require__(295);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
@@ -3219,7 +3218,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 298:
+/***/ 299:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3234,9 +3233,9 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _element = __webpack_require__(294);
+	var _element = __webpack_require__(295);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
@@ -3280,7 +3279,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 299:
+/***/ 300:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3295,9 +3294,9 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _element = __webpack_require__(294);
+	var _element = __webpack_require__(295);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
@@ -3332,7 +3331,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 300:
+/***/ 301:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3345,7 +3344,7 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _element = __webpack_require__(294);
+	var _element = __webpack_require__(295);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3376,7 +3375,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 301:
+/***/ 302:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3407,7 +3406,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 302:
+/***/ 303:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3420,11 +3419,11 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
@@ -3548,30 +3547,30 @@ webpackJsonp([0],{
 	                  }
 	                }
 	              } else {
-	                  if (!positionFound) {
-	                    checkLeft = documentLeft + 5;
-	                    if (checkLeft + description.offsetWidth < documentWidth) {
-	                      if (documentLeft < checkLeft) {
-	                        futureLeft = checkLeft;
-	                        positionFound = true;
-	                      } else {
-	                        // not found
-	                      }
-	                    }
-	                  }
-
-	                  if (!positionFound) {
-	                    checkLeft = documentWidth - 5 - description.offsetHeight;
+	                if (!positionFound) {
+	                  checkLeft = documentLeft + 5;
+	                  if (checkLeft + description.offsetWidth < documentWidth) {
 	                    if (documentLeft < checkLeft) {
-	                      if (checkLeft + description.offsetWidth < documentWidth) {
-	                        futureLeft = checkLeft;
-	                        positionFound = true;
-	                      } else {
-	                        // not found
-	                      }
+	                      futureLeft = checkLeft;
+	                      positionFound = true;
+	                    } else {
+	                      // not found
 	                    }
 	                  }
 	                }
+
+	                if (!positionFound) {
+	                  checkLeft = documentWidth - 5 - description.offsetHeight;
+	                  if (documentLeft < checkLeft) {
+	                    if (checkLeft + description.offsetWidth < documentWidth) {
+	                      futureLeft = checkLeft;
+	                      positionFound = true;
+	                    } else {
+	                      // not found
+	                    }
+	                  }
+	                }
+	              }
 	            }
 
 	            // if we have enough place on the left of current target
@@ -3735,7 +3734,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 303:
+/***/ 304:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3815,7 +3814,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 304:
+/***/ 305:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3828,11 +3827,11 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _dialog = __webpack_require__(305);
+	var _dialog = __webpack_require__(306);
 
 	var _dialog2 = _interopRequireDefault(_dialog);
 
@@ -3914,7 +3913,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 305:
+/***/ 306:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3927,7 +3926,7 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
@@ -3997,7 +3996,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 306:
+/***/ 307:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4029,7 +4028,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 307:
+/***/ 308:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4042,53 +4041,53 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(219);
+	var _reactRouter = __webpack_require__(218);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _overlay_core = __webpack_require__(306);
+	var _overlay_core = __webpack_require__(307);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _websocket = __webpack_require__(290);
+	var _websocket = __webpack_require__(291);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _panel = __webpack_require__(308);
+	var _panel = __webpack_require__(309);
 
 	var _panel2 = _interopRequireDefault(_panel);
 
-	var _chats_manager = __webpack_require__(336);
+	var _chats_manager = __webpack_require__(337);
 
 	var _chats_manager2 = _interopRequireDefault(_chats_manager);
 
-	var _description = __webpack_require__(302);
+	var _description = __webpack_require__(303);
 
 	var _description2 = _interopRequireDefault(_description);
 
-	var _chat_resize = __webpack_require__(344);
+	var _chat_resize = __webpack_require__(345);
 
 	var _chat_resize2 = _interopRequireDefault(_chat_resize);
 
-	var _dialogError = __webpack_require__(304);
+	var _dialogError = __webpack_require__(305);
 
 	var _dialogError2 = _interopRequireDefault(_dialogError);
 
@@ -4259,7 +4258,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 308:
+/***/ 309:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4272,87 +4271,87 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _indexeddb = __webpack_require__(285);
+	var _indexeddb = __webpack_require__(286);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _overlay_core = __webpack_require__(306);
+	var _overlay_core = __webpack_require__(307);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _chats_bus = __webpack_require__(309);
+	var _chats_bus = __webpack_require__(310);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _switcher_core = __webpack_require__(310);
+	var _switcher_core = __webpack_require__(311);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _websocket = __webpack_require__(290);
+	var _websocket = __webpack_require__(291);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _webrtc = __webpack_require__(311);
+	var _webrtc = __webpack_require__(312);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _utils = __webpack_require__(314);
+	var _utils = __webpack_require__(315);
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _triple_element = __webpack_require__(295);
+	var _triple_element = __webpack_require__(296);
 
 	var _triple_element2 = _interopRequireDefault(_triple_element);
 
-	var _extra_toolbar = __webpack_require__(315);
+	var _extra_toolbar = __webpack_require__(316);
 
 	var _extra_toolbar2 = _interopRequireDefault(_extra_toolbar);
 
-	var _filter = __webpack_require__(316);
+	var _filter = __webpack_require__(317);
 
 	var _filter2 = _interopRequireDefault(_filter);
 
-	var _panel_toolbar = __webpack_require__(317);
+	var _panel_toolbar = __webpack_require__(318);
 
 	var _panel_toolbar2 = _interopRequireDefault(_panel_toolbar);
 
-	var _body = __webpack_require__(318);
+	var _body = __webpack_require__(319);
 
 	var _body2 = _interopRequireDefault(_body);
 
-	var _pagination = __webpack_require__(334);
+	var _pagination = __webpack_require__(335);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
-	var _go_to = __webpack_require__(335);
+	var _go_to = __webpack_require__(336);
 
 	var _go_to2 = _interopRequireDefault(_go_to);
 
-	var _dialogConfirm = __webpack_require__(327);
+	var _dialogConfirm = __webpack_require__(328);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
-	var _dialogError = __webpack_require__(304);
+	var _dialogError = __webpack_require__(305);
 
 	var _dialogError2 = _interopRequireDefault(_dialogError);
 
-	var _dialogSuccess = __webpack_require__(332);
+	var _dialogSuccess = __webpack_require__(333);
 
 	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
 
@@ -5764,7 +5763,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 309:
+/***/ 310:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5773,15 +5772,15 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _indexeddb = __webpack_require__(285);
+	var _indexeddb = __webpack_require__(286);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
@@ -5922,7 +5921,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 310:
+/***/ 311:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6047,7 +6046,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 311:
+/***/ 312:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6056,39 +6055,39 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _websocket = __webpack_require__(290);
+	var _websocket = __webpack_require__(291);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _event_core = __webpack_require__(288);
+	var _event_core = __webpack_require__(289);
 
 	var _event_core2 = _interopRequireDefault(_event_core);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _indexeddb = __webpack_require__(285);
+	var _indexeddb = __webpack_require__(286);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _chats_bus = __webpack_require__(309);
+	var _chats_bus = __webpack_require__(310);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _sync_core = __webpack_require__(312);
+	var _sync_core = __webpack_require__(313);
 
 	var _sync_core2 = _interopRequireDefault(_sync_core);
 
-	var _connection2 = __webpack_require__(313);
+	var _connection2 = __webpack_require__(314);
 
 	var _connection3 = _interopRequireDefault(_connection2);
 
@@ -6847,7 +6846,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 312:
+/***/ 313:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6856,23 +6855,23 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _indexeddb = __webpack_require__(285);
+	var _indexeddb = __webpack_require__(286);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _chats_bus = __webpack_require__(309);
+	var _chats_bus = __webpack_require__(310);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _webrtc = __webpack_require__(311);
+	var _webrtc = __webpack_require__(312);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
@@ -7015,7 +7014,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 313:
+/***/ 314:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7024,11 +7023,11 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _websocket = __webpack_require__(290);
+	var _websocket = __webpack_require__(291);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
@@ -7180,7 +7179,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 314:
+/***/ 315:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7189,7 +7188,7 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
@@ -7203,7 +7202,6 @@ webpackJsonp([0],{
 	  /**
 	   * prepare url by input object
 	   */
-
 	  objectToUrl: function objectToUrl(objectData, initial_url) {
 	    var url = initial_url;
 	    Object.keys(objectData).forEach(function (key) {
@@ -7233,7 +7231,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 315:
+/***/ 316:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7246,11 +7244,11 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _triple_element = __webpack_require__(295);
+	var _triple_element = __webpack_require__(296);
 
 	var _triple_element2 = _interopRequireDefault(_triple_element);
 
@@ -7427,7 +7425,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 316:
+/***/ 317:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7440,15 +7438,15 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _switcher_core = __webpack_require__(310);
+	var _switcher_core = __webpack_require__(311);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -8086,7 +8084,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 317:
+/***/ 318:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8099,7 +8097,7 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -8318,7 +8316,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 318:
+/***/ 319:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8333,61 +8331,61 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _switcher_core = __webpack_require__(310);
+	var _switcher_core = __webpack_require__(311);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _utils = __webpack_require__(314);
+	var _utils = __webpack_require__(315);
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _panel_users = __webpack_require__(319);
+	var _panel_users = __webpack_require__(320);
 
 	var _panel_users2 = _interopRequireDefault(_panel_users);
 
-	var _panel_chats = __webpack_require__(320);
+	var _panel_chats = __webpack_require__(321);
 
 	var _panel_chats2 = _interopRequireDefault(_panel_chats);
 
-	var _message = __webpack_require__(321);
+	var _message = __webpack_require__(322);
 
 	var _message2 = _interopRequireDefault(_message);
 
-	var _setting = __webpack_require__(326);
+	var _setting = __webpack_require__(327);
 
 	var _setting2 = _interopRequireDefault(_setting);
 
-	var _contact_list = __webpack_require__(328);
+	var _contact_list = __webpack_require__(329);
 
 	var _contact_list2 = _interopRequireDefault(_contact_list);
 
-	var _connections = __webpack_require__(329);
+	var _connections = __webpack_require__(330);
 
 	var _connections2 = _interopRequireDefault(_connections);
 
-	var _user_avarat = __webpack_require__(330);
+	var _user_avarat = __webpack_require__(331);
 
 	var _user_avarat2 = _interopRequireDefault(_user_avarat);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var json_package = __webpack_require__(333),
+	var json_package = __webpack_require__(334),
 	    render_table_obj = function render_table_obj(obj) {
 	  if (obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
 	    var keys = Object.keys(obj);
@@ -9387,7 +9385,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 319:
+/***/ 320:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9400,11 +9398,11 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
@@ -9487,7 +9485,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 320:
+/***/ 321:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9500,15 +9498,15 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -9646,7 +9644,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 321:
+/***/ 322:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9659,35 +9657,35 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _html_message = __webpack_require__(322);
+	var _html_message = __webpack_require__(323);
 
 	var _html_message2 = _interopRequireDefault(_html_message);
 
-	var _messages = __webpack_require__(324);
+	var _messages = __webpack_require__(325);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(310);
+	var _switcher_core = __webpack_require__(311);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _body = __webpack_require__(318);
+	var _body = __webpack_require__(319);
 
 	var _body2 = _interopRequireDefault(_body);
 
@@ -9974,7 +9972,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 322:
+/***/ 323:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9983,23 +9981,23 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _id_core = __webpack_require__(291);
+	var _id_core = __webpack_require__(292);
 
 	var _id_core2 = _interopRequireDefault(_id_core);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _model_core = __webpack_require__(323);
+	var _model_core = __webpack_require__(324);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
@@ -10046,7 +10044,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 323:
+/***/ 324:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10055,7 +10053,7 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
@@ -10113,7 +10111,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 324:
+/***/ 325:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10122,35 +10120,35 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _indexeddb = __webpack_require__(285);
+	var _indexeddb = __webpack_require__(286);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _id_core = __webpack_require__(291);
+	var _id_core = __webpack_require__(292);
 
 	var _id_core2 = _interopRequireDefault(_id_core);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(310);
+	var _switcher_core = __webpack_require__(311);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _html_log_message = __webpack_require__(325);
+	var _html_log_message = __webpack_require__(326);
 
 	var _html_log_message2 = _interopRequireDefault(_html_log_message);
 
-	var _html_message = __webpack_require__(322);
+	var _html_message = __webpack_require__(323);
 
 	var _html_message2 = _interopRequireDefault(_html_message);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _webrtc = __webpack_require__(311);
+	var _webrtc = __webpack_require__(312);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
@@ -10363,7 +10361,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 325:
+/***/ 326:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10372,7 +10370,7 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
@@ -10410,7 +10408,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 326:
+/***/ 327:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10423,35 +10421,35 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(45);
+	var _reactDom = __webpack_require__(41);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _websocket = __webpack_require__(290);
+	var _websocket = __webpack_require__(291);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _dialogConfirm = __webpack_require__(327);
+	var _dialogConfirm = __webpack_require__(328);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
@@ -10953,7 +10951,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 327:
+/***/ 328:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10966,11 +10964,11 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _dialog = __webpack_require__(305);
+	var _dialog = __webpack_require__(306);
 
 	var _dialog2 = _interopRequireDefault(_dialog);
 
@@ -11057,7 +11055,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 328:
+/***/ 329:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11070,35 +11068,35 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _chats_bus = __webpack_require__(309);
+	var _chats_bus = __webpack_require__(310);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _webrtc = __webpack_require__(311);
+	var _webrtc = __webpack_require__(312);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _body = __webpack_require__(318);
+	var _body = __webpack_require__(319);
 
 	var _body2 = _interopRequireDefault(_body);
 
@@ -11297,7 +11295,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 329:
+/***/ 330:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11310,15 +11308,15 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _webrtc = __webpack_require__(311);
+	var _webrtc = __webpack_require__(312);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
@@ -11431,7 +11429,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 330:
+/***/ 331:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11444,39 +11442,39 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(45);
+	var _reactDom = __webpack_require__(41);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _jdenticon = __webpack_require__(331);
+	var _jdenticon = __webpack_require__(332);
 
 	var _jdenticon2 = _interopRequireDefault(_jdenticon);
 
-	var _dialogSuccess = __webpack_require__(332);
+	var _dialogSuccess = __webpack_require__(333);
 
 	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
 
-	var _dialogError = __webpack_require__(304);
+	var _dialogError = __webpack_require__(305);
 
 	var _dialogError2 = _interopRequireDefault(_dialogError);
 
@@ -11716,7 +11714,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 331:
+/***/ 332:
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -12259,7 +12257,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 332:
+/***/ 333:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12272,11 +12270,11 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _dialog = __webpack_require__(305);
+	var _dialog = __webpack_require__(306);
 
 	var _dialog2 = _interopRequireDefault(_dialog);
 
@@ -12358,12 +12356,12 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 333:
+/***/ 334:
 /***/ function(module, exports) {
 
 	module.exports = {
 		"name": "spachat",
-		"version": "0.7.0",
+		"version": "0.7.1",
 		"private": true,
 		"description": "Single Page Application Chat",
 		"author": "Alexey Volodko",
@@ -12373,27 +12371,27 @@ webpackJsonp([0],{
 			}
 		],
 		"dependencies": {
-			"ws": "^1.1.0"
+			"ws": "^1.1.1"
 		},
 		"devDependencies": {
-			"babel-core": "^6.9.0",
-			"babel-loader": "^6.2.4",
-			"babel-preset-es2015": "^6.9.0",
-			"babel-preset-react": "^6.5.0",
-			"cross-env": "^1.0.8",
-			"css-loader": "^0.23.1",
+			"babel-core": "^6.14.0",
+			"babel-loader": "^6.2.5",
+			"babel-preset-es2015": "^6.14.0",
+			"babel-preset-react": "^6.11.1",
+			"cross-env": "^2.0.1",
+			"css-loader": "^0.25.0",
 			"extract-text-webpack-plugin": "^1.0.1",
-			"file-loader": "^0.8.5",
-			"html-webpack-plugin": "^2.17.0",
+			"file-loader": "^0.9.0",
+			"html-webpack-plugin": "^2.22.0",
 			"json-loader": "^0.5.4",
 			"less": "^2.7.1",
 			"less-loader": "^2.2.3",
-			"react": "^15.1.0",
-			"react-dom": "^15.1.0",
-			"react-router": "^2.4.1",
+			"react": "^15.3.1",
+			"react-dom": "^15.3.1",
+			"react-router": "^2.8.0",
 			"style-loader": "^0.13.1",
-			"webpack": "^1.13.1",
-			"webpack-dev-middleware": "^1.6.1"
+			"webpack": "^1.13.2",
+			"webpack-dev-middleware": "^1.7.0"
 		},
 		"scripts": {
 			"start": "node production_server.js",
@@ -12421,7 +12419,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 334:
+/***/ 335:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12434,31 +12432,31 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(310);
+	var _switcher_core = __webpack_require__(311);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _chats_bus = __webpack_require__(309);
+	var _chats_bus = __webpack_require__(310);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _messages = __webpack_require__(324);
+	var _messages = __webpack_require__(325);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -12797,7 +12795,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 335:
+/***/ 336:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12810,15 +12808,15 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(310);
+	var _switcher_core = __webpack_require__(311);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -12958,7 +12956,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 336:
+/***/ 337:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12971,65 +12969,65 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _indexeddb = __webpack_require__(285);
+	var _indexeddb = __webpack_require__(286);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _chats_bus = __webpack_require__(309);
+	var _chats_bus = __webpack_require__(310);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _ajax_core = __webpack_require__(337);
+	var _ajax_core = __webpack_require__(338);
 
 	var _ajax_core2 = _interopRequireDefault(_ajax_core);
 
-	var _messages = __webpack_require__(324);
+	var _messages = __webpack_require__(325);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
-	var _websocket = __webpack_require__(290);
+	var _websocket = __webpack_require__(291);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _webrtc = __webpack_require__(311);
+	var _webrtc = __webpack_require__(312);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _model_core = __webpack_require__(323);
+	var _model_core = __webpack_require__(324);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
-	var _chat2 = __webpack_require__(338);
+	var _chat2 = __webpack_require__(339);
 
 	var _chat3 = _interopRequireDefault(_chat2);
 
-	var _dialogConfirm = __webpack_require__(327);
+	var _dialogConfirm = __webpack_require__(328);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
-	var _dialogError = __webpack_require__(304);
+	var _dialogError = __webpack_require__(305);
 
 	var _dialogError2 = _interopRequireDefault(_dialogError);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var id_Generator = __webpack_require__(343);
+	var id_Generator = __webpack_require__(344);
 
 	var ChatsManager = _react2.default.createClass({
 	  displayName: 'ChatsManager',
@@ -13503,7 +13501,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 337:
+/***/ 338:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -13580,7 +13578,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 338:
+/***/ 339:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13595,99 +13593,99 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(45);
+	var _reactDom = __webpack_require__(41);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(310);
+	var _switcher_core = __webpack_require__(311);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _messages2 = __webpack_require__(324);
+	var _messages2 = __webpack_require__(325);
 
 	var _messages3 = _interopRequireDefault(_messages2);
 
-	var _webrtc = __webpack_require__(311);
+	var _webrtc = __webpack_require__(312);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _websocket = __webpack_require__(290);
+	var _websocket = __webpack_require__(291);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _chats_bus = __webpack_require__(309);
+	var _chats_bus = __webpack_require__(310);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _model_core = __webpack_require__(323);
+	var _model_core = __webpack_require__(324);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
-	var _indexeddb = __webpack_require__(285);
+	var _indexeddb = __webpack_require__(286);
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _sync_core = __webpack_require__(312);
+	var _sync_core = __webpack_require__(313);
 
 	var _sync_core2 = _interopRequireDefault(_sync_core);
 
-	var _utils = __webpack_require__(314);
+	var _utils = __webpack_require__(315);
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _header = __webpack_require__(339);
+	var _header = __webpack_require__(340);
 
 	var _header2 = _interopRequireDefault(_header);
 
-	var _filter = __webpack_require__(316);
+	var _filter = __webpack_require__(317);
 
 	var _filter2 = _interopRequireDefault(_filter);
 
-	var _extra_toolbar = __webpack_require__(315);
+	var _extra_toolbar = __webpack_require__(316);
 
 	var _extra_toolbar2 = _interopRequireDefault(_extra_toolbar);
 
-	var _body = __webpack_require__(318);
+	var _body = __webpack_require__(319);
 
 	var _body2 = _interopRequireDefault(_body);
 
-	var _editor = __webpack_require__(340);
+	var _editor = __webpack_require__(341);
 
 	var _editor2 = _interopRequireDefault(_editor);
 
-	var _pagination = __webpack_require__(334);
+	var _pagination = __webpack_require__(335);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
-	var _go_to = __webpack_require__(335);
+	var _go_to = __webpack_require__(336);
 
 	var _go_to2 = _interopRequireDefault(_go_to);
 
-	var _toggle_visible_chat_part = __webpack_require__(342);
+	var _toggle_visible_chat_part = __webpack_require__(343);
 
 	var _toggle_visible_chat_part2 = _interopRequireDefault(_toggle_visible_chat_part);
 
-	var _dialogConfirm = __webpack_require__(327);
+	var _dialogConfirm = __webpack_require__(328);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
-	var _dialogError = __webpack_require__(304);
+	var _dialogError = __webpack_require__(305);
 
 	var _dialogError2 = _interopRequireDefault(_dialogError);
 
@@ -14564,30 +14562,35 @@ webpackJsonp([0],{
 	    this.setState({ errorMessage: null });
 	  },
 	  handleDialogChatJoinRequest: function handleDialogChatJoinRequest(event) {
+	    var _this5 = this;
+
 	    var element = this.getDataParameter(event.target, 'action');
 	    if (element) {
-	      switch (element.dataset.action) {
-	        case 'confirmCancel':
-	          break;
-	        case 'confirmOk':
-	          var data = this.state.confirmMessageData,
-	              self = this;
-	          if (!this.isInUsers(this.state, data.from_user_id)) {
-	            // add user and save chat with this user
-	            this.state.user_ids.push(data.from_user_id);
-	            this.state.lastChangedDatetime = Date.now();
-	            _chats_bus2.default.updateChatField(self.state.chat_id, 'user_ids', self.state.user_ids, function (error) {
-	              if (error) return console.error(error);
+	      (function () {
+	        switch (element.dataset.action) {
+	          case 'confirmCancel':
+	            break;
+	          case 'confirmOk':
+	            var data = _this5.state.confirmMessageData,
+	                self = _this5;
+	            if (!_this5.isInUsers(_this5.state, data.from_user_id)) {
+	              // add user and save chat with this user
+	              _this5.state.user_ids.push(data.from_user_id);
+	              _this5.state.lastChangedDatetime = Date.now();
+	              _chats_bus2.default.updateChatField(self.state.chat_id, 'user_ids', self.state.user_ids, function (error) {
+	                if (error) return console.error(error);
 
+	                self._listenWebRTCConnection();
+	                _webrtc2.default.handleConnectedDevices(data.user_wscs_descrs);
+	              });
+	            } else {
 	              self._listenWebRTCConnection();
 	              _webrtc2.default.handleConnectedDevices(data.user_wscs_descrs);
-	            });
-	          } else {
-	            self._listenWebRTCConnection();
-	            _webrtc2.default.handleConnectedDevices(data.user_wscs_descrs);
-	          }
-	          break;
-	      }
+	            }
+	            break;
+	        }
+	      })();
+
 	      this.setState({ confirmMessage: null, confirmMessageData: null });
 	    }
 	  },
@@ -14699,36 +14702,42 @@ webpackJsonp([0],{
 	    var element = this.getDataParameter(event.target, 'action'),
 	        self = this;
 	    if (element) {
-	      switch (element.dataset.action) {
-	        case 'confirmCancel':
-	          break;
-	        case 'confirmOk':
-	          var delete_user_id = self.state.confirmDialog_userId;
-	          if (self.state.user_ids.indexOf(delete_user_id) === -1) return;
+	      var _ret7 = function () {
+	        switch (element.dataset.action) {
+	          case 'confirmCancel':
+	            break;
+	          case 'confirmOk':
+	            var delete_user_id = self.state.confirmDialog_userId;
+	            if (self.state.user_ids.indexOf(delete_user_id) === -1) return {
+	                v: void 0
+	              };
 
-	          if (self.state.deleted_user_ids.indexOf(delete_user_id) === -1) {
+	            if (self.state.deleted_user_ids.indexOf(delete_user_id) === -1) {
 
-	            _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, self.state.chat_id, function (getError, chat_description) {
-	              if (getError) return console.error(getError);
+	              _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, self.state.chat_id, function (getError, chat_description) {
+	                if (getError) return console.error(getError);
 
-	              if (!chat_description) return;
+	                if (!chat_description) return;
 
-	              chat_description.deleted_user_ids.push(delete_user_id);
-	              chat_description.lastChangedDatetime = Date.now();
+	                chat_description.deleted_user_ids.push(delete_user_id);
+	                chat_description.lastChangedDatetime = Date.now();
 
-	              _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
-	                if (_err) return console.error(_err);
+	                _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
+	                  if (_err) return console.error(_err);
 
-	                self.setState({
-	                  lastChangedDatetime: chat_description.lastChangedDatetime,
-	                  deleted_user_ids: chat_description.deleted_user_ids
+	                  self.setState({
+	                    lastChangedDatetime: chat_description.lastChangedDatetime,
+	                    deleted_user_ids: chat_description.deleted_user_ids
+	                  });
+	                  _sync_core2.default.sendSyncChatDescription(chat_description, _users_bus2.default.getUserId());
 	                });
-	                _sync_core2.default.sendSyncChatDescription(chat_description, _users_bus2.default.getUserId());
 	              });
-	            });
-	          }
-	          break;
-	      }
+	            }
+	            break;
+	        }
+	      }();
+
+	      if ((typeof _ret7 === 'undefined' ? 'undefined' : _typeof(_ret7)) === "object") return _ret7.v;
 	      this.setState({ confirmMessageRemoveContact: null, confirmDialog_userId: null });
 	    }
 	  },
@@ -14800,35 +14809,41 @@ webpackJsonp([0],{
 	    var element = this.getDataParameter(event.target, 'action'),
 	        self = this;
 	    if (element) {
-	      switch (element.dataset.action) {
-	        case 'confirmCancel':
-	          break;
-	        case 'confirmOk':
-	          var blocked_user_id = self.state.confirmDialog_blockedUserId;
-	          if (self.state.user_ids.indexOf(blocked_user_id) === -1) return;
+	      var _ret8 = function () {
+	        switch (element.dataset.action) {
+	          case 'confirmCancel':
+	            break;
+	          case 'confirmOk':
+	            var blocked_user_id = self.state.confirmDialog_blockedUserId;
+	            if (self.state.user_ids.indexOf(blocked_user_id) === -1) return {
+	                v: void 0
+	              };
 
-	          if (self.state.blocked_user_ids.indexOf(blocked_user_id) === -1) {
-	            _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, self.state.chat_id, function (getError, chat_description) {
-	              if (getError) return console.error(getError);
+	            if (self.state.blocked_user_ids.indexOf(blocked_user_id) === -1) {
+	              _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, self.state.chat_id, function (getError, chat_description) {
+	                if (getError) return console.error(getError);
 
-	              if (!chat_description) return;
+	                if (!chat_description) return;
 
-	              chat_description.blocked_user_ids.push(blocked_user_id);
-	              chat_description.lastChangedDatetime = Date.now();
+	                chat_description.blocked_user_ids.push(blocked_user_id);
+	                chat_description.lastChangedDatetime = Date.now();
 
-	              _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
-	                if (_err) return console.error(_err);
+	                _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
+	                  if (_err) return console.error(_err);
 
-	                self.setState({
-	                  lastChangedDatetime: chat_description.lastChangedDatetime,
-	                  blocked_user_ids: chat_description.blocked_user_ids
+	                  self.setState({
+	                    lastChangedDatetime: chat_description.lastChangedDatetime,
+	                    blocked_user_ids: chat_description.blocked_user_ids
+	                  });
+	                  _sync_core2.default.sendSyncChatDescription(chat_description, _users_bus2.default.getUserId());
 	                });
-	                _sync_core2.default.sendSyncChatDescription(chat_description, _users_bus2.default.getUserId());
 	              });
-	            });
-	          }
-	          break;
-	      }
+	            }
+	            break;
+	        }
+	      }();
+
+	      if ((typeof _ret8 === 'undefined' ? 'undefined' : _typeof(_ret8)) === "object") return _ret8.v;
 	      this.setState({ confirmMessageBlockedContact: null, confirmDialog_blockedUserId: null });
 	    }
 	  },
@@ -15083,7 +15098,7 @@ webpackJsonp([0],{
 	    self.checkAutoAddContact();
 	  },
 	  render: function render() {
-	    var _this5 = this;
+	    var _this6 = this;
 
 	    var handleEvent = {
 	      changeState: this.changeState,
@@ -15095,10 +15110,10 @@ webpackJsonp([0],{
 	      onChange: this.handleChange
 	    };
 	    if (this.props.data.mode === 'raw') {
-	      var _ret7 = function () {
+	      var _ret10 = function () {
 	        var items = [],
 	            className = void 0;
-	        _this5.state.logMessages.forEach(function (_message, index) {
+	        _this6.state.logMessages.forEach(function (_message, index) {
 	          className = _message.type === 'error' ? "myMessage message margin-t-b color-red" : "myMessage message margin-t-b";
 	          items.push(_react2.default.createElement(
 	            'div',
@@ -15111,7 +15126,7 @@ webpackJsonp([0],{
 	          v: _react2.default.createElement(
 	            'section',
 	            { className: 'modal' },
-	            _react2.default.createElement(_header2.default, { data: _this5.state, chat_mode: _this5.props.data.mode, handleEvent: handleEvent, events: onEvent }),
+	            _react2.default.createElement(_header2.default, { data: _this6.state, chat_mode: _this6.props.data.mode, handleEvent: handleEvent, events: onEvent }),
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'modal-body overflow-y-scroll' },
@@ -15121,7 +15136,7 @@ webpackJsonp([0],{
 	        };
 	      }();
 
-	      if ((typeof _ret7 === 'undefined' ? 'undefined' : _typeof(_ret7)) === "object") return _ret7.v;
+	      if ((typeof _ret10 === 'undefined' ? 'undefined' : _typeof(_ret10)) === "object") return _ret10.v;
 	    } else {
 	      return _react2.default.createElement(
 	        'section',
@@ -15222,7 +15237,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 339:
+/***/ 340:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15235,15 +15250,15 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -15495,7 +15510,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 340:
+/***/ 341:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15508,43 +15523,43 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(45);
+	var _reactDom = __webpack_require__(41);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _messages = __webpack_require__(324);
+	var _messages = __webpack_require__(325);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _format_panel = __webpack_require__(341);
+	var _format_panel = __webpack_require__(342);
 
 	var _format_panel2 = _interopRequireDefault(_format_panel);
 
-	var _pagination = __webpack_require__(334);
+	var _pagination = __webpack_require__(335);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
@@ -15770,7 +15785,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 341:
+/***/ 342:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15783,7 +15798,7 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
@@ -15906,7 +15921,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 342:
+/***/ 343:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15919,23 +15934,23 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(45);
+	var _reactDom = __webpack_require__(41);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
@@ -16135,7 +16150,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 343:
+/***/ 344:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -16182,7 +16197,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 344:
+/***/ 345:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16195,19 +16210,19 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(45);
+	var _reactDom = __webpack_require__(41);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _event_bus = __webpack_require__(287);
+	var _event_bus = __webpack_require__(288);
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _dom_core = __webpack_require__(303);
+	var _dom_core = __webpack_require__(304);
 
 	var _dom_core2 = _interopRequireDefault(_dom_core);
 
@@ -16366,7 +16381,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 345:
+/***/ 346:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16379,49 +16394,49 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(219);
+	var _reactRouter = __webpack_require__(218);
 
-	var _location_wrapper = __webpack_require__(293);
+	var _location_wrapper = __webpack_require__(294);
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _dialogError = __webpack_require__(304);
+	var _dialogError = __webpack_require__(305);
 
 	var _dialogError2 = _interopRequireDefault(_dialogError);
 
-	var _dialogSuccess = __webpack_require__(332);
+	var _dialogSuccess = __webpack_require__(333);
 
 	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
 
-	var _description = __webpack_require__(302);
+	var _description = __webpack_require__(303);
 
 	var _description2 = _interopRequireDefault(_description);
 
-	var _ajax_core = __webpack_require__(337);
+	var _ajax_core = __webpack_require__(338);
 
 	var _ajax_core2 = _interopRequireDefault(_ajax_core);
 
-	var _extend_core = __webpack_require__(283);
+	var _extend_core = __webpack_require__(284);
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _id_core = __webpack_require__(291);
+	var _id_core = __webpack_require__(292);
 
 	var _id_core2 = _interopRequireDefault(_id_core);
 
-	var _users_bus = __webpack_require__(282);
+	var _users_bus = __webpack_require__(283);
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _localization = __webpack_require__(280);
+	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _overlay_core = __webpack_require__(306);
+	var _overlay_core = __webpack_require__(307);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
 
-	var _jdenticon = __webpack_require__(331);
+	var _jdenticon = __webpack_require__(332);
 
 	var _jdenticon2 = _interopRequireDefault(_jdenticon);
 
