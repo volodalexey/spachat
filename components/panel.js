@@ -1444,7 +1444,7 @@ const Panel = React.createClass({
                 <Filter mode={this.state.bodyMode} data={this.state} events={onEvent}/>
               </div>
               <div data-role="panel_body" className="overflow-a flex-item-1-auto p-t"
-                   onTransitionend={this.transitionEnd}>
+                   onTransitionEnd={this.transitionEnd}>
                 <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
                       userInfo={this.state.userInfo? this.state.userInfo : this.props.userInfo}
                       handleEvent={handleEvent}/>

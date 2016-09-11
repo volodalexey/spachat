@@ -60,6 +60,9 @@ Element.prototype = {
     if (config.disabled === true) {
       params['disabled'] = 'true';
     }
+    if (config.readonly === true) {
+      params['readOnly'] = true;
+    }
     if (config.onkeypress) {
       params['onkeypress'] = config.onkeypress;
     }

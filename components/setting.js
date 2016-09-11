@@ -189,11 +189,11 @@ const Settings = React.createClass({
           "type": "text",
           "location": "chat_id_container",
           "class": "flex-item-1-auto",
+          "readonly": true,
           "data": {
             "key": "chat_id",
             "role": "chat_id"
-          },
-          "disabled": true
+          }
         },
         {
           "element": "button",
@@ -260,7 +260,11 @@ const Settings = React.createClass({
 
   componentDidMount(){
     this.body = ReactDOM.findDOMNode(this);
-    this.chatId = this.body.querySelector('[data-role="chat_id"]');
+    this.chatIdElement = this.body.querySelector('[data-role="chat_id"]');
+  },
+
+  componentWillUnmount() {
+    this.body = this.chatIdElement = null;
   },
 
   handleClick(event) {
@@ -322,17 +326,14 @@ const Settings = React.createClass({
   },
 
   copyChatId(){
-    this.chatId.disabled = false;
-    this.chatId.focus();
-    this.chatId.select();
-    try {
-      let successful = document.execCommand('copy'),
-        msg = successful ? 'successful' : 'unsuccessful';
-      console.log('Copy chatId was ' + msg);
-    } catch (err) {
-      console.log('Oops, unable to copy');
+    if (this.chatIdElement) {
+      try {
+        this.chatIdElement.select();
+        document.execCommand('copy');
+      } catch (err) {
+        console.error(err);
+      }
     }
-    this.chatId.disabled = true;
   },
 
   inviteByUrl(){

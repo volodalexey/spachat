@@ -188,7 +188,7 @@ const UserAvatar = React.createClass({
         </div>
         <div className="flex-item flex-wrap flex-align-c flex-item-auto flex-dir-col">
           <canvas data-role="preview_avatar" width={this.canvas_elem_width} height={this.canvas_elem_height} className="margin-b-em"></canvas>
-          <form enctype="multipart/form-data" method="post" className={(self.props.data.avatarMode === mode.SHOW) ? 'hide' : ''}>
+          <form encType="multipart/form-data" method="post" className={(self.props.data.avatarMode === mode.SHOW) ? 'hide' : ''}>
             <p><input type="file" name="avatar" accept="image/jpeg,image/png"/></p>
           </form>
           {(() => {
