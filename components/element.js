@@ -52,7 +52,7 @@ Element.prototype = {
       params['id'] = config.id;
     }
     if (props.calcDisplay) {
-      display = props.calcDisplay(config);
+      display = props.calcDisplay(config, props.data);
       if (display !== undefined && display !== true) {
         params['style'] = {display: 'none'};
       }

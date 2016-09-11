@@ -815,12 +815,13 @@ const Panel = React.createClass({
 
   handleTransitionEnd(event) {
     if (event.target.dataset && event.target.dataset.role === 'detail_view_container') {
-      let chatIdValue = event.target.dataset.chat_id;
-      var resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
-      if (resultClosing !== -1) {
-        this.state.closingChatsInfoArray.splice(this.state.closingChatsInfoArray.indexOf(chatIdValue), 1);
+      let chatIdValue = event.target.dataset.chat_id,
+        closingChatsInfoArray = this.state.closingChatsInfoArray,
+        indexClosing = closingChatsInfoArray.indexOf(chatIdValue);
+      if (indexClosing !== -1) {
+        closingChatsInfoArray.splice(indexClosing, 1);
         this.setState({
-          closingChatsInfoArray: this.state.closingChatsInfoArray
+          closingChatsInfoArray: closingChatsInfoArray
         });
       }
     }
@@ -999,25 +1000,28 @@ const Panel = React.createClass({
   },
 
   showMoreInfo(element) {
-    let chatIdValue = element.dataset.chat_id,
+    let chat_id = element.dataset.chat_id,
       detailView = element.querySelector('[data-role="detail_view_container"]'),
       pointer = element.querySelector('[data-role="pointer"]'),
-      resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
-    if (resultClosing !== -1) return;
+      openChatsInfoArray = this.state.openChatsInfoArray,
+      closingChatsInfoArray = this.state.closingChatsInfoArray,
+      indexOpening = openChatsInfoArray.indexOf(chat_id),
+      indexClosing = closingChatsInfoArray.indexOf(chat_id);
+    if (indexClosing !== -1) return;
     if (detailView.dataset.state) {
-      this.state.openChatsInfoArray.splice(this.state.openChatsInfoArray.indexOf(chatIdValue), 1);
-      this.state.closingChatsInfoArray.push(chatIdValue);
+      openChatsInfoArray.splice(indexOpening, 1);
+      closingChatsInfoArray.push(chat_id);
       this.setState({
-        closingChatsInfoArray: this.state.closingChatsInfoArray,
-        openChatsInfoArray: this.state.openChatsInfoArray
+        closingChatsInfoArray: closingChatsInfoArray,
+        openChatsInfoArray: openChatsInfoArray
       });
       return;
     }
 
     if (element) {
-      this.state.openChatsInfoArray.push(chatIdValue);
+      openChatsInfoArray.push(chat_id);
       this.setState({
-        openChatsInfoArray: this.state.openChatsInfoArray
+        openChatsInfoArray: openChatsInfoArray
       });
     }
   },
@@ -1443,8 +1447,7 @@ const Panel = React.createClass({
               <div data-role={location + '_filter_container'} className="flex wrap flex-item-auto c-200">
                 <Filter mode={this.state.bodyMode} data={this.state} events={onEvent}/>
               </div>
-              <div data-role="panel_body" className="overflow-a flex-item-1-auto p-t"
-                   onTransitionEnd={this.transitionEnd}>
+              <div data-role="panel_body" className="overflow-a flex-item-1-auto p-t">
                 <Body mode={this.state.bodyMode} data={this.state} options={this.props.data} events={onEvent}
                       userInfo={this.state.userInfo? this.state.userInfo : this.props.userInfo}
                       handleEvent={handleEvent}/>

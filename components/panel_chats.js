@@ -17,30 +17,40 @@ const PanelChats = React.createClass({
     this.setState({usersInfo: this.state.usersInfo});
   },
 
-  renderItems() {
-    let items = [], self = this, usersList;
-    this.props.data.chat_ids.forEach(function(chat) {
-      var result = this.props.data.openChatsInfoArray.indexOf(chat.chat_id);
-      chat['pointerRotate'] = result;
-      var calcDisplay = function(config) {
-        if (self.props.data && self.props.data.openChats && config.data) {
-          if (self.props.data.openChats[chat.chat_id]) {
-            if (config.data.action === 'showChat') {
-              return false;
-            }
-          } else {
-            if (config.data.action === 'closeChat') {
-              return false;
-            }
-          }
+  calcDisplay(el_config, el_data) {
+    let data = this.props.data;
+    if (data && data.openChats && el_config.data) {
+      if (data.openChats[el_data.chat_id]) {
+        if (el_config.data.action === 'showChat') {
+          return false;
         }
-        return true;
-      };
-      let usersNameList = [], newUserName = [];
-      if (result !== -1) {
-        chat.user_ids.forEach(function(user, index, array) {
-          if (self.state.usersInfo[user]) {
-            usersNameList.push(self.state.usersInfo[user]);
+      } else {
+        if (el_config.data.action === 'closeChat') {
+          return false;
+        }
+      }
+    }
+    return true;
+  },
+
+  renderItems() {
+    let items = [], usersList;
+    this.props.data.chat_ids.forEach(chat => {
+      let
+        state = this.state,
+        props = this.props,
+        configs = props.configs,
+        events = props.events,
+        usersInfo = state.usersInfo,
+        chat_id = chat.chat_id,
+        indexOpening = props.data.openChatsInfoArray.indexOf(chat_id),
+        indexClosing = props.data.closingChatsInfoArray.indexOf(chat_id),
+        usersNameList = [], newUserName = [];
+      chat['pointerRotate'] = indexOpening;
+      if (indexOpening !== -1) {
+        chat.user_ids.forEach((user, index, array) => {
+          if (usersInfo[user]) {
+            usersNameList.push(usersInfo[user]);
             if (index !== array.length - 1) {
               usersNameList.push(', ');
             }
@@ -49,15 +59,15 @@ const PanelChats = React.createClass({
           }
         });
         if (newUserName.length) {
-          users_bus.getContactsInfo(null, newUserName, function(_error, usersInfo) {
+          users_bus.getContactsInfo(null, newUserName, (_error, usersInfo) => {
             if (_error) {
               console.error(_error);
               return;
             }
-            usersInfo.forEach(function(_user) {
-              if (!self.state.usersInfo[_user.user_id]) {
-                self.state.usersInfo[_user.user_id] = _user.userName;
-                self.setState({usersInfo: self.state.usersInfo});
+            usersInfo.forEach(_user => {
+              if (!usersInfo[_user.user_id]) {
+                usersInfo[_user.user_id] = _user.userName;
+                this.setState({usersInfo: usersInfo});
               }
             });
           });
@@ -67,31 +77,30 @@ const PanelChats = React.createClass({
       usersList = <div>{usersNameList}</div>;
       items.push(
         <div data-action="show_more_info" data-role="chatWrapper"
-             data-chat_id={chat.chat_id} key={chat.chat_id} className="margin-b-em">
-          <Location_Wrapper key={1} data={chat} events={this.props.events}
-                            configs={this.props.configs.chats_info_config}/>
+             data-chat_id={chat_id} key={chat_id} className="margin-b-em">
+          <Location_Wrapper key={1} data={chat} events={events}
+                            configs={configs.chats_info_config}/>
           <label>{localization.getLocText(125)} {chat.user_ids.length}</label>
           {(() => {
-            let resultClosing = this.props.data.closingChatsInfoArray.indexOf(chat.chat_id);
-            if (resultClosing !== -1) {
+            if (indexClosing !== -1) {
               return (<div data-role="detail_view_container" style={{maxHeight: '0em'}}
-                           className="max-height-0" data-state="expanded" data-chat_id={chat.chat_id}>{usersList}
-                <Location_Wrapper key={chat.chat_id} data={chat} events={this.props.events}
-                                  configs={this.props.configs.detail_view_config}
-                                  calcDisplay={calcDisplay}/>
+                           className="max-height-0" data-state="expanded" data-chat_id={chat_id}>{usersList}
+                <Location_Wrapper key={chat_id} data={chat} events={events}
+                                  configs={configs.detail_view_config}
+                                  calcDisplay={this.calcDisplay}/>
               </div>)
             } else {
-              if (result !== -1) {
+              if (indexOpening !== -1) {
                 return (<div data-role="detail_view_container" style={{maxHeight: '15em'}}
                              className="max-height-auto max-height-0"
-                             data-state="expanded" data-chat_id={chat.chat_id}>{usersList}
-                  <Location_Wrapper key={chat.chat_id} data={chat} events={this.props.events}
-                                    configs={this.props.configs.detail_view_config}
-                                    calcDisplay={calcDisplay}/>
+                             data-state="expanded" data-chat_id={chat_id}>{usersList}
+                  <Location_Wrapper key={chat_id} data={chat} events={events}
+                                    configs={configs.detail_view_config}
+                                    calcDisplay={this.calcDisplay}/>
                 </div>)
               } else {
                 return <div data-role="detail_view_container" style={{maxHeight: '0em'}} className="max-height-0"
-                            data-chat_id={chat.chat_id}></div>
+                            data-chat_id={chat_id}></div>
               }
             }
           })()}
