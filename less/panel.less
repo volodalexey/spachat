@@ -17,15 +17,12 @@
   transition: left  0.2s ease, right  0.2s ease;
 }
 
-.max-height-0{
-  overflow: hidden;
-  background: @50;
-  transition: max-height  0.2s ease-out;
-&:hover{
-
-}
-  &.max-height-auto{
-    transition: max-height 0.5s ease-in;
+.tr-transform {
+  transition: transform 0.2s ease-out;
+  transform-origin: 0 0;
+  transform: scale(1, 0);
+  &.opened {
+    transform: scale(1, 1);
   }
 }
 

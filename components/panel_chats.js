@@ -83,23 +83,29 @@ const PanelChats = React.createClass({
           <label>{localization.getLocText(125)} {chat.user_ids.length}</label>
           {(() => {
             if (indexClosing !== -1) {
-              return (<div data-role="detail_view_container" style={{maxHeight: '0em'}}
-                           className="max-height-0" data-state="expanded" data-chat_id={chat_id}>{usersList}
+              return (<div data-role="detail_view_container"
+                           className="tr-transform"
+                           data-state="expanded"
+                           data-chat_id={chat_id}>
+                {usersList}
                 <Location_Wrapper key={chat_id} data={chat} events={events}
                                   configs={configs.detail_view_config}
                                   calcDisplay={this.calcDisplay}/>
               </div>)
             } else {
               if (indexOpening !== -1) {
-                return (<div data-role="detail_view_container" style={{maxHeight: '15em'}}
-                             className="max-height-auto max-height-0"
-                             data-state="expanded" data-chat_id={chat_id}>{usersList}
+                return (<div data-role="detail_view_container"
+                             className="tr-transform opened"
+                             data-state="expanded"
+                             data-chat_id={chat_id}>
+                  {usersList}
                   <Location_Wrapper key={chat_id} data={chat} events={events}
                                     configs={configs.detail_view_config}
                                     calcDisplay={this.calcDisplay}/>
                 </div>)
               } else {
-                return <div data-role="detail_view_container" style={{maxHeight: '0em'}} className="max-height-0"
+                return <div data-role="detail_view_container"
+                            className="tr-transform"
                             data-chat_id={chat_id}></div>
               }
             }
