@@ -310,14 +310,16 @@ const Chat = React.createClass({
             if (getError) {
               return console.error(getError);
             }
-
+            
             if (chatDescription) {
               websocket.sendMessage({
                 type: "chat_join",
                 from_user_id: users_bus.getUserId(),
                 chat_description: {
                   chat_id: chatDescription.chat_id,
-                  restoreOption: self.props.data.restoreOption
+                  restoreOption: self.props.data.restoreOption,
+                  is_deleted: chatDescription.is_deleted,
+                  lastChangedDatetime: chatDescription.lastChangedDatetime
                 }
               });
               self.state.logMessages.push('Get chat description. Websocket sendMessage "Chat join".');
@@ -758,7 +760,7 @@ const Chat = React.createClass({
 
   displayExtraMessageToolbar(element){
     if (element.dataset.id) {
-      let not_active_user = users_bus.hasInArray(this.state.blocked_user_ids, users_bus.getUserId()) ||
+      let not_active_user = this.state.is_deleted || users_bus.hasInArray(this.state.blocked_user_ids, users_bus.getUserId()) ||
         users_bus.hasInArray(this.state.deleted_user_ids, users_bus.getUserId());
       if (!not_active_user && (!this.state.extraMessageIDToolbar ||
         this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== parseInt(element.dataset.id))) {
@@ -1012,6 +1014,7 @@ const Chat = React.createClass({
                     is_deleted: chat_description.is_deleted
                   });
                   sync_core.sendSyncChatDescription(chat_description, users_bus.getUserId());
+                  event_bus.trigger("chatDestroyed", chat_description.chat_id);
                 });
               } else {
                 chat_description.left_chat_user_ids.push(users_bus.getUserId());
@@ -1037,6 +1040,7 @@ const Chat = React.createClass({
                       }
                     };
                     webrtc.broadcastMessage([active_owner_connection], JSON.stringify(_messageData));
+                    event_bus.trigger("chatDestroyed", chat_description.chat_id);
                   }
                 });
               }

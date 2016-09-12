@@ -78,7 +78,7 @@ Web_socket_connection_model.prototype = {
 
   delete_chat_id: function(chat_id) {
     var wsc = this;
-    if (wsc.has_chat_id(chat_id) === true) {
+    if (wsc.has_chat_id(chat_id)) {
       wsc.chats_ids.splice(wsc.chats_ids.indexOf(chat_id), 1);
     }
   },

@@ -59,12 +59,12 @@ const PanelChats = React.createClass({
           }
         });
         if (newUserName.length) {
-          users_bus.getContactsInfo(null, newUserName, (_error, usersInfo) => {
+          users_bus.getContactsInfo(null, newUserName, (_error, _usersInfo) => {
             if (_error) {
               console.error(_error);
               return;
             }
-            usersInfo.forEach(_user => {
+            _usersInfo.forEach(_user => {
               if (!usersInfo[_user.user_id]) {
                 usersInfo[_user.user_id] = _user.userName;
                 this.setState({usersInfo: usersInfo});

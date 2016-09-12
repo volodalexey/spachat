@@ -2906,13 +2906,16 @@ webpackJsonp([0],{
 	      params['id'] = config.id;
 	    }
 	    if (props.calcDisplay) {
-	      display = props.calcDisplay(config);
+	      display = props.calcDisplay(config, props.data);
 	      if (display !== undefined && display !== true) {
 	        params['style'] = { display: 'none' };
 	      }
 	    }
 	    if (config.disabled === true) {
 	      params['disabled'] = 'true';
+	    }
+	    if (config.readonly === true) {
+	      params['readOnly'] = true;
 	    }
 	    if (config.onkeypress) {
 	      params['onkeypress'] = config.onkeypress;
@@ -5117,12 +5120,13 @@ webpackJsonp([0],{
 	  },
 	  handleTransitionEnd: function handleTransitionEnd(event) {
 	    if (event.target.dataset && event.target.dataset.role === 'detail_view_container') {
-	      var chatIdValue = event.target.dataset.chat_id;
-	      var resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
-	      if (resultClosing !== -1) {
-	        this.state.closingChatsInfoArray.splice(this.state.closingChatsInfoArray.indexOf(chatIdValue), 1);
+	      var chatIdValue = event.target.dataset.chat_id,
+	          closingChatsInfoArray = this.state.closingChatsInfoArray,
+	          indexClosing = closingChatsInfoArray.indexOf(chatIdValue);
+	      if (indexClosing !== -1) {
+	        closingChatsInfoArray.splice(indexClosing, 1);
 	        this.setState({
-	          closingChatsInfoArray: this.state.closingChatsInfoArray
+	          closingChatsInfoArray: closingChatsInfoArray
 	        });
 	      }
 	    }
@@ -5290,25 +5294,28 @@ webpackJsonp([0],{
 	    return document.body.offsetWidth + 'px';
 	  },
 	  showMoreInfo: function showMoreInfo(element) {
-	    var chatIdValue = element.dataset.chat_id,
+	    var chat_id = element.dataset.chat_id,
 	        detailView = element.querySelector('[data-role="detail_view_container"]'),
 	        pointer = element.querySelector('[data-role="pointer"]'),
-	        resultClosing = this.state.closingChatsInfoArray.indexOf(chatIdValue);
-	    if (resultClosing !== -1) return;
+	        openChatsInfoArray = this.state.openChatsInfoArray,
+	        closingChatsInfoArray = this.state.closingChatsInfoArray,
+	        indexOpening = openChatsInfoArray.indexOf(chat_id),
+	        indexClosing = closingChatsInfoArray.indexOf(chat_id);
+	    if (indexClosing !== -1) return;
 	    if (detailView.dataset.state) {
-	      this.state.openChatsInfoArray.splice(this.state.openChatsInfoArray.indexOf(chatIdValue), 1);
-	      this.state.closingChatsInfoArray.push(chatIdValue);
+	      openChatsInfoArray.splice(indexOpening, 1);
+	      closingChatsInfoArray.push(chat_id);
 	      this.setState({
-	        closingChatsInfoArray: this.state.closingChatsInfoArray,
-	        openChatsInfoArray: this.state.openChatsInfoArray
+	        closingChatsInfoArray: closingChatsInfoArray,
+	        openChatsInfoArray: openChatsInfoArray
 	      });
 	      return;
 	    }
 
 	    if (element) {
-	      this.state.openChatsInfoArray.push(chatIdValue);
+	      openChatsInfoArray.push(chat_id);
 	      this.setState({
-	        openChatsInfoArray: this.state.openChatsInfoArray
+	        openChatsInfoArray: openChatsInfoArray
 	      });
 	    }
 	  },
@@ -5725,8 +5732,7 @@ webpackJsonp([0],{
 	            ),
 	            _react2.default.createElement(
 	              'div',
-	              { 'data-role': 'panel_body', className: 'overflow-a flex-item-1-auto p-t',
-	                onTransitionend: this.transitionEnd },
+	              { 'data-role': 'panel_body', className: 'overflow-a flex-item-1-auto p-t' },
 	              _react2.default.createElement(_body2.default, { mode: this.state.bodyMode, data: this.state, options: this.props.data, events: onEvent,
 	                userInfo: this.state.userInfo ? this.state.userInfo : this.props.userInfo,
 	                handleEvent: handleEvent })
@@ -9523,35 +9529,42 @@ webpackJsonp([0],{
 	    this.state.usersInfo[this.props.data.myId] = this.props.data.myName;
 	    this.setState({ usersInfo: this.state.usersInfo });
 	  },
+	  calcDisplay: function calcDisplay(el_config, el_data) {
+	    var data = this.props.data;
+	    if (data && data.openChats && el_config.data) {
+	      if (data.openChats[el_data.chat_id]) {
+	        if (el_config.data.action === 'showChat') {
+	          return false;
+	        }
+	      } else {
+	        if (el_config.data.action === 'closeChat') {
+	          return false;
+	        }
+	      }
+	    }
+	    return true;
+	  },
 	  renderItems: function renderItems() {
+	    var _this = this;
+
 	    var items = [],
-	        self = this,
 	        usersList = void 0;
 	    this.props.data.chat_ids.forEach(function (chat) {
-	      var _this = this;
-
-	      var result = this.props.data.openChatsInfoArray.indexOf(chat.chat_id);
-	      chat['pointerRotate'] = result;
-	      var calcDisplay = function calcDisplay(config) {
-	        if (self.props.data && self.props.data.openChats && config.data) {
-	          if (self.props.data.openChats[chat.chat_id]) {
-	            if (config.data.action === 'showChat') {
-	              return false;
-	            }
-	          } else {
-	            if (config.data.action === 'closeChat') {
-	              return false;
-	            }
-	          }
-	        }
-	        return true;
-	      };
-	      var usersNameList = [],
+	      var state = _this.state,
+	          props = _this.props,
+	          configs = props.configs,
+	          events = props.events,
+	          usersInfo = state.usersInfo,
+	          chat_id = chat.chat_id,
+	          indexOpening = props.data.openChatsInfoArray.indexOf(chat_id),
+	          indexClosing = props.data.closingChatsInfoArray.indexOf(chat_id),
+	          usersNameList = [],
 	          newUserName = [];
-	      if (result !== -1) {
+	      chat['pointerRotate'] = indexOpening;
+	      if (indexOpening !== -1) {
 	        chat.user_ids.forEach(function (user, index, array) {
-	          if (self.state.usersInfo[user]) {
-	            usersNameList.push(self.state.usersInfo[user]);
+	          if (usersInfo[user]) {
+	            usersNameList.push(usersInfo[user]);
 	            if (index !== array.length - 1) {
 	              usersNameList.push(', ');
 	            }
@@ -9560,15 +9573,15 @@ webpackJsonp([0],{
 	          }
 	        });
 	        if (newUserName.length) {
-	          _users_bus2.default.getContactsInfo(null, newUserName, function (_error, usersInfo) {
+	          _users_bus2.default.getContactsInfo(null, newUserName, function (_error, _usersInfo) {
 	            if (_error) {
 	              console.error(_error);
 	              return;
 	            }
-	            usersInfo.forEach(function (_user) {
-	              if (!self.state.usersInfo[_user.user_id]) {
-	                self.state.usersInfo[_user.user_id] = _user.userName;
-	                self.setState({ usersInfo: self.state.usersInfo });
+	            _usersInfo.forEach(function (_user) {
+	              if (!usersInfo[_user.user_id]) {
+	                usersInfo[_user.user_id] = _user.userName;
+	                _this.setState({ usersInfo: usersInfo });
 	              }
 	            });
 	          });
@@ -9583,9 +9596,9 @@ webpackJsonp([0],{
 	      items.push(_react2.default.createElement(
 	        'div',
 	        { 'data-action': 'show_more_info', 'data-role': 'chatWrapper',
-	          'data-chat_id': chat.chat_id, key: chat.chat_id, className: 'margin-b-em' },
-	        _react2.default.createElement(_location_wrapper2.default, { key: 1, data: chat, events: this.props.events,
-	          configs: this.props.configs.chats_info_config }),
+	          'data-chat_id': chat_id, key: chat_id, className: 'margin-b-em' },
+	        _react2.default.createElement(_location_wrapper2.default, { key: 1, data: chat, events: events,
+	          configs: configs.chats_info_config }),
 	        _react2.default.createElement(
 	          'label',
 	          null,
@@ -9594,32 +9607,35 @@ webpackJsonp([0],{
 	          chat.user_ids.length
 	        ),
 	        function () {
-	          var resultClosing = _this.props.data.closingChatsInfoArray.indexOf(chat.chat_id);
-	          if (resultClosing !== -1) {
+	          if (indexClosing !== -1) {
 	            return _react2.default.createElement(
 	              'div',
-	              { 'data-role': 'detail_view_container', style: { maxHeight: '0em' },
-	                className: 'max-height-0', 'data-state': 'expanded', 'data-chat_id': chat.chat_id },
+	              { 'data-role': 'detail_view_container',
+	                className: 'tr-transform',
+	                'data-state': 'expanded',
+	                'data-chat_id': chat_id },
 	              usersList,
-	              _react2.default.createElement(_location_wrapper2.default, { key: chat.chat_id, data: chat, events: _this.props.events,
-	                configs: _this.props.configs.detail_view_config,
-	                calcDisplay: calcDisplay })
+	              _react2.default.createElement(_location_wrapper2.default, { key: chat_id, data: chat, events: events,
+	                configs: configs.detail_view_config,
+	                calcDisplay: _this.calcDisplay })
 	            );
 	          } else {
-	            if (result !== -1) {
+	            if (indexOpening !== -1) {
 	              return _react2.default.createElement(
 	                'div',
-	                { 'data-role': 'detail_view_container', style: { maxHeight: '15em' },
-	                  className: 'max-height-auto max-height-0',
-	                  'data-state': 'expanded', 'data-chat_id': chat.chat_id },
+	                { 'data-role': 'detail_view_container',
+	                  className: 'tr-transform opened',
+	                  'data-state': 'expanded',
+	                  'data-chat_id': chat_id },
 	                usersList,
-	                _react2.default.createElement(_location_wrapper2.default, { key: chat.chat_id, data: chat, events: _this.props.events,
-	                  configs: _this.props.configs.detail_view_config,
-	                  calcDisplay: calcDisplay })
+	                _react2.default.createElement(_location_wrapper2.default, { key: chat_id, data: chat, events: events,
+	                  configs: configs.detail_view_config,
+	                  calcDisplay: _this.calcDisplay })
 	              );
 	            } else {
-	              return _react2.default.createElement('div', { 'data-role': 'detail_view_container', style: { maxHeight: '0em' }, className: 'max-height-0',
-	                'data-chat_id': chat.chat_id });
+	              return _react2.default.createElement('div', { 'data-role': 'detail_view_container',
+	                className: 'tr-transform',
+	                'data-chat_id': chat_id });
 	            }
 	          }
 	        }()
@@ -10614,11 +10630,11 @@ webpackJsonp([0],{
 	        "type": "text",
 	        "location": "chat_id_container",
 	        "class": "flex-item-1-auto",
+	        "readonly": true,
 	        "data": {
 	          "key": "chat_id",
 	          "role": "chat_id"
-	        },
-	        "disabled": true
+	        }
 	      }, {
 	        "element": "button",
 	        "icon": 'blogs_icon',
@@ -10673,7 +10689,10 @@ webpackJsonp([0],{
 	  },
 	  componentDidMount: function componentDidMount() {
 	    this.body = _reactDom2.default.findDOMNode(this);
-	    this.chatId = this.body.querySelector('[data-role="chat_id"]');
+	    this.chatIdElement = this.body.querySelector('[data-role="chat_id"]');
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.body = this.chatIdElement = null;
 	  },
 	  handleClick: function handleClick(event) {
 	    var element = this.getDataParameter(event.currentTarget, 'action');
@@ -10728,17 +10747,14 @@ webpackJsonp([0],{
 	    this.props.handleEvent.changeState({ headerFooterControl: this.props.data.headerFooterControl });
 	  },
 	  copyChatId: function copyChatId() {
-	    this.chatId.disabled = false;
-	    this.chatId.focus();
-	    this.chatId.select();
-	    try {
-	      var successful = document.execCommand('copy'),
-	          msg = successful ? 'successful' : 'unsuccessful';
-	      console.log('Copy chatId was ' + msg);
-	    } catch (err) {
-	      console.log('Oops, unable to copy');
+	    if (this.chatIdElement) {
+	      try {
+	        this.chatIdElement.select();
+	        document.execCommand('copy');
+	      } catch (err) {
+	        console.error(err);
+	      }
 	    }
-	    this.chatId.disabled = true;
 	  },
 	  inviteByUrl: function inviteByUrl() {
 	    var newState = void 0,
@@ -11663,7 +11679,7 @@ webpackJsonp([0],{
 	        _react2.default.createElement('canvas', { 'data-role': 'preview_avatar', width: this.canvas_elem_width, height: this.canvas_elem_height, className: 'margin-b-em' }),
 	        _react2.default.createElement(
 	          'form',
-	          { enctype: 'multipart/form-data', method: 'post', className: self.props.data.avatarMode === mode.SHOW ? 'hide' : '' },
+	          { encType: 'multipart/form-data', method: 'post', className: self.props.data.avatarMode === mode.SHOW ? 'hide' : '' },
 	          _react2.default.createElement(
 	            'p',
 	            null,

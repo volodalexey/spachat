@@ -125,7 +125,7 @@ const ContactList = React.createClass({
     if (_user.userName === '-//-//-//-' || _user.is_deleted) {
       return add_user_button;
     }
-    if (users_bus.isOwner(this.props.data.createdByUserId)) {
+    if (users_bus.isOwner(this.props.data.createdByUserId) && !this.props.data.is_deleted) {
       if (deleted_contact) {
         return add_contact_button;
       }

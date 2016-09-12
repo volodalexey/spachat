@@ -11,6 +11,7 @@ import messages from '../js/messages.js'
 import websocket from '../js/websocket.js'
 import webrtc from '../js/webrtc.js'
 import model_core from '../js/model_core.js'
+import sync_core from '../js/sync_core'
 
 import Chat from '../components/chat'
 import DialogConfirm from './dialogConfirm'
@@ -149,7 +150,9 @@ const ChatsManager = React.createClass({
 
   handleChat(messageData, chat_description) {
     event_bus.trigger("changeOpenChats", "CHATS");
-    if (messageData.chat_wscs_descrs && !chat_description.is_deleted) {
+    if (chat_description.is_deleted) return this.forceUpdate();
+
+    if (messageData.chat_wscs_descrs) {
       webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
     } else {
       websocket.wsRequest({
@@ -285,7 +288,7 @@ const ChatsManager = React.createClass({
         });
         index = self.getIndexCurrentChat(chat_description.chat_id);
         if (index === undefined) return;
-console.log(Chat.prototype.chatsArray[index]);
+
         if (Chat.prototype.chatsArray[index].mode !== 'ready') {
           event_bus.trigger('send_log_message', chat_description.chat_id, {
             text: 'Upgrade to chat "ready".',
@@ -312,11 +315,24 @@ console.log(Chat.prototype.chatsArray[index]);
             Chat.prototype.chatsArray[index].chat_description = chat_description;
           }
           self.handleChat(event, chat_description);
-        } else if (Chat.prototype.chatsArray[index].mode === 'ready' && event.chat_wscs_descrs &&
-          !Chat.prototype.chatsArray[index].chat_description.is_deleted) {
-          event_bus.trigger('send_log_message', chat_description.chat_id,
-            {text: 'Webrtc handleConnectedDevices".', type: 'information'});
-          webrtc.handleConnectedDevices(event.chat_wscs_descrs);
+        } else if (Chat.prototype.chatsArray[index].mode === 'ready') {
+          if (event.chat_description.is_deleted && !chat_description.is_deleted && !chat_description.lastChangedDatetime ||
+            chat_description.lastChangedDatetime < event.chat_description.lastChangedDatetime) {
+            let messageData = {
+              chat_description: {
+                chat_id: chat_description.chat_id
+              },
+              updateDescription: {
+                lastChangedDatetime: event.chat_description.lastChangedDatetime,
+                is_deleted: event.chat_description.is_deleted
+              }
+            };
+            sync_core.responseChatData(messageData);
+          } else if (event.chat_wscs_descrs && !Chat.prototype.chatsArray[index].chat_description.is_deleted) {
+            event_bus.trigger('send_log_message', chat_description.chat_id,
+              {text: 'Webrtc handleConnectedDevices".', type: 'information'});
+            webrtc.handleConnectedDevices(event.chat_wscs_descrs);
+          }
         }
       }
     );
@@ -379,9 +395,11 @@ console.log(Chat.prototype.chatsArray[index]);
   },
 
   closeChat(description, temp_chat_id) {
-    this.setState({confirmMessageCloseChat: 83,
+    this.setState({
+      confirmMessageCloseChat: 83,
       confirmDialog_description: description,
-      confirmDialog_tempChatId: temp_chat_id});
+      confirmDialog_tempChatId: temp_chat_id
+    });
   },
 
   destroyChat(description, temp_chat_id) {
@@ -446,9 +464,11 @@ console.log(Chat.prototype.chatsArray[index]);
           this.destroyChat(this.state.confirmDialog_description, this.state.confirmDialog_tempChatId);
           break;
       }
-      this.setState({confirmMessageCloseChat: null,
+      this.setState({
+        confirmMessageCloseChat: null,
         confirmDialog_description: null,
-        confirmDialog_tempChatId: null});
+        confirmDialog_tempChatId: null
+      });
     }
   },
 

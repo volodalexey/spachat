@@ -511,7 +511,7 @@ const Settings = React.createClass({
                       </div>}}/>
       {this.renderItems(this.props.setting_config)}
       {this.props.data.is_deleted ? null : delete_chat}
-      {this.renderCreatorLayout()}
+      {this.props.data.is_deleted ? null : this.renderCreatorLayout()}
       <div className="textbox">
         <div className="title c-100">
           {this.renderItems(this.props.size_container_config)}
