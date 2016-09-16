@@ -14,6 +14,7 @@ var fs = require('fs'),
   webSocketServer = new WebSocketServer({server: server}),
   web_socket_connections_collection = require('./server_js/web_socket_connections_collection'),
   clients = [],
+  chats_descriptions = [],
   reqResMiddleware = webpackDevMiddleware(webpack(webpack_config), {
     publicPath: '/__build__/',
     stats: {
@@ -47,7 +48,7 @@ webSocketServer.on('connection', function(ws) {
 webSocketServer.on('error', function(err){
   console.log('server closed by error: '+err);
 });
-web_socket_connections_collection.apply_wss(clients);
+web_socket_connections_collection.apply_wss(clients, chats_descriptions);
 
 // convert any objects to JSON string format
 var toJSON = function(_object) {

@@ -184,6 +184,7 @@ Chats_message_router.prototype = {
       'ws_device_id = ' + cur_wsc.ws_device_id,
       'user_id = ' + parsedMessageData.from_user_id,
       'to chat_id = ' + parsedMessageData.chat_description.chat_id);
+    this.wscc.delete_chat_desc(parsedMessageData.chat_description);
   }
 };
 

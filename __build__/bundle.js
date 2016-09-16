@@ -6081,10 +6081,6 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _indexeddb = __webpack_require__(286);
-
-	var _indexeddb2 = _interopRequireDefault(_indexeddb);
-
 	var _chats_bus = __webpack_require__(310);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
@@ -6175,17 +6171,17 @@ webpackJsonp([0],{
 	  /**
 	   * this function is invoked when chat was created or joined
 	   */
-	  handleConnectedDevices: function handleConnectedDevices(wscs_descrs) {
+	  handleConnectedDevices: function handleConnectedDevices(wscs_descrs, is_deleted_chat) {
 	    var self = this;
 	    if (!wscs_descrs && !Array.isArray(wscs_descrs)) {
 	      return;
 	    }
 	    wscs_descrs.forEach(function (ws_descr) {
-	      self.handleDeviceActive(ws_descr);
+	      self.handleDeviceActive(ws_descr, is_deleted_chat);
 	    });
 	  },
 
-	  handleDeviceActive: function handleDeviceActive(ws_descr) {
+	  handleDeviceActive: function handleDeviceActive(ws_descr, is_deleted_chat) {
 	    var self = this;
 	    if (_event_bus2.default.ws_device_id === ws_descr.ws_device_id) {
 	      console.warn('the information about myself');
@@ -6194,7 +6190,7 @@ webpackJsonp([0],{
 
 	    var connection = self.getConnection(ws_descr.ws_device_id);
 	    if (connection && connection.canApplyNextState() === false) {
-	      connection.storeContext(ws_descr);
+	      connection.storeContext(ws_descr, is_deleted_chat);
 	      self.trigger('webrtc_connection_established', connection);
 	      return;
 	    }
@@ -6206,7 +6202,7 @@ webpackJsonp([0],{
 	    }
 	    // change readyState for existing connection
 	    connection.active.readyState = _connection3.default.prototype.readyStates.WILL_CREATE_OFFER;
-	    connection.storeContext(ws_descr);
+	    connection.storeContext(ws_descr, is_deleted_chat);
 	    self.onActiveChangeState(connection);
 	  },
 
@@ -6812,17 +6808,15 @@ webpackJsonp([0],{
 	    this.broadcastMessage(this.getChatConnections(this.connections, chat_id), broadcastData);
 	  },
 
-	  destroyConnectionChat: function destroyConnectionChat(chat_id) {
+	  destroyConnectionChat: function destroyConnectionChat(chat_description) {
 	    var _this = this;
 	    _this.connections.forEach(function (connetion) {
-	      connetion.removeChatId(chat_id);
+	      connetion.removeChatId(chat_description.chat_id);
 	    });
 	    _websocket2.default.sendMessage({
 	      type: "chat_leave",
 	      from_user_id: _users_bus2.default.getUserId(),
-	      chat_description: {
-	        chat_id: chat_id
-	      }
+	      chat_description: chat_description
 	    });
 	  },
 
@@ -6906,7 +6900,7 @@ webpackJsonp([0],{
 
 	      if (!chat_description) return;
 
-	      if (!chat_description.lastChangedDatetime || chat_description.lastChangedDatetime < updateDescription.lastChangedDatetime) {
+	      if (!chat_description.lastChangedDatetime || chat_description.lastChangedDatetime <= updateDescription.lastChangedDatetime) {
 
 	        chat_description.lastChangedDatetime = updateDescription.lastChangedDatetime ? updateDescription.lastChangedDatetime : chat_description.lastChangedDatetime;
 	        chat_description.user_ids = updateDescription.user_ids ? updateDescription.user_ids : chat_description.user_ids;
@@ -10086,6 +10080,7 @@ webpackJsonp([0],{
 	    if (!instance.createdByUserId) {
 	      instance.createdByUserId = _users_bus2.default.getUserId();
 	      instance.createdDatetime = Date.now();
+	      instance.lastChangedDatetime = instance.createdDatetime;
 	    } else {
 	      instance.receivedDatetime = Date.now();
 	    }
@@ -10946,7 +10941,7 @@ webpackJsonp([0],{
 	          ) } }),
 	      this.renderItems(this.props.setting_config),
 	      this.props.data.is_deleted ? null : delete_chat,
-	      this.renderCreatorLayout(),
+	      this.props.data.is_deleted ? null : this.renderCreatorLayout(),
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'textbox' },
@@ -11270,7 +11265,7 @@ webpackJsonp([0],{
 	    if (_user.userName === '-//-//-//-' || _user.is_deleted) {
 	      return add_user_button;
 	    }
-	    if (_users_bus2.default.isOwner(this.props.data.createdByUserId)) {
+	    if (_users_bus2.default.isOwner(this.props.data.createdByUserId) && !this.props.data.is_deleted) {
 	      if (deleted_contact) {
 	        return add_contact_button;
 	      }
@@ -13029,6 +13024,10 @@ webpackJsonp([0],{
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
+	var _sync_core = __webpack_require__(313);
+
+	var _sync_core2 = _interopRequireDefault(_sync_core);
+
 	var _chat2 = __webpack_require__(339);
 
 	var _chat3 = _interopRequireDefault(_chat2);
@@ -13168,7 +13167,9 @@ webpackJsonp([0],{
 	  },
 	  handleChat: function handleChat(messageData, chat_description) {
 	    _event_bus2.default.trigger("changeOpenChats", "CHATS");
-	    if (messageData.chat_wscs_descrs && !chat_description.is_deleted) {
+	    if (chat_description.is_deleted || messageData.chat_description && messageData.chat_description.is_deleted) return this.forceUpdate();
+
+	    if (messageData.chat_wscs_descrs) {
 	      _webrtc2.default.handleConnectedDevices(messageData.chat_wscs_descrs);
 	    } else {
 	      _websocket2.default.wsRequest({
@@ -13260,7 +13261,9 @@ webpackJsonp([0],{
 	          type: "chat_join",
 	          from_user_id: _users_bus2.default.getUserId(),
 	          chat_description: {
-	            chat_id: chat.chat_id
+	            chat_id: chat.chat_id,
+	            is_deleted: chat.is_deleted,
+	            lastChangedDatetime: chat.lastChangedDatetime
 	          }
 	        });
 	        _event_bus2.default.trigger('send_log_message', chat.chat_id, { text: 'Saved chat in List Chats users. Websocket sendMessage "Chat join".', type: 'information' });
@@ -13275,7 +13278,8 @@ webpackJsonp([0],{
 	   */
 	  chatJoinApproved: function chatJoinApproved(event) {
 	    var self = this,
-	        index = void 0;
+	        index = void 0,
+	        messageData = void 0;
 	    _event_bus2.default.set_ws_device_id(event.target_ws_device_id);
 	    _event_bus2.default.trigger('send_log_message', event.chat_description.chat_id, { text: 'Chat join approved. Getting chat description.', type: 'information' });
 
@@ -13293,12 +13297,16 @@ webpackJsonp([0],{
 	      });
 	      index = self.getIndexCurrentChat(chat_description.chat_id);
 	      if (index === undefined) return;
-	      console.log(_chat3.default.prototype.chatsArray[index]);
+
 	      if (_chat3.default.prototype.chatsArray[index].mode !== 'ready') {
 	        _event_bus2.default.trigger('send_log_message', chat_description.chat_id, {
 	          text: 'Upgrade to chat "ready".',
 	          type: 'information'
 	        });
+
+	        chat_description.is_deleted = event.chat_description.is_deleted ? event.chat_description.is_deleted : chat_description.is_deleted;
+	        chat_description.lastChangedDatetime = event.chat_description.lastChangedDatetime ? event.chat_description.lastChangedDatetime : chat_description.lastChangedDatetime;
+
 	        _chat3.default.prototype.chatsArray[index].mode = 'ready';
 	        if (!event.chat_description.restoreOption) {
 	          _chat3.default.prototype.chatsArray[index].chat_description = {};
@@ -13310,18 +13318,29 @@ webpackJsonp([0],{
 	            deleted_user_ids: chat_description.deleted_user_ids,
 	            blocked_user_ids: chat_description.blocked_user_ids,
 	            lastChangedDatetime: chat_description.lastChangedDatetime,
-	            addNewUserWhenInviting: chat_description.addNewUserWhenInviting
+	            addNewUserWhenInviting: chat_description.addNewUserWhenInviting,
+	            is_deleted: chat_description.is_deleted
 	          });
-	          _chat3.default.prototype.chatsArray[index].chat_description.user_ids = chat_description.user_ids;
-	          _chat3.default.prototype.chatsArray[index].chat_description.deleted_user_ids = chat_description.deleted_user_ids;
-	          _chat3.default.prototype.chatsArray[index].chat_description.blocked_user_ids = chat_description.blocked_user_ids;
 	        } else {
 	          _chat3.default.prototype.chatsArray[index].chat_description = chat_description;
 	        }
 	        self.handleChat(event, chat_description);
-	      } else if (_chat3.default.prototype.chatsArray[index].mode === 'ready' && event.chat_wscs_descrs && !_chat3.default.prototype.chatsArray[index].chat_description.is_deleted) {
-	        _event_bus2.default.trigger('send_log_message', chat_description.chat_id, { text: 'Webrtc handleConnectedDevices".', type: 'information' });
-	        _webrtc2.default.handleConnectedDevices(event.chat_wscs_descrs);
+	      } else if (_chat3.default.prototype.chatsArray[index].mode === 'ready') {
+	        if (event.chat_description.is_deleted && !chat_description.is_deleted && !chat_description.lastChangedDatetime || chat_description.lastChangedDatetime < event.chat_description.lastChangedDatetime) {
+	          messageData = {
+	            chat_description: {
+	              chat_id: chat_description.chat_id
+	            },
+	            updateDescription: {
+	              lastChangedDatetime: event.chat_description.lastChangedDatetime,
+	              is_deleted: event.chat_description.is_deleted
+	            }
+	          };
+	          _sync_core2.default.responseChatData(messageData);
+	        } else if (event.chat_wscs_descrs && !_chat3.default.prototype.chatsArray[index].chat_description.is_deleted && !event.chat_description.is_deleted) {
+	          _event_bus2.default.trigger('send_log_message', chat_description.chat_id, { text: 'Webrtc handleConnectedDevices".', type: 'information' });
+	          _webrtc2.default.handleConnectedDevices(event.chat_wscs_descrs);
+	        }
 	      }
 	    });
 	  },
@@ -13374,14 +13393,18 @@ webpackJsonp([0],{
 	    });
 	  },
 	  closeChat: function closeChat(description, temp_chat_id) {
-	    this.setState({ confirmMessageCloseChat: 83,
+	    this.setState({
+	      confirmMessageCloseChat: 83,
 	      confirmDialog_description: description,
-	      confirmDialog_tempChatId: temp_chat_id });
+	      confirmDialog_tempChatId: temp_chat_id
+	    });
 	  },
 	  destroyChat: function destroyChat(description, temp_chat_id) {
 	    var position = this.getDestroyChatPosition(!description && temp_chat_id ? temp_chat_id : description.chat_id);
 	    if (description && !temp_chat_id) {
-	      _event_bus2.default.trigger("chatDestroyed", description.chat_id);
+	      _event_bus2.default.trigger("chatDestroyed", { chat_id: description.chat_id,
+	        lastChangedDatetime: description.lastChangedDatetime,
+	        is_deleted: description.is_deleted });
 	      _event_bus2.default.trigger("changeOpenChats");
 	    }
 	    _chat3.default.prototype.chatsArray.splice(position, 1);
@@ -13433,9 +13456,11 @@ webpackJsonp([0],{
 	          this.destroyChat(this.state.confirmDialog_description, this.state.confirmDialog_tempChatId);
 	          break;
 	      }
-	      this.setState({ confirmMessageCloseChat: null,
+	      this.setState({
+	        confirmMessageCloseChat: null,
 	        confirmDialog_description: null,
-	        confirmDialog_tempChatId: null });
+	        confirmDialog_tempChatId: null
+	      });
 	    }
 	  },
 	  handleDialogSaveChat: function handleDialogSaveChat(event) {
@@ -13999,7 +14024,9 @@ webpackJsonp([0],{
 	                from_user_id: _users_bus2.default.getUserId(),
 	                chat_description: {
 	                  chat_id: chatDescription.chat_id,
-	                  restoreOption: self.props.data.restoreOption
+	                  is_deleted: chatDescription.is_deleted,
+	                  restoreOption: self.props.data.restoreOption,
+	                  lastChangedDatetime: chatDescription.lastChangedDatetime
 	                }
 	              });
 	              self.state.logMessages.push('Get chat description. Websocket sendMessage "Chat join".');
@@ -14432,7 +14459,7 @@ webpackJsonp([0],{
 	  },
 	  displayExtraMessageToolbar: function displayExtraMessageToolbar(element) {
 	    if (element.dataset.id) {
-	      var not_active_user = _users_bus2.default.hasInArray(this.state.blocked_user_ids, _users_bus2.default.getUserId()) || _users_bus2.default.hasInArray(this.state.deleted_user_ids, _users_bus2.default.getUserId());
+	      var not_active_user = this.state.is_deleted || _users_bus2.default.hasInArray(this.state.blocked_user_ids, _users_bus2.default.getUserId()) || _users_bus2.default.hasInArray(this.state.deleted_user_ids, _users_bus2.default.getUserId());
 	      if (!not_active_user && (!this.state.extraMessageIDToolbar || this.state.extraMessageIDToolbar && this.state.extraMessageIDToolbar !== parseInt(element.dataset.id))) {
 	        this.setState({ extraMessageIDToolbar: parseInt(element.dataset.id) });
 	      } else {
@@ -14679,6 +14706,9 @@ webpackJsonp([0],{
 	                  is_deleted: chat_description.is_deleted
 	                });
 	                _sync_core2.default.sendSyncChatDescription(chat_description, _users_bus2.default.getUserId());
+	                _event_bus2.default.trigger("chatDestroyed", { chat_id: chat_description.chat_id,
+	                  lastChangedDatetime: chat_description.lastChangedDatetime,
+	                  is_deleted: chat_description.is_deleted });
 	              });
 	            } else {
 	              chat_description.left_chat_user_ids.push(_users_bus2.default.getUserId());
@@ -14700,10 +14730,14 @@ webpackJsonp([0],{
 	                      chat_id: chat_description.chat_id
 	                    },
 	                    updateDescription: {
+	                      lastChangedDatetime: chat_description.lastChangedDatetime,
 	                      left_chat_user_ids: chat_description.left_chat_user_ids
 	                    }
 	                  };
 	                  _webrtc2.default.broadcastMessage([active_owner_connection], JSON.stringify(_messageData));
+	                  _event_bus2.default.trigger("chatDestroyed", { chat_id: chat_description.chat_id,
+	                    lastChangedDatetime: chat_description.lastChangedDatetime,
+	                    is_deleted: chat_description.is_deleted });
 	                }
 	              });
 	            }

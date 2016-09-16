@@ -12,6 +12,7 @@ Model_core.prototype = {
     if (!instance.createdByUserId) {
       instance.createdByUserId = users_bus.getUserId();
       instance.createdDatetime = Date.now();
+      instance.lastChangedDatetime = instance.createdDatetime;
     } else {
       instance.receivedDatetime = Date.now();
     }

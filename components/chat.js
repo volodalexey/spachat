@@ -317,8 +317,8 @@ const Chat = React.createClass({
                 from_user_id: users_bus.getUserId(),
                 chat_description: {
                   chat_id: chatDescription.chat_id,
-                  restoreOption: self.props.data.restoreOption,
                   is_deleted: chatDescription.is_deleted,
+                  restoreOption: self.props.data.restoreOption,
                   lastChangedDatetime: chatDescription.lastChangedDatetime
                 }
               });
@@ -1014,7 +1014,9 @@ const Chat = React.createClass({
                     is_deleted: chat_description.is_deleted
                   });
                   sync_core.sendSyncChatDescription(chat_description, users_bus.getUserId());
-                  event_bus.trigger("chatDestroyed", chat_description.chat_id);
+                  event_bus.trigger("chatDestroyed", {chat_id: chat_description.chat_id,
+                    lastChangedDatetime: chat_description.lastChangedDatetime,
+                  is_deleted: chat_description.is_deleted});
                 });
               } else {
                 chat_description.left_chat_user_ids.push(users_bus.getUserId());
@@ -1036,11 +1038,14 @@ const Chat = React.createClass({
                         chat_id: chat_description.chat_id
                       },
                       updateDescription: {
+                        lastChangedDatetime: chat_description.lastChangedDatetime,
                         left_chat_user_ids: chat_description.left_chat_user_ids
                       }
                     };
                     webrtc.broadcastMessage([active_owner_connection], JSON.stringify(_messageData));
-                    event_bus.trigger("chatDestroyed", chat_description.chat_id);
+                    event_bus.trigger("chatDestroyed", {chat_id: chat_description.chat_id,
+                      lastChangedDatetime: chat_description.lastChangedDatetime,
+                      is_deleted: chat_description.is_deleted});
                   }
                 });
               }

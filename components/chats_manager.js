@@ -150,7 +150,8 @@ const ChatsManager = React.createClass({
 
   handleChat(messageData, chat_description) {
     event_bus.trigger("changeOpenChats", "CHATS");
-    if (chat_description.is_deleted) return this.forceUpdate();
+    if (chat_description.is_deleted || 
+      messageData.chat_description && messageData.chat_description.is_deleted) return this.forceUpdate();
 
     if (messageData.chat_wscs_descrs) {
       webrtc.handleConnectedDevices(messageData.chat_wscs_descrs);
@@ -251,7 +252,9 @@ const ChatsManager = React.createClass({
           type: "chat_join",
           from_user_id: users_bus.getUserId(),
           chat_description: {
-            chat_id: chat.chat_id
+            chat_id: chat.chat_id,
+            is_deleted: chat.is_deleted,
+            lastChangedDatetime: chat.lastChangedDatetime
           }
         });
         event_bus.trigger('send_log_message', chat.chat_id,
@@ -265,7 +268,7 @@ const ChatsManager = React.createClass({
    * make offer for each device for this chat
    */
   chatJoinApproved(event) {
-    let self = this, index;
+    let self = this, index, messageData;
     event_bus.set_ws_device_id(event.target_ws_device_id);
     event_bus.trigger('send_log_message', event.chat_description.chat_id,
       {text: 'Chat join approved. Getting chat description.', type: 'information'});
@@ -294,6 +297,12 @@ const ChatsManager = React.createClass({
             text: 'Upgrade to chat "ready".',
             type: 'information'
           });
+
+          chat_description.is_deleted = event.chat_description.is_deleted ?
+            event.chat_description.is_deleted : chat_description.is_deleted;
+          chat_description.lastChangedDatetime = event.chat_description.lastChangedDatetime ?
+            event.chat_description.lastChangedDatetime : chat_description.lastChangedDatetime;
+
           Chat.prototype.chatsArray[index].mode = 'ready';
           if (!event.chat_description.restoreOption) {
             Chat.prototype.chatsArray[index].chat_description = {};
@@ -306,11 +315,9 @@ const ChatsManager = React.createClass({
                 deleted_user_ids: chat_description.deleted_user_ids,
                 blocked_user_ids: chat_description.blocked_user_ids,
                 lastChangedDatetime: chat_description.lastChangedDatetime,
-                addNewUserWhenInviting: chat_description.addNewUserWhenInviting
+                addNewUserWhenInviting: chat_description.addNewUserWhenInviting,
+                is_deleted: chat_description.is_deleted
               });
-            Chat.prototype.chatsArray[index].chat_description.user_ids = chat_description.user_ids;
-            Chat.prototype.chatsArray[index].chat_description.deleted_user_ids = chat_description.deleted_user_ids;
-            Chat.prototype.chatsArray[index].chat_description.blocked_user_ids = chat_description.blocked_user_ids;
           } else {
             Chat.prototype.chatsArray[index].chat_description = chat_description;
           }
@@ -318,7 +325,7 @@ const ChatsManager = React.createClass({
         } else if (Chat.prototype.chatsArray[index].mode === 'ready') {
           if (event.chat_description.is_deleted && !chat_description.is_deleted && !chat_description.lastChangedDatetime ||
             chat_description.lastChangedDatetime < event.chat_description.lastChangedDatetime) {
-            let messageData = {
+            messageData = {
               chat_description: {
                 chat_id: chat_description.chat_id
               },
@@ -328,7 +335,8 @@ const ChatsManager = React.createClass({
               }
             };
             sync_core.responseChatData(messageData);
-          } else if (event.chat_wscs_descrs && !Chat.prototype.chatsArray[index].chat_description.is_deleted) {
+          } else if (event.chat_wscs_descrs && !Chat.prototype.chatsArray[index].chat_description.is_deleted && 
+          !event.chat_description.is_deleted) {
             event_bus.trigger('send_log_message', chat_description.chat_id,
               {text: 'Webrtc handleConnectedDevices".', type: 'information'});
             webrtc.handleConnectedDevices(event.chat_wscs_descrs);
@@ -405,7 +413,9 @@ const ChatsManager = React.createClass({
   destroyChat(description, temp_chat_id) {
     let position = this.getDestroyChatPosition((!description && temp_chat_id) ? temp_chat_id : description.chat_id);
     if (description && !temp_chat_id) {
-      event_bus.trigger("chatDestroyed", description.chat_id);
+      event_bus.trigger("chatDestroyed", {chat_id: description.chat_id,
+        lastChangedDatetime: description.lastChangedDatetime,
+        is_deleted: description.is_deleted});
       event_bus.trigger("changeOpenChats");
     }
     Chat.prototype.chatsArray.splice(position, 1);

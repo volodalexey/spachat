@@ -43,8 +43,9 @@ var Web_socket_connections_collection = function() {
 
 Web_socket_connections_collection.prototype = {
 
-  apply_wss: function(clients) {
+  apply_wss: function(clients, chats_descriptions) {
     this.clients = clients;
+    this.chats_descriptions = chats_descriptions;
   },
 
   get_all_wsc: function() {
@@ -55,8 +56,38 @@ Web_socket_connections_collection.prototype = {
     }
   },
 
+  has_chat_description: function(chat_description) {
+    return this.chats_descriptions.findIndex((_chat_desc) => {
+      return _chat_desc.chat_id === chat_description.chat_id;
+    });
+  },
+
+  has_chat_id: function(chat_id) {
+    var foundChatId = false;
+    this.clients.some(function(wsc) {
+      wsc.chats_ids.some(function(_chat_id) {
+        if (_chat_id === chat_id) {
+          foundChatId = _chat_id;
+        }
+        return foundChatId;
+      });
+      return foundChatId;
+    });
+
+    return foundChatId;
+  },
+
+  delete_chat_desc: function(chat_description) {
+    var chat_active = this.has_chat_id(chat_description.chat_id),
+      index = this.has_chat_description(chat_description);
+    if (!chat_active && index !== -1) {
+      this.chats_descriptions.splice(index, 1);
+    }
+  },
+
   destroy: function() {
     this.clients = null;
+    this.chats_descriptions = null;
     this.chats_message_router = null;
     this.users_message_router = null;
   },
@@ -88,6 +119,30 @@ Web_socket_connections_collection.prototype = {
     var context = _this.contextMap[parsedMessageData[routeKey]];
     console.log('Received message ' + routeKey + ' => ', parsedMessageData[routeKey]);
     if (handler && context) {
+      if (context === this.chats_message_router) {
+        var _chat_desc = parsedMessageData.chat_description;
+        if (_chat_desc && _chat_desc.chat_id) {
+          var flag = false, index = this.has_chat_description(_chat_desc),
+            new_desc = {}, assign = (to, from) => {
+              ['chat_id', 'is_deleted', 'lastChangedDatetime'].forEach(key => {
+                to[key] = from[key]
+              })
+            };
+          if (index === -1) {
+            flag = true;
+            assign(new_desc, _chat_desc);
+            this.chats_descriptions.push(new_desc)
+          } else if (this.chats_descriptions[index].lastChangedDatetime < _chat_desc.lastChangedDatetime) {
+            flag = true;
+            // update
+            assign(new_desc, _chat_desc);
+            this.chats_descriptions[index] = new_desc;
+          }
+          if (flag === false && index !== -1) {
+            assign(parsedMessageData.chat_description, this.chats_descriptions[index]);
+          }
+        }
+      }
       handler.call(context, wsc, parsedMessageData);
     }
   },

@@ -37,7 +37,7 @@ Sync_core.prototype = {
         if (!chat_description) return;
 
         if (!chat_description.lastChangedDatetime ||
-          chat_description.lastChangedDatetime < updateDescription.lastChangedDatetime) {
+          chat_description.lastChangedDatetime <= updateDescription.lastChangedDatetime) {
 
           chat_description.lastChangedDatetime = updateDescription.lastChangedDatetime ? 
             updateDescription.lastChangedDatetime : chat_description.lastChangedDatetime;

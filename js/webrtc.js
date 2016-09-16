@@ -87,17 +87,17 @@ WebRTC.prototype = {
   /**
    * this function is invoked when chat was created or joined
    */
-  handleConnectedDevices: function(wscs_descrs) {
+  handleConnectedDevices: function(wscs_descrs, is_deleted_chat) {
     var self = this;
     if (!wscs_descrs && !Array.isArray(wscs_descrs)) {
       return;
     }
     wscs_descrs.forEach(function(ws_descr) {
-      self.handleDeviceActive(ws_descr);
+      self.handleDeviceActive(ws_descr, is_deleted_chat);
     });
   },
 
-  handleDeviceActive: function(ws_descr) {
+  handleDeviceActive: function(ws_descr, is_deleted_chat) {
     var self = this;
     if (event_bus.ws_device_id === ws_descr.ws_device_id) {
       console.warn('the information about myself');
@@ -106,7 +106,7 @@ WebRTC.prototype = {
 
     var connection = self.getConnection(ws_descr.ws_device_id);
     if (connection && connection.canApplyNextState() === false) {
-      connection.storeContext(ws_descr);
+      connection.storeContext(ws_descr, is_deleted_chat);
       self.trigger('webrtc_connection_established', connection);
       return;
     }
@@ -118,7 +118,7 @@ WebRTC.prototype = {
     }
     // change readyState for existing connection
     connection.active.readyState = Connection.prototype.readyStates.WILL_CREATE_OFFER;
-    connection.storeContext(ws_descr);
+    connection.storeContext(ws_descr, is_deleted_chat);
     self.onActiveChangeState(connection);
   },
 
@@ -510,7 +510,7 @@ WebRTC.prototype = {
         if(!chat_description || deleted_user && messageData.chat_type !== "user_restore_in_chat_response") return;
 
         if(chat_description && chat_description.is_deleted) return;
-        
+
         if (messageData.chat_description && messageData.chat_description.lastChangedDatetime) {
           sync_core.needSyncChatDescription(messageData, chat_description);
         }
@@ -763,17 +763,15 @@ WebRTC.prototype = {
     this.broadcastMessage(this.getChatConnections(this.connections, chat_id), broadcastData);
   },
 
-  destroyConnectionChat: function(chat_id) {
+  destroyConnectionChat: function(chat_description) {
     var _this = this;
     _this.connections.forEach(function(connetion) {
-      connetion.removeChatId(chat_id);
+      connetion.removeChatId(chat_description.chat_id);
     });
     websocket.sendMessage({
       type: "chat_leave",
       from_user_id: users_bus.getUserId(),
-      chat_description: {
-        chat_id: chat_id
-      }
+      chat_description: chat_description
     });
   },
 
