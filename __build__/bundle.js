@@ -1584,6 +1584,10 @@ webpackJsonp([0],{
 	            callback(err);
 	            return;
 	          }
+	          if (!globalUserInfo) {
+	            callback('It is impossible get information about user!');
+	            return;
+	          }
 	          if (self.canNotProceed(callback)) {
 	            return;
 	          }
@@ -4134,7 +4138,11 @@ webpackJsonp([0],{
 	      _reactRouter.browserHistory.push('/login');
 	    } else {
 	      _users_bus2.default.getMyInfo(null, function (error, _options, userInfo) {
-	        if (error) return console.error(error);
+	        if (error) {
+	          console.error(error);
+	          _users_bus2.default.setUserId(null);
+	          return;
+	        }
 	        self.setState({ userInfo: userInfo, locationQuery: self.props.location.query });
 	        self.toggleWaiter();
 	      });
@@ -6171,17 +6179,17 @@ webpackJsonp([0],{
 	  /**
 	   * this function is invoked when chat was created or joined
 	   */
-	  handleConnectedDevices: function handleConnectedDevices(wscs_descrs, is_deleted_chat) {
+	  handleConnectedDevices: function handleConnectedDevices(wscs_descrs) {
 	    var self = this;
 	    if (!wscs_descrs && !Array.isArray(wscs_descrs)) {
 	      return;
 	    }
 	    wscs_descrs.forEach(function (ws_descr) {
-	      self.handleDeviceActive(ws_descr, is_deleted_chat);
+	      self.handleDeviceActive(ws_descr);
 	    });
 	  },
 
-	  handleDeviceActive: function handleDeviceActive(ws_descr, is_deleted_chat) {
+	  handleDeviceActive: function handleDeviceActive(ws_descr) {
 	    var self = this;
 	    if (_event_bus2.default.ws_device_id === ws_descr.ws_device_id) {
 	      console.warn('the information about myself');
@@ -6190,7 +6198,7 @@ webpackJsonp([0],{
 
 	    var connection = self.getConnection(ws_descr.ws_device_id);
 	    if (connection && connection.canApplyNextState() === false) {
-	      connection.storeContext(ws_descr, is_deleted_chat);
+	      connection.storeContext(ws_descr);
 	      self.trigger('webrtc_connection_established', connection);
 	      return;
 	    }
@@ -6202,7 +6210,7 @@ webpackJsonp([0],{
 	    }
 	    // change readyState for existing connection
 	    connection.active.readyState = _connection3.default.prototype.readyStates.WILL_CREATE_OFFER;
-	    connection.storeContext(ws_descr, is_deleted_chat);
+	    connection.storeContext(ws_descr);
 	    self.onActiveChangeState(connection);
 	  },
 
@@ -6453,6 +6461,7 @@ webpackJsonp([0],{
 	    if (event.target.iceConnectionState === 'disconnected') {
 	      console.warn('Peer connection was disconnected', event);
 	      curConnection.destroy();
+	      curConnection.destroyTrigger();
 	    } else {
 	      console.log('oniceconnectionstatechange', event.target.iceConnectionState);
 	    }
@@ -6583,6 +6592,8 @@ webpackJsonp([0],{
 	          _sync_core2.default.requestChatData(messageData);
 	        } else if (messageData.type === 'syncResponseChatData') {
 	          _sync_core2.default.responseChatData(messageData);
+	        } else if (messageData.type === 'syncLeftUsersChats') {
+	          _sync_core2.default.syncLeftUsersChats(messageData);
 	        } else if (messageData.type === 'syncRequestChatMessages') {
 	          _event_bus2.default.trigger('getSynchronizeChatMessages', messageData);
 	        } else if (messageData.type === 'syncResponseChatMessages') {
@@ -6762,11 +6773,8 @@ webpackJsonp([0],{
 	  },
 
 	  destroy: function destroy() {
-	    var _this = this;
-	    _this.connections.forEach(function (connection) {
-	      connection.destroy();
-	    });
-	    _this.connections = [];
+	    this.onConnectionsDestroyed(this.connections);
+	    this.connections = [];
 	  },
 
 	  /**
@@ -6808,25 +6816,57 @@ webpackJsonp([0],{
 	    this.broadcastMessage(this.getChatConnections(this.connections, chat_id), broadcastData);
 	  },
 
-	  destroyConnectionChat: function destroyConnectionChat(chat_description) {
-	    var _this = this;
-	    _this.connections.forEach(function (connetion) {
+	  destroyConnectionChat: function destroyConnectionChat(chat_description, deleting) {
+	    var _this2 = this;
+
+	    var type = deleting ? 'chat_delete' : 'chat_leave';
+	    this.connections.forEach(function (connetion) {
 	      connetion.removeChatId(chat_description.chat_id);
 	    });
+	    this.connections.filter(function (_connection) {
+	      if (_connection.checkDestroy()) {
+	        _this2.cleanConnection(_connection);
+	        return false;
+	      }
+	      return true;
+	    });
 	    _websocket2.default.sendMessage({
-	      type: "chat_leave",
+	      type: type,
 	      from_user_id: _users_bus2.default.getUserId(),
 	      chat_description: chat_description
 	    });
 	  },
 
+	  cleanConnection: function cleanConnection(connection) {
+	    this._removeDataChannelListeners(connection.dataChannel);
+	    this._removePeerConnectionListeners(connection.peerConnection);
+	    connection.dataChannel && connection.dataChannel.close();
+	  },
+
+
 	  onConnectionDestroyed: function onConnectionDestroyed(connection) {
 	    var _this = this;
-	    _this._removeDataChannelListeners(connection.dataChannel);
-	    _this._removePeerConnectionListeners(connection.peerConnection);
-	    connection.dataChannel.close();
-	    _this.connections.splice(_this.connections.indexOf(connection), 1);
+	    _this.cleanConnection(connection);
+	    var index = _this.connections.indexOf(connection);
+	    if (index > -1) {
+	      _this.connections.splice(index, 1);
+	    }
 	  },
+
+	  onConnectionsDestroyed: function onConnectionsDestroyed(connections) {
+	    var _this3 = this;
+
+	    if (Array.isArray(connections)) {
+	      this.connections.filter(function (_connection) {
+	        var notFound = connections.indexOf(_connection) === -1;
+	        if (!notFound) {
+	          _this3.cleanConnection(_connection);
+	        }
+	        return notFound;
+	      });
+	    }
+	  },
+
 
 	  onWebSocketMessage: function onWebSocketMessage(messageData) {
 	    var _this = this;
@@ -6901,20 +6941,66 @@ webpackJsonp([0],{
 	      if (!chat_description) return;
 
 	      if (!chat_description.lastChangedDatetime || chat_description.lastChangedDatetime <= updateDescription.lastChangedDatetime) {
+	        (function () {
 
-	        chat_description.lastChangedDatetime = updateDescription.lastChangedDatetime ? updateDescription.lastChangedDatetime : chat_description.lastChangedDatetime;
-	        chat_description.user_ids = updateDescription.user_ids ? updateDescription.user_ids : chat_description.user_ids;
-	        chat_description.deleted_user_ids = updateDescription.deleted_user_ids ? updateDescription.deleted_user_ids : chat_description.deleted_user_ids;
-	        chat_description.blocked_user_ids = updateDescription.blocked_user_ids ? updateDescription.blocked_user_ids : chat_description.blocked_user_ids;
-	        chat_description.addNewUserWhenInviting = updateDescription.addNewUserWhenInviting ? updateDescription.addNewUserWhenInviting : chat_description.addNewUserWhenInviting;
-	        chat_description.is_deleted = updateDescription.is_deleted ? updateDescription.is_deleted : chat_description.is_deleted;
-	        chat_description.left_chat_user_ids = updateDescription.left_chat_user_ids ? updateDescription.left_chat_user_ids : chat_description.left_chat_user_ids;
+	          chat_description.user_ids = updateDescription.user_ids ? updateDescription.user_ids : chat_description.user_ids;
+	          chat_description.deleted_user_ids = updateDescription.deleted_user_ids ? updateDescription.deleted_user_ids : chat_description.deleted_user_ids;
+	          chat_description.blocked_user_ids = updateDescription.blocked_user_ids ? updateDescription.blocked_user_ids : chat_description.blocked_user_ids;
+	          chat_description.addNewUserWhenInviting = updateDescription.addNewUserWhenInviting ? updateDescription.addNewUserWhenInviting : chat_description.addNewUserWhenInviting;
+	          chat_description.is_deleted = updateDescription.is_deleted ? updateDescription.is_deleted : chat_description.is_deleted;
 
-	        _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
-	          if (_err) return console.error(_err);
+	          var new_left_chat_user_ids = [];
+	          if (chat_description.left_chat_user_ids.length) {
+	            new_left_chat_user_ids = chat_description.left_chat_user_ids;
+	          }
+	          if (updateDescription.left_chat_user_ids && updateDescription.left_chat_user_ids.length) {
+	            updateDescription.left_chat_user_ids.forEach(function (_user_id) {
+	              if (new_left_chat_user_ids.indexOf(_user_id) === -1) {
+	                new_left_chat_user_ids.push(_user_id);
+	              }
+	            });
+	          }
+	          chat_description.left_chat_user_ids = new_left_chat_user_ids;
+	          if (_users_bus2.default.getUserId() === chat_description.createdByUserId) {
+	            chat_description.lastChangedDatetime = Date.now();
+	          }
+	          _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
+	            if (_err) return console.error(_err);
 
-	          _event_bus2.default.trigger("updateChatDescription", chat_description);
-	        });
+	            _event_bus2.default.trigger("updateChatDescription", chat_description);
+	          });
+	        })();
+	      }
+	    });
+	  },
+	  syncLeftUsersChats: function syncLeftUsersChats(messageData) {
+	    var updateDescription = messageData.updateDescription;
+	    _indexeddb2.default.getByKeyPath(_chats_bus2.default.collectionDescription, null, messageData.chat_description.chat_id, function (getError, chat_description) {
+	      if (getError) return console.error(getError);
+
+	      if (!chat_description) return;
+
+	      if (_users_bus2.default.getUserId() === chat_description.createdByUserId) {
+	        (function () {
+	          var new_left_chat_user_ids = [];
+	          if (chat_description.left_chat_user_ids.length) {
+	            new_left_chat_user_ids = chat_description.left_chat_user_ids;
+	          }
+	          if (updateDescription.left_chat_user_ids && updateDescription.left_chat_user_ids.length) {
+	            updateDescription.left_chat_user_ids.forEach(function (_user_id) {
+	              if (new_left_chat_user_ids.indexOf(_user_id) === -1) {
+	                new_left_chat_user_ids.push(_user_id);
+	              }
+	            });
+	          }
+	          chat_description.left_chat_user_ids = new_left_chat_user_ids;
+	          chat_description.lastChangedDatetime = Date.now();
+	          _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
+	            if (_err) return console.error(_err);
+
+	            _event_bus2.default.trigger("updateChatDescription", chat_description);
+	          });
+	        })();
 	      }
 	    });
 	  },
@@ -7091,9 +7177,6 @@ webpackJsonp([0],{
 	        this.chats_ids.splice(index, 1);
 	      }
 	    }
-	    if (!this.chats_ids.length) {
-	      this.destroy();
-	    }
 	  },
 
 	  hasUserId: function hasUserId(user_id) {
@@ -7156,7 +7239,6 @@ webpackJsonp([0],{
 	  },
 
 	  sendToWebSocket: function sendToWebSocket(messageData) {
-	    //messageData.context_description = this.getContextDescription();
 	    _websocket2.default.sendMessage(messageData);
 	  },
 
@@ -7164,11 +7246,24 @@ webpackJsonp([0],{
 	    return this.chats_ids.length || this.users_ids.length;
 	  },
 
+	  checkDestroy: function checkDestroy() {
+	    if (!this.chats_ids.length) {
+	      this.destroy();
+	      return true;
+	    }
+	    return false;
+	  },
+
+
 	  destroy: function destroy() {
 	    this.chats_ids = [];
 	    this.users_ids = [];
+	  },
+
+	  destroyTrigger: function destroyTrigger() {
 	    _event_bus2.default.trigger('connectionDestroyed', this);
 	  },
+
 
 	  isActive: function isActive() {
 	    return this.dataChannel && this.dataChannel.readyState === "open";
@@ -13337,7 +13432,7 @@ webpackJsonp([0],{
 	            }
 	          };
 	          _sync_core2.default.responseChatData(messageData);
-	        } else if (event.chat_wscs_descrs && !_chat3.default.prototype.chatsArray[index].chat_description.is_deleted && !event.chat_description.is_deleted) {
+	        } else if (event.chat_wscs_descrs && !_chat3.default.prototype.chatsArray[index].chat_description.is_deleted && !event.chat_description.is_deleted && !_users_bus2.default.hasInArray(chat_description.left_chat_user_ids, event.from_user_id)) {
 	          _event_bus2.default.trigger('send_log_message', chat_description.chat_id, { text: 'Webrtc handleConnectedDevices".', type: 'information' });
 	          _webrtc2.default.handleConnectedDevices(event.chat_wscs_descrs);
 	        }
@@ -13740,7 +13835,7 @@ webpackJsonp([0],{
 	  chatsArray: [],
 	  syncMessageDataArray: [],
 	  syncMessageDataFlag: false,
-	  valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids', 'addNewUserWhenInviting'],
+	  valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids', 'addNewUserWhenInviting', 'lastChangedDatetime'],
 
 	  getDefaultProps: function getDefaultProps() {
 	    return {
@@ -14708,10 +14803,13 @@ webpackJsonp([0],{
 	                _sync_core2.default.sendSyncChatDescription(chat_description, _users_bus2.default.getUserId());
 	                _event_bus2.default.trigger("chatDestroyed", { chat_id: chat_description.chat_id,
 	                  lastChangedDatetime: chat_description.lastChangedDatetime,
-	                  is_deleted: chat_description.is_deleted });
+	                  is_deleted: chat_description.is_deleted }, true);
 	              });
 	            } else {
 	              chat_description.left_chat_user_ids.push(_users_bus2.default.getUserId());
+	              if (!chat_description.lastChangedDatetime) {
+	                chat_description.lastChangedDatetime = self.state.lastChangedDatetime;
+	              }
 	              _chats_bus2.default.putChatToIndexedDB(chat_description, function (_err, chat_description) {
 	                if (_err) return console.error(_err);
 
@@ -14723,7 +14821,7 @@ webpackJsonp([0],{
 	                var active_owner_connection = _webrtc2.default.getConnectionByUserId(chat_description.createdByUserId);
 	                if (active_owner_connection) {
 	                  var _messageData = {
-	                    type: 'syncResponseChatData',
+	                    type: 'syncLeftUsersChats',
 	                    owner_request: _users_bus2.default.getUserId(),
 	                    from_user_id: _users_bus2.default.getUserId(),
 	                    chat_description: {
@@ -14737,7 +14835,7 @@ webpackJsonp([0],{
 	                  _webrtc2.default.broadcastMessage([active_owner_connection], JSON.stringify(_messageData));
 	                  _event_bus2.default.trigger("chatDestroyed", { chat_id: chat_description.chat_id,
 	                    lastChangedDatetime: chat_description.lastChangedDatetime,
-	                    is_deleted: chat_description.is_deleted });
+	                    is_deleted: chat_description.is_deleted }, true);
 	                }
 	              });
 	            }
