@@ -12467,7 +12467,7 @@ webpackJsonp([0],{
 
 	module.exports = {
 		"name": "spachat",
-		"version": "0.7.1",
+		"version": "0.7.3",
 		"private": true,
 		"description": "Single Page Application Chat",
 		"author": "Alexey Volodko",
