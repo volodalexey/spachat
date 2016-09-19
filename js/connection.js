@@ -59,9 +59,6 @@ Connection.prototype = {
         this.chats_ids.splice(index, 1);
       }
     }
-    if(!this.chats_ids.length){
-      this.destroy();
-    }
   },
 
   hasUserId: function(user_id) {
@@ -124,7 +121,6 @@ Connection.prototype = {
   },
 
   sendToWebSocket: function(messageData) {
-    //messageData.context_description = this.getContextDescription();
     websocket.sendMessage(messageData);
   },
 
@@ -132,9 +128,20 @@ Connection.prototype = {
     return this.chats_ids.length || this.users_ids.length;
   },
 
+  checkDestroy() {
+    if(!this.chats_ids.length){
+      this.destroy();
+      return true;
+    }
+    return false;
+  },
+
   destroy: function() {
     this.chats_ids = [];
     this.users_ids = [];
+  },
+  
+  destroyTrigger() {
     event_bus.trigger('connectionDestroyed', this);
   },
 

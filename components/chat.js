@@ -30,7 +30,7 @@ const Chat = React.createClass({
   chatsArray: [],
   syncMessageDataArray: [],
   syncMessageDataFlag: false,
-  valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids', 'addNewUserWhenInviting'],
+  valueOfKeys: ['chat_id', 'createdByUserId', 'createdDatetime', 'user_ids', 'addNewUserWhenInviting', 'lastChangedDatetime'],
 
   getDefaultProps() {
     return {
@@ -1016,10 +1016,13 @@ const Chat = React.createClass({
                   sync_core.sendSyncChatDescription(chat_description, users_bus.getUserId());
                   event_bus.trigger("chatDestroyed", {chat_id: chat_description.chat_id,
                     lastChangedDatetime: chat_description.lastChangedDatetime,
-                  is_deleted: chat_description.is_deleted});
+                  is_deleted: chat_description.is_deleted}, true);
                 });
               } else {
                 chat_description.left_chat_user_ids.push(users_bus.getUserId());
+                if (!chat_description.lastChangedDatetime){
+                  chat_description.lastChangedDatetime = self.state.lastChangedDatetime;
+                }
                 chats_bus.putChatToIndexedDB(chat_description, function(_err, chat_description) {
                   if (_err) return console.error(_err);
 
@@ -1031,7 +1034,7 @@ const Chat = React.createClass({
                   let active_owner_connection = webrtc.getConnectionByUserId(chat_description.createdByUserId);
                   if(active_owner_connection){
                     let _messageData = {
-                      type: 'syncResponseChatData',
+                      type: 'syncLeftUsersChats',
                       owner_request: users_bus.getUserId(),
                       from_user_id: users_bus.getUserId(),
                       chat_description: {
@@ -1045,7 +1048,7 @@ const Chat = React.createClass({
                     webrtc.broadcastMessage([active_owner_connection], JSON.stringify(_messageData));
                     event_bus.trigger("chatDestroyed", {chat_id: chat_description.chat_id,
                       lastChangedDatetime: chat_description.lastChangedDatetime,
-                      is_deleted: chat_description.is_deleted});
+                      is_deleted: chat_description.is_deleted}, true);
                   }
                 });
               }
@@ -1409,7 +1412,7 @@ const Chat = React.createClass({
       });
     }
   },
-
+  
   checkingUserInChat(usersToChecking, user_ids){
     let newUsers = [], self = this;
     usersToChecking.forEach(function(_user) {

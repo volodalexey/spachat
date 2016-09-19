@@ -336,7 +336,8 @@ const ChatsManager = React.createClass({
             };
             sync_core.responseChatData(messageData);
           } else if (event.chat_wscs_descrs && !Chat.prototype.chatsArray[index].chat_description.is_deleted && 
-          !event.chat_description.is_deleted) {
+          !event.chat_description.is_deleted &&
+            !users_bus.hasInArray(chat_description.left_chat_user_ids, event.from_user_id)) {
             event_bus.trigger('send_log_message', chat_description.chat_id,
               {text: 'Webrtc handleConnectedDevices".', type: 'information'});
             webrtc.handleConnectedDevices(event.chat_wscs_descrs);

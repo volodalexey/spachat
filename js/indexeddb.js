@@ -108,6 +108,10 @@ class indexeddb extends AsyncCore {
           callback(err);
           return;
         }
+        if (!globalUserInfo) {
+          callback('It is impossible get information about user!');
+          return;
+        }
         if (self.canNotProceed(callback)) {
           return;
         }

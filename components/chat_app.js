@@ -58,7 +58,11 @@ const ChatApp = React.createClass({
       browserHistory.push('/login');
     } else {
       users_bus.getMyInfo(null, function(error, _options, userInfo) {
-        if(error) return console.error(error);
+        if(error) {
+          console.error(error);
+          users_bus.setUserId(null);
+          return;
+        }
         self.setState({userInfo: userInfo, locationQuery: self.props.location.query});
         self.toggleWaiter();
       });

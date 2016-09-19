@@ -87,17 +87,17 @@ WebRTC.prototype = {
   /**
    * this function is invoked when chat was created or joined
    */
-  handleConnectedDevices: function(wscs_descrs, is_deleted_chat) {
+  handleConnectedDevices: function(wscs_descrs) {
     var self = this;
     if (!wscs_descrs && !Array.isArray(wscs_descrs)) {
       return;
     }
     wscs_descrs.forEach(function(ws_descr) {
-      self.handleDeviceActive(ws_descr, is_deleted_chat);
+      self.handleDeviceActive(ws_descr);
     });
   },
 
-  handleDeviceActive: function(ws_descr, is_deleted_chat) {
+  handleDeviceActive: function(ws_descr) {
     var self = this;
     if (event_bus.ws_device_id === ws_descr.ws_device_id) {
       console.warn('the information about myself');
@@ -106,7 +106,7 @@ WebRTC.prototype = {
 
     var connection = self.getConnection(ws_descr.ws_device_id);
     if (connection && connection.canApplyNextState() === false) {
-      connection.storeContext(ws_descr, is_deleted_chat);
+      connection.storeContext(ws_descr);
       self.trigger('webrtc_connection_established', connection);
       return;
     }
@@ -118,7 +118,7 @@ WebRTC.prototype = {
     }
     // change readyState for existing connection
     connection.active.readyState = Connection.prototype.readyStates.WILL_CREATE_OFFER;
-    connection.storeContext(ws_descr, is_deleted_chat);
+    connection.storeContext(ws_descr);
     self.onActiveChangeState(connection);
   },
 
@@ -389,6 +389,7 @@ WebRTC.prototype = {
     if (event.target.iceConnectionState === 'disconnected') {
       console.warn('Peer connection was disconnected', event);
       curConnection.destroy();
+      curConnection.destroyTrigger();
     } else {
       console.log('oniceconnectionstatechange', event.target.iceConnectionState);
     }
@@ -520,6 +521,8 @@ WebRTC.prototype = {
           sync_core.requestChatData(messageData);
         } else if (messageData.type === 'syncResponseChatData') {
           sync_core.responseChatData(messageData);
+        } else if (messageData.type === 'syncLeftUsersChats') {
+          sync_core.syncLeftUsersChats(messageData);
         } else if (messageData.type === 'syncRequestChatMessages') {
           event_bus.trigger('getSynchronizeChatMessages', messageData);
         } else if (messageData.type === 'syncResponseChatMessages') {
@@ -717,11 +720,8 @@ WebRTC.prototype = {
   },
 
   destroy: function() {
-    var _this = this;
-    _this.connections.forEach(function(connection) {
-      connection.destroy();
-    });
-    _this.connections = [];
+    this.onConnectionsDestroyed(this.connections);
+    this.connections = [];
   },
 
   /**
@@ -763,24 +763,50 @@ WebRTC.prototype = {
     this.broadcastMessage(this.getChatConnections(this.connections, chat_id), broadcastData);
   },
 
-  destroyConnectionChat: function(chat_description) {
-    var _this = this;
-    _this.connections.forEach(function(connetion) {
+  destroyConnectionChat: function(chat_description, deleting) {
+    var type = deleting ? 'chat_delete' : 'chat_leave';
+    this.connections.forEach(function(connetion) {
       connetion.removeChatId(chat_description.chat_id);
     });
+    this.connections.filter((_connection) => {
+      if (_connection.checkDestroy()) {
+        this.cleanConnection(_connection);
+        return false;
+      }
+      return true
+    });
     websocket.sendMessage({
-      type: "chat_leave",
+      type: type,
       from_user_id: users_bus.getUserId(),
       chat_description: chat_description
     });
   },
+  
+  cleanConnection(connection) {
+    this._removeDataChannelListeners(connection.dataChannel);
+    this._removePeerConnectionListeners(connection.peerConnection);
+    connection.dataChannel && connection.dataChannel.close();
+  },
 
   onConnectionDestroyed: function(connection) {
     var _this = this;
-    _this._removeDataChannelListeners(connection.dataChannel);
-    _this._removePeerConnectionListeners(connection.peerConnection);
-    connection.dataChannel.close();
-    _this.connections.splice(_this.connections.indexOf(connection), 1);
+    _this.cleanConnection(connection);
+    let index = _this.connections.indexOf(connection);
+    if (index > -1) {
+      _this.connections.splice(index, 1);
+    }
+  },
+
+  onConnectionsDestroyed(connections){
+    if(Array.isArray(connections)){
+      this.connections.filter((_connection) => {
+        let notFound = connections.indexOf(_connection) === -1;
+        if (!notFound) {
+          this.cleanConnection(_connection);
+        }
+        return notFound;
+      });
+    }
   },
 
   onWebSocketMessage: function(messageData) {

@@ -39,11 +39,9 @@ Sync_core.prototype = {
         if (!chat_description.lastChangedDatetime ||
           chat_description.lastChangedDatetime <= updateDescription.lastChangedDatetime) {
 
-          chat_description.lastChangedDatetime = updateDescription.lastChangedDatetime ? 
-            updateDescription.lastChangedDatetime : chat_description.lastChangedDatetime;
-          chat_description.user_ids = updateDescription.user_ids ? 
+          chat_description.user_ids = updateDescription.user_ids ?
             updateDescription.user_ids : chat_description.user_ids;
-          chat_description.deleted_user_ids = updateDescription.deleted_user_ids ? 
+          chat_description.deleted_user_ids = updateDescription.deleted_user_ids ?
             updateDescription.deleted_user_ids : chat_description.deleted_user_ids;
           chat_description.blocked_user_ids = updateDescription.blocked_user_ids ?
             updateDescription.blocked_user_ids : chat_description.blocked_user_ids;
@@ -51,9 +49,22 @@ Sync_core.prototype = {
             updateDescription.addNewUserWhenInviting : chat_description.addNewUserWhenInviting;
           chat_description.is_deleted = updateDescription.is_deleted ?
             updateDescription.is_deleted : chat_description.is_deleted;
-          chat_description.left_chat_user_ids = updateDescription.left_chat_user_ids ?
-            updateDescription.left_chat_user_ids : chat_description.left_chat_user_ids;
 
+          let new_left_chat_user_ids = [];
+          if (chat_description.left_chat_user_ids.length) {
+            new_left_chat_user_ids = chat_description.left_chat_user_ids;
+          }
+          if (updateDescription.left_chat_user_ids && updateDescription.left_chat_user_ids.length) {
+            updateDescription.left_chat_user_ids.forEach((_user_id) => {
+              if (new_left_chat_user_ids.indexOf(_user_id) === -1) {
+                new_left_chat_user_ids.push(_user_id);
+              }
+            })
+          }
+          chat_description.left_chat_user_ids = new_left_chat_user_ids;
+          if (users_bus.getUserId() === chat_description.createdByUserId) {
+            chat_description.lastChangedDatetime = Date.now();
+          }
           chats_bus.putChatToIndexedDB(chat_description, function(_err, chat_description) {
             if (_err) return console.error(_err);
 
@@ -63,7 +74,42 @@ Sync_core.prototype = {
       }
     );
   },
-  
+
+  syncLeftUsersChats(messageData){
+    let updateDescription = messageData.updateDescription;
+    indexeddb.getByKeyPath(
+      chats_bus.collectionDescription,
+      null,
+      messageData.chat_description.chat_id,
+      function(getError, chat_description) {
+        if (getError) return console.error(getError);
+
+        if (!chat_description) return;
+
+        if (users_bus.getUserId() === chat_description.createdByUserId) {
+          let new_left_chat_user_ids = [];
+          if (chat_description.left_chat_user_ids.length) {
+            new_left_chat_user_ids = chat_description.left_chat_user_ids;
+          }
+          if (updateDescription.left_chat_user_ids && updateDescription.left_chat_user_ids.length) {
+            updateDescription.left_chat_user_ids.forEach((_user_id) => {
+              if (new_left_chat_user_ids.indexOf(_user_id) === -1) {
+                new_left_chat_user_ids.push(_user_id);
+              }
+            })
+          }
+          chat_description.left_chat_user_ids = new_left_chat_user_ids;
+          chat_description.lastChangedDatetime = Date.now();
+          chats_bus.putChatToIndexedDB(chat_description, function(_err, chat_description) {
+            if (_err) return console.error(_err);
+
+            event_bus.trigger("updateChatDescription", chat_description);
+          });
+        }
+      }
+    );
+  },
+
   sendSyncChatDescription(chat_description, from_user_id){
     let _messageData = {
       type: 'syncResponseChatData',
@@ -96,7 +142,7 @@ Sync_core.prototype = {
         }
       };
       let active_owner_connection = webrtc.getConnectionByUserId(chat_description.createdByUserId);
-      if(active_owner_connection){
+      if (active_owner_connection) {
         webrtc.broadcastMessage([active_owner_connection], JSON.stringify(_messageData));
       } else {
         webrtc.broadcastChatMessage(chat_description.chat_id, JSON.stringify(_messageData));

@@ -120,7 +120,7 @@ server.on('request', function(req, res) {
   }
   readStaticFile({contentType: contentType, encoding: encoding, fullPath: fullPath}, req, res);
 });
-server.listen(server_port, server_ip_address, function(err) {
+server.listen(server_port, function(err) {
   if (err) {
     console.log(err);
     return;

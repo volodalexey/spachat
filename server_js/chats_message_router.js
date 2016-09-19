@@ -179,12 +179,16 @@ Chats_message_router.prototype = {
   },
 
   onDeviceChatLeave: function(cur_wsc, parsedMessageData) {
+    this.onChatDelete(cur_wsc, parsedMessageData);
+    this.wscc.delete_chat_desc(parsedMessageData.chat_description);
+  },
+  
+  onChatDelete: function(cur_wsc, parsedMessageData) {
     cur_wsc.delete_chat_id(parsedMessageData.chat_description.chat_id);
     console.log('Chat leave from',
       'ws_device_id = ' + cur_wsc.ws_device_id,
       'user_id = ' + parsedMessageData.from_user_id,
       'to chat_id = ' + parsedMessageData.chat_description.chat_id);
-    this.wscc.delete_chat_desc(parsedMessageData.chat_description);
   }
 };
 
