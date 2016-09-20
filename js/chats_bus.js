@@ -153,7 +153,33 @@ Chats_bus.prototype = {
           callback(null, deleted, chat_description, messageData);
         }
       });
+  },
+
+  filterChatsByTypeDisplay(chats, type, options){
+    let display_chats = [], self = this;
+    switch (type) {
+      case 'all':
+        display_chats = chats;
+        break;
+      case 'current':
+        chats.forEach(function(_chat) {
+          if (!_chat.is_deleted){
+            display_chats.push(_chat);
+          }
+        });
+        break;
+      case 'deleted':
+        chats.forEach(function(_chat) {
+          if (_chat.is_deleted) {
+            display_chats.push(_chat);
+          }
+        });
+        break;
+    }
+
+    return display_chats;
   }
+  
 };
 
 export default new Chats_bus();

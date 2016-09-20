@@ -63,9 +63,6 @@ Element.prototype = {
     if (config.readonly === true) {
       params['readOnly'] = true;
     }
-    if (config.onkeypress) {
-      params['onkeypress'] = config.onkeypress;
-    }
 
     if (config.type === "checkbox" || config.type === "radio") {
       if (config.data.key) {
@@ -104,9 +101,16 @@ Element.prototype = {
     let handlers = {};
     if (props.events) {
       Object.keys(props.events).forEach((key) => {
-        handlers[key] = props.events[key];
+        if (key === 'onKeyPress') {
+          if (props.config[key]) {
+            handlers[key] = props.events[key];
+          }
+        } else {
+          handlers[key] = props.events[key];
+        }
       });
     }
+
     return handlers;
   },
 

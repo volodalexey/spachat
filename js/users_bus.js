@@ -289,7 +289,8 @@ Users_bus.prototype = {
           if (!_user.is_deleted){
             if(options){
               if(options.blocked_user_ids && !self.hasInArray(options.blocked_user_ids, _user.user_id) &&
-                options.deleted_user_ids && !self.hasInArray(options.deleted_user_ids, _user.user_id)){
+                options.deleted_user_ids && !self.hasInArray(options.deleted_user_ids, _user.user_id) &&
+                options.left_chat_user_ids && !self.hasInArray(options.left_chat_user_ids, _user.user_id)){
                 display_users.push(_user);
               }
             }else {
@@ -317,7 +318,8 @@ Users_bus.prototype = {
       case 'deletedFromChat':
         if (options && options.deleted_user_ids){
           users.forEach(function(_user) {
-            if (self.hasInArray(options.deleted_user_ids, _user.user_id)) {
+            if (self.hasInArray(options.deleted_user_ids, _user.user_id) ||
+              options.left_chat_user_ids && self.hasInArray(options.left_chat_user_ids, _user.user_id)) {
               display_users.push(_user);
             }
           });

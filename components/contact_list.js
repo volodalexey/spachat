@@ -66,7 +66,8 @@ const ContactList = React.createClass({
       users = users_bus.filterUsersByTypeDisplay(self.state.users,
         this.props.data.contactList_FilterOptions.typeDisplayContacts,
         {'blocked_user_ids': this.props.data.blocked_user_ids,
-          'deleted_user_ids': this.props.data.deleted_user_ids}
+          'deleted_user_ids': this.props.data.deleted_user_ids,
+        'left_chat_user_ids': this.props.data.left_chat_user_ids}
       );
     if (this.props.data.contactList_PaginationOptions.show) {
       users = self.props.onLimitationQuantityRecords(users, self.props.data, self.props.data.bodyOptions.mode);

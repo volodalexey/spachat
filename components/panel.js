@@ -137,6 +137,7 @@ const Panel = React.createClass({
         },
         chats_FilterOptions: {
           text: "chats_FilterOptions",
+          typeDisplayContacts: 'all',
           show: false
         },
         chats_ListOptions: {
@@ -691,7 +692,10 @@ const Panel = React.createClass({
           this.setState({notificationOfAccession: element.checked});
           break;
         case 'changeDisplayContact':
-          this.changeDisplayContact(event);
+          this.changeDisplayItems(event);
+          break;
+        case 'changeDisplayChat':
+          this.changeDisplayItems(event);
           break;
       }
     }
@@ -827,6 +831,13 @@ const Panel = React.createClass({
     }
   },
 
+  handleKeyPress(event){
+    if((event.charCode < 48)||(event.charCode > 57)) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  },
+  
   closeChat(element) {
     if (this.props.location === "left") {
       let parentElement = this.traverseUpToDataset(element, 'role', 'chatWrapper');
@@ -1256,12 +1267,22 @@ const Panel = React.createClass({
     this.setState({confirmMessageRemoveContact: 139, confirmDialog_userId: user_id});
   },
 
-  changeDisplayContact(event){
-    let value = event.target.value, po = this.state.users_PaginationOptions, fo = this.state.users_FilterOptions;
+  changeDisplayItems(event){
+    let value = event.target.value, po, fo, newState;
+    switch (this.state.bodyMode){
+      case 'USERS':
+        po = this.state.users_PaginationOptions, fo = this.state.users_FilterOptions,
+          newState = {users_FilterOptions: fo, users_PaginationOptions: po};
+        break;
+      case 'CHATS':
+        po = this.state.chats_PaginationOptions, fo = this.state.chats_FilterOptions,
+          newState = {chats_FilterOptions: fo, chats_PaginationOptions: po};
+        break;
+    }
     if (value && value !== fo.typeDisplayContacts) {
       po.currentPage = null;
       fo.typeDisplayContacts = value;
-      this.setState({users_FilterOptions: fo, users_PaginationOptions: po});
+      this.setState(newState);
       this.getInfoForBody();
     }
   },
@@ -1401,7 +1422,8 @@ const Panel = React.createClass({
     let onEvent = {
       onClick: this.handleClick,
       onChange: this.handleChange,
-      onTransitionEnd: this.handleTransitionEnd
+      onTransitionEnd: this.handleTransitionEnd,
+      onKeyPress: this.handleKeyPress
     };
 
     let location = this.props.location;

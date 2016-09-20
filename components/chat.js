@@ -671,6 +671,13 @@ const Chat = React.createClass({
     }
   },
 
+  handleKeyPress(event){
+    if((event.charCode < 48)||(event.charCode > 57)) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  },
+
   changeMode(element, chat_id) {
     if (chat_id && chat_id !== this.state.chat_id) return;
     this.switchModes([
@@ -1441,7 +1448,8 @@ const Chat = React.createClass({
     };
     let onEvent = {
       onClick: this.handleClick,
-      onChange: this.handleChange
+      onChange: this.handleChange,
+      onKeyPress: this.handleKeyPress
     };
     if (this.props.data.mode === 'raw') {
       let items = [], className;

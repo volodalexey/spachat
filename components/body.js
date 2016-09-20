@@ -4,6 +4,7 @@ import extend_core from '../js/extend_core.js'
 import Localization from '../js/localization'
 import utils from '../js/utils'
 import users_bus from '../js/users_bus'
+import chats_bus from '../js/chats_bus'
 
 import Location_Wrapper from './location_wrapper'
 import PanelUsers from './panel_users'
@@ -590,6 +591,16 @@ const json_package = require('../package.json'),
           }
         },
         {
+          "element": "span",
+          "type": "text",
+          "class": "color-red",
+          "text": '!',
+          "data": {
+            "key": "is_deleted",
+            "mode": "CHATS"
+          }
+        },
+        {
           "element": "label",
           "type": "text",
           "data": {
@@ -1011,6 +1022,7 @@ const json_package = require('../package.json'),
         break;
       case this.MODE.CHATS:
         let chat_ids = this.props.data.chat_ids;
+        chat_ids = chats_bus.filterChatsByTypeDisplay(chat_ids, this.props.data.chats_FilterOptions.typeDisplayContacts);
         if (this.props.data.chats_PaginationOptions.show) {
           chat_ids = this.limitationQuantityRecords(chat_ids, this.props.data, this.props.mode);
         }
@@ -1020,7 +1032,8 @@ const json_package = require('../package.json'),
           "closingChatsInfoArray": this.props.data.closingChatsInfoArray,
           "openChats": this.props.data.openChats,
           "myId": this.props.userInfo.user_id,
-          "myName": this.props.userInfo.userName
+          "myName": this.props.userInfo.userName,
+          'is_deleted': this.props.data.is_deleted
         };
         return <PanelChats events={this.props.events} data={data} configs={configs}/>;
         break;

@@ -80,7 +80,7 @@ const Filter = React.createClass({
             "key": "perPageValue"
           },
           "id": "show_per_page",
-          "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+          "onKeyPress": true,
           "location": "per_page",
           "redraw_mode": "rte"
         },
@@ -128,7 +128,7 @@ const Filter = React.createClass({
             "key": "perPageValue"
           },
           "id": "show_per_page",
-          "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+          "onKeyPress": true,
           "location": "per_page",
           "redraw_mode": "nrte"
         },
@@ -230,7 +230,7 @@ const Filter = React.createClass({
             "key": "perPageValue"
           },
           "id": "show_per_page",
-          "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+          "onKeyPress": true,
           "location": "per_page",
           "redraw_mode": "rte"
         },
@@ -278,7 +278,7 @@ const Filter = React.createClass({
             "key": "perPageValue"
           },
           "id": "show_per_page",
-          "onkeypress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
+          "onKeyPress": true,
           "location": "per_page",
           "redraw_mode": "nrte"
         },
@@ -440,6 +440,42 @@ const Filter = React.createClass({
           "onKeyPress": "if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false",
           "location": "per_page",
           "redraw_mode": "nrte"
+        },
+
+        {
+          "role": "locationWrapper",
+          "classList": "flex-align-c flex-item-auto",
+          "location": "type_display_contacts"
+        },
+        {
+          "element": "label",
+          "text": 137,
+          "class": "p-r-l-1em",
+          "location": "type_display_contacts"
+        },
+        {
+          "element": "select",
+          "location": "type_display_contacts",
+          "select_options": [
+            {
+              "text": 134,
+              "value": "all"
+            },
+            {
+              "text": 135,
+              "value": "current"
+            },
+            {
+              "text": 136,
+              "value": "deleted"
+            }
+          ],
+          "data": {
+            "action": "changeDisplayChat",
+            "role": "selectDisplayChat",
+            "warn": true,
+            "key": 'typeDisplayContacts'
+          }
         }
       ],
       messagesFilterConfig: [
@@ -687,8 +723,8 @@ const Filter = React.createClass({
         break;
     }
 
-    <Location_Wrapper events={this.props.events} data={data} mainContainer={mainContainer} configs={configs}/>
-
+    <Location_Wrapper events={this.props.events} handleEvent={this.props.handleEvent} 
+                      data={data} mainContainer={mainContainer} configs={configs}/>
   },
 
   render() {

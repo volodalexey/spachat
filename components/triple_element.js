@@ -6,6 +6,7 @@ import Label from './label'
 import Select from './select'
 import Textarea from './textarea'
 import Svg from './svg'
+import Span from './span'
 
 const TripleElement = React.createClass({
   
@@ -31,6 +32,9 @@ const TripleElement = React.createClass({
         break;
       case "svg":
         return <Svg events={this.props.events} config={this.props.config} data={this.props.data}/>;
+        break;
+      case "span":
+        return <Span events={this.props.events} config={this.props.config} data={this.props.data}/>;
         break;
       default:
         return <div>{this.props.config.content}</div>;
