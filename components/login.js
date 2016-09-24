@@ -4,12 +4,18 @@ import {browserHistory} from 'react-router'
 import Location_Wrapper from './location_wrapper'
 import Description from '../components/description'
 import DialogError from './dialogError'
+import Register from '../components/register'
 
 import localization from '../js/localization.js'
 import users_bus from '../js/users_bus.js'
 import indexeddb from '../js/indexeddb.js'
 import overlay_core from '../js/overlay_core.js'
 import extend_core from '../js/extend_core.js'
+
+const MODE = {
+  LOGIN: 'LOGIN',
+  REGISTER: 'REGISTER'
+};
 
 const Login = React.createClass({
 
@@ -64,7 +70,7 @@ const Login = React.createClass({
           "element": "button",
           "type": "button",
           "location": "registerButton",
-          "link": "/register",
+          // "link": "/register",
           "text": 48,
           "data": {
             "description": 54,
@@ -144,23 +150,18 @@ const Login = React.createClass({
   getInitialState() {
     return {
       lang: localization.lang,
-      errorMessage: null
+      errorMessage: null,
+      mode: MODE.LOGIN
     }
   },
 
   componentDidMount() {
-    this.loginForm = document.querySelector('[data-role="loginForm"]');
-    this.loginForm.addEventListener('click', this.handleClick, true);
     this.toggleWaiter();
-  },
-
-  componentWillUnmount() {
-    this.loginForm = null;
   },
 
   handleClick(event) {
     if (event.currentTarget.dataset.action === 'clickRedirectToRegister') {
-      this.clickRedirectToRegister(event);
+      this.changeMode(MODE.REGISTER);
     }
   },
 
@@ -194,7 +195,7 @@ const Login = React.createClass({
         if (userCredentials) {
           users_bus.setUserId(userCredentials.user_id);
           users_bus.getMyInfo(null, function(err, options, userInfo) {
-            if(userInfo){
+            if (userInfo) {
               if (userPassword === userInfo.userPassword) {
                 users_bus.checkLoginState();
                 if (browserHistory.desired_path && browserHistory.desired_search) {
@@ -224,15 +225,8 @@ const Login = React.createClass({
     }
   },
 
-  clickRedirectToRegister(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (browserHistory.desired_path && browserHistory.desired_search) {
-      browserHistory.push(browserHistory.desired_path + browserHistory.desired_search);
-      location.replace('register?' + browserHistory.desired_path + browserHistory.desired_search);
-    } else {
-      location.replace('register');
-    }
+  changeMode(_mode){
+    this.setState({mode: _mode});
   },
 
   handleEvents(event) {
@@ -241,32 +235,37 @@ const Login = React.createClass({
 
   render() {
     let onEvent = {
-      onClick: this.handleClick,
-      onChange: this.handleChange
-    },
-      data={
+        onClick: this.handleClick,
+        onChange: this.handleChange
+      },
+      handleChange = {
+        changeMode: this.changeMode
+      },
+      data = {
         "lang": localization.lang
       };
-    return (
-      <div onMouseDown={this.handleEvents}
-           onMouseMove={this.handleEvents}
-           onMouseUp={this.handleEvents}
-           onClick={this.handleEvents}
-           onTouchEnd={this.handleEvents}
-           onTouchMove={this.handleEvents}
-           onTouchStart={this.handleEvents}>
-        <div data-role="main_container" className="w-100p h-100p p-abs">
-          <div className="flex-outer-container p-fx">
-            <form className="flex-inner-container form-small" data-role="loginForm" onSubmit={this.handleSubmit}>
-              <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}
-              data={data}/>
-            </form>
-          </div>
+    const loginForm = <div onMouseDown={this.handleEvents}
+                           onMouseMove={this.handleEvents}
+                           onMouseUp={this.handleEvents}
+                           onClick={this.handleEvents}
+                           onTouchEnd={this.handleEvents}
+                           onTouchMove={this.handleEvents}
+                           onTouchStart={this.handleEvents}>
+      <div data-role="main_container" className="w-100p h-100p p-abs">
+        <div className="flex-outer-container p-fx">
+          <form className="flex-inner-container form-small" ref={(element)=> {this.loginForm = element}}
+                onSubmit={this.handleSubmit} onClick={this.handleClick}>
+            <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}
+                              data={data}/>
+          </form>
         </div>
-        <DialogError show={this.state.errorMessage} message={this.state.errorMessage}
-                     handleClick={this.handleDialogError}/>
-        <Description ref={(obj) => this.descriptionContext = obj}/>
       </div>
+      <DialogError show={this.state.errorMessage} message={this.state.errorMessage}
+                   handleClick={this.handleDialogError}/>
+      <Description ref={(obj) => this.descriptionContext = obj}/>
+    </div>;
+    return (
+      this.state.mode === MODE.LOGIN ? loginForm : <Register handleChange={handleChange} mode={MODE}/>
     )
   }
 });

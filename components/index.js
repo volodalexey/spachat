@@ -6,7 +6,6 @@ import users_bus from '../js/users_bus.js'
 
 import Login from '../components/login'
 import Chat_App from '../components/chat_app'
-import Register from '../components/register'
 
 const requireAuth = function(nextState, replace) {
     users_bus.checkLoginState();
@@ -19,7 +18,7 @@ const requireAuth = function(nextState, replace) {
     if (users_bus.getUserId()) {
       replace('/chat');
     } else {
-      replace('/login');
+      replace('/account');
     }
   },
   redirectToLogin = function(nextState, replace) {
@@ -27,7 +26,7 @@ const requireAuth = function(nextState, replace) {
       browserHistory.desired_path = nextState.location.pathname;
       browserHistory.desired_search = nextState.location.search;
     }
-      replace('/login');
+      replace('/account');
   },
   Index = React.createClass({
     
@@ -43,8 +42,7 @@ const requireAuth = function(nextState, replace) {
         <Router history={browserHistory}>
           <Route path="/" onEnter={noMatchRedirect}/>
           <Route path="/">
-            <Route path="login" component={Login}/>
-            <Route path="register" component={Register}/>
+            <Route path="account" component={Login}/>
             <Route path="chat" component={Chat_App} onEnter={requireAuth}/>
           </Route>
           <Route path="*" onEnter={noMatchRedirect}/>

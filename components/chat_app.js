@@ -55,7 +55,7 @@ const ChatApp = React.createClass({
     let self = this,
       userId = users_bus.getUserId();
     if (!userId) {
-      browserHistory.push('/login');
+      browserHistory.push('/account');
     } else {
       users_bus.getMyInfo(null, function(error, _options, userInfo) {
         if(error) {
@@ -106,7 +106,7 @@ const ChatApp = React.createClass({
       });
       this.savePanelStates(panelDescription, () => {
         self.toggleWaiter();
-        browserHistory.push('/login');
+        browserHistory.push('/account');
       })
     }
   },

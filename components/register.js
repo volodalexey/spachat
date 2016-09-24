@@ -1,5 +1,4 @@
 import React from 'react'
-import { browserHistory } from 'react-router'
 
 import Location_Wrapper from './location_wrapper'
 import DialogError from './dialogError'
@@ -68,7 +67,7 @@ const Register = React.createClass({
           "type": "button",
           "text": 52,
           "location": "loginButton",
-          "link": "/login",
+          "link": "/account",
           "data": {
             "action": "redirectToLogin",
             "role": "loginButton"
@@ -95,7 +94,7 @@ const Register = React.createClass({
           "class": "flex-item-w50p",
           "autoComplete": "off",
           "location": "userName",
-          "name": "userName",
+          "name": "reg_userName",
           "data": {
             "key": "userName"
           }
@@ -120,7 +119,7 @@ const Register = React.createClass({
           "class": "flex-item-w50p",
           "autoComplete": "off",
           "location": "userPassword",
-          "name": "userPassword",
+          "name": "reg_userPassword",
           "data": {
             "key": "userPassword"
           }
@@ -179,24 +178,22 @@ const Register = React.createClass({
   },
 
   componentDidMount() {
-    this.registerForm = document.querySelector('[data-role="registerForm"]');
     this.toggleWaiter();
   },
 
-  componentWillUnmount() {
-    this.registerForm = null;
-  },
-
-  handleClick() {
+  handleClick(event) {
+    if (event.currentTarget.dataset.action === 'redirectToLogin') {
+      this.props.handleChange.changeMode(this.props.mode.LOGIN);
+    }
   },
 
   handleDialogError(){
     this.setState({errorMessage: null});
-  }, 
-  
+  },
+
   handleDialogRegisterUser(){
-    browserHistory.push(this.props.location.search.slice(1));
     this.setState({successMessage: null});
+    this.props.handleChange.changeMode(this.props.mode.LOGIN);
   },
 
   handleChange(event) {
@@ -210,8 +207,8 @@ const Register = React.createClass({
   handleSubmit(event) {
     event.preventDefault();
     let self = this,
-      userName = this.registerForm.elements.userName.value,
-      userPassword = this.registerForm.elements.userPassword.value,
+      userName = this.registerForm.elements.reg_userName.value,
+      userPassword = this.registerForm.elements.reg_userPassword.value,
       userPasswordConfirm = this.registerForm.elements.userPasswordConfirm.value;
     if (userName && userPassword && userPasswordConfirm) {
       if (userPassword === userPasswordConfirm) {
@@ -273,13 +270,12 @@ const Register = React.createClass({
 
   render() {
     let onEvent = {
-      onClick: this.handleClick,
-      onChange: this.handleChange
-    },
-    data={
-      "lang": localization.lang
-    };
-    //https://www.zigpress.com/2014/11/22/stop-chrome-messing-forms/
+        onClick: this.handleClick,
+        onChange: this.handleChange
+      },
+      data = {
+        "lang": localization.lang
+      };
     return (
       <div onMouseDown={this.handleEvents}
            onMouseMove={this.handleEvents}
@@ -290,12 +286,10 @@ const Register = React.createClass({
            onTouchStart={this.handleEvents}>
         <div data-role="main_container" className="w-100p h-100p p-abs">
           <div className="flex-outer-container p-fx">
-            <form autoComplete="off" className="flex-inner-container form-small" data-role="registerForm"
-                  onSubmit={this.handleSubmit}>
-              <input style={{display:'none'}} type="text" />
-              <input style={{display:'none'}} type="password" />
+            <form autoComplete="off" className="flex-inner-container form-small"
+                  ref={(element)=> {this.registerForm = element}} onSubmit={this.handleSubmit}>
               <Location_Wrapper mainContainer={this.props.mainContainer} events={onEvent} configs={this.props.configs}
-              data={data}/>
+                                data={data}/>
             </form>
           </div>
         </div>
@@ -303,7 +297,7 @@ const Register = React.createClass({
                        handleClick={this.handleDialogRegisterUser}/>
         <DialogError show={this.state.errorMessage} message={this.state.errorMessage}
                      handleClick={this.handleDialogError}/>
-        <Description ref={(obj) => this.descriptionContext = obj} />
+        <Description ref={(obj) => this.descriptionContext = obj}/>
       </div>
     )
   }
