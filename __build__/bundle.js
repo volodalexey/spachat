@@ -61,13 +61,9 @@ webpackJsonp([0],{
 
 	var _login2 = _interopRequireDefault(_login);
 
-	var _chat_app = __webpack_require__(309);
+	var _chat_app = __webpack_require__(313);
 
 	var _chat_app2 = _interopRequireDefault(_chat_app);
-
-	var _register = __webpack_require__(347);
-
-	var _register2 = _interopRequireDefault(_register);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -82,7 +78,7 @@ webpackJsonp([0],{
 	  if (_users_bus2.default.getUserId()) {
 	    replace('/chat');
 	  } else {
-	    replace('/login');
+	    replace('/account');
 	  }
 	},
 	    redirectToLogin = function redirectToLogin(nextState, replace) {
@@ -90,7 +86,7 @@ webpackJsonp([0],{
 	    _reactRouter.browserHistory.desired_path = nextState.location.pathname;
 	    _reactRouter.browserHistory.desired_search = nextState.location.search;
 	  }
-	  replace('/login');
+	  replace('/account');
 	},
 	    Index = _react2.default.createClass({
 	  displayName: 'Index',
@@ -108,8 +104,7 @@ webpackJsonp([0],{
 	      _react2.default.createElement(
 	        _reactRouter.Route,
 	        { path: '/' },
-	        _react2.default.createElement(_reactRouter.Route, { path: 'login', component: _login2.default }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'register', component: _register2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { path: 'account', component: _login2.default }),
 	        _react2.default.createElement(_reactRouter.Route, { path: 'chat', component: _chat_app2.default, onEnter: requireAuth })
 	      ),
 	      _react2.default.createElement(_reactRouter.Route, { path: '*', onEnter: noMatchRedirect })
@@ -2467,6 +2462,10 @@ webpackJsonp([0],{
 
 	var _dialogError2 = _interopRequireDefault(_dialogError);
 
+	var _register = __webpack_require__(308);
+
+	var _register2 = _interopRequireDefault(_register);
+
 	var _localization = __webpack_require__(281);
 
 	var _localization2 = _interopRequireDefault(_localization);
@@ -2479,7 +2478,7 @@ webpackJsonp([0],{
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _overlay_core = __webpack_require__(308);
+	var _overlay_core = __webpack_require__(311);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
 
@@ -2488,6 +2487,11 @@ webpackJsonp([0],{
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var MODE = {
+	  LOGIN: 'LOGIN',
+	  REGISTER: 'REGISTER'
+	};
 
 	var Login = _react2.default.createClass({
 	  displayName: 'Login',
@@ -2534,7 +2538,7 @@ webpackJsonp([0],{
 	        "element": "button",
 	        "type": "button",
 	        "location": "registerButton",
-	        "link": "/register",
+	        // "link": "/register",
 	        "text": 48,
 	        "data": {
 	          "description": 54,
@@ -2604,20 +2608,16 @@ webpackJsonp([0],{
 	  getInitialState: function getInitialState() {
 	    return {
 	      lang: _localization2.default.lang,
-	      errorMessage: null
+	      errorMessage: null,
+	      mode: MODE.LOGIN
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
-	    this.loginForm = document.querySelector('[data-role="loginForm"]');
-	    this.loginForm.addEventListener('click', this.handleClick, true);
 	    this.toggleWaiter();
-	  },
-	  componentWillUnmount: function componentWillUnmount() {
-	    this.loginForm = null;
 	  },
 	  handleClick: function handleClick(event) {
 	    if (event.currentTarget.dataset.action === 'clickRedirectToRegister') {
-	      this.clickRedirectToRegister(event);
+	      this.changeMode(MODE.REGISTER);
 	    }
 	  },
 	  handleDialogError: function handleDialogError() {
@@ -2677,15 +2677,8 @@ webpackJsonp([0],{
 	      this.setState({ errorMessage: 88 });
 	    }
 	  },
-	  clickRedirectToRegister: function clickRedirectToRegister(event) {
-	    event.preventDefault();
-	    event.stopPropagation();
-	    if (_reactRouter.browserHistory.desired_path && _reactRouter.browserHistory.desired_search) {
-	      _reactRouter.browserHistory.push(_reactRouter.browserHistory.desired_path + _reactRouter.browserHistory.desired_search);
-	      location.replace('register?' + _reactRouter.browserHistory.desired_path + _reactRouter.browserHistory.desired_search);
-	    } else {
-	      location.replace('register');
-	    }
+	  changeMode: function changeMode(_mode) {
+	    this.setState({ mode: _mode });
 	  },
 	  handleEvents: function handleEvents(event) {
 	    this.descriptionContext.showDescription(event);
@@ -2697,10 +2690,13 @@ webpackJsonp([0],{
 	      onClick: this.handleClick,
 	      onChange: this.handleChange
 	    },
+	        handleChange = {
+	      changeMode: this.changeMode
+	    },
 	        data = {
 	      "lang": _localization2.default.lang
 	    };
-	    return _react2.default.createElement(
+	    var loginForm = _react2.default.createElement(
 	      'div',
 	      { onMouseDown: this.handleEvents,
 	        onMouseMove: this.handleEvents,
@@ -2717,7 +2713,10 @@ webpackJsonp([0],{
 	          { className: 'flex-outer-container p-fx' },
 	          _react2.default.createElement(
 	            'form',
-	            { className: 'flex-inner-container form-small', 'data-role': 'loginForm', onSubmit: this.handleSubmit },
+	            { className: 'flex-inner-container form-small', ref: function ref(element) {
+	                _this.loginForm = element;
+	              },
+	              onSubmit: this.handleSubmit, onClick: this.handleClick },
 	            _react2.default.createElement(_location_wrapper2.default, { mainContainer: this.props.mainContainer, events: onEvent, configs: this.props.configs,
 	              data: data })
 	          )
@@ -2729,6 +2728,7 @@ webpackJsonp([0],{
 	          return _this.descriptionContext = obj;
 	        } })
 	    );
+	    return this.state.mode === MODE.LOGIN ? loginForm : _react2.default.createElement(_register2.default, { handleChange: handleChange, mode: MODE });
 	  }
 	});
 	_extend_core2.default.prototype.inherit(Login, _overlay_core2.default);
@@ -4080,6 +4080,511 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _location_wrapper = __webpack_require__(294);
+
+	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
+
+	var _dialogError = __webpack_require__(306);
+
+	var _dialogError2 = _interopRequireDefault(_dialogError);
+
+	var _dialogSuccess = __webpack_require__(309);
+
+	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
+
+	var _description = __webpack_require__(304);
+
+	var _description2 = _interopRequireDefault(_description);
+
+	var _ajax_core = __webpack_require__(310);
+
+	var _ajax_core2 = _interopRequireDefault(_ajax_core);
+
+	var _extend_core = __webpack_require__(284);
+
+	var _extend_core2 = _interopRequireDefault(_extend_core);
+
+	var _id_core = __webpack_require__(292);
+
+	var _id_core2 = _interopRequireDefault(_id_core);
+
+	var _users_bus = __webpack_require__(283);
+
+	var _users_bus2 = _interopRequireDefault(_users_bus);
+
+	var _localization = __webpack_require__(281);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	var _overlay_core = __webpack_require__(311);
+
+	var _overlay_core2 = _interopRequireDefault(_overlay_core);
+
+	var _jdenticon = __webpack_require__(312);
+
+	var _jdenticon2 = _interopRequireDefault(_jdenticon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Register = _react2.default.createClass({
+	  displayName: 'Register',
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      mainContainer: {
+	        "element": "div",
+	        "config": {
+	          "class": "flex-inner-container"
+	        }
+	      },
+	      configs: [{
+	        "role": "locationWrapper",
+	        "classList": "w-100p p-t-b flex-just-center",
+	        "location": "language"
+	      }, {
+	        "element": "label",
+	        "text": 100,
+	        "class": "p-r-l-1em",
+	        "location": "language",
+	        "data": {
+	          "role": "labelLanguage"
+	        }
+	      }, {
+	        "element": "select",
+	        "location": "language",
+	        "select_options": [{
+	          "text": 132,
+	          "value": "en"
+	        }, {
+	          "text": 133,
+	          "value": "ru"
+	        }],
+	        "data": {
+	          "action": "changeLanguage",
+	          "role": "selectLanguage",
+	          "key": 'lang'
+	        }
+	      }, {
+	        "role": "locationWrapper",
+	        "classList": "w-100p p-t-b flex-sp-around",
+	        "location": "loginButton"
+	      }, {
+	        "element": "button",
+	        "type": "button",
+	        "text": 52,
+	        "location": "loginButton",
+	        "link": "/account",
+	        "data": {
+	          "action": "redirectToLogin",
+	          "role": "loginButton"
+	        },
+	        "class": "button-inset"
+	      }, {
+	        "role": "locationWrapper",
+	        "classList": "w-100p p-t-b flex-sp-around",
+	        "location": "userName"
+	      }, {
+	        "element": "label",
+	        "text": 49,
+	        "class": "flex-item-w50p",
+	        "location": "userName",
+	        "data": {
+	          "role": "labelUserName"
+	        }
+	      }, {
+	        "element": "input",
+	        "type": "text",
+	        "class": "flex-item-w50p",
+	        "autoComplete": "off",
+	        "location": "userName",
+	        "name": "reg_userName",
+	        "data": {
+	          "key": "userName"
+	        }
+	      }, {
+	        "role": "locationWrapper",
+	        "classList": "w-100p p-t-b flex-sp-between",
+	        "location": "userPassword"
+	      }, {
+	        "element": "label",
+	        "text": 50,
+	        "class": "flex-item-w50p",
+	        "location": "userPassword",
+	        "data": {
+	          "role": "labelUserPassword"
+	        }
+	      }, {
+	        "element": "input",
+	        "type": "password",
+	        "class": "flex-item-w50p",
+	        "autoComplete": "off",
+	        "location": "userPassword",
+	        "name": "reg_userPassword",
+	        "data": {
+	          "key": "userPassword"
+	        }
+	      }, {
+	        "role": "locationWrapper",
+	        "classList": "w-100p p-t-b flex-sp-between",
+	        "location": "userPasswordConfirm"
+	      }, {
+	        "element": "label",
+	        "text": 41,
+	        "class": "flex-item-w50p",
+	        "location": "userPasswordConfirm",
+	        "data": {
+	          "role": "labelConfirmUserPassword"
+	        }
+	      }, {
+	        "element": "input",
+	        "type": "password",
+	        "class": "flex-item-w50p",
+	        "autoComplete": "off",
+	        "location": "userPasswordConfirm",
+	        "name": "userPasswordConfirm",
+	        "data": {
+	          "key": "userPasswordConfirm"
+	        }
+	      }, {
+	        "role": "locationWrapper",
+	        "classList": "w-100p p-t-b flex-sp-around",
+	        "location": "registerButton"
+	      }, {
+	        "element": "button",
+	        "type": "submit",
+	        "text": 53,
+	        "location": "registerButton",
+	        "data": {
+	          "description": 55,
+	          "action": "register",
+	          "role": "registerButton"
+	        },
+	        "class": "button-inset"
+	      }]
+	    };
+	  },
+	  getInitialState: function getInitialState() {
+	    return {
+	      errorMessage: null,
+	      successMessage: null
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.toggleWaiter();
+	  },
+	  handleClick: function handleClick(event) {
+	    if (event.currentTarget.dataset.action === 'redirectToLogin') {
+	      this.props.handleChange.changeMode(this.props.mode.LOGIN);
+	    }
+	  },
+	  handleDialogError: function handleDialogError() {
+	    this.setState({ errorMessage: null });
+	  },
+	  handleDialogRegisterUser: function handleDialogRegisterUser() {
+	    this.setState({ successMessage: null });
+	    this.props.handleChange.changeMode(this.props.mode.LOGIN);
+	  },
+	  handleChange: function handleChange(event) {
+	    switch (event.target.dataset.action) {
+	      case "changeLanguage":
+	        _localization2.default.changeLanguage(event.target.value, this);
+	        break;
+	    }
+	  },
+	  handleSubmit: function handleSubmit(event) {
+	    event.preventDefault();
+	    var self = this,
+	        userName = this.registerForm.elements.reg_userName.value,
+	        userPassword = this.registerForm.elements.reg_userPassword.value,
+	        userPasswordConfirm = this.registerForm.elements.userPasswordConfirm.value;
+	    if (userName && userPassword && userPasswordConfirm) {
+	      if (userPassword === userPasswordConfirm) {
+	        this.toggleWaiter(true);
+	        this.registerNewUser({
+	          userName: userName,
+	          userPassword: userPassword
+	        }, function (regErr, account) {
+	          self.toggleWaiter();
+	          if (regErr) {
+	            self.setState({ errorMessage: regErr });
+	            return;
+	          }
+	          _users_bus2.default.setUserId(account.user_id);
+	          self.setState({ successMessage: 96 });
+	        });
+	      } else {
+	        self.setState({ errorMessage: 91 });
+	      }
+	    } else {
+	      self.setState({ errorMessage: 88 });
+	    }
+	  },
+	  registerNewUser: function registerNewUser(options, callback) {
+	    this.get_JSON_res('/api/uuid', function (err, res) {
+	      if (err) {
+	        callback(err);
+	        return;
+	      }
+
+	      _jdenticon2.default.jdenticon(res.uuid, function (avatar_data) {
+	        _users_bus2.default.storeNewUser(res.uuid, options.userName, options.userPassword, avatar_data, Date.now(), function (err, account) {
+	          if (err) {
+	            callback(err);
+	            return;
+	          }
+
+	          // successful register
+	          callback(null, account);
+	        });
+	      });
+	    });
+	  },
+	  handleEvents: function handleEvents(event) {
+	    this.descriptionContext.showDescription(event);
+	  },
+	  render: function render() {
+	    var _this = this;
+
+	    var onEvent = {
+	      onClick: this.handleClick,
+	      onChange: this.handleChange
+	    },
+	        data = {
+	      "lang": _localization2.default.lang
+	    };
+	    return _react2.default.createElement(
+	      'div',
+	      { onMouseDown: this.handleEvents,
+	        onMouseMove: this.handleEvents,
+	        onMouseUp: this.handleEvents,
+	        onClick: this.handleEvents,
+	        onTouchEnd: this.handleEvents,
+	        onTouchMove: this.handleEvents,
+	        onTouchStart: this.handleEvents },
+	      _react2.default.createElement(
+	        'div',
+	        { 'data-role': 'main_container', className: 'w-100p h-100p p-abs' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'flex-outer-container p-fx' },
+	          _react2.default.createElement(
+	            'form',
+	            { autoComplete: 'off', className: 'flex-inner-container form-small',
+	              ref: function ref(element) {
+	                _this.registerForm = element;
+	              }, onSubmit: this.handleSubmit },
+	            _react2.default.createElement(_location_wrapper2.default, { mainContainer: this.props.mainContainer, events: onEvent, configs: this.props.configs,
+	              data: data })
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(_dialogSuccess2.default, { show: this.state.successMessage, message: this.state.successMessage,
+	        handleClick: this.handleDialogRegisterUser }),
+	      _react2.default.createElement(_dialogError2.default, { show: this.state.errorMessage, message: this.state.errorMessage,
+	        handleClick: this.handleDialogError }),
+	      _react2.default.createElement(_description2.default, { ref: function ref(obj) {
+	          return _this.descriptionContext = obj;
+	        } })
+	    );
+	  }
+	});
+
+	_extend_core2.default.prototype.inherit(Register, _id_core2.default);
+	_extend_core2.default.prototype.inherit(Register, _ajax_core2.default);
+	_extend_core2.default.prototype.inherit(Register, _overlay_core2.default);
+
+	exports.default = Register;
+
+/***/ },
+
+/***/ 309:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _localization = __webpack_require__(281);
+
+	var _localization2 = _interopRequireDefault(_localization);
+
+	var _dialog = __webpack_require__(307);
+
+	var _dialog2 = _interopRequireDefault(_dialog);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var DialogSuccess = _react2.default.createClass({
+	  displayName: 'DialogSuccess',
+	  processingTitle: function processingTitle() {
+	    var title = void 0;
+	    if (this.props.title) {
+	      title = this.props.title;
+	      if (!title.textContent) {
+	        title.textContent = 85;
+	      }
+	      if (title.addClass) {
+	        title.addClass = ' success ' + title.addClass;
+	      } else {
+	        title.addClass = ' success ';
+	      }
+	    } else {
+	      title = { textContent: 85, addClass: ' success' };
+	    }
+
+	    return title;
+	  },
+	  processingBody: function processingBody() {
+	    var body = void 0;
+	    if (this.props.body) {
+	      body = this.props.body;
+	      if (!body.textContent) {
+	        body.textContent = this.props.message;
+	      }
+	    } else {
+	      body = { textContent: this.props.message };
+	    }
+
+	    return body;
+	  },
+	  processingFooter: function processingFooter() {
+	    var footer = void 0,
+	        _class = 'flex-sp-around p-05em border-popup-footer ';
+	    if (this.props.footer) {
+	      footer = this.props.footer;
+	      if (footer.content) {
+	        return footer.content;
+	      }
+	      if (footer.className) {
+	        _class = footer.className;
+	      } else {
+	        _class = footer.addClass ? _class + footer.addClass : _class;
+	      }
+	    }
+
+	    return _react2.default.createElement(
+	      'footer',
+	      { className: _class },
+	      _react2.default.createElement(
+	        'button',
+	        { className: 'border-radius-04em p-tb-03em-lr-1em', 'data-action': 'confirmCancel' },
+	        this.props.close ? _localization2.default.transferText(this.props.close) : _localization2.default.getLocText(20)
+	      )
+	    );
+	  },
+	  render: function render() {
+	    if (this.props.show) {
+	      var title = this.processingTitle(),
+	          body = this.processingBody(),
+	          footer = this.processingFooter();
+
+	      return _react2.default.createElement(_dialog2.default, { show: this.props.show, title: title, body: body, footer: footer,
+	        handleClick: this.props.handleClick });
+	    } else {
+	      return _react2.default.createElement(_dialog2.default, { show: this.props.show });
+	    }
+	  }
+	});
+
+	exports.default = DialogSuccess;
+
+/***/ },
+
+/***/ 310:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var ajax_core = function ajax_core() {};
+
+	ajax_core.prototype = {
+
+	  __class_name: "ajax_core",
+
+	  objectToFormData: function objectToFormData(objectData) {
+	    var formData = new FormData();
+	    for (var key in objectData) {
+	      formData.append(key, objectData[key]);
+	    }
+	    return formData;
+	  },
+
+	  sendRequest: function sendRequest(type, url, data, callback) {
+	    var xhr = new XMLHttpRequest();
+	    xhr.open(type, url, true);
+
+	    xhr.onreadystatechange = function () {
+	      if (xhr.readyState == 4) {
+	        if (xhr.status >= 200 || xhr.status < 300 || xhr.status === 304) {
+	          callback(null, xhr.responseText);
+	        } else {
+	          callback('Error (' + xhr.status + ') : ' + xhr.statusText + ' : ' + xhr.responseText);
+	        }
+	      }
+	    };
+	    xhr.send(data);
+	  },
+
+	  get_JSON_res: function get_JSON_res(url, callback) {
+	    ajax_core.prototype.sendRequest('GET', url, null, function (err, res) {
+	      if (err) {
+	        callback(err);
+	      } else {
+	        try {
+	          var parsed = JSON.parse(res);
+	        } catch (e) {
+	          callback(e);
+	        }
+
+	        callback(null, parsed);
+	      }
+	    });
+	  },
+
+	  getRequest: function getRequest(url, callback) {
+	    ajax_core.prototype.sendRequest('GET', url, null, callback);
+	  },
+
+	  postRequest: function postRequest(url, objectData, callback) {
+	    var formData = ajax_core.prototype.objectToFormData(objectData);
+	    ajax_core.prototype.sendRequest('POST', url, formData, callback);
+	  },
+
+	  putRequest: function putRequest(url, objectData, callback) {
+	    var formData = ajax_core.prototype.objectToFormData(objectData);
+	    ajax_core.prototype.sendRequest('PUT', url, formData, callback);
+	  },
+
+	  deleteRequest: function deleteRequest(url, callback) {
+	    ajax_core.prototype.sendRequest('DELETE', url, null, callback);
+	  }
+	};
+
+	exports.default = ajax_core;
+
+/***/ },
+
+/***/ 311:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(12);
+
+	var _react2 = _interopRequireDefault(_react);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var overlay_core = function overlay_core() {};
@@ -4099,7 +4604,550 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 309:
+/***/ 312:
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	/**
+	 * Jdenticon 1.3.2
+	 * http://jdenticon.com
+	 *
+	 * Built: 2015-10-10T11:55:57.451Z
+	 *
+	 * Copyright (c) 2014-2015 Daniel Mester Pirttijärvi
+	 *
+	 * This software is provided 'as-is', without any express or implied
+	 * warranty.  In no event will the authors be held liable for any damages
+	 * arising from the use of this software.
+	 *
+	 * Permission is granted to anyone to use this software for any purpose,
+	 * including commercial applications, and to alter it and redistribute it
+	 * freely, subject to the following restrictions:
+	 *
+	 * 1. The origin of this software must not be misrepresented; you must not
+	 *    claim that you wrote the original software. If you use this software
+	 *    in a product, an acknowledgment in the product documentation would be
+	 *    appreciated but is not required.
+	 *
+	 * 2. Altered source versions must be plainly marked as such, and must not be
+	 *    misrepresented as being the original software.
+	 *
+	 * 3. This notice may not be removed or altered from any source distribution.
+	 *
+	 */
+
+	var Jdenticon = function Jdenticon() {};
+
+	Jdenticon.prototype = {
+	  Point: function Point(x, y) {
+	    this.x = x;
+	    this.y = y;
+	  },
+
+	  decToHex: function decToHex(v) {
+	    v |= 0; // Ensure integer value
+	    return v < 0 ? "00" : v < 16 ? "0" + v.toString(16) : v < 256 ? v.toString(16) : "ff";
+	  },
+
+	  hueToRgb: function hueToRgb(m1, m2, h) {
+	    h = h < 0 ? h + 6 : h > 6 ? h - 6 : h;
+	    return this.decToHex(255 * (h < 1 ? m1 + (m2 - m1) * h : h < 3 ? m2 : h < 4 ? m1 + (m2 - m1) * (4 - h) : m1));
+	  },
+
+	  /**
+	   * Gets a set of identicon color candidates for a specified hue and config.
+	   */
+	  colorTheme: function colorTheme(hue, config) {
+	    return [
+	    // Dark gray
+	    color.hsl(0, 0, config.grayscaleLightness(0)),
+	    // Mid color
+	    color.correctedHsl(hue, config.saturation, config.colorLightness(0.5)),
+	    // Light gray
+	    color.hsl(0, 0, config.grayscaleLightness(1)),
+	    // Light color
+	    color.correctedHsl(hue, config.saturation, config.colorLightness(1)),
+	    // Dark color
+	    color.correctedHsl(hue, config.saturation, config.colorLightness(0))];
+	  },
+
+	  /**
+	   * Draws an identicon to a specified renderer.
+	   */
+	  iconGenerator: function iconGenerator(renderer, hash, x, y, size, padding, config, callback) {
+	    var undefined;
+
+	    // Calculate padding
+	    padding = size * (padding === undefined ? 0.08 : padding) | 0;
+	    size -= padding * 2;
+
+	    // Sizes smaller than 30 px are not supported. If really needed, apply a scaling transformation
+	    // to the context before passing it to this function.
+	    if (size < 30) {
+	      throw new Error("Jdenticon cannot render identicons smaller than 30 pixels.");
+	    }
+	    if (!/^[0-9a-f,-]{11,}$/i.test(hash)) {
+	      throw new Error("Invalid hash passed to Jdenticon.");
+	    }
+
+	    var graphics = new Graphics(renderer);
+
+	    // Calculate cell size and ensure it is an integer
+	    var cell = 0 | size / 4;
+
+	    // Since the cell size is integer based, the actual icon will be slightly smaller than specified => center icon
+	    x += 0 | padding + size / 2 - cell * 2;
+	    y += 0 | padding + size / 2 - cell * 2;
+
+	    function renderShape(colorIndex, shapes, index, rotationIndex, positions) {
+	      var r = rotationIndex ? parseInt(hash.charAt(rotationIndex), 16) : 0,
+	          shape = shapes[parseInt(hash.charAt(index), 16) % shapes.length],
+	          i;
+
+	      renderer.beginShape(availableColors[selectedColorIndexes[colorIndex]]);
+
+	      for (i = 0; i < positions.length; i++) {
+	        graphics._transform = new Transform(x + positions[i][0] * cell, y + positions[i][1] * cell, cell, r++ % 4);
+	        shape(graphics, cell, i);
+	      }
+
+	      renderer.endShape();
+	    }
+
+	    // AVAILABLE COLORS
+	    var hue = parseInt(hash.substr(-4) + hash.substr(-8, 3), 16) / 0xfffffff,
+
+
+	    // Available colors for this icon
+	    availableColors = this.colorTheme(hue, config),
+
+
+	    // The index of the selected colors
+	    selectedColorIndexes = [],
+	        index;
+
+	    function isDuplicate(values) {
+	      if (values.indexOf(index) >= 0) {
+	        for (var i = 0; i < values.length; i++) {
+	          if (selectedColorIndexes.indexOf(values[i]) >= 0) {
+	            return true;
+	          }
+	        }
+	      }
+	    }
+
+	    for (var i = 0; i < 3; i++) {
+	      index = parseInt(hash.charAt(55 + i), 16) % availableColors.length;
+	      if (isDuplicate([0, 4]) || // Disallow dark gray and dark color combo
+	      isDuplicate([2, 3])) {
+	        // Disallow light gray and light color combo
+	        index = 1;
+	      }
+	      selectedColorIndexes.push(index);
+	    }
+
+	    // ACTUAL RENDERING
+	    // Sides
+	    renderShape(0, shapes.outer, 57, 3, [[1, 0], [2, 0], [2, 3], [1, 3], [0, 1], [3, 1], [3, 2], [0, 2]]);
+	    // Corners
+	    renderShape(1, shapes.outer, 58, 5, [[0, 0], [3, 0], [3, 3], [0, 3]]);
+	    // Center
+	    renderShape(2, shapes.center, 56, null, [[1, 1], [2, 1], [2, 2], [1, 2]]);
+	    var data_avatar = renderer._ctx.canvas.toDataURL();
+	    if (callback) {
+	      callback(data_avatar);
+	    }
+	  },
+
+	  /**
+	   * Gets the normalized current Jdenticon color configuration. Missing fields have default values.
+	   */
+	  getCurrentConfig: function getCurrentConfig() {
+	    var configObject = this.jdenticon["config"] || global["jdenticon_config"] || {},
+	        lightnessConfig = configObject["lightness"] || {},
+	        saturation = configObject["saturation"];
+
+	    /**
+	     * Creates a lightness range.
+	     */
+	    function lightness(configName, defaultMin, defaultMax) {
+	      var range = lightnessConfig[configName] instanceof Array ? lightnessConfig[configName] : [defaultMin, defaultMax];
+
+	      /**
+	       * Gets a lightness relative the specified value in the specified lightness range.
+	       */
+	      return function (value) {
+	        value = range[0] + value * (range[1] - range[0]);
+	        return value < 0 ? 0 : value > 1 ? 1 : value;
+	      };
+	    }
+
+	    return {
+	      saturation: typeof saturation == "number" ? saturation : 0.5,
+	      colorLightness: lightness("color", 0.4, 0.8),
+	      grayscaleLightness: lightness("grayscale", 0.3, 0.9)
+	    };
+	  },
+
+	  /**
+	   * Updates the identicon in the specified canvas elements.
+	   * @param {string=} hash Optional hash to be rendered. If not specified, the hash specified by the data-jdenticon-hash is used.
+	   * @param {number=} padding Optional padding in percents. Extra padding might be added to center the rendered identicon.
+	   */
+	  update: function update(el, hash, callback, padding) {
+	    if (typeof el === "string") {
+	      var element = document.createElement('canvas');
+	      element.setAttribute('width', canvas_element_width);
+	      element.setAttribute('height', canvas_element_height);
+	      this.update(element, hash, callback, padding);
+	      return;
+	    }
+	    if (!el || !el["tagName"]) {
+	      // No element found
+	      return;
+	    }
+	    hash = hash || el.getAttribute(HASH_ATTRIBUTE);
+	    if (!hash) {
+	      // No hash specified
+	      return;
+	    }
+
+	    var isCanvas = el["tagName"].toLowerCase() == "canvas";
+
+	    // Ensure we have a supported element
+	    if (!(isCanvas && "getContext" in el)) {
+	      return;
+	    }
+
+	    var width = Number(el.getAttribute("width")) || el.clientWidth || 0,
+	        height = Number(el.getAttribute("height")) || el.clientHeight || 0,
+	        renderer = new CanvasRenderer(el.getContext("2d"), width, height),
+	        size = Math.min(width, height);
+
+	    // Draw icon
+	    this.iconGenerator(renderer, hash, 0, 0, size, padding, this.getCurrentConfig(), callback);
+	  },
+
+	  jdenticon: function jdenticon(hash, callback) {
+	    if (supportsQuerySelectorAll) {
+	      this.update("canvas[" + HASH_ATTRIBUTE + "]", hash, function (avatar_data) {
+	        if (callback) {
+	          callback(avatar_data);
+	        }
+	      });
+	    }
+	  }
+	};
+
+	var Transform = function Transform(x, y, size, rotation) {
+	  this._x = x;
+	  this._y = y;
+	  this._size = size;
+	  this._rotation = rotation;
+	};
+	Transform.prototype = {
+	  /**
+	   * Transforms the specified point based on the translation and rotation specification for this Transform.
+	   * @param {number} x x-coordinate
+	   * @param {number} y y-coordinate
+	   * @param {number=} w The width of the transformed rectangle. If greater than 0, this will ensure the returned point is of the upper left corner of the transformed rectangle.
+	   * @param {number=} h The height of the transformed rectangle. If greater than 0, this will ensure the returned point is of the upper left corner of the transformed rectangle.
+	   */
+	  transformPoint: function transformPoint(x, y, w, h) {
+	    var right = this._x + this._size,
+	        bottom = this._y + this._size;
+	    return this._rotation === 1 ? new Jdenticon.prototype.Point(right - y - (h || 0), this._y + x) : this._rotation === 2 ? new Jdenticon.prototype.Point(right - x - (w || 0), bottom - y - (h || 0)) : this._rotation === 3 ? new Jdenticon.prototype.Point(this._x + y, bottom - x - (w || 0)) : new Jdenticon.prototype.Point(this._x + x, this._y + y);
+	  }
+	};
+	Transform.noTransform = new Transform(0, 0, 0, 0);
+
+	var Graphics = function Graphics(renderer) {
+	  this._renderer = renderer;
+	  this._transform = Transform.noTransform;
+	};
+	Graphics.prototype = {
+	  /**
+	   * Adds a polygon to the underlying renderer.
+	   * @param {Array} points The points of the polygon clockwise on the format [ x0, y0, x1, y1, ..., xn, yn ]
+	   * @param {boolean=} invert Specifies if the polygon will be inverted.
+	   */
+	  addPolygon: function addPolygon(points, invert) {
+	    var di = invert ? -2 : 2,
+	        transform = this._transform,
+	        transformedPoints = [],
+	        i;
+
+	    for (i = invert ? points.length - 2 : 0; i < points.length && i >= 0; i += di) {
+	      transformedPoints.push(transform.transformPoint(points[i], points[i + 1]));
+	    }
+
+	    this._renderer.addPolygon(transformedPoints);
+	  },
+
+	  /**
+	   * Adds a polygon to the underlying renderer.
+	   * Source: http://stackoverflow.com/a/2173084
+	   * @param {number} x The x-coordinate of the upper left corner of the rectangle holding the entire ellipse.
+	   * @param {number} y The y-coordinate of the upper left corner of the rectangle holding the entire ellipse.
+	   * @param {number} size The size of the ellipse.
+	   * @param {boolean=} invert Specifies if the ellipse will be inverted.
+	   */
+	  addCircle: function addCircle(x, y, size, invert) {
+	    var p = this._transform.transformPoint(x, y, size, size);
+	    this._renderer.addCircle(p, size, invert);
+	  },
+
+	  /**
+	   * Adds a rectangle to the underlying renderer.
+	   * @param {number} x The x-coordinate of the upper left corner of the rectangle.
+	   * @param {number} y The y-coordinate of the upper left corner of the rectangle.
+	   * @param {number} w The width of the rectangle.
+	   * @param {number} h The height of the rectangle.
+	   * @param {boolean=} invert Specifies if the rectangle will be inverted.
+	   */
+	  addRectangle: function addRectangle(x, y, w, h, invert) {
+	    this.addPolygon([x, y, x + w, y, x + w, y + h, x, y + h], invert);
+	  },
+
+	  /**
+	   * Adds a right triangle to the underlying renderer.
+	   * @param {number} x The x-coordinate of the upper left corner of the rectangle holding the triangle.
+	   * @param {number} y The y-coordinate of the upper left corner of the rectangle holding the triangle.
+	   * @param {number} w The width of the triangle.
+	   * @param {number} h The height of the triangle.
+	   * @param {number} r The rotation of the triangle (clockwise). 0 = right corner of the triangle in the lower left corner of the bounding rectangle.
+	   * @param {boolean=} invert Specifies if the triangle will be inverted.
+	   */
+	  addTriangle: function addTriangle(x, y, w, h, r, invert) {
+	    var points = [x + w, y, x + w, y + h, x, y + h, x, y];
+	    points.splice((r || 0) % 4 * 2, 2);
+	    this.addPolygon(points, invert);
+	  },
+
+	  /**
+	   * Adds a rhombus to the underlying renderer.
+	   * @param {number} x The x-coordinate of the upper left corner of the rectangle holding the rhombus.
+	   * @param {number} y The y-coordinate of the upper left corner of the rectangle holding the rhombus.
+	   * @param {number} w The width of the rhombus.
+	   * @param {number} h The height of the rhombus.
+	   * @param {boolean=} invert Specifies if the rhombus will be inverted.
+	   */
+	  addRhombus: function addRhombus(x, y, w, h, invert) {
+	    this.addPolygon([x + w / 2, y, x + w, y + h / 2, x + w / 2, y + h, x, y + h / 2], invert);
+	  }
+	};
+
+	var shapes = {
+	  center: [
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var k = cell * 0.42;
+	    g.addPolygon([0, 0, cell, 0, cell, cell - k * 2, cell - k, cell, 0, cell]);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var w = 0 | cell * 0.5,
+	        h = 0 | cell * 0.8;
+	    g.addTriangle(cell - w, 0, w, h, 2);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var s = 0 | cell / 3;
+	    g.addRectangle(s, s, cell - s, cell - s);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var inner = 0 | cell * 0.1,
+	        outer = 0 | cell * 0.25;
+	    g.addRectangle(outer, outer, cell - inner - outer, cell - inner - outer);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var m = 0 | cell * 0.15,
+	        s = 0 | cell * 0.5;
+	    g.addCircle(cell - s - m, cell - s - m, s);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var inner = cell * 0.1,
+	        outer = inner * 4;
+
+	    g.addRectangle(0, 0, cell, cell);
+	    g.addPolygon([outer, outer, cell - inner, outer, outer + (cell - outer - inner) / 2, cell - inner], true);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addPolygon([0, 0, cell, 0, cell, cell * 0.7, cell * 0.4, cell * 0.4, cell * 0.7, cell, 0, cell]);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addTriangle(cell / 2, cell / 2, cell / 2, cell / 2, 3);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addRectangle(0, 0, cell, cell / 2);
+	    g.addRectangle(0, cell / 2, cell / 2, cell / 2);
+	    g.addTriangle(cell / 2, cell / 2, cell / 2, cell / 2, 1);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var inner = 0 | cell * 0.14,
+	        outer = 0 | cell * 0.35;
+	    g.addRectangle(0, 0, cell, cell);
+	    g.addRectangle(outer, outer, cell - outer - inner, cell - outer - inner, true);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var inner = cell * 0.12,
+	        outer = inner * 3;
+
+	    g.addRectangle(0, 0, cell, cell);
+	    g.addCircle(outer, outer, cell - inner - outer, true);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addTriangle(cell / 2, cell / 2, cell / 2, cell / 2, 3);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var m = cell * 0.25;
+	    g.addRectangle(0, 0, cell, cell);
+	    g.addRhombus(m, m, cell - m, cell - m, true);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var m = cell * 0.4,
+	        s = cell * 1.2;
+	    if (!index) {
+	      g.addCircle(m, m, s);
+	    }
+	  }],
+
+	  outer: [
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addTriangle(0, 0, cell, cell, 0);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addTriangle(0, cell / 2, cell, cell / 2, 0);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    g.addRhombus(0, 0, cell, cell);
+	  },
+	  /** @param {Graphics} g */
+	  function (g, cell, index) {
+	    var m = cell / 6;
+	    g.addCircle(m, m, cell - 2 * m);
+	  }]
+	};
+
+	/**
+	 * Functions for converting colors to hex-rgb representations.
+	 * @private
+	 */
+	var color = {
+	  /**
+	   * @param {number} r Red channel [0, 255]
+	   * @param {number} g Green channel [0, 255]
+	   * @param {number} b Blue channel [0, 255]
+	   */
+	  rgb: function rgb(r, g, b) {
+	    return "#" + this.decToHex(r) + this.decToHex(g) + this.decToHex(b);
+	  },
+	  /**
+	   * @param h Hue [0, 1]
+	   * @param s Saturation [0, 1]
+	   * @param l Lightness [0, 1]
+	   */
+	  hsl: function hsl(h, s, l) {
+	    // Based on http://www.w3.org/TR/2011/REC-css3-color-20110607/#hsl-color
+	    if (s == 0) {
+	      var partialHex = Jdenticon.prototype.decToHex(l * 255);
+	      return "#" + partialHex + partialHex + partialHex;
+	    } else {
+	      var m2 = l <= 0.5 ? l * (s + 1) : l + s - l * s,
+	          m1 = l * 2 - m2;
+	      return "#" + Jdenticon.prototype.hueToRgb(m1, m2, h * 6 + 2) + Jdenticon.prototype.hueToRgb(m1, m2, h * 6) + Jdenticon.prototype.hueToRgb(m1, m2, h * 6 - 2);
+	    }
+	  },
+	  // This function will correct the lightness for the "dark" hues
+	  correctedHsl: function correctedHsl(h, s, l) {
+	    // The corrector specifies the perceived middle lightnesses for each hue
+	    var correctors = [0.55, 0.5, 0.5, 0.46, 0.6, 0.55, 0.55],
+	        corrector = correctors[h * 6 + 0.5 | 0];
+
+	    // Adjust the input lightness relative to the corrector
+	    l = l < 0.5 ? l * corrector * 2 : corrector + (l - 0.5) * (1 - corrector) * 2;
+
+	    return color.hsl(h, s, l);
+	  }
+	};
+
+	var CanvasRenderer = function CanvasRenderer(ctx, width, height) {
+	  this._ctx = ctx;
+	  ctx.clearRect(0, 0, width, height);
+	};
+	CanvasRenderer.prototype = {
+	  /**
+	   * Marks the beginning of a new shape of the specified color. Should be ended with a call to endShape.
+	   * @param {string} color Fill color on format #xxxxxx.
+	   */
+	  beginShape: function beginShape(color) {
+	    this._ctx.fillStyle = color;
+	    this._ctx.beginPath();
+	  },
+	  /**
+	   * Marks the end of the currently drawn shape. This causes the queued paths to be rendered on the canvas.
+	   */
+	  endShape: function endShape() {
+	    this._ctx.fill();
+	  },
+	  /**
+	   * Adds a polygon to the rendering queue.
+	   * @param points An array of Point objects.
+	   */
+	  addPolygon: function addPolygon(points) {
+	    var ctx = this._ctx,
+	        i;
+	    ctx.moveTo(points[0].x, points[0].y);
+	    for (i = 1; i < points.length; i++) {
+	      ctx.lineTo(points[i].x, points[i].y);
+	    }
+	    ctx.closePath();
+	  },
+	  /**
+	   * Adds a circle to the rendering queue.
+	   * @param {Point} point The upper left corner of the circle bounding box.
+	   * @param {number} diameter The diameter of the circle.
+	   * @param {boolean} counterClockwise True if the circle is drawn counter-clockwise (will result in a hole if rendered on a clockwise path).
+	   */
+	  addCircle: function addCircle(point, diameter, counterClockwise) {
+	    var ctx = this._ctx,
+	        radius = diameter / 2;
+	    ctx.arc(point.x + radius, point.y + radius, radius, 0, Math.PI * 2, counterClockwise);
+	    ctx.closePath();
+	  }
+	};
+
+	var /** @const */
+	HASH_ATTRIBUTE = "data-jdenticon-hash",
+	    supportsQuerySelectorAll = "document" in global && "querySelectorAll" in document;
+
+	var canvas_element_width = '225';
+	var canvas_element_height = '225';
+
+	exports.default = new Jdenticon();
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+
+/***/ 313:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4118,7 +5166,7 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _overlay_core = __webpack_require__(308);
+	var _overlay_core = __webpack_require__(311);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
 
@@ -4142,11 +5190,11 @@ webpackJsonp([0],{
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _panel = __webpack_require__(310);
+	var _panel = __webpack_require__(314);
 
 	var _panel2 = _interopRequireDefault(_panel);
 
-	var _chats_manager = __webpack_require__(338);
+	var _chats_manager = __webpack_require__(340);
 
 	var _chats_manager2 = _interopRequireDefault(_chats_manager);
 
@@ -4154,7 +5202,7 @@ webpackJsonp([0],{
 
 	var _description2 = _interopRequireDefault(_description);
 
-	var _chat_resize = __webpack_require__(346);
+	var _chat_resize = __webpack_require__(347);
 
 	var _chat_resize2 = _interopRequireDefault(_chat_resize);
 
@@ -4199,7 +5247,7 @@ webpackJsonp([0],{
 	    var self = this,
 	        userId = _users_bus2.default.getUserId();
 	    if (!userId) {
-	      _reactRouter.browserHistory.push('/login');
+	      _reactRouter.browserHistory.push('/account');
 	    } else {
 	      _users_bus2.default.getMyInfo(null, function (error, _options, userInfo) {
 	        if (error) {
@@ -4248,7 +5296,7 @@ webpackJsonp([0],{
 	        });
 	        _this.savePanelStates(panelDescription, function () {
 	          self.toggleWaiter();
-	          _reactRouter.browserHistory.push('/login');
+	          _reactRouter.browserHistory.push('/account');
 	        });
 	      })();
 	    }
@@ -4333,7 +5381,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 310:
+/***/ 314:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4350,7 +5398,7 @@ webpackJsonp([0],{
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _overlay_core = __webpack_require__(308);
+	var _overlay_core = __webpack_require__(311);
 
 	var _overlay_core2 = _interopRequireDefault(_overlay_core);
 
@@ -4366,7 +5414,7 @@ webpackJsonp([0],{
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _chats_bus = __webpack_require__(311);
+	var _chats_bus = __webpack_require__(315);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
@@ -4374,7 +5422,7 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _switcher_core = __webpack_require__(312);
+	var _switcher_core = __webpack_require__(316);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
@@ -4382,11 +5430,11 @@ webpackJsonp([0],{
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _webrtc = __webpack_require__(313);
+	var _webrtc = __webpack_require__(317);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _utils = __webpack_require__(316);
+	var _utils = __webpack_require__(320);
 
 	var _utils2 = _interopRequireDefault(_utils);
 
@@ -4394,31 +5442,31 @@ webpackJsonp([0],{
 
 	var _triple_element2 = _interopRequireDefault(_triple_element);
 
-	var _extra_toolbar = __webpack_require__(317);
+	var _extra_toolbar = __webpack_require__(321);
 
 	var _extra_toolbar2 = _interopRequireDefault(_extra_toolbar);
 
-	var _filter = __webpack_require__(318);
+	var _filter = __webpack_require__(322);
 
 	var _filter2 = _interopRequireDefault(_filter);
 
-	var _panel_toolbar = __webpack_require__(319);
+	var _panel_toolbar = __webpack_require__(323);
 
 	var _panel_toolbar2 = _interopRequireDefault(_panel_toolbar);
 
-	var _body = __webpack_require__(320);
+	var _body = __webpack_require__(324);
 
 	var _body2 = _interopRequireDefault(_body);
 
-	var _pagination = __webpack_require__(336);
+	var _pagination = __webpack_require__(338);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
-	var _go_to = __webpack_require__(337);
+	var _go_to = __webpack_require__(339);
 
 	var _go_to2 = _interopRequireDefault(_go_to);
 
-	var _dialogConfirm = __webpack_require__(329);
+	var _dialogConfirm = __webpack_require__(333);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
@@ -4426,7 +5474,7 @@ webpackJsonp([0],{
 
 	var _dialogError2 = _interopRequireDefault(_dialogError);
 
-	var _dialogSuccess = __webpack_require__(334);
+	var _dialogSuccess = __webpack_require__(309);
 
 	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
 
@@ -5861,7 +6909,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 311:
+/***/ 315:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6044,7 +7092,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 312:
+/***/ 316:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6169,7 +7217,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 313:
+/***/ 317:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6198,15 +7246,15 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _chats_bus = __webpack_require__(311);
+	var _chats_bus = __webpack_require__(315);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _sync_core = __webpack_require__(314);
+	var _sync_core = __webpack_require__(318);
 
 	var _sync_core2 = _interopRequireDefault(_sync_core);
 
-	var _connection2 = __webpack_require__(315);
+	var _connection2 = __webpack_require__(319);
 
 	var _connection3 = _interopRequireDefault(_connection2);
 
@@ -6995,7 +8043,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 314:
+/***/ 318:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7012,7 +8060,7 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _chats_bus = __webpack_require__(311);
+	var _chats_bus = __webpack_require__(315);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
@@ -7020,7 +8068,7 @@ webpackJsonp([0],{
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _webrtc = __webpack_require__(313);
+	var _webrtc = __webpack_require__(317);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
@@ -7209,7 +8257,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 315:
+/***/ 319:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7383,7 +8431,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 316:
+/***/ 320:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7435,7 +8483,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 317:
+/***/ 321:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7629,7 +8677,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 318:
+/***/ 322:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7642,7 +8690,7 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _switcher_core = __webpack_require__(312);
+	var _switcher_core = __webpack_require__(316);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
@@ -8317,7 +9365,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 319:
+/***/ 323:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8549,7 +9597,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 320:
+/***/ 324:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8564,7 +9612,7 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _switcher_core = __webpack_require__(312);
+	var _switcher_core = __webpack_require__(316);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
@@ -8576,7 +9624,7 @@ webpackJsonp([0],{
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _utils = __webpack_require__(316);
+	var _utils = __webpack_require__(320);
 
 	var _utils2 = _interopRequireDefault(_utils);
 
@@ -8584,7 +9632,7 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _chats_bus = __webpack_require__(311);
+	var _chats_bus = __webpack_require__(315);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
@@ -8592,37 +9640,37 @@ webpackJsonp([0],{
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _panel_users = __webpack_require__(321);
+	var _panel_users = __webpack_require__(325);
 
 	var _panel_users2 = _interopRequireDefault(_panel_users);
 
-	var _panel_chats = __webpack_require__(322);
+	var _panel_chats = __webpack_require__(326);
 
 	var _panel_chats2 = _interopRequireDefault(_panel_chats);
 
-	var _message = __webpack_require__(323);
+	var _message = __webpack_require__(327);
 
 	var _message2 = _interopRequireDefault(_message);
 
-	var _setting = __webpack_require__(328);
+	var _setting = __webpack_require__(332);
 
 	var _setting2 = _interopRequireDefault(_setting);
 
-	var _contact_list = __webpack_require__(330);
+	var _contact_list = __webpack_require__(334);
 
 	var _contact_list2 = _interopRequireDefault(_contact_list);
 
-	var _connections = __webpack_require__(331);
+	var _connections = __webpack_require__(335);
 
 	var _connections2 = _interopRequireDefault(_connections);
 
-	var _user_avarat = __webpack_require__(332);
+	var _user_avarat = __webpack_require__(336);
 
 	var _user_avarat2 = _interopRequireDefault(_user_avarat);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var json_package = __webpack_require__(335),
+	var json_package = __webpack_require__(337),
 	    render_table_obj = function render_table_obj(obj) {
 	  if (obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
 	    var keys = Object.keys(obj);
@@ -9633,7 +10681,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 321:
+/***/ 325:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9733,7 +10781,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 322:
+/***/ 326:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9902,7 +10950,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 323:
+/***/ 327:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9915,11 +10963,11 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _html_message = __webpack_require__(324);
+	var _html_message = __webpack_require__(328);
 
 	var _html_message2 = _interopRequireDefault(_html_message);
 
-	var _messages = __webpack_require__(326);
+	var _messages = __webpack_require__(330);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
@@ -9927,7 +10975,7 @@ webpackJsonp([0],{
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(312);
+	var _switcher_core = __webpack_require__(316);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
@@ -9943,7 +10991,7 @@ webpackJsonp([0],{
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _body = __webpack_require__(320);
+	var _body = __webpack_require__(324);
 
 	var _body2 = _interopRequireDefault(_body);
 
@@ -10230,7 +11278,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 324:
+/***/ 328:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10255,7 +11303,7 @@ webpackJsonp([0],{
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _model_core = __webpack_require__(325);
+	var _model_core = __webpack_require__(329);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
@@ -10302,7 +11350,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 325:
+/***/ 329:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10370,7 +11418,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 326:
+/***/ 330:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10391,15 +11439,15 @@ webpackJsonp([0],{
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(312);
+	var _switcher_core = __webpack_require__(316);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _html_log_message = __webpack_require__(327);
+	var _html_log_message = __webpack_require__(331);
 
 	var _html_log_message2 = _interopRequireDefault(_html_log_message);
 
-	var _html_message = __webpack_require__(324);
+	var _html_message = __webpack_require__(328);
 
 	var _html_message2 = _interopRequireDefault(_html_message);
 
@@ -10407,7 +11455,7 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _webrtc = __webpack_require__(313);
+	var _webrtc = __webpack_require__(317);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
@@ -10620,7 +11668,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 327:
+/***/ 331:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10667,7 +11715,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 328:
+/***/ 332:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10708,7 +11756,7 @@ webpackJsonp([0],{
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _dialogConfirm = __webpack_require__(329);
+	var _dialogConfirm = __webpack_require__(333);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
@@ -11210,7 +12258,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 329:
+/***/ 333:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11314,7 +12362,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 330:
+/***/ 334:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11331,7 +12379,7 @@ webpackJsonp([0],{
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _chats_bus = __webpack_require__(311);
+	var _chats_bus = __webpack_require__(315);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
@@ -11351,11 +12399,11 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _webrtc = __webpack_require__(313);
+	var _webrtc = __webpack_require__(317);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _body = __webpack_require__(320);
+	var _body = __webpack_require__(324);
 
 	var _body2 = _interopRequireDefault(_body);
 
@@ -11555,7 +12603,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 331:
+/***/ 335:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11568,7 +12616,7 @@ webpackJsonp([0],{
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _webrtc = __webpack_require__(313);
+	var _webrtc = __webpack_require__(317);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
@@ -11689,7 +12737,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 332:
+/***/ 336:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11726,11 +12774,11 @@ webpackJsonp([0],{
 
 	var _localization2 = _interopRequireDefault(_localization);
 
-	var _jdenticon = __webpack_require__(333);
+	var _jdenticon = __webpack_require__(312);
 
 	var _jdenticon2 = _interopRequireDefault(_jdenticon);
 
-	var _dialogSuccess = __webpack_require__(334);
+	var _dialogSuccess = __webpack_require__(309);
 
 	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
 
@@ -11974,654 +13022,12 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 333:
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	/**
-	 * Jdenticon 1.3.2
-	 * http://jdenticon.com
-	 *
-	 * Built: 2015-10-10T11:55:57.451Z
-	 *
-	 * Copyright (c) 2014-2015 Daniel Mester Pirttijärvi
-	 *
-	 * This software is provided 'as-is', without any express or implied
-	 * warranty.  In no event will the authors be held liable for any damages
-	 * arising from the use of this software.
-	 *
-	 * Permission is granted to anyone to use this software for any purpose,
-	 * including commercial applications, and to alter it and redistribute it
-	 * freely, subject to the following restrictions:
-	 *
-	 * 1. The origin of this software must not be misrepresented; you must not
-	 *    claim that you wrote the original software. If you use this software
-	 *    in a product, an acknowledgment in the product documentation would be
-	 *    appreciated but is not required.
-	 *
-	 * 2. Altered source versions must be plainly marked as such, and must not be
-	 *    misrepresented as being the original software.
-	 *
-	 * 3. This notice may not be removed or altered from any source distribution.
-	 *
-	 */
-
-	var Jdenticon = function Jdenticon() {};
-
-	Jdenticon.prototype = {
-	  Point: function Point(x, y) {
-	    this.x = x;
-	    this.y = y;
-	  },
-
-	  decToHex: function decToHex(v) {
-	    v |= 0; // Ensure integer value
-	    return v < 0 ? "00" : v < 16 ? "0" + v.toString(16) : v < 256 ? v.toString(16) : "ff";
-	  },
-
-	  hueToRgb: function hueToRgb(m1, m2, h) {
-	    h = h < 0 ? h + 6 : h > 6 ? h - 6 : h;
-	    return this.decToHex(255 * (h < 1 ? m1 + (m2 - m1) * h : h < 3 ? m2 : h < 4 ? m1 + (m2 - m1) * (4 - h) : m1));
-	  },
-
-	  /**
-	   * Gets a set of identicon color candidates for a specified hue and config.
-	   */
-	  colorTheme: function colorTheme(hue, config) {
-	    return [
-	    // Dark gray
-	    color.hsl(0, 0, config.grayscaleLightness(0)),
-	    // Mid color
-	    color.correctedHsl(hue, config.saturation, config.colorLightness(0.5)),
-	    // Light gray
-	    color.hsl(0, 0, config.grayscaleLightness(1)),
-	    // Light color
-	    color.correctedHsl(hue, config.saturation, config.colorLightness(1)),
-	    // Dark color
-	    color.correctedHsl(hue, config.saturation, config.colorLightness(0))];
-	  },
-
-	  /**
-	   * Draws an identicon to a specified renderer.
-	   */
-	  iconGenerator: function iconGenerator(renderer, hash, x, y, size, padding, config, callback) {
-	    var undefined;
-
-	    // Calculate padding
-	    padding = size * (padding === undefined ? 0.08 : padding) | 0;
-	    size -= padding * 2;
-
-	    // Sizes smaller than 30 px are not supported. If really needed, apply a scaling transformation
-	    // to the context before passing it to this function.
-	    if (size < 30) {
-	      throw new Error("Jdenticon cannot render identicons smaller than 30 pixels.");
-	    }
-	    if (!/^[0-9a-f,-]{11,}$/i.test(hash)) {
-	      throw new Error("Invalid hash passed to Jdenticon.");
-	    }
-
-	    var graphics = new Graphics(renderer);
-
-	    // Calculate cell size and ensure it is an integer
-	    var cell = 0 | size / 4;
-
-	    // Since the cell size is integer based, the actual icon will be slightly smaller than specified => center icon
-	    x += 0 | padding + size / 2 - cell * 2;
-	    y += 0 | padding + size / 2 - cell * 2;
-
-	    function renderShape(colorIndex, shapes, index, rotationIndex, positions) {
-	      var r = rotationIndex ? parseInt(hash.charAt(rotationIndex), 16) : 0,
-	          shape = shapes[parseInt(hash.charAt(index), 16) % shapes.length],
-	          i;
-
-	      renderer.beginShape(availableColors[selectedColorIndexes[colorIndex]]);
-
-	      for (i = 0; i < positions.length; i++) {
-	        graphics._transform = new Transform(x + positions[i][0] * cell, y + positions[i][1] * cell, cell, r++ % 4);
-	        shape(graphics, cell, i);
-	      }
-
-	      renderer.endShape();
-	    }
-
-	    // AVAILABLE COLORS
-	    var hue = parseInt(hash.substr(-4) + hash.substr(-8, 3), 16) / 0xfffffff,
-
-
-	    // Available colors for this icon
-	    availableColors = this.colorTheme(hue, config),
-
-
-	    // The index of the selected colors
-	    selectedColorIndexes = [],
-	        index;
-
-	    function isDuplicate(values) {
-	      if (values.indexOf(index) >= 0) {
-	        for (var i = 0; i < values.length; i++) {
-	          if (selectedColorIndexes.indexOf(values[i]) >= 0) {
-	            return true;
-	          }
-	        }
-	      }
-	    }
-
-	    for (var i = 0; i < 3; i++) {
-	      index = parseInt(hash.charAt(55 + i), 16) % availableColors.length;
-	      if (isDuplicate([0, 4]) || // Disallow dark gray and dark color combo
-	      isDuplicate([2, 3])) {
-	        // Disallow light gray and light color combo
-	        index = 1;
-	      }
-	      selectedColorIndexes.push(index);
-	    }
-
-	    // ACTUAL RENDERING
-	    // Sides
-	    renderShape(0, shapes.outer, 57, 3, [[1, 0], [2, 0], [2, 3], [1, 3], [0, 1], [3, 1], [3, 2], [0, 2]]);
-	    // Corners
-	    renderShape(1, shapes.outer, 58, 5, [[0, 0], [3, 0], [3, 3], [0, 3]]);
-	    // Center
-	    renderShape(2, shapes.center, 56, null, [[1, 1], [2, 1], [2, 2], [1, 2]]);
-	    var data_avatar = renderer._ctx.canvas.toDataURL();
-	    if (callback) {
-	      callback(data_avatar);
-	    }
-	  },
-
-	  /**
-	   * Gets the normalized current Jdenticon color configuration. Missing fields have default values.
-	   */
-	  getCurrentConfig: function getCurrentConfig() {
-	    var configObject = this.jdenticon["config"] || global["jdenticon_config"] || {},
-	        lightnessConfig = configObject["lightness"] || {},
-	        saturation = configObject["saturation"];
-
-	    /**
-	     * Creates a lightness range.
-	     */
-	    function lightness(configName, defaultMin, defaultMax) {
-	      var range = lightnessConfig[configName] instanceof Array ? lightnessConfig[configName] : [defaultMin, defaultMax];
-
-	      /**
-	       * Gets a lightness relative the specified value in the specified lightness range.
-	       */
-	      return function (value) {
-	        value = range[0] + value * (range[1] - range[0]);
-	        return value < 0 ? 0 : value > 1 ? 1 : value;
-	      };
-	    }
-
-	    return {
-	      saturation: typeof saturation == "number" ? saturation : 0.5,
-	      colorLightness: lightness("color", 0.4, 0.8),
-	      grayscaleLightness: lightness("grayscale", 0.3, 0.9)
-	    };
-	  },
-
-	  /**
-	   * Updates the identicon in the specified canvas elements.
-	   * @param {string=} hash Optional hash to be rendered. If not specified, the hash specified by the data-jdenticon-hash is used.
-	   * @param {number=} padding Optional padding in percents. Extra padding might be added to center the rendered identicon.
-	   */
-	  update: function update(el, hash, callback, padding) {
-	    if (typeof el === "string") {
-	      var element = document.createElement('canvas');
-	      element.setAttribute('width', canvas_element_width);
-	      element.setAttribute('height', canvas_element_height);
-	      this.update(element, hash, callback, padding);
-	      return;
-	    }
-	    if (!el || !el["tagName"]) {
-	      // No element found
-	      return;
-	    }
-	    hash = hash || el.getAttribute(HASH_ATTRIBUTE);
-	    if (!hash) {
-	      // No hash specified
-	      return;
-	    }
-
-	    var isCanvas = el["tagName"].toLowerCase() == "canvas";
-
-	    // Ensure we have a supported element
-	    if (!(isCanvas && "getContext" in el)) {
-	      return;
-	    }
-
-	    var width = Number(el.getAttribute("width")) || el.clientWidth || 0,
-	        height = Number(el.getAttribute("height")) || el.clientHeight || 0,
-	        renderer = new CanvasRenderer(el.getContext("2d"), width, height),
-	        size = Math.min(width, height);
-
-	    // Draw icon
-	    this.iconGenerator(renderer, hash, 0, 0, size, padding, this.getCurrentConfig(), callback);
-	  },
-
-	  jdenticon: function jdenticon(hash, callback) {
-	    if (supportsQuerySelectorAll) {
-	      this.update("canvas[" + HASH_ATTRIBUTE + "]", hash, function (avatar_data) {
-	        if (callback) {
-	          callback(avatar_data);
-	        }
-	      });
-	    }
-	  }
-	};
-
-	var Transform = function Transform(x, y, size, rotation) {
-	  this._x = x;
-	  this._y = y;
-	  this._size = size;
-	  this._rotation = rotation;
-	};
-	Transform.prototype = {
-	  /**
-	   * Transforms the specified point based on the translation and rotation specification for this Transform.
-	   * @param {number} x x-coordinate
-	   * @param {number} y y-coordinate
-	   * @param {number=} w The width of the transformed rectangle. If greater than 0, this will ensure the returned point is of the upper left corner of the transformed rectangle.
-	   * @param {number=} h The height of the transformed rectangle. If greater than 0, this will ensure the returned point is of the upper left corner of the transformed rectangle.
-	   */
-	  transformPoint: function transformPoint(x, y, w, h) {
-	    var right = this._x + this._size,
-	        bottom = this._y + this._size;
-	    return this._rotation === 1 ? new Jdenticon.prototype.Point(right - y - (h || 0), this._y + x) : this._rotation === 2 ? new Jdenticon.prototype.Point(right - x - (w || 0), bottom - y - (h || 0)) : this._rotation === 3 ? new Jdenticon.prototype.Point(this._x + y, bottom - x - (w || 0)) : new Jdenticon.prototype.Point(this._x + x, this._y + y);
-	  }
-	};
-	Transform.noTransform = new Transform(0, 0, 0, 0);
-
-	var Graphics = function Graphics(renderer) {
-	  this._renderer = renderer;
-	  this._transform = Transform.noTransform;
-	};
-	Graphics.prototype = {
-	  /**
-	   * Adds a polygon to the underlying renderer.
-	   * @param {Array} points The points of the polygon clockwise on the format [ x0, y0, x1, y1, ..., xn, yn ]
-	   * @param {boolean=} invert Specifies if the polygon will be inverted.
-	   */
-	  addPolygon: function addPolygon(points, invert) {
-	    var di = invert ? -2 : 2,
-	        transform = this._transform,
-	        transformedPoints = [],
-	        i;
-
-	    for (i = invert ? points.length - 2 : 0; i < points.length && i >= 0; i += di) {
-	      transformedPoints.push(transform.transformPoint(points[i], points[i + 1]));
-	    }
-
-	    this._renderer.addPolygon(transformedPoints);
-	  },
-
-	  /**
-	   * Adds a polygon to the underlying renderer.
-	   * Source: http://stackoverflow.com/a/2173084
-	   * @param {number} x The x-coordinate of the upper left corner of the rectangle holding the entire ellipse.
-	   * @param {number} y The y-coordinate of the upper left corner of the rectangle holding the entire ellipse.
-	   * @param {number} size The size of the ellipse.
-	   * @param {boolean=} invert Specifies if the ellipse will be inverted.
-	   */
-	  addCircle: function addCircle(x, y, size, invert) {
-	    var p = this._transform.transformPoint(x, y, size, size);
-	    this._renderer.addCircle(p, size, invert);
-	  },
-
-	  /**
-	   * Adds a rectangle to the underlying renderer.
-	   * @param {number} x The x-coordinate of the upper left corner of the rectangle.
-	   * @param {number} y The y-coordinate of the upper left corner of the rectangle.
-	   * @param {number} w The width of the rectangle.
-	   * @param {number} h The height of the rectangle.
-	   * @param {boolean=} invert Specifies if the rectangle will be inverted.
-	   */
-	  addRectangle: function addRectangle(x, y, w, h, invert) {
-	    this.addPolygon([x, y, x + w, y, x + w, y + h, x, y + h], invert);
-	  },
-
-	  /**
-	   * Adds a right triangle to the underlying renderer.
-	   * @param {number} x The x-coordinate of the upper left corner of the rectangle holding the triangle.
-	   * @param {number} y The y-coordinate of the upper left corner of the rectangle holding the triangle.
-	   * @param {number} w The width of the triangle.
-	   * @param {number} h The height of the triangle.
-	   * @param {number} r The rotation of the triangle (clockwise). 0 = right corner of the triangle in the lower left corner of the bounding rectangle.
-	   * @param {boolean=} invert Specifies if the triangle will be inverted.
-	   */
-	  addTriangle: function addTriangle(x, y, w, h, r, invert) {
-	    var points = [x + w, y, x + w, y + h, x, y + h, x, y];
-	    points.splice((r || 0) % 4 * 2, 2);
-	    this.addPolygon(points, invert);
-	  },
-
-	  /**
-	   * Adds a rhombus to the underlying renderer.
-	   * @param {number} x The x-coordinate of the upper left corner of the rectangle holding the rhombus.
-	   * @param {number} y The y-coordinate of the upper left corner of the rectangle holding the rhombus.
-	   * @param {number} w The width of the rhombus.
-	   * @param {number} h The height of the rhombus.
-	   * @param {boolean=} invert Specifies if the rhombus will be inverted.
-	   */
-	  addRhombus: function addRhombus(x, y, w, h, invert) {
-	    this.addPolygon([x + w / 2, y, x + w, y + h / 2, x + w / 2, y + h, x, y + h / 2], invert);
-	  }
-	};
-
-	var shapes = {
-	  center: [
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    var k = cell * 0.42;
-	    g.addPolygon([0, 0, cell, 0, cell, cell - k * 2, cell - k, cell, 0, cell]);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    var w = 0 | cell * 0.5,
-	        h = 0 | cell * 0.8;
-	    g.addTriangle(cell - w, 0, w, h, 2);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    var s = 0 | cell / 3;
-	    g.addRectangle(s, s, cell - s, cell - s);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    var inner = 0 | cell * 0.1,
-	        outer = 0 | cell * 0.25;
-	    g.addRectangle(outer, outer, cell - inner - outer, cell - inner - outer);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    var m = 0 | cell * 0.15,
-	        s = 0 | cell * 0.5;
-	    g.addCircle(cell - s - m, cell - s - m, s);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    var inner = cell * 0.1,
-	        outer = inner * 4;
-
-	    g.addRectangle(0, 0, cell, cell);
-	    g.addPolygon([outer, outer, cell - inner, outer, outer + (cell - outer - inner) / 2, cell - inner], true);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    g.addPolygon([0, 0, cell, 0, cell, cell * 0.7, cell * 0.4, cell * 0.4, cell * 0.7, cell, 0, cell]);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    g.addTriangle(cell / 2, cell / 2, cell / 2, cell / 2, 3);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    g.addRectangle(0, 0, cell, cell / 2);
-	    g.addRectangle(0, cell / 2, cell / 2, cell / 2);
-	    g.addTriangle(cell / 2, cell / 2, cell / 2, cell / 2, 1);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    var inner = 0 | cell * 0.14,
-	        outer = 0 | cell * 0.35;
-	    g.addRectangle(0, 0, cell, cell);
-	    g.addRectangle(outer, outer, cell - outer - inner, cell - outer - inner, true);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    var inner = cell * 0.12,
-	        outer = inner * 3;
-
-	    g.addRectangle(0, 0, cell, cell);
-	    g.addCircle(outer, outer, cell - inner - outer, true);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    g.addTriangle(cell / 2, cell / 2, cell / 2, cell / 2, 3);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    var m = cell * 0.25;
-	    g.addRectangle(0, 0, cell, cell);
-	    g.addRhombus(m, m, cell - m, cell - m, true);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    var m = cell * 0.4,
-	        s = cell * 1.2;
-	    if (!index) {
-	      g.addCircle(m, m, s);
-	    }
-	  }],
-
-	  outer: [
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    g.addTriangle(0, 0, cell, cell, 0);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    g.addTriangle(0, cell / 2, cell, cell / 2, 0);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    g.addRhombus(0, 0, cell, cell);
-	  },
-	  /** @param {Graphics} g */
-	  function (g, cell, index) {
-	    var m = cell / 6;
-	    g.addCircle(m, m, cell - 2 * m);
-	  }]
-	};
-
-	/**
-	 * Functions for converting colors to hex-rgb representations.
-	 * @private
-	 */
-	var color = {
-	  /**
-	   * @param {number} r Red channel [0, 255]
-	   * @param {number} g Green channel [0, 255]
-	   * @param {number} b Blue channel [0, 255]
-	   */
-	  rgb: function rgb(r, g, b) {
-	    return "#" + this.decToHex(r) + this.decToHex(g) + this.decToHex(b);
-	  },
-	  /**
-	   * @param h Hue [0, 1]
-	   * @param s Saturation [0, 1]
-	   * @param l Lightness [0, 1]
-	   */
-	  hsl: function hsl(h, s, l) {
-	    // Based on http://www.w3.org/TR/2011/REC-css3-color-20110607/#hsl-color
-	    if (s == 0) {
-	      var partialHex = Jdenticon.prototype.decToHex(l * 255);
-	      return "#" + partialHex + partialHex + partialHex;
-	    } else {
-	      var m2 = l <= 0.5 ? l * (s + 1) : l + s - l * s,
-	          m1 = l * 2 - m2;
-	      return "#" + Jdenticon.prototype.hueToRgb(m1, m2, h * 6 + 2) + Jdenticon.prototype.hueToRgb(m1, m2, h * 6) + Jdenticon.prototype.hueToRgb(m1, m2, h * 6 - 2);
-	    }
-	  },
-	  // This function will correct the lightness for the "dark" hues
-	  correctedHsl: function correctedHsl(h, s, l) {
-	    // The corrector specifies the perceived middle lightnesses for each hue
-	    var correctors = [0.55, 0.5, 0.5, 0.46, 0.6, 0.55, 0.55],
-	        corrector = correctors[h * 6 + 0.5 | 0];
-
-	    // Adjust the input lightness relative to the corrector
-	    l = l < 0.5 ? l * corrector * 2 : corrector + (l - 0.5) * (1 - corrector) * 2;
-
-	    return color.hsl(h, s, l);
-	  }
-	};
-
-	var CanvasRenderer = function CanvasRenderer(ctx, width, height) {
-	  this._ctx = ctx;
-	  ctx.clearRect(0, 0, width, height);
-	};
-	CanvasRenderer.prototype = {
-	  /**
-	   * Marks the beginning of a new shape of the specified color. Should be ended with a call to endShape.
-	   * @param {string} color Fill color on format #xxxxxx.
-	   */
-	  beginShape: function beginShape(color) {
-	    this._ctx.fillStyle = color;
-	    this._ctx.beginPath();
-	  },
-	  /**
-	   * Marks the end of the currently drawn shape. This causes the queued paths to be rendered on the canvas.
-	   */
-	  endShape: function endShape() {
-	    this._ctx.fill();
-	  },
-	  /**
-	   * Adds a polygon to the rendering queue.
-	   * @param points An array of Point objects.
-	   */
-	  addPolygon: function addPolygon(points) {
-	    var ctx = this._ctx,
-	        i;
-	    ctx.moveTo(points[0].x, points[0].y);
-	    for (i = 1; i < points.length; i++) {
-	      ctx.lineTo(points[i].x, points[i].y);
-	    }
-	    ctx.closePath();
-	  },
-	  /**
-	   * Adds a circle to the rendering queue.
-	   * @param {Point} point The upper left corner of the circle bounding box.
-	   * @param {number} diameter The diameter of the circle.
-	   * @param {boolean} counterClockwise True if the circle is drawn counter-clockwise (will result in a hole if rendered on a clockwise path).
-	   */
-	  addCircle: function addCircle(point, diameter, counterClockwise) {
-	    var ctx = this._ctx,
-	        radius = diameter / 2;
-	    ctx.arc(point.x + radius, point.y + radius, radius, 0, Math.PI * 2, counterClockwise);
-	    ctx.closePath();
-	  }
-	};
-
-	var /** @const */
-	HASH_ATTRIBUTE = "data-jdenticon-hash",
-	    supportsQuerySelectorAll = "document" in global && "querySelectorAll" in document;
-
-	var canvas_element_width = '225';
-	var canvas_element_height = '225';
-
-	exports.default = new Jdenticon();
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-
-/***/ 334:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _localization = __webpack_require__(281);
-
-	var _localization2 = _interopRequireDefault(_localization);
-
-	var _dialog = __webpack_require__(307);
-
-	var _dialog2 = _interopRequireDefault(_dialog);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var DialogSuccess = _react2.default.createClass({
-	  displayName: 'DialogSuccess',
-	  processingTitle: function processingTitle() {
-	    var title = void 0;
-	    if (this.props.title) {
-	      title = this.props.title;
-	      if (!title.textContent) {
-	        title.textContent = 85;
-	      }
-	      if (title.addClass) {
-	        title.addClass = ' success ' + title.addClass;
-	      } else {
-	        title.addClass = ' success ';
-	      }
-	    } else {
-	      title = { textContent: 85, addClass: ' success' };
-	    }
-
-	    return title;
-	  },
-	  processingBody: function processingBody() {
-	    var body = void 0;
-	    if (this.props.body) {
-	      body = this.props.body;
-	      if (!body.textContent) {
-	        body.textContent = this.props.message;
-	      }
-	    } else {
-	      body = { textContent: this.props.message };
-	    }
-
-	    return body;
-	  },
-	  processingFooter: function processingFooter() {
-	    var footer = void 0,
-	        _class = 'flex-sp-around p-05em border-popup-footer ';
-	    if (this.props.footer) {
-	      footer = this.props.footer;
-	      if (footer.content) {
-	        return footer.content;
-	      }
-	      if (footer.className) {
-	        _class = footer.className;
-	      } else {
-	        _class = footer.addClass ? _class + footer.addClass : _class;
-	      }
-	    }
-
-	    return _react2.default.createElement(
-	      'footer',
-	      { className: _class },
-	      _react2.default.createElement(
-	        'button',
-	        { className: 'border-radius-04em p-tb-03em-lr-1em', 'data-action': 'confirmCancel' },
-	        this.props.close ? _localization2.default.transferText(this.props.close) : _localization2.default.getLocText(20)
-	      )
-	    );
-	  },
-	  render: function render() {
-	    if (this.props.show) {
-	      var title = this.processingTitle(),
-	          body = this.processingBody(),
-	          footer = this.processingFooter();
-
-	      return _react2.default.createElement(_dialog2.default, { show: this.props.show, title: title, body: body, footer: footer,
-	        handleClick: this.props.handleClick });
-	    } else {
-	      return _react2.default.createElement(_dialog2.default, { show: this.props.show });
-	    }
-	  }
-	});
-
-	exports.default = DialogSuccess;
-
-/***/ },
-
-/***/ 335:
+/***/ 337:
 /***/ function(module, exports) {
 
 	module.exports = {
 		"name": "spachat",
-		"version": "0.7.4",
+		"version": "0.7.5",
 		"private": true,
 		"description": "Single Page Application Chat",
 		"author": "Alexey Volodko",
@@ -12679,7 +13085,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 336:
+/***/ 338:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12696,11 +13102,11 @@ webpackJsonp([0],{
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(312);
+	var _switcher_core = __webpack_require__(316);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
-	var _chats_bus = __webpack_require__(311);
+	var _chats_bus = __webpack_require__(315);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
@@ -12708,7 +13114,7 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _messages = __webpack_require__(326);
+	var _messages = __webpack_require__(330);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
@@ -13055,7 +13461,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 337:
+/***/ 339:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13072,7 +13478,7 @@ webpackJsonp([0],{
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(312);
+	var _switcher_core = __webpack_require__(316);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
@@ -13216,7 +13622,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 338:
+/***/ 340:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13249,15 +13655,15 @@ webpackJsonp([0],{
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _chats_bus = __webpack_require__(311);
+	var _chats_bus = __webpack_require__(315);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
-	var _ajax_core = __webpack_require__(339);
+	var _ajax_core = __webpack_require__(310);
 
 	var _ajax_core2 = _interopRequireDefault(_ajax_core);
 
-	var _messages = __webpack_require__(326);
+	var _messages = __webpack_require__(330);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
@@ -13265,23 +13671,23 @@ webpackJsonp([0],{
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _webrtc = __webpack_require__(313);
+	var _webrtc = __webpack_require__(317);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
-	var _model_core = __webpack_require__(325);
+	var _model_core = __webpack_require__(329);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
-	var _sync_core = __webpack_require__(314);
+	var _sync_core = __webpack_require__(318);
 
 	var _sync_core2 = _interopRequireDefault(_sync_core);
 
-	var _chat2 = __webpack_require__(340);
+	var _chat2 = __webpack_require__(341);
 
 	var _chat3 = _interopRequireDefault(_chat2);
 
-	var _dialogConfirm = __webpack_require__(329);
+	var _dialogConfirm = __webpack_require__(333);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
@@ -13291,7 +13697,7 @@ webpackJsonp([0],{
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var id_Generator = __webpack_require__(345);
+	var id_Generator = __webpack_require__(346);
 
 	var ChatsManager = _react2.default.createClass({
 	  displayName: 'ChatsManager',
@@ -13791,84 +14197,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 339:
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var ajax_core = function ajax_core() {};
-
-	ajax_core.prototype = {
-
-	  __class_name: "ajax_core",
-
-	  objectToFormData: function objectToFormData(objectData) {
-	    var formData = new FormData();
-	    for (var key in objectData) {
-	      formData.append(key, objectData[key]);
-	    }
-	    return formData;
-	  },
-
-	  sendRequest: function sendRequest(type, url, data, callback) {
-	    var xhr = new XMLHttpRequest();
-	    xhr.open(type, url, true);
-
-	    xhr.onreadystatechange = function () {
-	      if (xhr.readyState == 4) {
-	        if (xhr.status >= 200 || xhr.status < 300 || xhr.status === 304) {
-	          callback(null, xhr.responseText);
-	        } else {
-	          callback('Error (' + xhr.status + ') : ' + xhr.statusText + ' : ' + xhr.responseText);
-	        }
-	      }
-	    };
-	    xhr.send(data);
-	  },
-
-	  get_JSON_res: function get_JSON_res(url, callback) {
-	    ajax_core.prototype.sendRequest('GET', url, null, function (err, res) {
-	      if (err) {
-	        callback(err);
-	      } else {
-	        try {
-	          var parsed = JSON.parse(res);
-	        } catch (e) {
-	          callback(e);
-	        }
-
-	        callback(null, parsed);
-	      }
-	    });
-	  },
-
-	  getRequest: function getRequest(url, callback) {
-	    ajax_core.prototype.sendRequest('GET', url, null, callback);
-	  },
-
-	  postRequest: function postRequest(url, objectData, callback) {
-	    var formData = ajax_core.prototype.objectToFormData(objectData);
-	    ajax_core.prototype.sendRequest('POST', url, formData, callback);
-	  },
-
-	  putRequest: function putRequest(url, objectData, callback) {
-	    var formData = ajax_core.prototype.objectToFormData(objectData);
-	    ajax_core.prototype.sendRequest('PUT', url, formData, callback);
-	  },
-
-	  deleteRequest: function deleteRequest(url, callback) {
-	    ajax_core.prototype.sendRequest('DELETE', url, null, callback);
-	  }
-	};
-
-	exports.default = ajax_core;
-
-/***/ },
-
-/***/ 340:
+/***/ 341:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13891,7 +14220,7 @@ webpackJsonp([0],{
 
 	var _extend_core2 = _interopRequireDefault(_extend_core);
 
-	var _switcher_core = __webpack_require__(312);
+	var _switcher_core = __webpack_require__(316);
 
 	var _switcher_core2 = _interopRequireDefault(_switcher_core);
 
@@ -13903,11 +14232,11 @@ webpackJsonp([0],{
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _messages2 = __webpack_require__(326);
+	var _messages2 = __webpack_require__(330);
 
 	var _messages3 = _interopRequireDefault(_messages2);
 
-	var _webrtc = __webpack_require__(313);
+	var _webrtc = __webpack_require__(317);
 
 	var _webrtc2 = _interopRequireDefault(_webrtc);
 
@@ -13915,7 +14244,7 @@ webpackJsonp([0],{
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
-	var _chats_bus = __webpack_require__(311);
+	var _chats_bus = __webpack_require__(315);
 
 	var _chats_bus2 = _interopRequireDefault(_chats_bus);
 
@@ -13923,7 +14252,7 @@ webpackJsonp([0],{
 
 	var _users_bus2 = _interopRequireDefault(_users_bus);
 
-	var _model_core = __webpack_require__(325);
+	var _model_core = __webpack_require__(329);
 
 	var _model_core2 = _interopRequireDefault(_model_core);
 
@@ -13931,47 +14260,47 @@ webpackJsonp([0],{
 
 	var _indexeddb2 = _interopRequireDefault(_indexeddb);
 
-	var _sync_core = __webpack_require__(314);
+	var _sync_core = __webpack_require__(318);
 
 	var _sync_core2 = _interopRequireDefault(_sync_core);
 
-	var _utils = __webpack_require__(316);
+	var _utils = __webpack_require__(320);
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _header = __webpack_require__(341);
+	var _header = __webpack_require__(342);
 
 	var _header2 = _interopRequireDefault(_header);
 
-	var _filter = __webpack_require__(318);
+	var _filter = __webpack_require__(322);
 
 	var _filter2 = _interopRequireDefault(_filter);
 
-	var _extra_toolbar = __webpack_require__(317);
+	var _extra_toolbar = __webpack_require__(321);
 
 	var _extra_toolbar2 = _interopRequireDefault(_extra_toolbar);
 
-	var _body = __webpack_require__(320);
+	var _body = __webpack_require__(324);
 
 	var _body2 = _interopRequireDefault(_body);
 
-	var _editor = __webpack_require__(342);
+	var _editor = __webpack_require__(343);
 
 	var _editor2 = _interopRequireDefault(_editor);
 
-	var _pagination = __webpack_require__(336);
+	var _pagination = __webpack_require__(338);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
-	var _go_to = __webpack_require__(337);
+	var _go_to = __webpack_require__(339);
 
 	var _go_to2 = _interopRequireDefault(_go_to);
 
-	var _toggle_visible_chat_part = __webpack_require__(344);
+	var _toggle_visible_chat_part = __webpack_require__(345);
 
 	var _toggle_visible_chat_part2 = _interopRequireDefault(_toggle_visible_chat_part);
 
-	var _dialogConfirm = __webpack_require__(329);
+	var _dialogConfirm = __webpack_require__(333);
 
 	var _dialogConfirm2 = _interopRequireDefault(_dialogConfirm);
 
@@ -15546,7 +15875,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 341:
+/***/ 342:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15819,7 +16148,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 342:
+/***/ 343:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15848,7 +16177,7 @@ webpackJsonp([0],{
 
 	var _event_bus2 = _interopRequireDefault(_event_bus);
 
-	var _messages = __webpack_require__(326);
+	var _messages = __webpack_require__(330);
 
 	var _messages2 = _interopRequireDefault(_messages);
 
@@ -15864,11 +16193,11 @@ webpackJsonp([0],{
 
 	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
 
-	var _format_panel = __webpack_require__(343);
+	var _format_panel = __webpack_require__(344);
 
 	var _format_panel2 = _interopRequireDefault(_format_panel);
 
-	var _pagination = __webpack_require__(336);
+	var _pagination = __webpack_require__(338);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
@@ -16094,7 +16423,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 343:
+/***/ 344:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16230,7 +16559,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 344:
+/***/ 345:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16459,7 +16788,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 345:
+/***/ 346:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -16506,7 +16835,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 346:
+/***/ 347:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16687,338 +17016,6 @@ webpackJsonp([0],{
 	_extend_core2.default.prototype.inherit(ChatResize, _dom_core2.default);
 
 	exports.default = ChatResize;
-
-/***/ },
-
-/***/ 347:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(12);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRouter = __webpack_require__(218);
-
-	var _location_wrapper = __webpack_require__(294);
-
-	var _location_wrapper2 = _interopRequireDefault(_location_wrapper);
-
-	var _dialogError = __webpack_require__(306);
-
-	var _dialogError2 = _interopRequireDefault(_dialogError);
-
-	var _dialogSuccess = __webpack_require__(334);
-
-	var _dialogSuccess2 = _interopRequireDefault(_dialogSuccess);
-
-	var _description = __webpack_require__(304);
-
-	var _description2 = _interopRequireDefault(_description);
-
-	var _ajax_core = __webpack_require__(339);
-
-	var _ajax_core2 = _interopRequireDefault(_ajax_core);
-
-	var _extend_core = __webpack_require__(284);
-
-	var _extend_core2 = _interopRequireDefault(_extend_core);
-
-	var _id_core = __webpack_require__(292);
-
-	var _id_core2 = _interopRequireDefault(_id_core);
-
-	var _users_bus = __webpack_require__(283);
-
-	var _users_bus2 = _interopRequireDefault(_users_bus);
-
-	var _localization = __webpack_require__(281);
-
-	var _localization2 = _interopRequireDefault(_localization);
-
-	var _overlay_core = __webpack_require__(308);
-
-	var _overlay_core2 = _interopRequireDefault(_overlay_core);
-
-	var _jdenticon = __webpack_require__(333);
-
-	var _jdenticon2 = _interopRequireDefault(_jdenticon);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Register = _react2.default.createClass({
-	  displayName: 'Register',
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      mainContainer: {
-	        "element": "div",
-	        "config": {
-	          "class": "flex-inner-container"
-	        }
-	      },
-	      configs: [{
-	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-just-center",
-	        "location": "language"
-	      }, {
-	        "element": "label",
-	        "text": 100,
-	        "class": "p-r-l-1em",
-	        "location": "language",
-	        "data": {
-	          "role": "labelLanguage"
-	        }
-	      }, {
-	        "element": "select",
-	        "location": "language",
-	        "select_options": [{
-	          "text": 132,
-	          "value": "en"
-	        }, {
-	          "text": 133,
-	          "value": "ru"
-	        }],
-	        "data": {
-	          "action": "changeLanguage",
-	          "role": "selectLanguage",
-	          "key": 'lang'
-	        }
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-sp-around",
-	        "location": "loginButton"
-	      }, {
-	        "element": "button",
-	        "type": "button",
-	        "text": 52,
-	        "location": "loginButton",
-	        "link": "/login",
-	        "data": {
-	          "action": "redirectToLogin",
-	          "role": "loginButton"
-	        },
-	        "class": "button-inset"
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-sp-around",
-	        "location": "userName"
-	      }, {
-	        "element": "label",
-	        "text": 49,
-	        "class": "flex-item-w50p",
-	        "location": "userName",
-	        "data": {
-	          "role": "labelUserName"
-	        }
-	      }, {
-	        "element": "input",
-	        "type": "text",
-	        "class": "flex-item-w50p",
-	        "autoComplete": "off",
-	        "location": "userName",
-	        "name": "userName",
-	        "data": {
-	          "key": "userName"
-	        }
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-sp-between",
-	        "location": "userPassword"
-	      }, {
-	        "element": "label",
-	        "text": 50,
-	        "class": "flex-item-w50p",
-	        "location": "userPassword",
-	        "data": {
-	          "role": "labelUserPassword"
-	        }
-	      }, {
-	        "element": "input",
-	        "type": "password",
-	        "class": "flex-item-w50p",
-	        "autoComplete": "off",
-	        "location": "userPassword",
-	        "name": "userPassword",
-	        "data": {
-	          "key": "userPassword"
-	        }
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-sp-between",
-	        "location": "userPasswordConfirm"
-	      }, {
-	        "element": "label",
-	        "text": 41,
-	        "class": "flex-item-w50p",
-	        "location": "userPasswordConfirm",
-	        "data": {
-	          "role": "labelConfirmUserPassword"
-	        }
-	      }, {
-	        "element": "input",
-	        "type": "password",
-	        "class": "flex-item-w50p",
-	        "autoComplete": "off",
-	        "location": "userPasswordConfirm",
-	        "name": "userPasswordConfirm",
-	        "data": {
-	          "key": "userPasswordConfirm"
-	        }
-	      }, {
-	        "role": "locationWrapper",
-	        "classList": "w-100p p-t-b flex-sp-around",
-	        "location": "registerButton"
-	      }, {
-	        "element": "button",
-	        "type": "submit",
-	        "text": 53,
-	        "location": "registerButton",
-	        "data": {
-	          "description": 55,
-	          "action": "register",
-	          "role": "registerButton"
-	        },
-	        "class": "button-inset"
-	      }]
-	    };
-	  },
-	  getInitialState: function getInitialState() {
-	    return {
-	      errorMessage: null,
-	      successMessage: null
-	    };
-	  },
-	  componentDidMount: function componentDidMount() {
-	    this.registerForm = document.querySelector('[data-role="registerForm"]');
-	    this.toggleWaiter();
-	  },
-	  componentWillUnmount: function componentWillUnmount() {
-	    this.registerForm = null;
-	  },
-	  handleClick: function handleClick() {},
-	  handleDialogError: function handleDialogError() {
-	    this.setState({ errorMessage: null });
-	  },
-	  handleDialogRegisterUser: function handleDialogRegisterUser() {
-	    _reactRouter.browserHistory.push(this.props.location.search.slice(1));
-	    this.setState({ successMessage: null });
-	  },
-	  handleChange: function handleChange(event) {
-	    switch (event.target.dataset.action) {
-	      case "changeLanguage":
-	        _localization2.default.changeLanguage(event.target.value, this);
-	        break;
-	    }
-	  },
-	  handleSubmit: function handleSubmit(event) {
-	    event.preventDefault();
-	    var self = this,
-	        userName = this.registerForm.elements.userName.value,
-	        userPassword = this.registerForm.elements.userPassword.value,
-	        userPasswordConfirm = this.registerForm.elements.userPasswordConfirm.value;
-	    if (userName && userPassword && userPasswordConfirm) {
-	      if (userPassword === userPasswordConfirm) {
-	        this.toggleWaiter(true);
-	        this.registerNewUser({
-	          userName: userName,
-	          userPassword: userPassword
-	        }, function (regErr, account) {
-	          self.toggleWaiter();
-	          if (regErr) {
-	            self.setState({ errorMessage: regErr });
-	            return;
-	          }
-	          _users_bus2.default.setUserId(account.user_id);
-	          self.setState({ successMessage: 96 });
-	        });
-	      } else {
-	        self.setState({ errorMessage: 91 });
-	      }
-	    } else {
-	      self.setState({ errorMessage: 88 });
-	    }
-	  },
-	  registerNewUser: function registerNewUser(options, callback) {
-	    this.get_JSON_res('/api/uuid', function (err, res) {
-	      if (err) {
-	        callback(err);
-	        return;
-	      }
-
-	      _jdenticon2.default.jdenticon(res.uuid, function (avatar_data) {
-	        _users_bus2.default.storeNewUser(res.uuid, options.userName, options.userPassword, avatar_data, Date.now(), function (err, account) {
-	          if (err) {
-	            callback(err);
-	            return;
-	          }
-
-	          // successful register
-	          callback(null, account);
-	        });
-	      });
-	    });
-	  },
-	  handleEvents: function handleEvents(event) {
-	    this.descriptionContext.showDescription(event);
-	  },
-	  render: function render() {
-	    var _this = this;
-
-	    var onEvent = {
-	      onClick: this.handleClick,
-	      onChange: this.handleChange
-	    },
-	        data = {
-	      "lang": _localization2.default.lang
-	    };
-	    //https://www.zigpress.com/2014/11/22/stop-chrome-messing-forms/
-	    return _react2.default.createElement(
-	      'div',
-	      { onMouseDown: this.handleEvents,
-	        onMouseMove: this.handleEvents,
-	        onMouseUp: this.handleEvents,
-	        onClick: this.handleEvents,
-	        onTouchEnd: this.handleEvents,
-	        onTouchMove: this.handleEvents,
-	        onTouchStart: this.handleEvents },
-	      _react2.default.createElement(
-	        'div',
-	        { 'data-role': 'main_container', className: 'w-100p h-100p p-abs' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'flex-outer-container p-fx' },
-	          _react2.default.createElement(
-	            'form',
-	            { autoComplete: 'off', className: 'flex-inner-container form-small', 'data-role': 'registerForm',
-	              onSubmit: this.handleSubmit },
-	            _react2.default.createElement('input', { style: { display: 'none' }, type: 'text' }),
-	            _react2.default.createElement('input', { style: { display: 'none' }, type: 'password' }),
-	            _react2.default.createElement(_location_wrapper2.default, { mainContainer: this.props.mainContainer, events: onEvent, configs: this.props.configs,
-	              data: data })
-	          )
-	        )
-	      ),
-	      _react2.default.createElement(_dialogSuccess2.default, { show: this.state.successMessage, message: this.state.successMessage,
-	        handleClick: this.handleDialogRegisterUser }),
-	      _react2.default.createElement(_dialogError2.default, { show: this.state.errorMessage, message: this.state.errorMessage,
-	        handleClick: this.handleDialogError }),
-	      _react2.default.createElement(_description2.default, { ref: function ref(obj) {
-	          return _this.descriptionContext = obj;
-	        } })
-	    );
-	  }
-	});
-
-	_extend_core2.default.prototype.inherit(Register, _id_core2.default);
-	_extend_core2.default.prototype.inherit(Register, _ajax_core2.default);
-	_extend_core2.default.prototype.inherit(Register, _overlay_core2.default);
-
-	exports.default = Register;
 
 /***/ }
 
