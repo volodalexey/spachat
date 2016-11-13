@@ -1,0 +1,91 @@
+#! /bin/bash
+
+# SPACHAT
+# Maintainer: Alexey Volodko
+# Authors: Alexey Volodko
+# App Version: 1.0
+# prerequisites: $sudo npm -g pm2 install
+
+### BEGIN INIT INFO
+# Provides:          spachat
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Single Page Application Chat
+# Description:       Single Page Application Chat
+### END INIT INFO
+
+# Script variable names should be lower-case not to conflict with internal
+# /bin/sh variables such as PATH, EDITOR or SHELL.
+app_user="ubuntu"
+app_root="/home/ubuntu/spachat"
+job_name="spachat"
+
+### Here ends user configuration ###
+
+# Switch to the app_user if it is not he/she who is running the script.
+if [ "$USER" != "$app_user" ]; then
+  sudo -u "$app_user" -H -i $0 "$@"; exit;
+fi
+
+# Switch to the app path, if it fails exit with an error.
+if ! cd "$app_root" ; then
+ echo "Failed to cd into $app_root, exiting!";  exit 1
+fi
+
+### Init Script functions
+
+start() {
+  NODE_ENV=production pm2 start production_server.js -i 1 --name $job_name -x --output /var/log/spachat/spachat_out.log --error /var/log/spachat/spachat_err.log
+}
+
+stop() {
+  pm2 stop $job_name
+  pm2 delete $job_name
+  pm2 kill
+}
+
+## Prints the status of the app and it's components.
+print_status() {
+  pm2 list
+}
+
+## Tells app server to reload it's config
+reload(){
+  pm2 reload $job_name
+}
+
+
+## Restarts app server.
+restart(){
+  pm2 restart all
+}
+
+
+### Finally the input handling.
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart)
+        restart
+        ;;
+	reload|force-reload)
+				reload
+				;;
+  status)
+        print_status
+        ;;
+  *)
+        echo "Usage: service spachat {start|stop|restart|reload|status}"
+        exit 1
+        ;;
+esac
+
+exit
+
