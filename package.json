@@ -40,8 +40,8 @@
   },
   "main": "production_server.js",
   "engines": {
-    "node": "4.5.0",
-    "npm": "2.15.9"
+    "node": "6.10.3",
+    "npm": "3.10.10"
   },
   "repository": {
     "type": "git",
