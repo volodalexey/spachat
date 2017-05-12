@@ -2237,8 +2237,6 @@ webpackJsonp([0],{
 
 	Websocket.prototype = {
 
-	  port: ':8000',
-
 	  bindContexts: function bindContexts() {
 	    var self = this;
 	    self.bindedOnOpen = self.onOpen.bind(self);
@@ -2266,7 +2264,7 @@ webpackJsonp([0],{
 	    if (window.location.hostname.indexOf('localhost') >= 0 || window.location.hostname.indexOf('192.168.') >= 0) {
 	      url = this.protocol + window.location.host;
 	    } else {
-	      url = this.protocol + window.location.hostname + this.port;
+	      url = this.protocol + window.location.hostname;
 	    }
 	    this.socket = new WebSocket(url);
 	  },
@@ -13067,8 +13065,8 @@ webpackJsonp([0],{
 		},
 		"main": "production_server.js",
 		"engines": {
-			"node": "4.5.0",
-			"npm": "2.15.9"
+			"node": "6.10.3",
+			"npm": "3.10.10"
 		},
 		"repository": {
 			"type": "git",
