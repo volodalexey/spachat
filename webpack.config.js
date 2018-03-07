@@ -2,12 +2,12 @@ var path = require('path'),
   webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   ExtractPlugin = require('extract-text-webpack-plugin'),
-  production = process.env.NODE_ENV === 'production';
+  production = process.env.NODE_ENV === 'production'
 
 module.exports = {
-  
+
   debug: !production,
-  
+
   devtool: production ? null : 'inline-source-map',
 
   watch: !production,
@@ -26,7 +26,7 @@ module.exports = {
     app: './js/index.js',
     vendor: ['react', 'react-dom', 'react-router']
   },
-  
+
   output: {
     path: path.join(__dirname, '/__build__'),
     filename: production ? 'bundle.js?[chunkhash]' : 'bundle.js',
@@ -68,9 +68,9 @@ module.exports = {
       inject: 'body'
     }),
     new ExtractPlugin(production ? 'bundle.css?[chunkhash]' : 'bundle.css'),
-    new webpack.optimize.CommonsChunkPlugin("vendor", production ? "vendor.js?[chunkhash]" : "vendor.js", Infinity),
+    new webpack.optimize.CommonsChunkPlugin('vendor', production ? 'vendor.js?[chunkhash]' : 'vendor.js', Infinity),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     })
   ]
-};
+}
